@@ -34,25 +34,32 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
 }
 
 #' @export
-gginsampleplot <- function(object) UseMethod("gginsampleplot")
+gginsampleplot <- function(object,type="changes") UseMethod("gginsampleplot")
 #' @export
 gginsampleplot.praislm <- function(object,type="changes") {
   m <- model.list(object)
   y <- model.list(object)$y
+  autocor <- rho(object)*lag(residuals(object),-1)
   switch(type,
          changes={
            y_lagged <- stats::lag(y,k=-1)
            y_changes <- (y/y_lagged-1)*100
-           fitted_diff <- if (m$include.differenciation) object$fitted.values else diff(object$fitted.values)
-           fitted_changes <- (fitted_diff/y_lagged)*100
-           series <- cbind(y_changes,fitted_changes)
+           predicted_diff <- if (m$include.differenciation) object$fitted.values + autocor else diff(object$fitted.values+autocor)
+           predicted_changes <- (predicted_diff/y_lagged)*100
+           series <- cbind(y_changes,predicted_changes)
            colnames(series) <- c("Response","Predicted value")
            ggplotts(series,variable_aes = "linetype") + labs(linetype="Percentage changes")
+         },
+         levels={
+           predicted <- if (m$include.differenciation) y_lagged+object$fitted.values + autocor else object$fitted.values+autocor
+           series <- cbind(y,predicted)
+           colnames(series) <- c("Response","Predicted value")
+           ggplotts(series,variable_aes = "linetype") + labs(linetype="Levels")
          })
 }
 #' @export
-gginsampleplot.twoStepsBenchmark <- function(object) {
-  gginsampleplot.praislm(object$regression)
+gginsampleplot.twoStepsBenchmark <- function(object,type="changes") {
+  gginsampleplot.praislm(object$regression,type)
 }
 
 #' @importFrom ggplot2 autoplot
