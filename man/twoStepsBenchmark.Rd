@@ -32,7 +32,7 @@ twoStepsBenchmark(
 \item{start.coeff.calc}{the end for the coefficients estimation}
 }
 \value{
-A time serie. Its domain is the same as the high frequency serie.
+twoStepsBenchark returns an object of class "twoStepsBenchmark"
 }
 \description{
 Bends a time-serie with a time serie of a lower frequency.

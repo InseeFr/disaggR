@@ -23,18 +23,20 @@ List Cpp_twoStepsBenchmark(NumericMatrix const& hfserie,NumericVector const& lfs
 
   NumericVector y = Cpp_window_NumericVector(lfserie,tseps,startcoeffcalc,endcoeffcalc);
   NumericVector const& tspy=y.attr("tsp");
-  NumericMatrix hfserie_wcalc = Cpp_window_NumericMatrix(hfserie,tseps,startcoeffcalc,NumericVector::create(tspy[1]+1/tspy[2]-1/tsphf[2]));
+  NumericMatrix hfserie_wcalc = Cpp_window_NumericMatrix(hfserie,tseps,NumericVector::create(tspy[0]),NumericVector::create(tspy[1]+1/tspy[2]-1/tsphf[2]));
   NumericMatrix x=Cpp_aggregate_NumericMatrix(hfserie_wcalc,ratio,y.size());
-
+  
   List regresults = praislm(x,y,includerho,includedifferenciation,set_coefficients,cl);
   
   NumericVector const& coefficients=regresults["coefficients"];
   
   // Application of the reg coefficients
+  NumericVector const startbenchmark=NumericVector::create(floor(tsphf[0]*tsplf[2])/tsplf[2]);
+  NumericVector const endbenchmark=NumericVector::create(ceil((tsphf[1]+1/tsphf[2])*tsplf[2])/tsplf[2]-1/tsphf[2]);
+                // This window is the smallest that is all around the domain of the hfserie.
 
-  NumericVector lfserie_wbench=Cpp_window_NumericVector(lfserie,tseps,NumericVector::create(tsphf[0]),NumericVector::create(tsphf[1]));
-  NumericVector const& tsplf_wbench=lfserie_wbench.attr("tsp");
-  NumericMatrix hfserie_wbench=Cpp_window_NumericMatrix(hfserie,tseps,NumericVector::create(tsplf_wbench[0]),NumericVector::create(tsplf_wbench[1]+1/tsplf_wbench[2]-1/tsphf[2]));
+  NumericVector lfserie_wbench=Cpp_window_NumericVector(lfserie,tseps,startbenchmark,endbenchmark);
+  NumericMatrix hfserie_wbench=Cpp_window_NumericMatrix(hfserie,tseps,startbenchmark,endbenchmark);
   
   R_len_t const& A=lfserie_wbench.size();
   double const& rho=regresults["rho"];
@@ -52,16 +54,19 @@ List Cpp_twoStepsBenchmark(NumericMatrix const& hfserie,NumericVector const& lfs
   R_len_t firstnonna=0;
   for (;firstnonna<A && NumericVector::is_na(lfresiduals[firstnonna]);firstnonna++) { }
   if (firstnonna!=A) {
+    double rhoinverse;
+    if (rho==0) rhoinverse=0; else rhoinverse=1/rho;
     if (includedifferenciation) {
       for (R_len_t i=firstnonna+2;i<A;i++) {
         if (NumericVector::is_na(lfresiduals[i])) lfresiduals[i]=(1+rho)*lfresiduals[i-1]-rho*lfresiduals[i-2];
       }
-      for (R_len_t i=firstnonna+1;i>1;i--) {lfresiduals[i-2]=(1+1/rho)*lfresiduals[i-1]-lfresiduals[i]/rho;}
+      for (R_len_t i=firstnonna+1;i>1;i--) {
+        lfresiduals[i-2]=(1+rhoinverse)*lfresiduals[i-1]-rhoinverse*lfresiduals[i];}
     } else {
       for (R_len_t i=firstnonna+1;i<A;i++) {
         if (NumericVector::is_na(lfresiduals[i])) lfresiduals[i]=rho*lfresiduals[i-1];
       }
-      for (R_len_t i=firstnonna;i>0;i--) {lfresiduals[i-1]=lfresiduals[i]/rho;}
+      for (R_len_t i=firstnonna;i>0;i--) {lfresiduals[i-1]=rhoinverse*lfresiduals[i];}
     }
   }
 

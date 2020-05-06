@@ -32,7 +32,10 @@ annualBenchmark(
 
 \item{set.const}{an optional constant of length 1. The constant in the regression}
 
-\item{start.coeff.calc}{the ending year for the coefficients estimation
+\item{start.coeff.calc}{the starting year for the coefficients estimation.
+By default set to the starting year of the annual serie.}
+
+\item{end.coeff.calc}{the ending year for the coefficients estimation
 By default set to the ending year of the annual serie.}
 
 \item{start.benchmark}{the starting year for the annual values to be taken into account

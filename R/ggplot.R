@@ -1,3 +1,4 @@
+#' @importFrom ggplot %+replace%
 ggthemets <- function() ggplot2::theme_classic() %+replace% ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                                                                            axis.title.y = ggplot2::element_blank(),
                                                                            panel.grid.major = ggplot2::element_line(colour = "#cccccc"),
@@ -33,35 +34,6 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
     theme
 }
 
-#' @export
-gginsampleplot <- function(object,type="changes") UseMethod("gginsampleplot")
-#' @export
-gginsampleplot.praislm <- function(object,type="changes") {
-  m <- model.list(object)
-  y <- model.list(object)$y
-  autocor <- rho(object)*lag(residuals(object),-1)
-  switch(type,
-         changes={
-           y_lagged <- stats::lag(y,k=-1)
-           y_changes <- (y/y_lagged-1)*100
-           predicted_diff <- if (m$include.differenciation) object$fitted.values + autocor else diff(object$fitted.values+autocor)
-           predicted_changes <- (predicted_diff/y_lagged)*100
-           series <- cbind(y_changes,predicted_changes)
-           colnames(series) <- c("Response","Predicted value")
-           ggplotts(series,variable_aes = "linetype") + labs(linetype="Percentage changes")
-         },
-         levels={
-           predicted <- if (m$include.differenciation) y_lagged+object$fitted.values + autocor else object$fitted.values+autocor
-           series <- cbind(y,predicted)
-           colnames(series) <- c("Response","Predicted value")
-           ggplotts(series,variable_aes = "linetype") + labs(linetype="Levels")
-         })
-}
-#' @export
-gginsampleplot.twoStepsBenchmark <- function(object,type="changes") {
-  gginsampleplot.praislm(object$regression,type)
-}
-
 #' @importFrom ggplot2 autoplot
 #' @export 
 autoplot.twoStepsBenchmark <- function(object) {
@@ -72,4 +44,9 @@ autoplot.twoStepsBenchmark <- function(object) {
   ggplotts(x,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype") +
     geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf) +
     labs(linetype=element_blank())
+}
+
+#' @export
+autoplot.insamplepraislm <- function(object) {
+  ggplotts(object,variable_aes = "linetype") + labs(linetype=attr(object,"type"))
 }

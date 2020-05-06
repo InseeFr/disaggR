@@ -141,3 +141,29 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3L),
   pm <- cbind(pm,"||",format(mes))
   print.default(pm, quote = FALSE, right = TRUE,...)
 }
+#' @export
+insample <- function(object,type="changes") UseMethod("insample")
+
+#' @export
+insample.praislm <- function(object,type="changes") {
+  m <- model.list(object)
+  y <- model.list(object)$y
+  y_lagged <- stats::lag(y,k=-1)
+  autocor <- rho(object)*lag(residuals(object),-1)
+  
+  switch(type,
+         changes={
+           y_changes <- (y/y_lagged-1)*100
+           predicted_diff <- if (m$include.differenciation) object$fitted.values + autocor else diff(object$fitted.values+autocor)
+           predicted_changes <- (predicted_diff/y_lagged)*100
+           series <- cbind(y_changes,predicted_changes)
+           colnames(series) <- c("Response","Predicted value")
+           structure(series,type=type,class=c("insamplepraislm",class(series)))
+         },
+         levels={
+           predicted <- if (m$include.differenciation) y_lagged+object$fitted.values + autocor else object$fitted.values+autocor
+           series <- cbind(y,predicted)
+           colnames(series) <- c("Response","Predicted value")
+           structure(series,type=type,class=c("insamplepraislm",class(series)))
+         })
+}

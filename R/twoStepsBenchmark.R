@@ -13,7 +13,9 @@
 #' @param start.coeff.calc the start for the coefficients estimation
 #' @param start.coeff.calc the end for the coefficients estimation
 #' 
-#' @return A time serie. Its domain is the same as the high frequency serie.
+#' @return
+#' 
+#' twoStepsBenchark returns an object of class "twoStepsBenchmark"
 #' 
 #' @export
 twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=numeric(),set.const=numeric(),
@@ -48,7 +50,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
 #' @param set.const an optional constant of length 1. The constant in the regression
 #' @param start.coeff.calc the starting year for the coefficients estimation.
 #' By default set to the starting year of the annual serie.
-#' @param start.coeff.calc the ending year for the coefficients estimation
+#' @param end.coeff.calc the ending year for the coefficients estimation
 #' By default set to the ending year of the annual serie.
 #' @param start.benchmark the starting year for the annual values to be taken into account
 #' By default the starting year of the annual serie.

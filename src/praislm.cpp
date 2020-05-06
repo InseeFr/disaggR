@@ -36,7 +36,7 @@ List praislm(NumericMatrix& X,NumericVector& y,bool const& includerho,bool const
     if ((X.hasAttribute("dimnames"))) X_diff.attr("dimnames") = X.attr("dimnames");
     X = X_diff;
     NumericVector y_diff=diff(y);
-    NumericVector tsp_diffy=y.attr("tsp");
+    NumericVector tsp_diffy=clone<NumericVector>(y.attr("tsp"));
     tsp_diffy[0]+=1/tsp_diffy[2];
     y_diff.attr("tsp")=tsp_diffy;
     y_diff.attr("class")=y.attr("class");
@@ -89,7 +89,10 @@ List praislm(NumericMatrix& X,NumericVector& y,bool const& includerho,bool const
   double rho=0;
   VectorXd coefficients_eigen(ncolX);
   ColPivHouseholderQR<MatrixXd> PQR = X_eigen.colPivHouseholderQr();
-  if (PQR.rank() !=ncolX) stop("The regressed series should have a perfect rank");
+  if (PQR.rank() !=ncolX) {
+    for (R_len_t i;i<X.size();i++) if (NumericVector::is_na(X[i])) stop("The high-frequency series should not have any missing value between start.coefficient.calc and end.coefficient.calc");
+    stop("The high-frequency series should have a perfect rank");
+  }
   coefficients_eigen=PQR.solve(y_eigen);
   if (includerho) {
     double drho=1;
