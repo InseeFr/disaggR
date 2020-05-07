@@ -1,35 +1,13 @@
-#' Extracting the coefficients of a prais-lm regression
-#' 
-#' Extracts the coefficients of the prais-lm regression.
-#' 
-#' @param x a prais-lm regression
-#' @return a numeric vector
-#' even if some of them are equal to zero.
-#' 
 #' @importFrom stats coef
 #' @export
 coef.praislm <- function(x) x$coefficients
 
-#' Extracting the residuals of a prais-lm regression
-#' 
-#' Extracts the residuals of a prais-lm regression.
-#' 
-#' @param x a prais-lm regression
-#' @return a numeric vector
-#' 
 #' @importFrom stats residuals
 #' @export
 residuals.praislm <- function(x) x$residuals
 
 #' @export
 rho <- function(x) UseMethod("rho")
-#' Extracting the rho of a prais-lm regression
-#' 
-#' Extracts the rho of a prais-lm regression.
-#' 
-#' @param x a prais-lm regression
-#' @return a numeric vector of length 1
-#' 
 #' @export
 rho.praislm <- function(x) x$rho
 
@@ -141,6 +119,26 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3L),
   pm <- cbind(pm,"||",format(mes))
   print.default(pm, quote = FALSE, right = TRUE,...)
 }
+
+#' Producing the in sample predictions of a prais-lm regression
+#' 
+#' The function \link{insample} returns in-sample predictions from
+#' a \link{praislm} or a \link{twoStepsBenchmark} object.
+#' 
+#' The predicted values are different from the fitted values :
+#' * they are eventually reintegrated
+#' * the autocorrelated part of the residuals is added
+#' Besides, changes are relative to the latest response value,
+#' not the latest predicted value.
+#' 
+#' @param x an object of class `praislm` or `twoStepsBenchmark`
+#' @return
+#' a named matrix time-serie of two columns, one for the
+#' response and the other for the predicted value.
+#' A `insamplepraislm` class is added to the object. Then, the functions
+#' `plot` and `autoplot` (the latter requires to load \pkg{ggplot2})
+#' can be used to produce graphics.
+#'
 #' @export
 insample <- function(object,type="changes") UseMethod("insample")
 

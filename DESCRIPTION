@@ -1,8 +1,8 @@
 Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks Inspired by the French Quarterly National Accounts Method
-Version: 0.1
-Date: 2020-01-31
+Version: 0.2
+Date: 2020-05-07
 Author: Arnaud FELDMANN
 Maintainer: Arnaud FELDMANN <arnaud.feldmann@gmail.com>
 Description: disaggR implements two-steps benchmarks inspired by French National Account method as described in Insee Methods n 126 - May 2012.
@@ -11,5 +11,6 @@ Imports: Rcpp (>= 1.0.3), ggplot2
 LinkingTo: Rcpp, RcppEigen
 Encoding: UTF-8
 RoxygenNote: 7.1.0
+Roxygen: list(markdown = TRUE)
 Suggests: 
     testthat (>= 2.1.0)

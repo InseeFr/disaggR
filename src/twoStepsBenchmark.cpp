@@ -6,8 +6,7 @@
 
 using namespace Rcpp;
 
-// [[Rcpp::export]]
-List Cpp_twoStepsBenchmark(NumericMatrix const& hfserie,NumericVector const& lfserie,
+List Cpp_twoStepsBenchmark_impl(NumericMatrix const& hfserie,NumericVector const& lfserie,
                                     bool const& includedifferenciation,bool const& includerho,
                                     NumericVector set_coefficients,
                                     NumericVector const& startcoeffcalc,NumericVector const& endcoeffcalc,
@@ -31,12 +30,12 @@ List Cpp_twoStepsBenchmark(NumericMatrix const& hfserie,NumericVector const& lfs
   NumericVector const& coefficients=regresults["coefficients"];
   
   // Application of the reg coefficients
-  NumericVector const startbenchmark=NumericVector::create(floor(tsphf[0]*tsplf[2])/tsplf[2]);
-  NumericVector const endbenchmark=NumericVector::create(ceil((tsphf[1]+1/tsphf[2])*tsplf[2])/tsplf[2]-1/tsphf[2]);
+  NumericVector const startdomain_extended=NumericVector::create(floor(tsphf[0]*tsplf[2])/tsplf[2]);
+  NumericVector const enddomain_extended=NumericVector::create(ceil((tsphf[1]+1/tsphf[2])*tsplf[2])/tsplf[2]-1/tsphf[2]);
                 // This window is the smallest that is all around the domain of the hfserie.
 
-  NumericVector lfserie_wbench=Cpp_window_NumericVector(lfserie,tseps,startbenchmark,endbenchmark);
-  NumericMatrix hfserie_wbench=Cpp_window_NumericMatrix(hfserie,tseps,startbenchmark,endbenchmark);
+  NumericVector lfserie_wbench=Cpp_window_NumericVector(lfserie,tseps,startdomain_extended,enddomain_extended);
+  NumericMatrix hfserie_wbench=Cpp_window_NumericMatrix(hfserie,tseps,startdomain_extended,enddomain_extended);
   
   R_len_t const& A=lfserie_wbench.size();
   double const& rho=regresults["rho"];
@@ -90,4 +89,23 @@ List Cpp_twoStepsBenchmark(NumericMatrix const& hfserie,NumericVector const& lfs
                         _["call"] = cl);
   res.attr("class") = StringVector::create("twoStepsBenchmark","list");
   return res;
+}
+
+// [[Rcpp::export]]
+List Cpp_twoStepsBenchmark(NumericMatrix const& hfserie,NumericVector const& lfserie,
+                           bool const& includedifferenciation,bool const& includerho,
+                           NumericVector set_coefficients,
+                           SEXP const& startcoeffcalc,SEXP const& endcoeffcalc,
+                           double const& tseps,SEXP const& cl) {
+  NumericVector startcoeffcalc_b;
+  NumericVector endcoeffcalc_b;
+  if (Rf_isNull(startcoeffcalc)) startcoeffcalc_b=NumericVector::create(NA_REAL);
+  else if (Rf_isNumeric(startcoeffcalc)) startcoeffcalc_b=startcoeffcalc;
+  else stop("The coefficients calculation window should be numeric");
+  if (Rf_isNull(endcoeffcalc)) endcoeffcalc_b=NumericVector::create(NA_REAL);
+  else if (Rf_isNumeric(endcoeffcalc)) endcoeffcalc_b=endcoeffcalc;
+  else stop("The coefficients calculation window should be numeric");
+  return Cpp_twoStepsBenchmark_impl(hfserie,lfserie,includedifferenciation,includerho,
+                                    set_coefficients,startcoeffcalc_b,endcoeffcalc_b,
+                                    tseps,cl);
 }

@@ -125,7 +125,6 @@ NumericMatrix Cpp_window_NumericMatrix(NumericMatrix const& x,double const& tsep
   return y;
 }
 
-// [[Rcpp::export]]
 SEXP Cpp_window(SEXP const& x,double const& tseps,NumericVector const& start,NumericVector const& end) {
   SEXP res;
   if (Rf_isMatrix(x)) res = Cpp_window_NumericMatrix(x,tseps,start,end);

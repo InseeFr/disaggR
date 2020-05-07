@@ -90,7 +90,7 @@ List praislm(NumericMatrix& X,NumericVector& y,bool const& includerho,bool const
   VectorXd coefficients_eigen(ncolX);
   ColPivHouseholderQR<MatrixXd> PQR = X_eigen.colPivHouseholderQr();
   if (PQR.rank() !=ncolX) {
-    for (R_len_t i;i<X.size();i++) if (NumericVector::is_na(X[i])) stop("The high-frequency series should not have any missing value between start.coefficient.calc and end.coefficient.calc");
+    for (R_len_t i=0;i<X.size();i++) if (NumericVector::is_na(X[i])) stop("The high-frequency series should not have any missing value between start.coefficient.calc and end.coefficient.calc");
     stop("The high-frequency series should have a perfect rank");
   }
   coefficients_eigen=PQR.solve(y_eigen);
