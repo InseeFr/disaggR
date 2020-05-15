@@ -2,6 +2,7 @@
 % Please edit documentation in R/twoStepsBenchmark-methods.R
 \name{prais}
 \alias{prais}
+\alias{praislm}
 \title{Extracting the regression of a twoStepsBenchmark}
 \usage{
 prais(x)

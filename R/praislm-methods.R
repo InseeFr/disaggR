@@ -77,8 +77,7 @@ summary.praislm <- function (object, ...) {
   colnames(pm) <- c("statistic","p.value")
   res <- list(call = object$call, coefficients = TAB, r.squared = r.squared, 
               adj.r.squared = adj.r.squared, sigma = sqrt(sum((object$residuals)^2)/rdf), 
-              df = object$df, residSum = summary(object$residuals, 
-                                                 digits = 5)[-4],
+              df = object$df, residSum = summary.default(object$residuals,digits = 5)[-4],
               rho=rho,pm=pm)
   class(res) <- "summary.praislm"
   res
@@ -148,18 +147,18 @@ insample.praislm <- function(object,type="changes") {
   y <- model.list(object)$y
   y_lagged <- stats::lag(y,k=-1)
   autocor <- rho(object)*lag(residuals(object),-1)
+  predicted_diff <- if (m$include.differenciation) object$fitted.values + autocor else object$fitted.values+autocor-y_lagged
   
   switch(type,
          changes={
            y_changes <- (y/y_lagged-1)*100
-           predicted_diff <- if (m$include.differenciation) object$fitted.values + autocor else diff(object$fitted.values+autocor)
-           predicted_changes <- (predicted_diff/y_lagged)*100
+          predicted_changes <- (predicted_diff/y_lagged)*100
            series <- cbind(y_changes,predicted_changes)
            colnames(series) <- c("Response","Predicted value")
            structure(series,type=type,class=c("insamplepraislm",class(series)))
          },
          levels={
-           predicted <- if (m$include.differenciation) y_lagged+object$fitted.values + autocor else object$fitted.values+autocor
+           predicted <- y_lagged+predicted_diff
            series <- cbind(y,predicted)
            colnames(series) <- c("Response","Predicted value")
            structure(series,type=type,class=c("insamplepraislm",class(series)))
