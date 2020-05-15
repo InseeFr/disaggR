@@ -15,7 +15,7 @@ plot.twoStepsBenchmark <- function (object) {
 }
 
 #' @export
-plot.insamplepraislm <- function (object) {
-  ts.plot(insample(bn),gpars=list(lty=c(1L,2L)))
+plot.insample <- function (object) {
+  ts.plot(object,gpars=list(lty=c(1L,2L)))
   return(invisible(NULL))
 }

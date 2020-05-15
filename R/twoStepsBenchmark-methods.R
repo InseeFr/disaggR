@@ -74,28 +74,3 @@ print.twoStepsBenchmark <- function(x,...) {
 summary.twoStepsBenchmark <- function(x, ...) {
   summary.praislm(prais(x),...)
 }
-
-#' @export
-insample.twoStepsBenchmark <- function(object,type="changes") {
-  m <- model.list(object)
-  y <- model.list(object)$lfserie
-  y_lagged <- stats::lag(y, k = -1)
-  f <- aggregate(window(object$fitted.values,start=tsp(y)[1]),nfrequency = frequency(y))
-  autocor <- rho(object) * lag(residuals(object), -1)
-  predicted_diff <- if (m$include.differenciation) diff(f) + autocor else f+autocor-y_lagged
-  
-  switch(type,
-         changes={
-           y_changes <- (y/y_lagged-1)*100
-           predicted_changes <- (predicted_diff/y_lagged)*100
-           series <- cbind(y_changes,predicted_changes)
-           colnames(series) <- c("Response","Predicted value")
-           structure(series,type=type,class=c("insamplepraislm",class(series)))
-         },
-         levels={
-           predicted <- y_lagged+predicted_diff
-           series <- cbind(y,predicted)
-           colnames(series) <- c("Response","Predicted value")
-           structure(series,type=type,class=c("insamplepraislm",class(series)))
-         })
-}

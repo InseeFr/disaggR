@@ -47,6 +47,6 @@ autoplot.twoStepsBenchmark <- function(object) {
 }
 
 #' @export
-autoplot.insamplepraislm <- function(object) {
+autoplot.insample <- function(object) {
   ggplotts(object,variable_aes = "linetype") + labs(linetype=attr(object,"type"))
 }
