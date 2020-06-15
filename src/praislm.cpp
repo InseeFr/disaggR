@@ -135,7 +135,7 @@ List praislm(NumericMatrix& X,NumericVector& y,bool const& includerho,bool const
   else {
     fitted_eigen = offset_eigen;
     residuals_eigen = y_eigen;
-    residuals_decor_eigen = omega_inv_sqrt((VectorXd)residuals_eigen,rho);
+    residuals_decor_eigen = y_eigen;
   }
   
   NumericVector se(coefficients.size(),NA_REAL);
