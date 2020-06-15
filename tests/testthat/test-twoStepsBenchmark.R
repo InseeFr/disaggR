@@ -7,11 +7,11 @@ test_that("regression calculates the right coeffs", {
                                     annualserie = annualts,
                                     include.differenciation = FALSE))),
                c(-4.42319837,0.07996253))
-  # expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-  #                                          annualserie = annualts,
-  #                                          include.differenciation = FALSE,
-  #                                          set.const=-4.42319837,set.coeff=0.07996253))),
-  #              c(-4.42319837,0.07996253))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           annualserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=-4.42319837,set.coeff=0.07996253))),
+               c(-4.42319837,0.07996253))
   
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
                                     annualserie = annualts,

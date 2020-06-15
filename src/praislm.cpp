@@ -88,46 +88,55 @@ List praislm(NumericMatrix& X,NumericVector& y,bool const& includerho,bool const
   int const ncolX=X_eigen.cols();
   double rho=0;
   VectorXd coefficients_eigen(ncolX);
-  ColPivHouseholderQR<MatrixXd> PQR = X_eigen.colPivHouseholderQr();
-  if (PQR.rank() !=ncolX) {
-    for (R_len_t i=0;i<X.size();i++) if (NumericVector::is_na(X[i])) stop("The high-frequency series should not have any missing value between start.coefficient.calc and end.coefficient.calc");
-    stop("The high-frequency series should have a perfect rank");
-  }
-  coefficients_eigen=PQR.solve(y_eigen);
-  if (includerho) {
-    double drho=1;
-    double rho_prec=0;
-    int const i_max = 50;
-    int i=1;
-    
-    for (;drho>0.001 && i<i_max;i++) {
-      const VectorXd residuals = y_eigen-X_eigen*coefficients_eigen;
-      const VectorXd residuals_centered = residuals-VectorXd::Constant(nrowX,residuals.mean());
-      VectorXd tailresc = residuals_centered.tail(nrowX-1);
-      VectorXd headresc = residuals_centered.head(nrowX-1);
-      rho=tailresc.transpose()*headresc;
-      rho/=pow(tailresc.transpose()*tailresc,0.5);
-      rho/=pow(headresc.transpose()*headresc,0.5);
-      drho=std::abs(rho-rho_prec);
-      rho_prec=rho;
-      
-      VectorXd y_star = omega_inv_sqrt((VectorXd)y_eigen,rho);
-      MatrixXd X_star = omega_inv_sqrt((MatrixXd)X_eigen,rho);
-      
-      ColPivHouseholderQR<MatrixXd> PQR = X_star.colPivHouseholderQr();
-      coefficients_eigen=PQR.solve(y_star);
-    }
-    if (i >= i_max) warning("Maximum iterations without convergence");
-  }
-
-  VectorXd const fitted_eigen = X_eigen*coefficients_eigen + offset_eigen;
-  VectorXd const residuals_eigen = y_eigen-fitted_eigen + offset_eigen;
-  VectorXd const residuals_decor_eigen = omega_inv_sqrt((VectorXd)residuals_eigen,rho);
-  double df_residual = nrowX-ncolX;
-  double resvar=residuals_eigen.norm() / std::sqrt(df_residual);
+  VectorXd se_eigen(ncolX);
+  VectorXd fitted_eigen(nrowX);
+  VectorXd residuals_eigen(nrowX);
+  VectorXd residuals_decor_eigen(nrowX);
+  double const df_residual = nrowX-ncolX;
   
-  VectorXd se_eigen=resvar*(PQR.colsPermutation() * PQR.matrixQR().topRows(ncolX).
-                                  triangularView<Upper>().solve(MatrixXd::Identity(ncolX, ncolX)).rowwise().norm());
+  if (ncolX != 0) {
+    ColPivHouseholderQR<MatrixXd> PQR = X_eigen.colPivHouseholderQr();
+    if (PQR.rank() !=ncolX) {
+      for (R_len_t i=0;i<X.size();i++) if (NumericVector::is_na(X[i])) stop("The high-frequency series should not have any missing value between start.coefficient.calc and end.coefficient.calc");
+      stop("The high-frequency series should have a perfect rank");
+    }
+    coefficients_eigen=PQR.solve(y_eigen);
+    if (includerho) {
+      double drho=1;
+      double rho_prec=0;
+      int const i_max = 50;
+      int i=1;
+      
+      for (;drho>0.001 && i<i_max;i++) {
+        const VectorXd residuals = y_eigen-X_eigen*coefficients_eigen;
+        const VectorXd residuals_centered = residuals-VectorXd::Constant(nrowX,residuals.mean());
+        VectorXd tailresc = residuals_centered.tail(nrowX-1);
+        VectorXd headresc = residuals_centered.head(nrowX-1);
+        rho=tailresc.transpose()*headresc;
+        rho/=pow(tailresc.transpose()*tailresc,0.5);
+        rho/=pow(headresc.transpose()*headresc,0.5);
+        drho=std::abs(rho-rho_prec);
+        rho_prec=rho;
+        
+        VectorXd y_star = omega_inv_sqrt((VectorXd)y_eigen,rho);
+        MatrixXd X_star = omega_inv_sqrt((MatrixXd)X_eigen,rho);
+        
+        ColPivHouseholderQR<MatrixXd> PQR = X_star.colPivHouseholderQr();
+        coefficients_eigen=PQR.solve(y_star);
+      }
+      if (i >= i_max) warning("Maximum iterations without convergence");
+    }
+    fitted_eigen = X_eigen*coefficients_eigen + offset_eigen;
+    residuals_eigen = y_eigen-fitted_eigen + offset_eigen;
+    residuals_decor_eigen = omega_inv_sqrt((VectorXd)residuals_eigen,rho);
+    double resvar=residuals_eigen.norm() / std::sqrt(df_residual);
+    se_eigen=resvar*(PQR.colsPermutation() * PQR.matrixQR().topRows(ncolX).triangularView<Upper>().solve(MatrixXd::Identity(ncolX, ncolX)).rowwise().norm());
+  }
+  else {
+    fitted_eigen = offset_eigen;
+    residuals_eigen = y_eigen;
+    residuals_decor_eigen = omega_inv_sqrt((VectorXd)residuals_eigen,rho);
+  }
   
   NumericVector se(coefficients.size(),NA_REAL);
   se.names()=coefficients.names();
