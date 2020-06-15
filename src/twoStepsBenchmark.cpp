@@ -12,7 +12,7 @@ List Cpp_twoStepsBenchmark_impl(NumericMatrix const& hfserie,NumericVector const
                                     NumericVector const& startcoeffcalc,NumericVector const& endcoeffcalc,
                                     double const& tseps,SEXP const& cl) {
   if (! Rf_inherits(lfserie,"ts") || ! Rf_inherits(hfserie,"ts")) stop("Not a ts object");
-  if (lfserie.hasAttribute("dim")) stop("The low frequency serie must be one-dimensional");
+  if (lfserie.hasAttribute("dim")) if (((NumericVector)lfserie.attr("dim"))[1] != 1) stop("The low frequency serie must be one-dimensional");
 
   NumericVector const& tsphf=hfserie.attr("tsp");
   NumericVector const& tsplf=lfserie.attr("tsp");

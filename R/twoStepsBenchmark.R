@@ -71,7 +71,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   cl <- match.call()
   
   if ("cl" %in% names(cl)) cl <- list(...)$cl
-  n <- if (is.matrix(hfserie)) nrow(hfserie) else length(hfserie)
+  n <- NROW(hfserie)
   
   if (!include.differenciation) constant <- ts(rep(frequency(lfserie)/frequency(hfserie),n),frequency=frequency(hfserie),start=start(hfserie))
   else constant <- ts(1:n*(frequency(lfserie)/frequency(hfserie))^2,frequency=frequency(hfserie),start=start(hfserie))

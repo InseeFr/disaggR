@@ -82,7 +82,7 @@ List praislm(NumericMatrix& X,NumericVector& y,bool const& includerho,bool const
   
   const Map<VectorXd> y_eigen(as<Map<Eigen::VectorXd> >(y_offset_excluded));
   const Map<MatrixXd> X_eigen(as<Map<Eigen::MatrixXd> >(X_offset_excluded));
-  const Map<MatrixXd> offset_eigen(as<Map<Eigen::MatrixXd> >(offset));
+  const Map<VectorXd> offset_eigen(as<Map<Eigen::VectorXd> >(offset));
 
   int const nrowX=X_eigen.rows();
   int const ncolX=X_eigen.cols();
@@ -120,8 +120,8 @@ List praislm(NumericMatrix& X,NumericVector& y,bool const& includerho,bool const
     if (i >= i_max) warning("Maximum iterations without convergence");
   }
 
-  VectorXd const fitted_eigen = X_eigen*coefficients_eigen;
-  VectorXd const residuals_eigen = y_eigen-fitted_eigen;
+  VectorXd const fitted_eigen = X_eigen*coefficients_eigen + offset_eigen;
+  VectorXd const residuals_eigen = y_eigen-fitted_eigen + offset_eigen;
   VectorXd const residuals_decor_eigen = omega_inv_sqrt((VectorXd)residuals_eigen,rho);
   double df_residual = nrowX-ncolX;
   double resvar=residuals_eigen.norm() / std::sqrt(df_residual);
