@@ -82,15 +82,18 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' 
 #' @aliases annualBenchmark
 #' @usage
-#' twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=numeric(),set.const=numeric(),
+#' twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
+#'                   set.coeff=NULL,set.const=NULL,
 #'                   start.coeff.calc=NULL,end.coeff.calc=NULL,
 #'                   start.benchmark=NULL,end.benchmark=NULL,
 #'                   start.domain=NULL,end.domain=NULL,...)
 #'
-#' annualBenchmark(hfserie,annualserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=numeric(),set.const=numeric(),
+#' annualBenchmark(hfserie,annualserie,include.differenciation=FALSE,include.rho=FALSE,
+#'                 set.coeff=NULL,set.const=NULL,
 #'                 start.coeff.calc=start(annualserie)[1],end.coeff.calc=end(annualserie)[1],
 #'                 start.benchmark=start(annualserie)[1],end.benchmark=end.coeff.calc+1,
-#'                 start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie)))
+#'                 start.domain=start(hfserie),
+#'                 end.domain=c(end.benchmark+2,frequency(hfserie)))
 #' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
@@ -126,7 +129,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' The functions `summary` can be used to obtain and print a summary of the regression used by the benchmark.
 #' The functions `plot` and `autoplot` (the latter requires to load \pkg{ggplot2}) produces graphics of the benchmarked
 #' serie and the bending serie.
-#' The function \link{insample} produces in-sample predictions with the inner regression.
+#' The function \link{in_sample} produces in-sample predictions with the inner regression.
 #' The generic accessor functions `as.ts`, `prais`, `coefficients`, `residuals`, `fitted.values`, `model.list`, `se`, `rho`
 #' extract various useful features of the returned value.
 #' 

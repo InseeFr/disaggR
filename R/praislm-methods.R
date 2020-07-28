@@ -1,10 +1,10 @@
 #' @importFrom stats coef
 #' @export
-coef.praislm <- function(x) x$coefficients
+coef.praislm <- function(object, ...) object$coefficients
 
 #' @importFrom stats residuals
 #' @export
-residuals.praislm <- function(x) x$residuals
+residuals.praislm <- function(object, ...) object$residuals
 
 #' @export
 rho <- function(x) UseMethod("rho")
@@ -21,7 +21,7 @@ se.praislm <- function(x) x$se
 
 #' @importFrom stats vcov
 #' @export
-vcov.praislm <- function(object) {
+vcov.praislm <- function(object, ...) {
   resc <- residuals(object)-mean(residuals(object))
   n <- length(resc)
   rho <- rho(object)
@@ -43,7 +43,7 @@ vcov.praislm <- function(object) {
 }
 
 #' @export
-print.praislm <- function(x, digits = max(3L, getOption("digits") - 3L)) {
+print.praislm <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
   cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
       "\n\n", sep = "")
   cat("Coefficients:\n")
@@ -54,7 +54,7 @@ print.praislm <- function(x, digits = max(3L, getOption("digits") - 3L)) {
 
 #' @importFrom stats fitted
 #' @export
-fitted.praislm <- function(x) x$fitted.values
+fitted.praislm <- function(object, ...) object$fitted.values
 
 #' @export
 summary.praislm <- function (object, ...) {

@@ -6,16 +6,15 @@ tsExpand <- function(x,nfrequency){
 
 #' @importFrom graphics plot
 #' @export
-plot.twoStepsBenchmark <- function (object) {
-  model <- model.list(object)
-  x <- as.ts(object)
-  ts.plot(x)
+plot.twoStepsBenchmark <- function(x, ...) {
+  model <- model.list(x)
+  ts.plot(as.ts(x))
   points(tsExpand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
   return(invisible(NULL))
 }
 
 #' @export
-plot.insample <- function (object) {
-  ts.plot(object,gpars=list(lty=c(1L,2L)))
+plot.insample <- function(x, ...) {
+  ts.plot(x,gpars=list(lty=c(1L,2L)))
   return(invisible(NULL))
 }

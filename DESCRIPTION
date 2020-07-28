@@ -6,6 +6,8 @@ Date: 2020-01-31
 Author: Arnaud FELDMANN
 Maintainer: Arnaud FELDMANN <arnaud.feldmann@gmail.com>
 Description: disaggR implements two-steps benchmarks inspired by French National Account method as described in Insee Methods n 126 - May 2012.
+Imports:
+    ggplot2
 License: GPL (>= 2)
 Encoding: UTF-8
 RoxygenNote: 7.1.0

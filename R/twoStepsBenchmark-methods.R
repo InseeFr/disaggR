@@ -33,34 +33,30 @@ prais <- function(x) UseMethod("prais")
 #' @export
 prais <- function(x) x$regression
 
+#' @importFrom stats as.ts
 #' @export
-as.ts.twoStepsBenchmark <- function(x) x$benchmarked.serie
+as.ts.twoStepsBenchmark <- function(x, ...) x$benchmarked.serie
 
 #' @importFrom stats coef
 #' @export
-coef.twoStepsBenchmark <- function(x) coef(prais(x))
+coef.twoStepsBenchmark <- function(object, ...) coef(prais(object))
 
 #' @importFrom stats residuals
 #' @export
-residuals.twoStepsBenchmark <- function(x) residuals(prais(x))
+residuals.twoStepsBenchmark <- function(object, ...) residuals(prais(object))
 
 #' @importFrom stats vcov
 #' @export
-vcov.twoStepsBenchmark <- function(x) vcov(prais(x))
+vcov.twoStepsBenchmark <- function(object, ...) vcov(prais(object))
 
 #' @importFrom stats fitted
 #' @export
-fitted.twoStepsBenchmark <- function(x) x$fitted.values
+fitted.twoStepsBenchmark <- function(object, ...) object$fitted.values
 
 #' @export
 model.list <- function(x) UseMethod("model.list")
 #' @export
 model.list.twoStepsBenchmark <- function(x) x$model
-
-#' @export
-cale <- function(x) UseMethod("cale")
-#' @export
-cale.twoStepsBenchmark <- function(x) x$cale
 
 #' @export
 se.twoStepsBenchmark <- function(x) se(prais(x))
@@ -71,11 +67,11 @@ rho.twoStepsBenchmark <- function(x) rho(prais(x))
 #' @export
 print.twoStepsBenchmark <- function(x,...) {
   print(prais(x),...)
-  stats:::print.ts(as.ts(x))
+  print(as.ts(x))
   invisible(x)
 }
 
 #' @export
-summary.twoStepsBenchmark <- function(x, ...) {
-  summary.praislm(prais(x),...)
+summary.twoStepsBenchmark <- function(object, ...) {
+  summary.praislm(prais(object),...)
 }
