@@ -14,7 +14,7 @@ NumericVector Cpp_bflSmooth(NumericVector const& lfserie,unsigned int const& nfr
   if (nfrequency==0) stop("The new frequency must be strictly positive");
   if (nfrequency==oldfreq) return lfserie;
   if (nfrequency%oldfreq!=0) stop("The new frequency must be a multiple of the lower one");
-  if (lfserie.hasAttribute("dim")) stop("The low frequency serie must me one-dimensional");
+  if (lfserie.hasAttribute("dim")) if (((NumericVector)lfserie.attr("dim"))[1] != 1) stop("The low frequency serie must be one-dimensional");
   
   unsigned int const ratio = nfrequency/oldfreq;
   
