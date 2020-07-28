@@ -12,7 +12,6 @@ test_that("regression calculates the right coeffs", {
                                            include.differenciation = FALSE,
                                            set.const=-4.42319837,set.coeff=0.07996253))),
                c(-4.42319837,0.07996253))
-  
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
                                     annualserie = annualts,
                                     include.differenciation = FALSE,
@@ -133,15 +132,15 @@ test_that("Error if any missing value between the coefficient calc",{
   set.seed(5)
   mensualts <- ts(diffinv(rnorm(30,1,1)),start=c(2010,3),freq=12)
   annualts <- ts(diffinv(rnorm(2,12,1)),start=2011,freq=1)
-  expect_error(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE),regexp = "missing value between start.coefficient.calc")
+  expect_error(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE))
   mensualts <- ts(diffinv(rnorm(30,1,1)),start=c(2010,3),freq=12)
   annualts <- ts(diffinv(rnorm(2,12,1)),start=2010,freq=1)
-  expect_error(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE),regexp = "missing value between start.coefficient.calc")
+  expect_error(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE))
   mensualts <- ts(diffinv(rnorm(36,1,1)),start=c(2010,1),freq=12)
   annualts <- ts(diffinv(rnorm(2,12,1)),start=2010,freq=1)
   expect_s3_class(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE),"twoStepsBenchmark")
   mensualts[10] <- NA
-  expect_error(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE),regexp = "missing value between start.coefficient.calc")
+  expect_error(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE))
 })
 test_that("twoStepsBenchmark works",
           {
@@ -218,8 +217,8 @@ test_that("The classes in the bn object are the good ones",{
   expect_true(is.logical(bn$model.list$include.rho))
   expect_true(is.logical(bn$model.list$include.differenciation))
   expect_true(is.numeric(bn$model.list$set.coefficients))
-  expect_true(is.numeric(bn$model.list$start.coeff.calc))
-  expect_true(is.numeric(bn$model.list$end.coeff.calc))
+  expect_true(is.null(bn$model.list$start.coeff.calc))
+  expect_true(is.null(bn$model.list$end.coeff.calc))
   
   expect_true(is.numeric(bn$regression$coefficients))
   expect_true(is.ts(bn$regression$residuals))

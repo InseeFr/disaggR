@@ -16,7 +16,7 @@ test_that("Only accepts one dimensional time-series", {
 
 test_that("Smoothing works", {
   expect_identical(bflSmooth(ts(1:10,start=c(2010,2),freq=4), 4),
-                   ts(as.double(1:10),start=c(2010,2),freq=4))
+                   ts(1:10,start=c(2010,2),freq=4))
   expect_identical(bflSmooth(ts(rep(3,12),start=c(2010,2),freq=4), 12),
                    ts(as.double(rep(1,36)),start=c(2010,4),freq=12))
   expect_equal(bflSmooth(ts((1:4)^2,freq=1,start=1990), 4),
@@ -30,3 +30,4 @@ test_that("Smoothing works", {
                     -0.20086608,-0.09733435,0.01878493,
                     0.14749174,0.23329629,0.27619856),start=c(2010,7),freq=12))
 })
+

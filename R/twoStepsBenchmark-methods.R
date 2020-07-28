@@ -58,6 +58,11 @@ model.list <- function(x) UseMethod("model.list")
 model.list.twoStepsBenchmark <- function(x) x$model
 
 #' @export
+cale <- function(x) UseMethod("cale")
+#' @export
+cale.twoStepsBenchmark <- function(x) x$cale
+
+#' @export
 se.twoStepsBenchmark <- function(x) se(prais(x))
 
 #' @export

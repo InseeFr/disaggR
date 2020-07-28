@@ -75,21 +75,22 @@ summary.praislm <- function (object, ...) {
   pm <- rbind(residuals=do.call(c,Box.test(object$residuals, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]),
               if (rho != 0) residuals.decorrelated=do.call(c,Box.test(object$residuals.decorrelated, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]))
   colnames(pm) <- c("statistic","p.value")
+  
   res <- list(call = object$call, coefficients = TAB, r.squared = r.squared, 
               adj.r.squared = adj.r.squared, sigma = sqrt(sum((object$residuals)^2)/rdf), 
-              df = object$df, residSum = summary.default(object$residuals,digits = 5)[-4],
+              df = object$df, residuals = object$residuals,
               rho=rho,pm=pm)
   class(res) <- "summary.praislm"
   res
 }
 
 #' @export
-print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3L),
+print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
                                    signif.stars = getOption("show.signif.stars"),...) {
   cat("\nCall:\n")
   print(x$call)
   cat("\nResiduals:\n")
-  print(x$residSum,digits = digits)
+  print(summary(x$residuals, digits = digits)[-4])
   cat("\n")
   printCoefmat(x$coefficients, P.values = TRUE, has.Pvalue = TRUE,digits=digits,signif.stars=signif.stars)
   cat("\nResidual standard error: ", formatC(x$sigma, digits = digits), 

@@ -7,13 +7,13 @@
 in_sample(object, type = "changes")
 }
 \arguments{
-\item{x}{an object of class \code{praislm} or \code{twoStepsBenchmark}}
+\item{x}{an object of class `praislm` or `twoStepsBenchmark`}
 }
 \value{
 a named matrix time-serie of two columns, one for the
 response and the other for the predicted value.
-A \code{insample} class is added to the object. Then, the functions
-\code{plot} and \code{autoplot} (the latter requires to load \pkg{ggplot2})
+A `insample` class is added to the object. Then, the functions
+`plot` and `autoplot` (the latter requires to load \pkg{ggplot2})
 can be used to produce graphics.
 }
 \description{
@@ -22,10 +22,8 @@ a \link{praislm} or a \link{twoStepsBenchmark} object.
 }
 \details{
 The predicted values are different from the fitted values :
-\itemize{
-\item they are eventually reintegrated
-\item the autocorrelated part of the residuals is added
+* they are eventually reintegrated
+* the autocorrelated part of the residuals is added
 Besides, changes are relative to the latest response value,
 not the latest predicted value.
-}
 }
