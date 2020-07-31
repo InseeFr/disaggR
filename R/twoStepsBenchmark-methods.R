@@ -53,16 +53,30 @@ vcov.twoStepsBenchmark <- function(object, ...) vcov(prais(object))
 #' @export
 fitted.twoStepsBenchmark <- function(object, ...) object$fitted.values
 
+#' Extracting all the arguments submitted to generate an object
+#' 
+#' The function `model.list` returns the arguments submitted
+#' to the function \link{praislm} or a \link{twoStepsBenchmark}.
+#' 
+#' These are returned as they are after evaluation, model.list doesn't
+#' return a call.
+#'   
+#' @usage
+#' model.list(object)
+#' @param object a praislm or twoStepsBenchmark object.
+#' @return
+#' a list containing every evaluated arguments
+#'
 #' @export
-model.list <- function(x) UseMethod("model.list")
+model.list <- function(object) UseMethod("model.list")
 #' @export
-model.list.twoStepsBenchmark <- function(x) x$model
+model.list.twoStepsBenchmark <- function(object) object$model.list
 
 #' @export
-se.twoStepsBenchmark <- function(x) se(prais(x))
+se.twoStepsBenchmark <- function(object) se(prais(object))
 
 #' @export
-rho.twoStepsBenchmark <- function(x) rho(prais(x))
+rho.twoStepsBenchmark <- function(object) rho(prais(object))
 
 #' @export
 print.twoStepsBenchmark <- function(x,...) {

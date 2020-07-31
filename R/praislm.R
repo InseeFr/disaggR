@@ -9,7 +9,7 @@ omega_inv_sqrt <- function(x,rho) {
     res <- rbind(sqrt(1-rho^2)*x[1,],
                  x[-1,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
   }
-  res <- ts(res,start=start(x),freq=frequency(x))
+  res <- ts(res,start=start(x),frequency=frequency(x))
   return(res)
 }
 

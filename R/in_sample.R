@@ -1,6 +1,6 @@
 #' Producing the in sample predictions of a prais-lm regression
 #' 
-#' The function \link{in_sample} returns in-sample predictions from
+#' The function `in_sample` returns in-sample predictions from
 #' a \link{praislm} or a \link{twoStepsBenchmark} object.
 #' 
 #' The predicted values are different from the fitted values :
@@ -9,7 +9,9 @@
 #' Besides, changes are relative to the latest response value,
 #' not the latest predicted value.
 #' 
-#' @param x an object of class `praislm` or `twoStepsBenchmark`
+#' @param object an object of class `praislm` or `twoStepsBenchmark`
+#' @param type "changes" or "levels". The results are either returned
+#' in changes or in levels.
 #' @return
 #' a named matrix time-serie of two columns, one for the
 #' response and the other for the predicted value.
@@ -41,8 +43,11 @@ in_sample_impl <- function(y,y_lagged,predicted_diff,type) {
 #' @export
 in_sample.praislm <- function(object,type="changes") {
   autocor <- rho(object)*lag(residuals(object),-1)
-  in_sample_impl(y = model.list(object)$y,
-                 y_lagged = stats::lag(y,k=-1),
+  m <- model.list(object)
+  y <- m$y
+  y_lagged <- stats::lag(y,k=-1)
+  in_sample_impl(y = y,
+                 y_lagged = y_lagged,
                  predicted_diff =  if (m$include.differenciation) fitted(object) + autocor else fitted(object)+autocor-y_lagged,
                  type = type
  )
@@ -51,13 +56,13 @@ in_sample.praislm <- function(object,type="changes") {
 #' @export
 in_sample.twoStepsBenchmark <- function(object,type="changes") {
   m <- model.list(object)
-  y <- model.list(object)$lfserie
+  y <- m$lfserie
   y_lagged <- stats::lag(y, k = -1)
   f <- aggregate(window(object$fitted.values,start=tsp(y)[1]),nfrequency = frequency(y))
   autocor <- rho(object) * lag(residuals(object), -1)
   
-  in_sample_impl(y = model.list(object)$lfserie,
-                 y_lagged = stats::lag(y,k=-1),
+  in_sample_impl(y = y,
+                 y_lagged = y_lagged,
                  predicted_diff =  if (m$include.differenciation) diff(f) + autocor else f+autocor-y_lagged,
                  type = type
   )

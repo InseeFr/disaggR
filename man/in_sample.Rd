@@ -7,7 +7,10 @@
 in_sample(object, type = "changes")
 }
 \arguments{
-\item{x}{an object of class `praislm` or `twoStepsBenchmark`}
+\item{object}{an object of class `praislm` or `twoStepsBenchmark`}
+
+\item{type}{"changes" or "levels". The results are either returned
+in changes or in levels.}
 }
 \value{
 a named matrix time-serie of two columns, one for the
@@ -17,7 +20,7 @@ A `insample` class is added to the object. Then, the functions
 can be used to produce graphics.
 }
 \description{
-The function \link{in_sample} returns in-sample predictions from
+The function `in_sample` returns in-sample predictions from
 a \link{praislm} or a \link{twoStepsBenchmark} object.
 }
 \details{

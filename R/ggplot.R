@@ -1,8 +1,8 @@
 #' @importFrom ggplot2 %+replace%
-ggthemets <- function() ggplot2::theme_classic() %+replace% ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                                                                           axis.title.y = ggplot2::element_blank(),
-                                                                           panel.grid.major = ggplot2::element_line(colour = "#cccccc"),
-                                                                           legend.position = "bottom")
+ggthemets <- function() ggplot2::theme_classic() %+replace%
+  ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                 axis.title.y = ggplot2::element_blank(),
+                 panel.grid.major = ggplot2::element_line(colour = "#cccccc"),                                                                     legend.position = "bottom")
 
 dftsforggplot <- function(object,series_names=NULL) {
   if (is.null(series_names)) series_names <- colnames(object)
@@ -42,11 +42,13 @@ autoplot.twoStepsBenchmark <- function(object) {
   lfdf <- dftsforggplot(tsExpand(model$lfserie,nfrequency = frequency(model$hfserie)),series_names = "Low-Frequency serie")
   lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie),each=frequency(model$hfserie)/frequency(model$lfserie))
   ggplotts(x,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype") +
-    geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf) +
-    labs(linetype=element_blank())
+    ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf) +
+    ggplot2::labs(linetype=ggplot2::element_blank())
 }
 
+#' @importFrom ggplot2 autoplot
 #' @export
 autoplot.insample <- function(object) {
-  ggplotts(object,variable_aes = "linetype") + labs(linetype=attr(object,"type"))
+  ggplotts(object,variable_aes = "linetype") +
+    ggplot2::labs(linetype=attr(object,"type"))
 }

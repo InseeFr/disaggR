@@ -7,3 +7,5 @@
 #' @import stats
 #' @keywords internal
 "_PACKAGE"
+
+globalVariables(c("Date","Values","Variables","Low-Frequency Periods"))

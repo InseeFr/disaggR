@@ -1,3 +1,4 @@
+#' @importFrom utils head
 twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    includedifferenciation,includerho,
                                    set_coefficients,startcoeffcalc,endcoeffcalc,
@@ -60,7 +61,6 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   res <- list(benchmarked.serie = window(rests,start=tsp(hfserie)[1],end=tsp(hfserie)[2],extend = TRUE),
               fitted.values = window(hfserie_fitted,end=tsp(hfserie)[2],extend = TRUE),
               regression = regresults,
-              cale = hfresiduals,
               model.list = list(hfserie = hfserie,
                                 lfserie =lfserie,
                                 include.rho = includerho,
@@ -88,10 +88,10 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'                   start.benchmark=NULL,end.benchmark=NULL,
 #'                   start.domain=NULL,end.domain=NULL,...)
 #'
-#' annualBenchmark(hfserie,annualserie,include.differenciation=FALSE,include.rho=FALSE,
+#' annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
 #'                 set.coeff=NULL,set.const=NULL,
-#'                 start.coeff.calc=start(annualserie)[1],end.coeff.calc=end(annualserie)[1],
-#'                 start.benchmark=start(annualserie)[1],end.benchmark=end.coeff.calc+1,
+#'                 start.coeff.calc=start(lfserie)[1],end.coeff.calc=end(lfserie)[1],
+#'                 start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
 #'                 start.domain=start(hfserie),
 #'                 end.domain=c(end.benchmark+2,frequency(hfserie)))
 #' 
@@ -122,7 +122,8 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that around the high-frequency
 #' domain window.
 #' Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.
-
+#' @param \dots if the dots contains a cl item, it overwrites the value
+#' of the returned call. It allows to build wrappers.
 #' @return
 #' twoStepsBenchark returns an object of class "`twoStepsBenchmark`".
 #' 
@@ -172,13 +173,13 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
 }
 
 #' @export
-annualBenchmark <- function(hfserie,annualserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
-                            start.coeff.calc=start(annualserie)[1],end.coeff.calc=end(annualserie)[1],
-                            start.benchmark=start(annualserie)[1],end.benchmark=end.coeff.calc+1,
+annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
+                            start.coeff.calc=start(lfserie)[1],end.coeff.calc=end(lfserie)[1],
+                            start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
                             start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
-  if (frequency(annualserie) !=1) stop("Not an annual time-serie")
+  if (frequency(lfserie) !=1) stop("Not an annual time-serie")
   if (length(start.benchmark) !=1 || length(end.benchmark) != 1) stop("The start and end of the benchmark must be a single value year")
-  twoStepsBenchmark(hfserie,annualserie,
+  twoStepsBenchmark(hfserie,lfserie,
                     include.differenciation,include.rho,
                     set.coeff,set.const,
                     start.coeff.calc,end.coeff.calc,

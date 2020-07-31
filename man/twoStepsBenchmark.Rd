@@ -11,11 +11,12 @@ twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALS
                   start.benchmark=NULL,end.benchmark=NULL,
                   start.domain=NULL,end.domain=NULL,...)
 
-annualBenchmark(hfserie,annualserie,include.differenciation=FALSE,include.rho=FALSE,
+annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
                 set.coeff=NULL,set.const=NULL,
-                start.coeff.calc=start(annualserie)[1],end.coeff.calc=end(annualserie)[1],
-                start.benchmark=start(annualserie)[1],end.benchmark=end.coeff.calc+1,
-                start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie)))
+                start.coeff.calc=start(lfserie)[1],end.coeff.calc=end(lfserie)[1],
+                start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
+                start.domain=start(hfserie),
+                end.domain=c(end.benchmark+2,frequency(hfserie)))
 }
 \arguments{
 \item{hfserie}{the bended time-serie. It can be a matrix time-serie.}
@@ -56,6 +57,9 @@ Should be a double or a numeric of length 2, like a window for `hfserie`. If NUL
 The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that around the high-frequency
 domain window.
 Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.}
+
+\item{\dots}{if the dots contains a cl item, it overwrites the value
+of the returned call. It allows to build wrappers.}
 }
 \value{
 twoStepsBenchark returns an object of class "`twoStepsBenchmark`".

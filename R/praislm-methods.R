@@ -6,18 +6,39 @@ coef.praislm <- function(object, ...) object$coefficients
 #' @export
 residuals.praislm <- function(object, ...) object$residuals
 
+#' Extract autocorrelation parameter
+#' 
+#' The function `rho` returns the autocorrelation parameter
+#' from either a \link{praislm} or a \link{twoStepsBenchmark} object.
+#' If `include.rho` is `FALSE`, rho returns zero.
+#' @usage
+#' rho(object)
+#' @param object a praislm or twoStepsBenchmark object.
+#' @return
+#' a double of length 1.
+#'
 #' @export
-rho <- function(x) UseMethod("rho")
+rho <- function(object) UseMethod("rho")
 #' @export
-rho.praislm <- function(x) x$rho
+rho.praislm <- function(object) object$rho
 
 #' @export
-model.list.praislm <- function(x) x$model.list
+model.list.praislm <- function(object) object$model.list
 
+#' Extract the standard error
+#' 
+#' The function `se` returns the standard error the coefficients
+#' from either a \link{praislm} or a \link{twoStepsBenchmark} object.
+#' @usage
+#' se(object)
+#' @param object a praislm or twoStepsBenchmark object.
+#' @return
+#' a double, that is named the same way that the coefficients are.
+#' The coefficients set by the user return `NA` as for their standard error.
 #' @export
-se <- function(x) UseMethod("se")
+se <- function(object) UseMethod("se")
 #' @export
-se.praislm <- function(x) x$se
+se.praislm <- function(object) object$se
 
 #' @importFrom stats vcov
 #' @export

@@ -4,126 +4,126 @@ test_that("regression calculates the right coeffs", {
   annualts <- ts(diffinv(rnorm(9,12,1)),start=2010,freq=1)
   
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = FALSE))),
                c(-4.42319837,0.07996253))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                           annualserie = annualts,
+                                           lfserie = annualts,
                                            include.differenciation = FALSE,
                                            set.const=-4.42319837,set.coeff=0.07996253))),
                c(-4.42319837,0.07996253))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = FALSE,
                                     set.const=-3))),
                c(-3,0.07851836))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = FALSE,
                                     set.const=10))),
                c(10,0.06532678))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = FALSE,
                                     set.coeff=-3))),
                c(2264.80095,-3))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = FALSE,
                                     set.coeff=10))),
                c(-7313.2097,10))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = FALSE,
                                     set.const=10))),
                c(10.00000000,0.06532678))
   
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE))),
                c(13.26837045,-0.008573728))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.const=-3))),
                c(-3,0.09641138))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.const=10))),
                c(10,0.01251813))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.coeff=-3))),
                c(458.89076,-3))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.coeff=10))),
                c(-1477.6741,10))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.const=10))),
                c(10.00000000,0.01251813))
 
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE))),
                c(13.26837045,-0.008573728))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.const=-3))),
                c(-3,0.09641138))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.const=10))),
                c(10,0.01251813))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.coeff=-3))),
                c(458.89076,-3))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.coeff=10))),
                c(-1477.6741,10))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.differenciation = TRUE,
                                     set.const=10))),
                c(10.00000000,0.01251813))
   
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.rho = TRUE))),
                c(-4.39884838,0.07989426))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.rho = TRUE,
                                     set.const=-3))),
                c(-3,0.07853607))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.rho = TRUE,
                                     set.const=10))),
                c(10,0.06933154))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.rho = TRUE,
                                     set.coeff=-3))),
                c(2259.1761334,-3))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.rho = TRUE,
                                     set.coeff=10))),
                c(-7296.1085794,10))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                    annualserie = annualts,
+                                    lfserie = annualts,
                                     include.rho = TRUE,
                                     set.const=10))),
                c(10,0.06933154))
@@ -171,7 +171,7 @@ test_that("standard errors are the same that the vcov diag",{
   annualts <- ts(diffinv(rnorm(9,12,1)),start=2010,freq=1)
   
   bn <- annualBenchmark(hfserie = mensualts,
-                        annualserie = annualts,
+                        lfserie = annualts,
                         include.differenciation = FALSE)
   stderror <- se(bn)
   stderror <- stderror[!is.na(stderror)]
@@ -181,14 +181,14 @@ test_that("standard errors are the same that the vcov diag",{
   mensualts <- ts(diffinv(rnorm(240,1,1)),start=2010,freq=12)
   annualts <- ts(diffinv(rnorm(18,12,1)),start=2010,freq=1)
   bn <- annualBenchmark(hfserie = mensualts,
-                        annualserie = annualts,
+                        lfserie = annualts,
                         include.differenciation = TRUE)
   stderror <- se(bn)
   stderror <- stderror[!is.na(stderror)]
   expect_equal(unname(stderror),unname(sqrt(abs(diag(vcov(bn))))))
   
   bn <- annualBenchmark(hfserie = mensualts,
-                        annualserie = annualts,
+                        lfserie = annualts,
                         include.differenciation = TRUE,set.coeff = 3)
   stderror <- se(bn)
   stderror <- stderror[!is.na(stderror)]
