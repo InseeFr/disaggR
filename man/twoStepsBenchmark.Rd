@@ -23,18 +23,21 @@ annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
 
 \item{lfserie}{a time-serie whose frequency divides the frequency of `hfserie`.}
 
-\item{include.differenciation}{a boolean of length 1. If `TRUE`, lfserie and hfserie
-are differenced before the estimation of the regression.}
+\item{include.differenciation}{a boolean of length 1. If `TRUE`, `lfserie` and
+`hfserie` are differenced before the estimation of the regression.}
 
 \item{include.rho}{a boolean of length 1. If `TRUE`, the regression includes an autocorrelation
-parameter for the residuals. The procedure applied is the Prais-Winsten estimation.}
+parameter for the residuals. The applied procedure is a Prais-Winsten estimation.}
 
-\item{set.coeff}{an optional double, that sets the regression coefficient instead of evaluating it.
-If hfserie is a matrix, each column initializes a coefficient with the same name as the column name.
-set.coeff has then to be a named double, which will optionaly set some determined coefficients instead of
+\item{set.coeff}{an optional double, that allows the user to set the regression coefficients instead
+of evaluating them.
+If `hfserie` is a matrix, each column initializes a coefficient with the same name as the column name.
+Hence, `set.coeff` has to be a named double, which will optionally set some coefficients instead of
 evaluating them.}
 
-\item{set.const}{an optional double of length 1, that sets the regression constant.}
+\item{set.const}{an optional double of length 1, that sets the regression constant.
+The constant is actually an automatically added column to `hfserie`. Using `set.constant=3`
+is equivalent to using `set.coeff=c(constant=3)`.}
 
 \item{start.coeff.calc}{an optional start for the estimation of the coefficients of the regression.
 Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.}
@@ -58,8 +61,8 @@ The low-frequency residuals will be extrapolated until they contain the smallest
 domain window.
 Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.}
 
-\item{\dots}{if the dots contains a cl item, it overwrites the value
-of the returned call. It allows to build wrappers.}
+\item{\dots}{if the dots contain a cl item, its value overwrites the value
+of the returned call. This feature allows to build wrappers.}
 }
 \value{
 twoStepsBenchark returns an object of class "`twoStepsBenchmark`".
@@ -83,8 +86,10 @@ An object of class "`twoStepsBenchmark`" is a list containing the following comp
   \item{call}{the matched call (either of twoStepsBenchmark or annualBenchmark)}
 }
 \description{
-twoStepsBenchmark bends a time-serie with a time serie of a lower frequency.
-The procedure is a Prais-Winsten regression, then an additive Denton.
+twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
+The procedure involved is a Prais-Winsten regression, then an additive
+Denton benchmark.
 annualBenchmark is a wrapper of the main function, that applies more specifically
-to annual series, and changes the default window parameters.
+to annual series, and changes the default window parameters to the ones
+that are commonly used by quarterly national accounts.
 }

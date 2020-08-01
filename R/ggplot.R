@@ -38,9 +38,10 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
 #' @export 
 autoplot.twoStepsBenchmark <- function(object) {
   model <- model.list(object)
-  x <- as.ts(object)
+  x <- na.omit(as.ts(object))
   lfdf <- dftsforggplot(tsExpand(model$lfserie,nfrequency = frequency(model$hfserie)),series_names = "Low-Frequency serie")
   lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie),each=frequency(model$hfserie)/frequency(model$lfserie))
+  lfdf <- lfdf[!is.na(lfdf$Values),]
   ggplotts(x,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype") +
     ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf) +
     ggplot2::labs(linetype=ggplot2::element_blank())

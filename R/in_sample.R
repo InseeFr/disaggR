@@ -67,3 +67,13 @@ in_sample.twoStepsBenchmark <- function(object,type="changes") {
                  type = type
   )
 }
+
+#' @export
+print.insample <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
+  cat("In-sample predictions (", attr(x,"type"),"):\n", sep = "")
+  attr(x,"type") <- NULL
+  print(.preformat.ts(x, any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
+        quote = FALSE, right = TRUE,digits = digits,
+        ...)
+  invisible(x)
+}
