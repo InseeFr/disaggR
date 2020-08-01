@@ -28,6 +28,8 @@
 #'   transformed by rho in a least square model.}
 #'   \item{fitted.values.decorrelated}{the fitted values of the model after having been
 #'   transformed by rho in a least square model.}
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction); prais(benchmark)
 #' @export
 prais <- function(x) UseMethod("prais")
 #' @export
@@ -66,6 +68,8 @@ fitted.twoStepsBenchmark <- function(object, ...) object$fitted.values
 #' @param object a praislm or twoStepsBenchmark object.
 #' @return
 #' a list containing every evaluated arguments
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction); model.list(benchmark)
 #'
 #' @export
 model.list <- function(object) UseMethod("model.list")

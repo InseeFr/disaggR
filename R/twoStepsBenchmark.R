@@ -149,6 +149,24 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'   benchmark. It can be extracted with the function \link{prais}}
 #'   \item{model.list}{a list containing all the arguments submitted to the function.}
 #'   \item{call}{the matched call (either of twoStepsBenchmark or annualBenchmark)}
+#' @examples
+#' 
+#' ## How to use annualBenchmark or twoStepsBenchark
+#' 
+#' benchmark <- annualBenchmark(hfserie = turnover,
+#'                             lfserie = construction,
+#'                             include.differenciation = TRUE)
+#' as.ts(benchmark)
+#' coef(benchmark)
+#' summary(benchmark)
+#' library(ggplot2)
+#' autoplot(in_sample(benchmark))
+#' 
+#' benchmark2 <- annualBenchmark(hfserie = turnover,
+#'                               lfserie = construction,
+#'                               include.differenciation = TRUE,
+#'                               set.coeff = 0.1)
+#' coef(benchmark2)
 #'
 #' @export
 twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,

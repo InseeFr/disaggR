@@ -93,3 +93,23 @@ annualBenchmark is a wrapper of the main function, that applies more specificall
 to annual series, and changes the default window parameters to the ones
 that are commonly used by quarterly national accounts.
 }
+\examples{
+
+## How to use annualBenchmark or twoStepsBenchark
+
+benchmark <- annualBenchmark(hfserie = turnover,
+                            lfserie = construction,
+                            include.differenciation = TRUE)
+as.ts(benchmark)
+coef(benchmark)
+summary(benchmark)
+library(ggplot2)
+autoplot(in_sample(benchmark))
+
+benchmark2 <- annualBenchmark(hfserie = turnover,
+                              lfserie = construction,
+                              include.differenciation = TRUE,
+                              set.coeff = 0.1)
+coef(benchmark2)
+
+}

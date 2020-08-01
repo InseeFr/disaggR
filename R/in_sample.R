@@ -18,7 +18,9 @@
 #' A `insample` class is added to the object. Then, the functions
 #' `plot` and `autoplot` (the latter requires to load \pkg{ggplot2})
 #' can be used to produce graphics.
-#'
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' in_sample(benchmark)
 #' @export
 in_sample <- function(object,type="changes") UseMethod("in_sample")
 

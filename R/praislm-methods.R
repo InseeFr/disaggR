@@ -16,6 +16,8 @@ residuals.praislm <- function(object, ...) object$residuals
 #' @param object a praislm or twoStepsBenchmark object.
 #' @return
 #' a double of length 1.
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE); rho(benchmark)
 #'
 #' @export
 rho <- function(object) UseMethod("rho")
@@ -111,6 +113,11 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
                                    signif.stars = getOption("show.signif.stars"),...) {
   cat("\nCall:\n")
   print(x$call)
+  
+  if (x$rho != 0) {
+    cat("\nAutocorrelation parameter (rho): ", formatC(x$rho,digits=digits),"\n")
+  }
+  
   cat("\nResiduals:\n")
   print(summary(x$residuals, digits = digits)[-4])
   cat("\n")
