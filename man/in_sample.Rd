@@ -30,3 +30,7 @@ The predicted values are different from the fitted values :
 Besides, changes are relative to the latest response value,
 not the latest predicted value.
 }
+\examples{
+benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+in_sample(benchmark)
+}

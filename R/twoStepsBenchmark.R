@@ -162,6 +162,8 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' library(ggplot2)
 #' autoplot(in_sample(benchmark))
 #' 
+#' ## How to manually set the coefficient
+#' 
 #' benchmark2 <- annualBenchmark(hfserie = turnover,
 #'                               lfserie = construction,
 #'                               include.differenciation = TRUE,

@@ -18,6 +18,6 @@ from either a \link{praislm} or a \link{twoStepsBenchmark} object.
 If `include.rho` is `FALSE`, `rho` returns zero.
 }
 \examples{
-rho(twoStepsBenchmark(turnover,construction,include.rho = TRUE))
+benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE); rho(benchmark)
 
 }

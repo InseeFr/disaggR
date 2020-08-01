@@ -38,3 +38,6 @@ An object of class "`praislm`" is a list containing the following components :
 prais is a function which extracts the regression, a praislm object,
 of a twoStepsBenchmark.
 }
+\examples{
+benchmark <- twoStepsBenchmark(turnover,construction); prais(benchmark)
+}

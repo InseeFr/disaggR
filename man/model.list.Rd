@@ -20,3 +20,7 @@ to the function \link{praislm} or a \link{twoStepsBenchmark}.
 These are returned as they are after evaluation, model.list doesn't
 return a call.
 }
+\examples{
+benchmark <- twoStepsBenchmark(turnover,construction); model.list(benchmark)
+
+}
