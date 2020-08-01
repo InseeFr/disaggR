@@ -6,11 +6,11 @@ coef.praislm <- function(object, ...) object$coefficients
 #' @export
 residuals.praislm <- function(object, ...) object$residuals
 
-#' Extract autocorrelation parameter
+#' Extracting the autocorrelation parameter
 #' 
 #' The function `rho` returns the autocorrelation parameter
 #' from either a \link{praislm} or a \link{twoStepsBenchmark} object.
-#' If `include.rho` is `FALSE`, rho returns zero.
+#' If `include.rho` is `FALSE`, `rho` returns zero.
 #' @usage
 #' rho(object)
 #' @param object a praislm or twoStepsBenchmark object.
@@ -25,7 +25,7 @@ rho.praislm <- function(object) object$rho
 #' @export
 model.list.praislm <- function(object) object$model.list
 
-#' Extract the standard error
+#' Extracting the standard error
 #' 
 #' The function `se` returns the standard error the coefficients
 #' from either a \link{praislm} or a \link{twoStepsBenchmark} object.
@@ -34,7 +34,8 @@ model.list.praislm <- function(object) object$model.list
 #' @param object a praislm or twoStepsBenchmark object.
 #' @return
 #' a double, that is named the same way that the coefficients are.
-#' The coefficients set by the user return `NA` as for their standard error.
+#' If some coefficients are set by the user, they return `NA` as for
+#' their standard error.
 #' @export
 se <- function(object) UseMethod("se")
 #' @export

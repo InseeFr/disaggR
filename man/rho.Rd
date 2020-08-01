@@ -2,7 +2,7 @@
 % Please edit documentation in R/praislm-methods.R
 \name{rho}
 \alias{rho}
-\title{Extract autocorrelation parameter}
+\title{Extracting the autocorrelation parameter}
 \usage{
 rho(object)
 }
@@ -15,5 +15,5 @@ a double of length 1.
 \description{
 The function `rho` returns the autocorrelation parameter
 from either a \link{praislm} or a \link{twoStepsBenchmark} object.
-If `include.rho` is `FALSE`, rho returns zero.
+If `include.rho` is `FALSE`, `rho` returns zero.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/praislm-methods.R
 \name{se}
 \alias{se}
-\title{Extract the standard error}
+\title{Extracting the standard error}
 \usage{
 se(object)
 }
@@ -11,7 +11,8 @@ se(object)
 }
 \value{
 a double, that is named the same way that the coefficients are.
-The coefficients set by the user return `NA` as for their standard error.
+If some coefficients are set by the user, they return `NA` as for
+their standard error.
 }
 \description{
 The function `se` returns the standard error the coefficients
