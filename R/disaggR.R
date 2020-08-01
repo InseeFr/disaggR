@@ -1,8 +1,8 @@
 #' @description 
 #' disaggR: two-steps benchmarks inspired by the french Quarterly National Accounts method
 #'
-#' two-steps benchmarks inspired by French National Account method as described
-#' in Insee Methods n 126 - May 2012.
+#' Two-steps benchmarks inspired by the French National Account method as described
+#' in INSEE Methods n 126 - May 2012.
 #'
 #' @import stats
 #' @keywords internal
