@@ -17,4 +17,4 @@ construction
 An annual time-serie containing the french GFCF in construction from 2000
 to 2019.
 }
-\keyword{datasets}
+\keyword{internal}

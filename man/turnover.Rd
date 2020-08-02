@@ -17,4 +17,4 @@ turnover
 An mensual time-serie containing the turnover indicator in construction
 from january 2000 to may 2020.
 }
-\keyword{datasets}
+\keyword{internal}

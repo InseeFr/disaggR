@@ -3,7 +3,6 @@
 #' prais is a function which extracts the regression, a praislm object,
 #' of a twoStepsBenchmark.
 #' 
-#' @aliases praislm
 #' @param x a twoStepsBenchmark
 #' @return
 #' prais returns an object of class "`praislm`".

@@ -6,6 +6,7 @@
 #' @format A time-serie of frequency 1
 #' 
 #' @source \url{https://www.insee.fr/fr/statistiques/2015361}
+#' @keywords internal
 "construction"
 
 #' Turnover indicator in construction
@@ -16,4 +17,5 @@
 #' @format A time-serie of frequency 12
 #' 
 #' @source \url{https://www.insee.fr/fr/statistiques/4636032}
+#' @keywords internal
 "turnover"
