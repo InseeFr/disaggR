@@ -24,7 +24,13 @@
 #' @export
 in_sample <- function(object,type="changes") UseMethod("in_sample")
 
-in_sample_impl <- function(y,y_lagged,predicted_diff,type) {
+#' @export
+in_sample.praislm <- function(object,type="changes") {
+  autocor <- rho(object)*lag(residuals(object),-1)
+  m <- model.list(object)
+  y <- m$y
+  y_lagged <- stats::lag(y,k=-1)
+  predicted_diff <- if (m$include.differenciation) fitted(object) + autocor else fitted(object)+autocor-y_lagged
   y_lagged <- stats::lag(y,k=-1)
   switch(type,
          changes={
@@ -43,31 +49,8 @@ in_sample_impl <- function(y,y_lagged,predicted_diff,type) {
 }
 
 #' @export
-in_sample.praislm <- function(object,type="changes") {
-  autocor <- rho(object)*lag(residuals(object),-1)
-  m <- model.list(object)
-  y <- m$y
-  y_lagged <- stats::lag(y,k=-1)
-  in_sample_impl(y = y,
-                 y_lagged = y_lagged,
-                 predicted_diff =  if (m$include.differenciation) fitted(object) + autocor else fitted(object)+autocor-y_lagged,
-                 type = type
- )
-}
-
-#' @export
 in_sample.twoStepsBenchmark <- function(object,type="changes") {
-  m <- model.list(object)
-  y <- m$lfserie
-  y_lagged <- stats::lag(y, k = -1)
-  f <- aggregate(window(object$fitted.values,start=tsp(y)[1]),nfrequency = frequency(y))
-  autocor <- rho(object) * lag(residuals(object), -1)
-  
-  in_sample_impl(y = y,
-                 y_lagged = y_lagged,
-                 predicted_diff =  if (m$include.differenciation) diff(f) + autocor else f+autocor-y_lagged,
-                 type = type
-  )
+  in_sample(prais(object))
 }
 
 #' @export

@@ -2,6 +2,7 @@
 % Please edit documentation in R/twoStepsBenchmark-methods.R
 \name{prais}
 \alias{prais}
+\alias{praislm}
 \title{Extracting the regression of a twoStepsBenchmark}
 \usage{
 prais(x)
@@ -18,7 +19,6 @@ for the class `twoStepsBenchmark`.
 However, as for `fitted.values`, the accessor returns the fitted values
 of the regression, not the high-frequency, eventually integrated, time-serie
 contained in a twoStepsBenchmark.
-Th
 
 An object of class "`praislm`" is a list containing the following components :
   \item{coefficients}{a named vector of coefficients.}

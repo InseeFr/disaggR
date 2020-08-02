@@ -3,6 +3,7 @@
 #' prais is a function which extracts the regression, a praislm object,
 #' of a twoStepsBenchmark.
 #' 
+#' @aliases praislm
 #' @param x a twoStepsBenchmark
 #' @return
 #' prais returns an object of class "`praislm`".
@@ -13,7 +14,6 @@
 #' However, as for `fitted.values`, the accessor returns the fitted values
 #' of the regression, not the high-frequency, eventually integrated, time-serie
 #' contained in a twoStepsBenchmark.
-#' Th
 #' 
 #' An object of class "`praislm`" is a list containing the following components :
 #'   \item{coefficients}{a named vector of coefficients.}
