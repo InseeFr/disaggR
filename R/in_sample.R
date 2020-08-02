@@ -31,7 +31,6 @@ in_sample.praislm <- function(object,type="changes") {
   y <- m$y
   y_lagged <- stats::lag(y,k=-1)
   predicted_diff <- if (m$include.differenciation) fitted(object) + autocor else fitted(object)+autocor-y_lagged
-  y_lagged <- stats::lag(y,k=-1)
   switch(type,
          changes={
            y_changes <- (y/y_lagged-1)*100
@@ -50,7 +49,7 @@ in_sample.praislm <- function(object,type="changes") {
 
 #' @export
 in_sample.twoStepsBenchmark <- function(object,type="changes") {
-  in_sample(prais(object))
+  in_sample(prais(object),type=type)
 }
 
 #' @export

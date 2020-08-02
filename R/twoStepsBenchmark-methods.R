@@ -75,6 +75,28 @@ model.list <- function(object) UseMethod("model.list")
 #' @export
 model.list.twoStepsBenchmark <- function(object) object$model.list
 
+#' Extracting the smoothed part of a twoStepsBenchmark
+#' 
+#' The function `smoothed.part` returns the smoothed part of a
+#' \link{twoStepsBenchmark}. It derives from the residuals of the
+#' aggregated regression, with some differences :
+#'    * it is eventually integrated if `include.differenciation=TRUE`.
+#'    * it is extrapolated to match the domain window.
+#'    * it is smoothed with an additive Denton benchmark.
+#'   
+#' @usage
+#' smoothed.part(object)
+#' @param object a twoStepsBenchmark object.
+#' @return
+#' a time-serie
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction); smoothed.part(benchmark)
+#'
+#' @export
+smoothed.part <- function(object) UseMethod("smoothed.part")
+#' @export
+smoothed.part.twoStepsBenchmark <- function(object) object$smoothed.part
+
 #' @export
 se.twoStepsBenchmark <- function(object) se(prais(object))
 

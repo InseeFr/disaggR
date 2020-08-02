@@ -61,6 +61,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   res <- list(benchmarked.serie = window(rests,start=tsp(hfserie)[1],end=tsp(hfserie)[2],extend = TRUE),
               fitted.values = window(hfserie_fitted,end=tsp(hfserie)[2],extend = TRUE),
               regression = regresults,
+              smoothed.part = hfresiduals,
               model.list = list(hfserie = hfserie,
                                 lfserie =lfserie,
                                 include.rho = includerho,
@@ -147,6 +148,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'   if `include.differenciation=TRUE`.}
 #'   \item{regression}{an object of class praislm, it is the regression on which relies the
 #'   benchmark. It can be extracted with the function \link{prais}}
+#'   \item{smoothed.part}{the smoothed part of the two-steps benchmark.}
 #'   \item{model.list}{a list containing all the arguments submitted to the function.}
 #'   \item{call}{the matched call (either of twoStepsBenchmark or annualBenchmark)}
 #' @examples
@@ -203,7 +205,7 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
                             start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
                             start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
   if (frequency(lfserie) !=1) stop("Not an annual time-serie")
-  if (length(start.benchmark) !=1 || length(end.benchmark) != 1) stop("The start and end of the benchmark must be a single value year")
+  if (length(start.benchmark) != 1 || length(end.benchmark) != 1) stop("The start and end of the benchmark must be a single value year")
   twoStepsBenchmark(hfserie,lfserie,
                     include.differenciation,include.rho,
                     set.coeff,set.const,

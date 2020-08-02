@@ -13,6 +13,7 @@ test_that("in_sample works with include.differenciation=TRUE", {
                             start=start(simul),
                             end=end(simul),extend=TRUE))
 })
+
 test_that("in_sample works with include.differenciation=FALSE", {
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,

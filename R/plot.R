@@ -2,7 +2,11 @@
 #' @export
 plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
   model <- model.list(x)
-  plot(na.omit(as.ts(x)), xlab = xlab, ylab = ylab, ...)
+  tsbench <- as.ts(x)
+  lims <- c(floor(min(time(tsbench)[!is.na(tsbench)])),
+            ceiling(max(time(tsbench)[!is.na(tsbench)])))
+  plot(window(tsbench,start=lims[1],end=lims[2],extend=TRUE)
+       , xlab = xlab, ylab = ylab, ...)
   points(tsExpand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
   return(invisible(NULL))
 }
@@ -10,7 +14,9 @@ plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
 #' @export
 plot.insample <- function(x, xlab="", ylab="", ...) {
   class(x) <- class(x)[-1]
-  plot(x, plot.type="single", lty=c(1L,2L), xlab = xlab, ylab = ylab,
+  lims <- c(floor(min(time(x)[!is.na(x[,1])|!is.na(x[,2])])),
+            ceiling(max(time(x)[!is.na(x[,1])|!is.na(x[,2])])))
+  plot(window(x,start=lims[1],end=lims[2],extend=TRUE), plot.type="single", lty=c(1L,2L), xlab = xlab, ylab = ylab,
        main = paste0("In-sample predictions (", attr(x,"type"),")"), ...)
   return(invisible(NULL))
 }

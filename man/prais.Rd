@@ -11,27 +11,27 @@ prais(x)
 \item{x}{a twoStepsBenchmark}
 }
 \value{
-prais returns an object of class "`praislm`".
+prais returns an object of class "\code{praislm}".
 
 The functions that can be used on that class are almost the same than
-for the class `twoStepsBenchmark`.
-`summary`, `coefficients`, `residuals` will return the same values.
-However, as for `fitted.values`, the accessor returns the fitted values
+for the class \code{twoStepsBenchmark}.
+\code{summary}, \code{coefficients}, \code{residuals} will return the same values.
+However, as for \code{fitted.values}, the accessor returns the fitted values
 of the regression, not the high-frequency, eventually integrated, time-serie
 contained in a twoStepsBenchmark.
 
-An object of class "`praislm`" is a list containing the following components :
-  \item{coefficients}{a named vector of coefficients.}
-  \item{residuals}{the residuals, that is response minus fitted values.}
-  \item{fitted.values}{a time-serie, the fitted mean values}
-  \item{se}{a named vector of standard errors.}
-  \item{df.residuals}{the residual degrees of freedom.}
-  \item{rho}{the autocorrelation coefficients of the residuals. It
-  is equal to zero if twoStepsBenchmark was called with `include.rho=FALSE`}
-  \item{residuals.decorrelated}{the residuals of the model after having been
-  transformed by rho in a least square model.}
-  \item{fitted.values.decorrelated}{the fitted values of the model after having been
-  transformed by rho in a least square model.}
+An object of class "\code{praislm}" is a list containing the following components :
+\item{coefficients}{a named vector of coefficients.}
+\item{residuals}{the residuals, that is response minus fitted values.}
+\item{fitted.values}{a time-serie, the fitted mean values}
+\item{se}{a named vector of standard errors.}
+\item{df.residuals}{the residual degrees of freedom.}
+\item{rho}{the autocorrelation coefficients of the residuals. It
+is equal to zero if twoStepsBenchmark was called with \code{include.rho=FALSE}}
+\item{residuals.decorrelated}{the residuals of the model after having been
+transformed by rho in a least square model.}
+\item{fitted.values.decorrelated}{the fitted values of the model after having been
+transformed by rho in a least square model.}
 }
 \description{
 prais is a function which extracts the regression, a praislm object,

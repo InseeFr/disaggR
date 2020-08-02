@@ -13,9 +13,9 @@ rho(object)
 a double of length 1.
 }
 \description{
-The function `rho` returns the autocorrelation parameter
+The function \code{rho} returns the autocorrelation parameter
 from either a \link{praislm} or a \link{twoStepsBenchmark} object.
-If `include.rho` is `FALSE`, `rho` returns zero.
+If \code{include.rho} is \code{FALSE}, \code{rho} returns zero.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE); rho(benchmark)

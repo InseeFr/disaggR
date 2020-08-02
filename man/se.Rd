@@ -11,10 +11,10 @@ se(object)
 }
 \value{
 a double, that is named the same way that the coefficients are.
-If some coefficients are set by the user, they return `NA` as for
+If some coefficients are set by the user, they return \code{NA} as for
 their standard error.
 }
 \description{
-The function `se` returns the standard error the coefficients
+The function \code{se} returns the standard error the coefficients
 from either a \link{praislm} or a \link{twoStepsBenchmark} object.
 }

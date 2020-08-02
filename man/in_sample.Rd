@@ -7,7 +7,7 @@
 in_sample(object, type = "changes")
 }
 \arguments{
-\item{object}{an object of class `praislm` or `twoStepsBenchmark`}
+\item{object}{an object of class \code{praislm} or \code{twoStepsBenchmark}}
 
 \item{type}{"changes" or "levels". The results are either returned
 in changes or in levels.}
@@ -15,20 +15,22 @@ in changes or in levels.}
 \value{
 a named matrix time-serie of two columns, one for the
 response and the other for the predicted value.
-A `insample` class is added to the object. Then, the functions
-`plot` and `autoplot` (the latter requires to load \pkg{ggplot2})
+A \code{insample} class is added to the object. Then, the functions
+\code{plot} and \code{autoplot} (the latter requires to load \pkg{ggplot2})
 can be used to produce graphics.
 }
 \description{
-The function `in_sample` returns in-sample predictions from
+The function \code{in_sample} returns in-sample predictions from
 a \link{praislm} or a \link{twoStepsBenchmark} object.
 }
 \details{
 The predicted values are different from the fitted values :
-* they are eventually reintegrated
-* the autocorrelated part of the residuals is added
+\itemize{
+\item they are eventually reintegrated
+\item the autocorrelated part of the residuals is added
 Besides, changes are relative to the latest response value,
 not the latest predicted value.
+}
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)

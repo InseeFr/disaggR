@@ -13,7 +13,7 @@ model.list(object)
 a list containing every evaluated arguments
 }
 \description{
-The function `model.list` returns the arguments submitted
+The function \code{model.list} returns the arguments submitted
 to the function \link{praislm} or a \link{twoStepsBenchmark}.
 }
 \details{
