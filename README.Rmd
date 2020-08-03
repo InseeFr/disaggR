@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 
 [![R build status](https://github.com/arnaud-feldmann/disaggR/workflows/R-CMD-check/badge.svg)](https://github.com/arnaud-feldmann/disaggR/actions)
-
 [![R build status](https://github.com/arnaud-feldmann/disaggR/workflows/test-coverage/badge.svg)](https://github.com/arnaud-feldmann/disaggR/actions)
 
 <!-- badges: end -->
@@ -37,7 +36,7 @@ install_github("arnaud-feldmann/disaggR")
 
 ## Usage
 
-```{r, eval = FALSE, message = FALSE}
+```{r, echo = TRUE, results = 'hide', out.width = "70%",fig.align="center"}
 library(disaggR)
 library(ggplot2)
 
@@ -47,15 +46,5 @@ benchmark <- annualBenchmark(hfserie = turnover,
 as.ts(benchmark)
 coef(benchmark)
 summary(benchmark)
-autoplot(benchmark)
 autoplot(in_sample(benchmark))
-
-## How to manually set the coefficient
-
-benchmark <- annualBenchmark(hfserie = turnover,
-                             lfserie = construction,
-                             include.differenciation = TRUE,
-                             set.coeff = 0.1)
-coef(benchmark)
-
 ```
