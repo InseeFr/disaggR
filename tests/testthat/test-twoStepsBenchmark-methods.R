@@ -9,5 +9,16 @@ test_that("methods tests", {
   expect_equal(frequency(as.ts(benchmark)),frequency(turnover))
   expect_s3_class(residuals(benchmark),"ts")
   expect_equal(frequency(residuals(benchmark)),frequency(construction))
-  expect_output(print(summary(benchmark)))
+  expect_known_output(print(summary(benchmark)),"outputs/summary-benchmark.txt")
+  expect_known_output(print(benchmark),"outputs/benchmark.txt")
+  
+  a <- diff(aggregate(smoothed.part(benchmark)))
+  b <- residuals(benchmark)
+  a <- window(a,end=end(b))
+  expect_equal(a,b)
+  
+  a <- smoothed.part(benchmark)
+  b <- as.ts(benchmark)-fitted(benchmark)
+  a <- window(a,end=end(b))
+  expect_equal(a,b)
 })

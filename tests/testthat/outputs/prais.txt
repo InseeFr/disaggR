@@ -1,0 +1,9 @@
+
+Call:
+twoStepsBenchmark(hfserie = turnover, lfserie = construction, 
+    include.differenciation = TRUE, include.rho = TRUE, set.const = pi^2)
+
+Coefficients:
+constant   hfserie  
+ 9.86960   0.09911  
+
