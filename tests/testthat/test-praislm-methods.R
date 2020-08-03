@@ -10,5 +10,5 @@ test_that("print praislm", {
                                  include.differenciation = TRUE,
                                  include.rho = FALSE,
                                  set.coeff = exp(15))
-  expect_known_output(print(summary(prais(benchmark))),"outputs/prais-summary.txt")
+  expect_output(print(summary(prais(benchmark))),"^\nCall:\ntwoStepsBenchmark\\(hfserie = turnover, lfserie = construction")
 })

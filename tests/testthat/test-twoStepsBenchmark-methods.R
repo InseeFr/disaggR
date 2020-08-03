@@ -9,7 +9,7 @@ test_that("methods tests", {
   expect_equal(frequency(as.ts(benchmark)),frequency(turnover))
   expect_s3_class(residuals(benchmark),"ts")
   expect_equal(frequency(residuals(benchmark)),frequency(construction))
-  expect_known_output(print(summary(benchmark)),"outputs/summary-benchmark.txt")
+  expect_output(print(summary(benchmark)),"^\nCall:\ntwoStepsBenchmark\\(hfserie = turnover, lfserie = construction")
   expect_known_output(print(benchmark),"outputs/benchmark.txt")
   
   a <- diff(aggregate(smoothed.part(benchmark)))
