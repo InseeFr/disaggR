@@ -11,7 +11,6 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-options(tibble.print_min = 5, tibble.print_max = 5)
 ```
 
 <!-- badges: start -->
@@ -38,7 +37,7 @@ install_github("arnaud-feldmann/disaggR")
 
 ## Usage
 
-```{r, message = FALSE}
+```{r, eval = FALSE, message = FALSE}
 library(disaggR)
 library(ggplot2)
 
