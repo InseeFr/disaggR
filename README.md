@@ -7,6 +7,7 @@
 status](https://github.com/arnaud-feldmann/disaggR/workflows/R-CMD-check/badge.svg)](https://github.com/arnaud-feldmann/disaggR/actions)
 [![R build
 status](https://github.com/arnaud-feldmann/disaggR/workflows/test-coverage/badge.svg)](https://github.com/arnaud-feldmann/disaggR/actions)
+[![codecov](https://codecov.io/gh/arnaud-feldmann/disaggR/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaud-feldmann/disaggR)
 
 <!-- badges: end -->
 
