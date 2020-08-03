@@ -6,8 +6,6 @@
 \alias{disaggR-package}
 \title{disaggR: Two-Steps Benchmarks Inspired by the French Quarterly National Accounts Method}
 \description{
-disaggR: two-steps benchmarks inspired by the french Quarterly National Accounts method
-
 Two-steps benchmarks inspired by the French National Account method as described
 in INSEE Methods n 126 - May 2012.
 }
