@@ -14,7 +14,7 @@ status](https://github.com/arnaud-feldmann/disaggR/workflows/test-coverage/badge
 
 The R package disaggR is an implementation of the French Quarterly
 National Accounts method for temporal disaggregation of time-series.
-`twoStepsBenchmark()` bends a time-série with another.
+`twoStepsBenchmark()` bends a time-serie with another.
 
 ## Installation
 
