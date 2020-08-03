@@ -36,15 +36,16 @@ install_github("arnaud-feldmann/disaggR")
 
 ## Usage
 
-```{r, echo = TRUE, results = 'hide', out.width = "70%",fig.align="center"}
+```{r, echo = TRUE, results = 'hide', fig.show="hold", out.width="50%"}
 library(disaggR)
 library(ggplot2)
 
 benchmark <- annualBenchmark(hfserie = turnover,
-                            lfserie = construction,
-                            include.differenciation = TRUE)
+                             lfserie = construction,
+                             include.differenciation = TRUE)
 as.ts(benchmark)
 coef(benchmark)
 summary(benchmark)
+autoplot(benchmark)
 autoplot(in_sample(benchmark))
 ```
