@@ -32,7 +32,8 @@ As for now, only the development version is available, from Github.
 
 ```{r, eval = FALSE}
 # Development version
-install.packages("devtools")
+# install.packages("devtools")
+install_github("arnaud-feldmann/disaggR")
 ```
 
 ## Usage
@@ -56,6 +57,6 @@ benchmark <- annualBenchmark(hfserie = turnover,
                              lfserie = construction,
                              include.differenciation = TRUE,
                              set.coeff = 0.1)
-coef(benchmark2)
+coef(benchmark)
 
 ```
