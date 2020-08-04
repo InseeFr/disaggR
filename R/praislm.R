@@ -21,7 +21,8 @@ praislm <- function(X,y,includerho,includedifferenciation,set_coefficients,cl) {
                     include.rho=includerho,
                     include.differenciation=includedifferenciation,
                     set.coefficients=set_coefficients)
-  if (! inherits(y,"ts")) stop("Not a ts object")
+  if ( !is.ts(X) || !is.ts(y) ) stop("Not a ts object")
+  if (is.null(dim(X))) stop("Not a matrix object")
   if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window")
   if (includedifferenciation) {
     X <- diff(X)

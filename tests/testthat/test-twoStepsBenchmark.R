@@ -300,8 +300,20 @@ test_that("errors",{
                regexp = "Not a ts object")
   expect_error(twoStepsBenchmark(matrix(1:9,3,3),construction),
                regexp = "Not a ts object")
+  expect_error(twoStepsBenchmark(turnover,1:10),
+               regexp = "Not a ts object")
   expect_error(twoStepsBenchmark(window(turnover,start=2001),construction),
                regexp = "must have values")
+  
+  expect_error(twoStepsBenchmark(turnover,construction,set.const=c(1,2)),
+               regexp = "single value")
+  
+  set.seed(27)
+  mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+  trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
+  expect_error(annualBenchmark(mensualts,trimts),
+               "annual time-serie")
+  
   expect_error(twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
                                    `unname`,construction),
                regexp = "column names")
@@ -310,6 +322,12 @@ test_that("errors",{
                                  construction,
                                  set.coeff=1:4),
                 regexp = "empty or have names")
-
+  expect_error(twoStepsBenchmark_impl(turnover,construction,
+                                      start.coeff.calc = 2000,
+                                      end.coeff.calc = 2010,
+                                      include.rho=FALSE,
+                                      include.differenciation = TRUE,
+                                      set_coefficients = numeric(),
+                                      cl = NULL),
+               regexp = "Not a matrix")
 })
-  

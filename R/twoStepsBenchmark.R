@@ -216,7 +216,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
                               start.benchmark=NULL,end.benchmark=NULL,
                               start.domain=NULL,end.domain=NULL,...) {
   
-  if (! inherits(lfserie,"ts") || ! inherits(hfserie,"ts")) stop("Not a ts object")
+  if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object")
   
   cl <- match.call()
   
@@ -250,8 +250,7 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
                             start.coeff.calc=start(lfserie)[1],end.coeff.calc=end(lfserie)[1],
                             start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
                             start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
-  if (frequency(lfserie) !=1) stop("Not an annual time-serie",call. = FALSE)
-  if (length(start.benchmark) != 1 || length(end.benchmark) != 1) stop("The start and end of the benchmark must be a single value year")
+  if (frequency(lfserie) != 1) stop("Not an annual time-serie")
   twoStepsBenchmark(hfserie,lfserie,
                     include.differenciation,include.rho,
                     set.coeff,set.const,
