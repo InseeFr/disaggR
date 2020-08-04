@@ -1,8 +1,8 @@
 Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks Inspired by the French Quarterly National Accounts Method
-Version: 0.1.3
-Date: 2020-08-01
+Version: 0.1.2
+Date: 2020-08-04
 Author: Arnaud FELDMANN
 Maintainer: Arnaud FELDMANN <arnaud.feldmann@gmail.com>
 Description: Two-steps benchmarks inspired by the French National Accounts method as described in INSEE Methods n 126 - May 2012.
