@@ -1,3 +1,53 @@
+residuals_extrap_sequence <- function(u0,u1,rho,n,include.differenciation) {
+  if (include.differenciation) {
+    if (rho == 1) u1 + (u1-u0) * (1:n)
+    else (u1-u0)*(1-rho^(2:(n+1)))/(1-rho)+u0
+  }
+  else u1*(rho^(1:n))
+}
+
+#' Extrapolation function for the residuals in a twoStepsBenchmark
+#' 
+#' This function is the rule to extrapolate the low-frequency residuals
+#' If include.differenciation is true, u(n+1)-u(n) = rho*(u(n)-u(n-1))
+#' Else u(n+1) = rho * u(n)
+#'
+#' @param lfresiduals the residuals to extrapolate
+#' @param rho the autocorrelation parameter of the regression
+#' @param n an integer, how many extrapolations to do.
+#' @param include.differenciation a boolean, the same as submitted
+#' to twoStepsBenchmark
+#'
+#' @return a numeric, the extrapolated sequence of residuals, to replace the NA of
+#' the residuals
+#' @keywords internal
+#' @export
+residuals_extrap <- function(lfresiduals,rho,include.differenciation) {
+  valplaces <- which(!is.na(lfresiduals))
+  if (length(valplaces) != 0) {
+    firstval <- valplaces[1L]
+    lastval <- valplaces[length(valplaces)]
+    if (rho==0) rhoinverse <- 0 else rhoinverse <- 1/rho
+    if (lastval != length(lfresiduals)) {
+      lfresiduals[(lastval+1):length(lfresiduals)] <-
+        residuals_extrap_sequence(lfresiduals[lastval-1],
+                                  lfresiduals[lastval],
+                                  rho,
+                                  length(lfresiduals)-lastval,
+                                  include.differenciation)
+    }
+    if (firstval != 1L) {
+      lfresiduals[(firstval-1):1] <-
+        residuals_extrap_sequence(lfresiduals[firstval+1],
+                                  lfresiduals[firstval],
+                                  rhoinverse,
+                                  firstval-1,
+                                  include.differenciation)
+    }
+  }
+  return(lfresiduals)
+}
+
 #' @importFrom utils head
 twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    include.differenciation,include.rho,
@@ -41,18 +91,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = tsplf[3])
   
   lfresiduals <- lfserie_wbench-hfserie_fitted_aggreg
-  
-  firstnonna <- head(which(!is.na(lfresiduals)),1)
-  if (!(identical(firstnonna,integer()))) {
-    if (rho==0) rhoinverse <- 0 else rhoinverse <- 1/rho
-    if (include.differenciation) {
-      if (A>=(firstnonna+2)) for (i in (firstnonna+2):A) if (is.na(lfresiduals[i])) lfresiduals[i] <- (1+rho)*lfresiduals[i-1] - rho*lfresiduals[i-2]
-      if ((firstnonna+1)>=3) for (i in (firstnonna+1):3) lfresiduals[i-2] <- (1+rhoinverse)*lfresiduals[i-1]-rhoinverse*lfresiduals[i]
-    } else {
-      if (A>=(firstnonna+1)) for (i in (firstnonna+1):A) if (is.na(lfresiduals[i])) lfresiduals[i] <- rho*lfresiduals[i-1]
-      if (firstnonna>=2) for (i in firstnonna:2) lfresiduals[i-1] <- rhoinverse*lfresiduals[i]
-    }
-  }
+  lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
   
   hfresiduals <- bflSmooth(lfresiduals,frequency(hfserie))
   
