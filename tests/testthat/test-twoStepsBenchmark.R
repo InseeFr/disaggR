@@ -230,3 +230,56 @@ test_that("The classes in the bn object are the good ones",{
   expect_true(is.ts(bn$regression$fitted.values.decorrelated))
 })
 
+test_that("windows and extraps works",{
+  set.seed(27)
+  mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+  trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
+  
+  bn <- twoStepsBenchmark(hfserie = mensualts,
+                          lfserie = trimts,
+                          include.rho = TRUE,
+                          start.coeff.calc = c(2012,2),
+                          start.domain = c(2011,3))
+  asp <- aggregate(smoothed.part(bn),nf=4)
+  extrap <- asp/lag(asp,-1)
+  expect_equal(as.numeric(window(extrap,start=c(2011,2),end=c(2011,2),extend=TRUE)),
+               rho(bn))
+  expect_equal(as.numeric(window(extrap,start=c(2019,2))),
+               rep(rho(bn),4))
+  
+  bn <- twoStepsBenchmark(hfserie = mensualts,
+                          lfserie = trimts,
+                          include.rho = TRUE,
+                          include.differenciation = TRUE,
+                          start.coeff.calc = c(2012,2),
+                          start.domain = c(2011,3))
+  asp <- aggregate(smoothed.part(bn),nf=4)
+  extrap <- diff(asp)/lag(diff(asp),-1)
+  expect_equal(as.numeric(window(extrap,start=c(2011,3),end=c(2011,3),extend=TRUE)),
+               rho(bn))
+  expect_equal(as.numeric(window(extrap,start=c(2019,2))),
+               rep(rho(bn),4))
+  expect_equal(tsp(as.ts(bn)),tsp(window(mensualts,start=c(2011,3))))
+  
+  bn <- twoStepsBenchmark(hfserie = mensualts,
+                          lfserie = trimts,
+                          include.rho = TRUE,
+                          end.coeff.calc = c(2014,2),
+                          end.domain = c(2015,5))
+  asp <- aggregate(smoothed.part(bn),nf=4)
+  extrap <- asp/lag(asp,-1)
+  expect_equal(as.numeric(window(extrap,start=c(2015,2))),
+               rho(bn))
+  expect_equal(tsp(as.ts(bn)),tsp(window(mensualts,end=c(2015,5))))
+  
+  bn <- twoStepsBenchmark(hfserie = mensualts,
+                          lfserie = trimts,
+                          include.rho = FALSE,
+                          include.differenciation = FALSE,
+                          start.benchmark = c(2012,1),
+                          end.benchmark = c(2014,3))
+  asp <- aggregate(smoothed.part(bn),nf=4)
+  residextrap <- window(residuals(bn),start=start(asp),end=end(asp),extend=TRUE)
+  residextrap[is.na(residextrap)] <- 0
+  expect_equal(asp,residextrap)
+})

@@ -1,7 +1,7 @@
 #' @importFrom utils head
 twoStepsBenchmark_impl <- function(hfserie,lfserie,
-                                   includedifferenciation,includerho,
-                                   set_coefficients,startcoeffcalc,endcoeffcalc,
+                                   include.differenciation,include.rho,
+                                   set_coefficients,start.coeff.calc,end.coeff.calc,
                                    cl) {
   if (! inherits(lfserie,"ts") || ! inherits(hfserie,"ts")) stop("Not a ts object")
   if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional")
@@ -12,14 +12,14 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   
   # Estimation of the reg coefficients
   
-  y <- window(lfserie,start=startcoeffcalc,end=endcoeffcalc,extend = TRUE)
+  y <- window(lfserie,start=start.coeff.calc,end=end.coeff.calc,extend = TRUE)
   tspy <- tsp(y)
   x <- aggregate.ts(
     window(hfserie,tspy[1],tspy[2]+1/tspy[3]-1/tsphf[3],extend = TRUE)
     ,nfrequency = tspy[3]
   )
   
-  regresults <- praislm(x,y,includerho,includedifferenciation,set_coefficients,cl)
+  regresults <- praislm(x,y,include.rho,include.differenciation,set_coefficients,cl)
   
   # Application of the reg coefficients
   
@@ -45,7 +45,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   firstnonna <- head(which(!is.na(lfresiduals)),1)
   if (!(identical(firstnonna,integer()))) {
     if (rho==0) rhoinverse <- 0 else rhoinverse <- 1/rho
-    if (includedifferenciation) {
+    if (include.differenciation) {
       if (A>=(firstnonna+2)) for (i in (firstnonna+2):A) if (is.na(lfresiduals[i])) lfresiduals[i] <- (1+rho)*lfresiduals[i-1] - rho*lfresiduals[i-2]
       if ((firstnonna+1)>=3) for (i in (firstnonna+1):3) lfresiduals[i-2] <- (1+rhoinverse)*lfresiduals[i-1]-rhoinverse*lfresiduals[i]
     } else {
@@ -64,11 +64,11 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
               smoothed.part = hfresiduals,
               model.list = list(hfserie = hfserie,
                                 lfserie =lfserie,
-                                include.rho = includerho,
-                                include.differenciation=includedifferenciation,
+                                include.rho = include.rho,
+                                include.differenciation=include.differenciation,
                                 set.coefficients=set_coefficients,
-                                start.coeff.calc = startcoeffcalc,
-                                end.coeff.calc = endcoeffcalc),
+                                start.coeff.calc = start.coeff.calc,
+                                end.coeff.calc = end.coeff.calc),
               call = cl)
   class(res) <- c("twoStepsBenchmark","list")
   return(res)
