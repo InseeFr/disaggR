@@ -30,7 +30,7 @@ praislm <- function(X,y,includerho,includedifferenciation,set_coefficients,cl) {
   }
 
   if (length(set_coefficients)==0) names(set_coefficients) <- character()
-  else if (is.null(names(set_coefficients))) stop("The coefficient setter must be empty or have names")
+  else if (is.null(names(set_coefficients))) stop("The coefficients setter must be empty or have names")
   
   coefficients <- rep(NA_real_,ncol(X))
   names(coefficients) <- colnames(X)
