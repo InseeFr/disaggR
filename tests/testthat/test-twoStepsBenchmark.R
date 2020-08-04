@@ -195,6 +195,11 @@ test_that("standard errors are the same that the vcov diag",{
   expect_equal(unname(stderror),unname(sqrt(abs(diag(vcov(bn))))))
 })
 
+test_that("mts works",{
+  bn <- twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
+                            `colnames<-`(c("a","b","c")),construction)
+  expect_identical(names(coef(bn)),c("constant","a","b","c"))
+})
 
 
 test_that("The classes in the bn object are the good ones",{
@@ -283,3 +288,28 @@ test_that("windows and extraps works",{
   residextrap[is.na(residextrap)] <- 0
   expect_equal(asp,residextrap)
 })
+
+test_that("errors",{
+  expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction),
+               regexp = "perfect rank")
+  expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction,set.coeff = c(a=1)),
+               regexp = "names of the set coefficient")
+  expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction,set.coeff = c(a=NA)),
+               regexp = "be set to NA")
+  expect_error(twoStepsBenchmark(1:10,construction),
+               regexp = "Not a ts object")
+  expect_error(twoStepsBenchmark(matrix(1:9,3,3),construction),
+               regexp = "Not a ts object")
+  expect_error(twoStepsBenchmark(window(turnover,start=2001),construction),
+               regexp = "must have values")
+  expect_error(twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
+                                   `unname`,construction),
+               regexp = "column names")
+  expect_error(twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
+                                     `colnames<-`(c("a","b","c")),
+                                 construction,
+                                 set.coeff=1:4),
+                regexp = "empty or have names")
+
+})
+  

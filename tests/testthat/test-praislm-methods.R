@@ -4,7 +4,7 @@ test_that("print praislm", {
                                  include.differenciation = TRUE,
                                  include.rho = TRUE,
                                  set.const = pi^2)
-  expect_known_output(print(prais(benchmark)),"outputs/prais.txt")
+  expect_known_output(print(prais(benchmark)),"outputs/prais.txt",update=FALSE)
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE,

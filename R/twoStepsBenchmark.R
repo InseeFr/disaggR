@@ -53,7 +53,6 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    include.differenciation,include.rho,
                                    set_coefficients,start.coeff.calc,end.coeff.calc,
                                    cl) {
-  if (! inherits(lfserie,"ts") || ! inherits(hfserie,"ts")) stop("Not a ts object")
   if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional")
   
   tsphf <- tsp(hfserie)
@@ -216,6 +215,9 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
                               start.coeff.calc=NULL,end.coeff.calc=NULL,
                               start.benchmark=NULL,end.benchmark=NULL,
                               start.domain=NULL,end.domain=NULL,...) {
+  
+  if (! inherits(lfserie,"ts") || ! inherits(hfserie,"ts")) stop("Not a ts object")
+  
   cl <- match.call()
   
   if (is.null(set.coeff)) set.coeff <- numeric()
@@ -231,7 +233,12 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   if (length(set.const) == 1) names(set.const) <- "constant"
   if (length(set.coeff) == 1) names(set.coeff) <- "hfserie"
   
-  return(twoStepsBenchmark_impl(window(cbind(constant,hfserie),start.domain,end.domain,extend=TRUE),
+  if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names")
+
+  hfserie <- cbind(constant,hfserie)
+  colnames(hfserie) <- sub("^(hfserie\\.)","",colnames(hfserie))
+  
+  return(twoStepsBenchmark_impl(window(hfserie,start.domain,end.domain,extend=TRUE),
                                 window(lfserie,start.benchmark,end.benchmark,extend=TRUE),
                                 include.differenciation,include.rho,
                                 c(set.const,set.coeff),
@@ -243,7 +250,7 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
                             start.coeff.calc=start(lfserie)[1],end.coeff.calc=end(lfserie)[1],
                             start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
                             start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
-  if (frequency(lfserie) !=1) stop("Not an annual time-serie")
+  if (frequency(lfserie) !=1) stop("Not an annual time-serie",call. = FALSE)
   if (length(start.benchmark) != 1 || length(end.benchmark) != 1) stop("The start and end of the benchmark must be a single value year")
   twoStepsBenchmark(hfserie,lfserie,
                     include.differenciation,include.rho,

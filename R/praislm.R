@@ -22,20 +22,20 @@ praislm <- function(X,y,includerho,includedifferenciation,set_coefficients,cl) {
                     include.differenciation=includedifferenciation,
                     set.coefficients=set_coefficients)
   if (! inherits(y,"ts")) stop("Not a ts object")
+  if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window")
   if (includedifferenciation) {
     X <- diff(X)
     y <- diff(y)
   }
-  if (is.null(colnames(X))) stop("The high frequency serie must have column names")
 
   if (length(set_coefficients)==0) names(set_coefficients) <- character()
-  else if (is.null(names(set_coefficients))) stop("The coefficients setter must be empty or have names")
+  else if (is.null(names(set_coefficients))) stop("The coefficient setter must be empty or have names")
   
   coefficients <- rep(NA_real_,ncol(X))
   names(coefficients) <- colnames(X)
   match_set <- match(names(set_coefficients),colnames(X))
   if (any(is.na(set_coefficients))) stop("A coefficient can't be set to NA")
-  if (any(is.na(match_set))) stop("The names of the setted coefficients must be a real one")
+  if (any(is.na(match_set))) stop("The names of the set coefficients must be a column name of hfserie")
   coefficients[match_set] <- set_coefficients
   match_notset <- which(is.na(coefficients))
   

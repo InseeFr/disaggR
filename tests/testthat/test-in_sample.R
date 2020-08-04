@@ -53,5 +53,5 @@ test_that("print in_sample prints",{
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
-  expect_known_output(print(in_sample(benchmark)),"outputs/in_sample.txt")
+  expect_known_output(print(in_sample(benchmark)),"outputs/in_sample.txt",update=FALSE)
 })
