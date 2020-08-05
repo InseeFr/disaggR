@@ -236,7 +236,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   
   if (length(set.const) > 1) stop("set.const must be of a single value")
   if (length(set.const) == 1) names(set.const) <- "constant"
-  if (length(set.coeff) == 1) names(set.coeff) <- "hfserie"
+  if ((NCOL(hfserie) == 1) && (length(set.coeff) == 1)) names(set.coeff) <- "hfserie"
   
   if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names")
 

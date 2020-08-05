@@ -199,6 +199,15 @@ test_that("mts works",{
   bn <- twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
                             `colnames<-`(c("a","b","c")),construction)
   expect_identical(names(coef(bn)),c("constant","a","b","c"))
+  
+  mat <- cbind(turnover,lag(turnover))
+  colnames(mat) <- c("turnover","lag turnover")
+  bn <- twoStepsBenchmark(mat,construction,include.differenciation=TRUE,
+                          set.coeff = c(turnover=0.1),set.const=0)
+  expect_equal(coef(bn)[c("constant","turnover")],c(constant=0, turnover=0.1))
+  bn <- twoStepsBenchmark(mat,construction,include.differenciation=TRUE,
+                          set.coeff = c(turnover=0.1,`lag turnover`=0.05),set.const=0)
+  expect_equal(coef(bn),c(constant=0, turnover=0.1,`lag turnover`=0.05))
 })
 
 
@@ -330,6 +339,10 @@ test_that("errors",{
                                       set_coefficients = numeric(),
                                       maincl = NULL),
                regexp = "Not a matrix")
+  expect_error(twoStepsBenchmark(turnover,construction,set.smoothed.part=pi),
+               regexp = "univariate time-serie")
+  expect_error(twoStepsBenchmark(turnover,cbind(construction,construction)),
+               regexp = "one-dimensional")
 })
 
 test_that("reUseBenchmark works",{
@@ -357,4 +370,9 @@ test_that("reUseBenchmark works",{
   expect_identical(m1$end.coeff.calc,m3$end.coeff.calc)
   
   expect_false(identical(as.ts(benchmark3),as.ts(benchmark2)))
+})
+
+test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenciation=TRUE",{
+  sequence <- residuals_extrap_sequence(1,3,1,10,TRUE)
+  expect_equal(sequence[-1]-sequence[-length(sequence)],rep(2,9))
 })
