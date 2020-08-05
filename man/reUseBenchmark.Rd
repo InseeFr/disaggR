@@ -4,7 +4,7 @@
 \alias{reUseBenchmark}
 \title{Using the same estimated benchmark model on another time-serie}
 \usage{
-function(hfserie,benchmark,reeval.smoothed.part=FALSE)
+reUseBenchmark(hfserie,benchmark,reeval.smoothed.part=FALSE)
 }
 \arguments{
 \item{hfserie}{the bended time-serie. If it is a matrix time-serie, it has to have the

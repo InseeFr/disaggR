@@ -277,7 +277,7 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
 #' reevaluated ; the aggregated benchmarked serie isn't equal to the low-frequency serie.
 #' 
 #' @usage
-#' function(hfserie,benchmark,reeval.smoothed.part=FALSE)
+#' reUseBenchmark(hfserie,benchmark,reeval.smoothed.part=FALSE)
 #' 
 #' @param hfserie the bended time-serie. If it is a matrix time-serie, it has to have the
 #' same column names than the `hfserie` used for the benchmark.
