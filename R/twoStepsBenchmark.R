@@ -276,7 +276,6 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
 #' is a good example. Hence, by default, the smoothed part of the first model isn't
 #' reevaluated ; the aggregated benchmarked serie isn't equal to the low-frequency serie.
 #' 
-#' @aliases reUseBenchmark
 #' @usage
 #' function(hfserie,benchmark,reeval.smoothed.part=FALSE)
 #' 
