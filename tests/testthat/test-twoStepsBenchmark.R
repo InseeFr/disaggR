@@ -372,6 +372,14 @@ test_that("reUseBenchmark works",{
   expect_identical(m1$end.coeff.calc,m3$end.coeff.calc)
   
   expect_false(identical(as.ts(benchmark3),as.ts(benchmark2)))
+  
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  turnover_modif <- turnover
+  turnover_modif[1] <- turnover[1]+pi
+  benchmark2 <- reUseBenchmark(turnover_modif,benchmark)
+  
+  coefficients <- coef(benchmark)
+  expect_equivalent((as.ts(benchmark2)-as.ts(benchmark))[1],pi*coefficients[2])
 })
 
 test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenciation=TRUE",{

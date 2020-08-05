@@ -266,6 +266,32 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
                     start.domain,end.domain,cl=match.call())
 }
 
+#' Using the same estimated benchmark model on another time-serie
+#' 
+#' This function reapplies the coefficients and parameters of a benchmark
+#' on new time-serie.
+#'
+#' reUseBenchmark is primarily meant to be used on a serie that is derived from the previous
+#' one, after some modifications that would bias the estimation. Working-day adjustment
+#' is a good example. Hence, by default, the smoothed part of the first model isn't
+#' reevaluated ; the aggregated benchmarked serie isn't equal to the low-frequency serie.
+#' 
+#' @aliases reUseBenchmark
+#' @usage
+#' function(hfserie,benchmark,reeval.smoothed.part=FALSE)
+#' 
+#' @param hfserie the bended time-serie. If it is a matrix time-serie, it has to have the
+#' same column names than the `hfserie` used for the benchmark.
+#' @param benchmark a twoStepsBenchmark object, from which the parameters and coefficients
+#' are taken
+#' @param reeval.smoothed.part a boolean of length 1. If `TRUE`, the smoothed part is
+#' reevaluated, hence the aggregated benchmarked serie is equal to the low-frequency serie.
+#' @return twoStepsBenchark returns an object of class \link{twoStepsBenchmark}.
+#' @examples 
+#' benchmark <- twoStepsBenchmark(turnover,construction) 
+#' turnover_modif <- turnover
+#' turnover_modif[2] <- turnover[2]+2
+#' benchmark2 <- reUseBenchmark(turnover_modif,benchmark)
 #' @export
 reUseBenchmark <- function(hfserie,benchmark,reeval.smoothed.part=FALSE) {
   m <- model.list(benchmark)
