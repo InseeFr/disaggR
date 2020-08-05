@@ -15,16 +15,15 @@ omega_inv_sqrt <- function(x,rho) {
 
 
 
-praislm <- function(X,y,includerho,includedifferenciation,set_coefficients,cl) {
+praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl) {
   modellist <- list(X=X,
                     y=y,
-                    include.rho=includerho,
-                    include.differenciation=includedifferenciation,
+                    include.rho=include.rho,
+                    include.differenciation=include.differenciation,
                     set.coefficients=set_coefficients)
   if ( !is.ts(X) || !is.ts(y) ) stop("Not a ts object")
   if (is.null(dim(X))) stop("Not a matrix object")
-  if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window")
-  if (includedifferenciation) {
+  if (include.differenciation) {
     X <- diff(X)
     y <- diff(y)
   }
@@ -49,12 +48,13 @@ praislm <- function(X,y,includerho,includedifferenciation,set_coefficients,cl) {
   df_residual <- nrow(X) - ncol(X)
   
   if (ncol(X) != 0) {
+    if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window")
     PQR <- qr(X)
     if (PQR$rank !=ncol(X))  stop("The regressed series should have a perfect rank")
     
     calculated_coefficients <- qr.coef(PQR,y)
   
-    if (includerho) {
+    if (include.rho) {
       drho <- 1
       rho_prec <- 0
       i_max = 50L

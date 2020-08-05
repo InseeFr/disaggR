@@ -328,6 +328,33 @@ test_that("errors",{
                                       include.rho=FALSE,
                                       include.differenciation = TRUE,
                                       set_coefficients = numeric(),
-                                      cl = NULL),
+                                      maincl = NULL),
                regexp = "Not a matrix")
+})
+
+test_that("reUseBenchmark works",{
+  benchmark1 <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+  decompose(turnover,type = "multiplicative")
+  adjusted_turnover <- window(turnover/decompose(turnover)$seasonal,start=2006)
+  benchmark2 <- reUseBenchmark(adjusted_turnover,benchmark1)
+  benchmark3 <- reUseBenchmark(adjusted_turnover,benchmark1,reeval.smoothed.part = TRUE)
+  m1 <- model.list(benchmark1)
+  m2 <- model.list(benchmark2)
+  m3 <- model.list(benchmark3)
+  
+  expect_identical(smoothed.part(benchmark2),smoothed.part(benchmark1))
+  expect_identical(coefficients(benchmark1),coefficients(benchmark2))
+  expect_identical(m1$include.rho,m2$include.rho)
+  expect_identical(m1$include.differenciation,m2$include.differenciation)
+  expect_identical(m1$start.coeff.calc,m2$start.coeff.calc)
+  expect_identical(m1$end.coeff.calc,m2$end.coeff.calc)
+  
+  expect_false(identical(smoothed.part(benchmark3),smoothed.part(benchmark1)))
+  expect_identical(coefficients(benchmark1),coefficients(benchmark3))
+  expect_identical(m1$include.rho,m3$include.rho)
+  expect_identical(m1$include.differenciation,m3$include.differenciation)
+  expect_identical(m1$start.coeff.calc,m3$start.coeff.calc)
+  expect_identical(m1$end.coeff.calc,m3$end.coeff.calc)
+  
+  expect_false(identical(as.ts(benchmark3),as.ts(benchmark2)))
 })
