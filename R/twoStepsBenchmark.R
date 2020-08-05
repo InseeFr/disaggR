@@ -224,6 +224,8 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object")
   
+  if  (!(frequency(hfserie) %% frequency(lfserie) == 0)) stop("The low frequency should divide the higher one")
+  
   maincl <- match.call()
   
   if (is.null(set.coeff)) set.coeff <- numeric()

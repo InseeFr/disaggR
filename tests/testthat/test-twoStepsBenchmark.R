@@ -343,6 +343,8 @@ test_that("errors",{
                regexp = "univariate time-serie")
   expect_error(twoStepsBenchmark(turnover,cbind(construction,construction)),
                regexp = "one-dimensional")
+  expect_error(twoStepsBenchmark(turnover,ts(1:700,start=2000,frequency=7)),
+               regexp = "should divide")
 })
 
 test_that("reUseBenchmark works",{
