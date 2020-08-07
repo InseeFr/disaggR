@@ -48,6 +48,49 @@ residuals_extrap <- function(lfresiduals,rho,include.differenciation) {
   return(lfresiduals)
 }
 
+regression_estimation <- function(hfserie,lfserie,
+                                  include.differenciation,include.rho,
+                                  start.coeff.calc,end.coeff.calc,
+                                  set_coefficients,cl) {
+  y <- window(lfserie,start=start.coeff.calc,end=end.coeff.calc,extend = TRUE)
+  tspy <- tsp(y)
+  x <- aggregate.ts(
+    window(hfserie,tspy[1],tspy[2]+1/tspy[3]-1/frequency(hfserie),extend = TRUE),
+    nfrequency = tspy[3]
+  )
+  return(praislm(x,y,include.rho,include.differenciation,set_coefficients,cl))
+}
+
+coefficients_application <- function(hfserie,lfserie,regcoefs) {
+  tsphf <- tsp(hfserie)
+  tsplf <- tsp(lfserie)
+  
+  startdomain_extended <- floor(tsphf[1]*tsplf[3])/tsplf[3]
+  enddomain_extended <- ceiling((tsphf[2]+1/tsphf[3])*tsplf[3])/tsplf[3]-1/tsphf[3]
+  # This window is the smallest that is all around the domain of the hfserie
+  # that is compatible with the low frequency.
+  
+  lfserie_win <- window(lfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
+  hfserie_win <- window(hfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
+  
+  return(ts(as.numeric(hfserie_win %*% regcoefs),
+            start=tsp(hfserie_win)[1],
+            frequency=frequency(hfserie_win)))
+}
+
+eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {
+  if (is.null(set.smoothed.part)) {
+    hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = frequency(lfserie))
+    lfresiduals <- window(lfserie-hfserie_fitted_aggreg,start=tsp(hfserie_fitted)[1],end=tsp(hfserie_fitted)[2],extend = TRUE)
+    lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
+    smoothed_part <- bflSmooth(lfresiduals,frequency(hfserie_fitted))
+  }
+  else {
+    if (!is.ts(set.smoothed.part) || is.mts(set.smoothed.part)) stop("set.smoothed part must be an univariate time-serie")
+    smoothed_part <- set.smoothed.part
+  }
+}
+
 #' @importFrom utils head
 twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    include.differenciation,include.rho,
@@ -57,55 +100,21 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   
   if (is.null(cl)) cl <- maincl
   
-  tsphf <- tsp(hfserie)
-  tsplf <- tsp(lfserie)
-  ratio <- frequency(hfserie)/frequency(lfserie)
+  regresults     <- regression_estimation(hfserie,lfserie,
+                                          include.differenciation,include.rho,
+                                          start.coeff.calc,end.coeff.calc,
+                                          set_coefficients,cl)
   
-  # Estimation of the reg coefficients
+  hfserie_fitted <- coefficients_application(hfserie,lfserie,regresults$coefficients)
   
-  y <- window(lfserie,start=start.coeff.calc,end=end.coeff.calc,extend = TRUE)
-  tspy <- tsp(y)
-  x <- aggregate.ts(
-    window(hfserie,tspy[1],tspy[2]+1/tspy[3]-1/tsphf[3],extend = TRUE)
-    ,nfrequency = tspy[3]
-  )
+  smoothed_part  <- eval_smoothed_part(hfserie_fitted,lfserie,include.differenciation,regresults$rho,set.smoothed.part)
   
-  regresults <- praislm(x,y,include.rho,include.differenciation,set_coefficients,cl)
-  
-  # Application of the reg coefficients
-  
-  startdomain_extended <- floor(tsphf[1]*tsplf[3])/tsplf[3]
-  enddomain_extended <- ceiling((tsphf[2]+1/tsphf[3])*tsplf[3])/tsplf[3]-1/tsphf[3]
-        # This window is the smallest that is all around the domain of the hfserie.
-  
-  lfserie_wbench <- window(lfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
-  hfserie_wbench <- window(hfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
-  
-  A <- length(lfserie_wbench)
-  
-  rho <- regresults$rho
-  
-  hfserie_fitted <- ts(as.numeric(hfserie_wbench %*% regresults$coefficients),
-                       start=tsp(hfserie_wbench)[1],
-                       frequency=frequency(hfserie_wbench))
-  
-  if (is.null(set.smoothed.part)) {
-    hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = tsplf[3])
-    lfresiduals <- lfserie_wbench-hfserie_fitted_aggreg
-    lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
-    hfresiduals <- bflSmooth(lfresiduals,frequency(hfserie))
-  }
-  else {
-    if (!is.ts(set.smoothed.part) || is.mts(set.smoothed.part)) stop("set.smoothed part must be an univariate time-serie")
-    hfresiduals <- set.smoothed.part
-  }
-  
-  rests <- hfserie_fitted+hfresiduals
+  rests <- hfserie_fitted+smoothed_part
   
   res <- list(benchmarked.serie = window(rests,start=tsp(hfserie)[1],end=tsp(hfserie)[2],extend = TRUE),
               fitted.values = window(hfserie_fitted,end=tsp(hfserie)[2],extend = TRUE),
               regression = regresults,
-              smoothed.part = hfresiduals,
+              smoothed.part = smoothed_part,
               model.list = list(hfserie = hfserie,
                                 lfserie =lfserie,
                                 include.rho = include.rho,
