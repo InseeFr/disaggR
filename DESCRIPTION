@@ -5,7 +5,7 @@ Version: 0.1.3
 Date: 2020-08-04
 Author: Arnaud Feldmann
 Maintainer: Arnaud Feldmann <arnaud.feldmann@gmail.com>
-Description: The twoStepsBenchmark() function and its wrappers allow you to disaggregate a low frequency time serie using time series of higher frequency, using the French National Accounts methodology.
+Description: The twoStepsBenchmark() function and its wrappers allow you to disaggregate a low frequency time serie with time series of higher frequency, using the French National Accounts methodology.
 	The aggregated sum of the resulting time-serie is strictly equal to the low-frequency serie within the benchmarking window.
 	Typically, the low frequency serie is an annual one, unknown for the last year, and the high frequency is either quarterly or mensual.
 	See "Methodology of quarterly national accounts", Insee Méthodes N°126, by Passeron et al. (2012, ISBN:978-2-11-068613-8).
