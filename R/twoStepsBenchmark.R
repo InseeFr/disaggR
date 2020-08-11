@@ -81,7 +81,7 @@ coefficients_application <- function(hfserie,lfserie,regcoefs) {
 eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {
   if (is.null(set.smoothed.part)) {
     hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = frequency(lfserie))
-    lfresiduals <- window(lfserie-hfserie_fitted_aggreg,start=tsp(hfserie_fitted)[1],end=tsp(hfserie_fitted)[2],extend = TRUE)
+    lfresiduals <- window(lfserie,start=tsp(hfserie_fitted)[1],end=tsp(hfserie_fitted)[2],extend = TRUE)-hfserie_fitted_aggreg
     lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
     smoothed_part <- bflSmooth(lfresiduals,frequency(hfserie_fitted))
   }
@@ -96,8 +96,6 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    include.differenciation,include.rho,
                                    set_coefficients,start.coeff.calc,end.coeff.calc,
                                    maincl,cl=NULL,set.smoothed.part=NULL) {
-  if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional")
-  
   if (is.null(cl)) cl <- maincl
   
   regresults     <- regression_estimation(hfserie,lfserie,
@@ -232,6 +230,8 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
                               start.domain=NULL,end.domain=NULL,...) {
   
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object")
+  
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional")
   
   if  (!(frequency(hfserie) %% frequency(lfserie) == 0)) stop("The low frequency should divide the higher one")
   
