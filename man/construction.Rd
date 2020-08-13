@@ -15,6 +15,6 @@ construction
 }
 \description{
 An annual time-serie containing the french GFCF in construction from 2000
-to 2019.
+to 2019, as retrieved the 12/08/2020.
 }
 \keyword{internal}
