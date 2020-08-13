@@ -15,6 +15,6 @@ turnover
 }
 \description{
 An mensual time-serie containing the turnover indicator in construction
-from january 2000 to may 2020, as retrieved the 12/08/2020.
+from january 2000 to may 2020, as retrieved the 08/12/2020.
 }
 \keyword{internal}
