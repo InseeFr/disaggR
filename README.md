@@ -13,7 +13,8 @@ status](https://github.com/arnaud-feldmann/disaggR/workflows/R-CMD-check/badge.s
 
 The R package disaggR is an implementation of the French Quarterly
 National Accounts method for temporal disaggregation of time-series.
-`twoStepsBenchmark()` bends a time-serie with another.
+`twoStepsBenchmark()` bends a time-serie with another one of a lower
+frequency.
 
 ## Installation
 
@@ -31,9 +32,9 @@ install_github("arnaud-feldmann/disaggR")
 library(disaggR)
 library(ggplot2)
 
-benchmark <- annualBenchmark(hfserie = turnover,
-                             lfserie = construction,
-                             include.differenciation = TRUE)
+benchmark <- twoStepsBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = TRUE)
 as.ts(benchmark)
 coef(benchmark)
 summary(benchmark)
