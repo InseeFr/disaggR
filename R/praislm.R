@@ -13,6 +13,12 @@ omega_inv_sqrt <- function(x,rho) {
   return(res)
 }
 
+autocor <- function(x) {
+  x_center <- x-mean(x)
+  return(as.numeric(crossprod(x_center[-1],x_center[-length(x_center)]) /
+                      crossprod(x_center)))
+}
+
 praislm_impl <- function(X,y,include.rho) {
   rho <- 0
   df_residual <- nrow(X) - ncol(X)
@@ -20,7 +26,7 @@ praislm_impl <- function(X,y,include.rho) {
   if (ncol(X) != 0) {
     if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window")
     PQR <- qr(X)
-    if (PQR$rank !=ncol(X))  stop("The regressed series should have a perfect rank")
+    if (PQR$rank != ncol(X))  stop("The regressed series should have a perfect rank")
     
     coefficients <- qr.coef(PQR,y)
     
@@ -30,14 +36,9 @@ praislm_impl <- function(X,y,include.rho) {
       i_max = 50L
       i <- 1L
       
-      while (drho>0.001 && i<i_max) {
-        residuals <- y - X %*% coefficients
-        residuals_centered <- residuals-mean(residuals)
-        tailresc <- residuals_centered[-1]
-        headresc <- residuals_centered[-length(residuals_centered)]
-        rho <- as.numeric(crossprod(tailresc,headresc)/
-                            sqrt(crossprod(tailresc)) /
-                            sqrt(crossprod(headresc)))
+      while (drho>0.001 && i<=i_max) {
+        rho <- autocor(y - X %*% coefficients)
+        
         drho <- abs(rho-rho_prec)
         rho_prec <- rho
         
@@ -47,7 +48,7 @@ praislm_impl <- function(X,y,include.rho) {
         PQR <- qr(X_star)
         coefficients <- qr.coef(PQR,y_star)
       }
-      if (i >= i_max) warning("Maximum iterations without convergence")
+      if (i == i_max) warning("Maximum iterations without convergence")
       i <- i+1
     }
     fitted <- ts(X %*% coefficients,start=start(X),frequency = frequency(X))
