@@ -15,8 +15,12 @@ omega_inv_sqrt <- function(x,rho) {
 
 autocor <- function(x) {
   x_center <- x-mean(x)
-  return(as.numeric(crossprod(x_center[-1],x_center[-length(x_center)]) /
-                      crossprod(x_center)))
+  tailxc <- x_center[-1]
+  headxc <- x_center[-length(x_center)]
+  rho <- as.numeric(crossprod(tailxc,headxc)/
+                      sqrt(crossprod(tailxc)) /
+                      sqrt(crossprod(headxc)))
+    # Not exactly pearson but is a bit better to estimate the rho of an AR1
 }
 
 praislm_impl <- function(X,y,include.rho) {
@@ -47,9 +51,9 @@ praislm_impl <- function(X,y,include.rho) {
         
         PQR <- qr(X_star)
         coefficients <- qr.coef(PQR,y_star)
+        if (i == i_max) warning("Maximum iterations without convergence")
+        i <- i+1
       }
-      if (i == i_max) warning("Maximum iterations without convergence")
-      i <- i+1
     }
     fitted <- ts(X %*% coefficients,start=start(X),frequency = frequency(X))
     residuals <- y-fitted

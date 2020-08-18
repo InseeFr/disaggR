@@ -9,3 +9,9 @@ test_that("error praislm", {
   expect_error(praislm(ts(1:120,frequency=12,start=2010),1:10,
                        TRUE,numeric(),NULL),"ts object")
 })
+
+test_that("max iter" {
+  expect_warning(praislm_impl(matrix(c(1.324398899494450,-0.953033704627492,0.153551486265972),ncol=1),
+                              c(26.080220590193644,-20.148635100560220,2.606520694629608),TRUE),
+                 "Maximum iterations")
+})
