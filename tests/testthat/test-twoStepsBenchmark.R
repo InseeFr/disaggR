@@ -293,7 +293,8 @@ test_that("windows and extraps works",{
                           start.benchmark = c(2012,1),
                           end.benchmark = c(2014,3))
   asp <- aggregate(smoothed.part(bn),nf=4)
-  residextrap <- window(residuals(bn),start=start(asp),end=end(asp),extend=TRUE)
+  residextrap <- window(window(residuals(bn),start=c(2012,1),end=c(2014,3),extend=TRUE),
+                        start=start(asp),end=end(asp),extend=TRUE)
   residextrap[is.na(residextrap)] <- 0
   expect_equal(asp,residextrap)
 })

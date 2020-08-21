@@ -10,7 +10,8 @@ Description: The twoStepsBenchmark() function and its wrappers allow you to disa
 	Typically, the low frequency serie is an annual one, unknown for the last year, and the high frequency is either quarterly or mensual.
 	See "Methodology of quarterly national accounts", Insee Méthodes N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 Imports:
-    ggplot2
+    ggplot2,
+    shiny
 License: GPL (>= 2)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

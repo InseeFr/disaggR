@@ -94,7 +94,9 @@ eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rh
 #' @importFrom utils head
 twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    include.differenciation,include.rho,
-                                   set_coefficients,start.coeff.calc,end.coeff.calc,
+                                   set_coefficients,
+                                   start.coeff.calc,end.coeff.calc,
+                                   start.benchmark,end.benchmark,
                                    maincl,cl=NULL,set.smoothed.part=NULL) {
   if (is.null(cl)) cl <- maincl
   
@@ -103,9 +105,11 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                           start.coeff.calc,end.coeff.calc,
                                           set_coefficients,cl)
   
-  hfserie_fitted <- coefficients_application(hfserie,lfserie,regresults$coefficients)
+  lfserie_cropped <- window(lfserie,start=start.benchmark,end=end.benchmark,extend=TRUE)
   
-  smoothed_part  <- eval_smoothed_part(hfserie_fitted,lfserie,include.differenciation,regresults$rho,set.smoothed.part)
+  hfserie_fitted <- coefficients_application(hfserie,lfserie_cropped,regresults$coefficients)
+  
+  smoothed_part  <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
   
   rests <- hfserie_fitted+smoothed_part
   
@@ -255,10 +259,11 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   colnames(hfserie) <- sub("^(hfserie\\.)","",colnames(hfserie))
   
   return(twoStepsBenchmark_impl(window(hfserie,start.domain,end.domain,extend=TRUE),
-                                window(lfserie,start.benchmark,end.benchmark,extend=TRUE),
+                                lfserie,
                                 include.differenciation,include.rho,
                                 c(set.const,set.coeff),
-                                start.coeff.calc,end.coeff.calc,maincl,...))
+                                start.coeff.calc,end.coeff.calc,
+                                start.benchmark,end.benchmark,maincl,...))
 }
 
 #' @export
