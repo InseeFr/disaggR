@@ -97,8 +97,11 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    set_coefficients,
                                    start.coeff.calc,end.coeff.calc,
                                    start.benchmark,end.benchmark,
+                                   start.domain,end.domain,
                                    maincl,cl=NULL,set.smoothed.part=NULL) {
   if (is.null(cl)) cl <- maincl
+  
+  hfserie <- window(hfserie,start.domain,end.domain,extend=TRUE)
   
   regresults     <- regression_estimation(hfserie,lfserie,
                                           include.differenciation,include.rho,
@@ -123,7 +126,11 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                 include.differenciation=include.differenciation,
                                 set.coefficients=set_coefficients,
                                 start.coeff.calc = start.coeff.calc,
-                                end.coeff.calc = end.coeff.calc),
+                                end.coeff.calc = end.coeff.calc,
+                                start.benchmark = start.benchmark,
+                                end.benchmark = end.benchmark,
+                                start.domain = start.domain,
+                                end.domain = end.domain),
               call = cl)
   class(res) <- c("twoStepsBenchmark","list")
   return(res)
@@ -258,12 +265,13 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   hfserie <- cbind(constant,hfserie)
   colnames(hfserie) <- sub("^(hfserie\\.)","",colnames(hfserie))
   
-  return(twoStepsBenchmark_impl(window(hfserie,start.domain,end.domain,extend=TRUE),
+  return(twoStepsBenchmark_impl(hfserie,
                                 lfserie,
                                 include.differenciation,include.rho,
                                 c(set.const,set.coeff),
                                 start.coeff.calc,end.coeff.calc,
-                                start.benchmark,end.benchmark,maincl,...))
+                                start.benchmark,end.benchmark,
+                                start.domain,end.domain,maincl,...))
 }
 
 #' @export
