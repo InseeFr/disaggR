@@ -335,6 +335,8 @@ test_that("errors",{
   expect_error(twoStepsBenchmark_impl(turnover,construction,
                                       start.coeff.calc = 2000,
                                       end.coeff.calc = 2010,
+                                      start.domain = 2000,
+                                      end.domain= 2020.333,
                                       include.rho=FALSE,
                                       include.differenciation = TRUE,
                                       set_coefficients = numeric(),

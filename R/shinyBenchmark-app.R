@@ -1,22 +1,6 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
-library(shiny)
-
-# Define UI for application that draws a histogram
-ui <- function(hfserie,lfserie,indicname) {
+disaggRui <- function(hfserie,lfserie,indicname) {
     fluidPage(
-        
-        # Application title
         titlePanel(paste0("shinyBenchmark : ",indicname)),
-        
-        # Sidebar with a slider input for number of bins 
         sidebarLayout(
             sidebarPanel(
                 width = 2,
@@ -44,19 +28,17 @@ ui <- function(hfserie,lfserie,indicname) {
                             step = deltat(lfserie)),
                 actionButton("validation","Validate",width = "100%")
             ),
-            
-            # Show a plot of the generated distribution
             mainPanel(
                 width = 10,
                 fluidRow(
                     column(12,
-                    radioButtons("plotchoice","",
-                                 choiceNames = c("Benchmark","In-sample predictions","Summary"),
-                                 choiceValues = c("benchmark","insample","summary"),
-                                 inline = TRUE)
-                         ),
-                    align="center"
+                           radioButtons("plotchoice","",
+                                        choiceNames = c("Benchmark","In-sample predictions","Summary"),
+                                        choiceValues = c("benchmark","insample","summary"),
+                                        inline = TRUE)
                     ),
+                    align="center"
+                ),
                 conditionalPanel(condition = "input.plotchoice == 'benchmark' || input.plotchoice == 'insample'",{
                     fluidRow(
                         column(width=6,h5(tags$u("Before"),align="center"),plotOutput("preplot")),
@@ -65,24 +47,21 @@ ui <- function(hfserie,lfserie,indicname) {
                 }),
                 conditionalPanel(condition = "input.plotchoice == 'summary'",
                                  fluidRow(
-                                     column(width=6,h5(tags$u("Before"),align="center"),textOutput("presum")),
-                                     column(width=6,h5(tags$u("After"),align="center"),textOutput("newsum"))
-                                 ),
-                                 tags$style(type="text/css","#newsum {white-space: pre-wrap;}"),
-                                 tags$style(type="text/css","#presum {white-space: pre-wrap;}")
+                                     column(width=6,h5(tags$u("Before"),align="center"),verbatimTextOutput("presum")),
+                                     column(width=6,h5(tags$u("After"),align="center"),verbatimTextOutput("newsum"))
+                                 )
                 )
             )
         )
     )
 }
 
-# Define server logic required to draw a histogram
-server <- function(hfserie,lfserie,
-                   include.differenciation.prec,include.rho.prec,
-                   set.coeff.prec,set.const.prec,
-                   start.coeff.calc.prec,end.coeff.calc.prec,
-                   start.benchmark.prec,end.benchmark.prec,
-                   indicname) {
+disaggRserver <- function(hfserie,lfserie,
+                          include.differenciation.prec,include.rho.prec,
+                          set.coeff.prec,set.const.prec,
+                          start.coeff.calc.prec,end.coeff.calc.prec,
+                          start.benchmark.prec,end.benchmark.prec,
+                          indicname) {
     oldbn <- twoStepsBenchmark(hfserie,lfserie,
                                include.differenciation.prec,include.rho.prec,
                                set.coeff.prec,set.const.prec,
@@ -92,21 +71,16 @@ server <- function(hfserie,lfserie,
         set_coeff <- reactive({
             if (input$setcoeff_button) {
                 if (is.null(input$setcoeff) || is.na(input$setcoeff)) return(0)
-                else return(input$setcoeff)
                 return(input$setcoeff)
             }
-            else return(NULL)
+            return(NULL)
         })
         set_const <- reactive({
             if (input$setconst_button) {
                 if (is.null(input$setconst) || is.na(input$setconst)) return(0)
-                else return(input$setconst)
                 return(input$setconst)
             }
-            else return(NULL)
-        })
-        observe({
-            if (input$validation > 0) stopApp(list(input$dif,input$rho,input$setcoeff))
+            return(NULL)
         })
         bn <- reactive({twoStepsBenchmark(hfserie,lfserie,
                                           include.differenciation = input$dif,
@@ -117,43 +91,20 @@ server <- function(hfserie,lfserie,
                                           end.coeff.calc = input$coeffcalc[2],
                                           start.benchmark = input$benchmark[1],
                                           end.benchmark = input$benchmark[2])})
-        # output$summary <- renderPrint({
-        #     smry <- summary(prais(bn()))
-        #     printCoefmat(smry$coefficients, P.values = TRUE, has.Pvalue = TRUE,digits=3,signif.stars=TRUE)
-        # })
-        
+        observe(if (input$validation > 0) stopApp(bn()))
+        session$onSessionEnded(function() stopApp(errorCondition("shinyBenchmark cancelled")))
         observe({switch(input$plotchoice,
-               benchmark={
-                   output$newplot <- renderPlot(autoplot(bn()))
-                   output$preplot <- renderPlot(autoplot(oldbn))
-               },
-               insample={
-                   output$newplot <- renderPlot(autoplot(in_sample(bn())))
-                   output$preplot <- renderPlot(autoplot(in_sample(oldbn)))
-               },
-               summary={
-                   output$newsum <- renderPrint(print(summary(bn())))
-                   output$presum <- renderPrint(print(summary(oldbn)))
-               })})
+                        benchmark={
+                            output$newplot <- renderPlot(autoplot(bn()))
+                            output$preplot <- renderPlot(autoplot(oldbn))
+                        },
+                        insample={
+                            output$newplot <- renderPlot(autoplot(in_sample(bn())))
+                            output$preplot <- renderPlot(autoplot(in_sample(oldbn)))
+                        },
+                        summary={
+                            output$newsum <- renderPrint(print(summary(bn()),call=FALSE))
+                            output$presum <- renderPrint(print(summary(oldbn),call=FALSE))
+                        })})
     }
 }
-
-# Run the application 
-lfserie <- construction
-hfserie <- turnover
-indicname <- "test"
-include.differenciation.prec <- TRUE
-include.rho.prec <- FALSE
-set.coeff.prec <- NULL
-set.const.prec <- NULL
-start.coeff.calc.prec <- NULL
-end.coeff.calc.prec <- NULL
-start.benchmark.prec <- NULL
-end.benchmark.prec <- NULL
-test <- runApp(shinyApp(ui = ui(hfserie,lfserie,
-                                indicname),
-                        server = server(hfserie,lfserie,
-                                        include.differenciation.prec,include.rho.prec,
-                                        set.coeff.prec,set.const.prec,
-                                        start.coeff.calc.prec,end.coeff.calc.prec,
-                                        start.benchmark.prec,end.benchmark.prec,indicname)))

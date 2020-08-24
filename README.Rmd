@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 [![R build status](https://github.com/arnaud-feldmann/disaggR/workflows/R-CMD-check/badge.svg)](https://github.com/arnaud-feldmann/disaggR/actions)
 [![codecov](https://codecov.io/gh/arnaud-feldmann/disaggR/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaud-feldmann/disaggR)
+[![CRAN status](https://www.r-pkg.org/badges/version/disaggR)](https://cran.r-project.org/package=disaggR)
 
 <!-- badges: end -->
 
@@ -26,10 +27,15 @@ The R package disaggR is an implementation of the French Quarterly National Acco
 
 ## Installation
 
-As for now, only the development version is available, from Github.
+You can install the _stable_ version from [CRAN](https://cran.r-project.org/package=disaggR).
 
 ```{r, eval = FALSE}
-# Development version
+install.packages('disaggR', dependencies = TRUE)
+```
+
+You can install the _development- version from [Github](https://github.com/arnaud-feldmann/disaggR).
+
+```{r, eval = FALSE}
 # install.packages("devtools")
 install_github("arnaud-feldmann/disaggR")
 ```

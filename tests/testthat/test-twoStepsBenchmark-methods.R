@@ -21,4 +21,13 @@ test_that("methods tests", {
   b <- as.ts(benchmark)-fitted(benchmark)
   a <- window(a,end=end(b))
   expect_equal(a,b)
+  
+  bn<- twoStepsBenchmark(turnover,construction,start.coeff.calc=2001,end.coeff.calc=2015,start.benchmark=2002,end.benchmark=2018,start.domain = 2000,end.domain=c(2020,12))
+  m <- model.list(bn)
+  expect_equal(m$start.coeff.calc,2001)
+  expect_equal(m$end.coeff.calc,2015)
+  expect_equal(m$start.benchmark,2002)
+  expect_equal(m$end.benchmark,2018)
+  expect_equal(m$start.domain,2000)
+  expect_equal(m$end.domain,c(2020,12))
 })

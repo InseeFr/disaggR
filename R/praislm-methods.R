@@ -110,15 +110,19 @@ summary.praislm <- function (object, ...) {
 
 #' @export
 print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
-                                   signif.stars = getOption("show.signif.stars"),...) {
-  cat("\nCall:\n")
-  print(x$call)
-  
-  if (x$rho != 0) {
-    cat("\nAutocorrelation parameter (rho): ", formatC(x$rho,digits=digits),"\n")
+                                   signif.stars = getOption("show.signif.stars"),
+                                   call = TRUE,...) {
+  if (call) {
+    cat("\nCall:\n")
+    print(x$call)
+    cat("\n\n")
   }
   
-  cat("\nResiduals:\n")
+  if (x$rho != 0) {
+    cat("Autocorrelation parameter (rho): ", formatC(x$rho,digits=digits),"\n\n")
+  }
+  
+  cat("Residuals:\n")
   print(summary(x$residuals, digits = digits)[-4])
   cat("\n")
   printCoefmat(x$coefficients, P.values = TRUE, has.Pvalue = TRUE,digits=digits,signif.stars=signif.stars)

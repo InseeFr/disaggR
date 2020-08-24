@@ -6,6 +6,8 @@
 [![R build
 status](https://github.com/arnaud-feldmann/disaggR/workflows/R-CMD-check/badge.svg)](https://github.com/arnaud-feldmann/disaggR/actions)
 [![codecov](https://codecov.io/gh/arnaud-feldmann/disaggR/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaud-feldmann/disaggR)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/disaggR)](https://cran.r-project.org/package=disaggR)
 
 <!-- badges: end -->
 
@@ -18,10 +20,17 @@ frequency.
 
 ## Installation
 
-As for now, only the development version is available, from Github.
+You can install the *stable* version from
+[CRAN](https://cran.r-project.org/package=disaggR).
 
 ``` r
-# Development version
+install.packages('disaggR', dependencies = TRUE)
+```
+
+You can install the \_development- version from
+[Github](https://github.com/arnaud-feldmann/disaggR).
+
+``` r
 # install.packages("devtools")
 install_github("arnaud-feldmann/disaggR")
 ```
@@ -42,4 +51,4 @@ autoplot(benchmark)
 autoplot(in_sample(benchmark))
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-3-2.png" width="50%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-4-2.png" width="50%" />
