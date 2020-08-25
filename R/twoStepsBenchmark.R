@@ -307,6 +307,10 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
 #' are taken
 #' @param reeval.smoothed.part a boolean of length 1. If `TRUE`, the smoothed part is
 #' reevaluated, hence the aggregated benchmarked serie is equal to the low-frequency serie.
+#' @param new.start.domain the new `start.domain` parameter. If NULL, the old parameter is
+#' kept.
+#' @param end.start.domain the new `end.domain` parameter. If NULL, the old parameter is
+#' kept.
 #' @return twoStepsBenchark returns an object of class \link{twoStepsBenchmark}.
 #' @examples 
 #' benchmark <- twoStepsBenchmark(turnover,construction) 
@@ -314,9 +318,13 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
 #' turnover_modif[2] <- turnover[2]+2
 #' benchmark2 <- reUseBenchmark(turnover_modif,benchmark)
 #' @export
-reUseBenchmark <- function(hfserie,benchmark,reeval.smoothed.part=FALSE) {
+reUseBenchmark <- function(hfserie,benchmark,reeval.smoothed.part=FALSE,
+                           new.start.domain=NULL,new.end.domain=NULL) {
   m <- model.list(benchmark)
   
+  if (!(is.null(new.start.domain))) m$start.domain <- new.start.domain
+  if (!(is.null(new.end.domain))) m$end.domain <- new.end.domain
+    
   coefs <- coef(benchmark)
   set.const <- coefs["constant"]
   set.coeff <- coefs[names(coefs) != "constant"]

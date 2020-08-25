@@ -30,26 +30,32 @@ update_shinyBenchmarks <- function() {
 
 shinyBenchmark <- function(hfserie,lfserie,file,benchmark_name) {
   if (!(is.character(benchmark_name) && length(benchmark_name) == 1L)) stop("benchmark_name must be a character of length 1")
+  if (!(is.character(file) && length(file) == 1L)) stop("file must be a path, a character of length 1")
   folder <- dirname(file)
   if (!dir.exists(folder)) stop("The requested folder doesn't exist")
   if (!file.exists(file)) {
     if (!isTRUE(option_shinyBenchmarks_get())) warning("Creating shinyBenchmark file",call. = FALSE)
-    return(runapp_disaggr(hfserie,lfserie,file,benchmark_name,data.frame()))
+    newmodel <- runapp_disaggr(hfserie,lfserie,file,benchmark_name)
   }
-  olddf <- read.csv(file)
-  if match(benchmark_name,r
-  if (isTRUE(option_shinyBenchmarks_get()) || )
+  # else {
+  #   
+  # }
+  # olddf <- read.csv(file)
+  # match(benchmark_name,
+  # if (isTRUE(option_shinyBenchmarks_get()) || )
 }
 
 runapp_disaggr <- function(hfserie,lfserie,file,benchmark_name,olddf) {
+  oldbn <- twoStepsBenchmark(hfserie,lfserie,
+                             include.differenciation.prec,include.rho.prec,
+                             set.coeff.prec,set.const.prec,
+                             start.coeff.calc.prec,end.coeff.calc.prec,
+                             start.benchmark.prec,end.benchmark.prec)
   shinyreturn <- shiny::runApp(
     shiny::shinyApp(ui = disaggRui(hfserie,lfserie,
                                    benchmark_name),
                     server = disaggRserver(hfserie,lfserie,
-                                           include.differenciation.prec,include.rho.prec,
-                                           set.coeff.prec,set.const.prec,
-                                           start.coeff.calc.prec,end.coeff.calc.prec,
-                                           start.benchmark.prec,end.benchmark.prec,benchmark_name)
+                                           oldbn,benchmark_name)
     )
   )
   if (inherits(shinyreturn,"error")) stop(shinyreturn, call. = FALSE)
