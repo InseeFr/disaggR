@@ -25,7 +25,7 @@ on new time-serie.
 }
 \details{
 reUseBenchmark is primarily meant to be used on a serie that is derived from the previous
-one, after some modifications that would bias the estimation. Working-day adjustment
+one, after some modifications that would bias the estimation otherwise. Working-day adjustment
 is a good example. Hence, by default, the smoothed part of the first model isn't
 reevaluated ; the aggregated benchmarked serie isn't equal to the low-frequency serie.
 }

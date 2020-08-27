@@ -183,11 +183,11 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' @param end.benchmark an optional end for `lfserie` to bend `hfserie`.
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
 #' @param start.domain the start of the output high-frequency serie. It also defines the smoothing window :
-#' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that around the high-frequency
+#' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 #' domain window.
 #' Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.
 #' @param end.domain the end of the output high-frequency serie. It also defines the smoothing window :
-#' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that around the high-frequency
+#' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 #' domain window.
 #' Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.
 #' @param \dots if the dots contain a cl item, its value overwrites the value
@@ -195,7 +195,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' @return
 #' twoStepsBenchark returns an object of class "`twoStepsBenchmark`".
 #' 
-#' The functions `summary` can be used to obtain and print a summary of the regression used by the benchmark.
+#' The function `summary` can be used to obtain and print a summary of the regression used by the benchmark.
 #' The functions `plot` and `autoplot` (the latter requires to load \pkg{ggplot2}) produces graphics of the benchmarked
 #' serie and the bending serie.
 #' The function \link{in_sample} produces in-sample predictions with the inner regression.
@@ -294,7 +294,7 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
 #' on new time-serie.
 #'
 #' reUseBenchmark is primarily meant to be used on a serie that is derived from the previous
-#' one, after some modifications that would bias the estimation. Working-day adjustment
+#' one, after some modifications that would bias the estimation otherwise. Working-day adjustment
 #' is a good example. Hence, by default, the smoothed part of the first model isn't
 #' reevaluated ; the aggregated benchmarked serie isn't equal to the low-frequency serie.
 #' 

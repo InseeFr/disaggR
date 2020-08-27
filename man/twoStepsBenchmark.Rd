@@ -52,12 +52,12 @@ Should be a double or a numeric of length 2, like a window for \code{lfserie}. I
 Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the start is defined by lfserie's window.}
 
 \item{start.domain}{the start of the output high-frequency serie. It also defines the smoothing window :
-The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that around the high-frequency
+The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 domain window.
 Should be a double or a numeric of length 2, like a window for \code{hfserie}. If NULL, the start is defined by hfserie's window.}
 
 \item{end.domain}{the end of the output high-frequency serie. It also defines the smoothing window :
-The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that around the high-frequency
+The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 domain window.
 Should be a double or a numeric of length 2, like a window for \code{hfserie}. If NULL, the start is defined by hfserie's window.}
 
@@ -67,7 +67,7 @@ of the returned call. This feature allows to build wrappers.}
 \value{
 twoStepsBenchark returns an object of class "\code{twoStepsBenchmark}".
 
-The functions \code{summary} can be used to obtain and print a summary of the regression used by the benchmark.
+The function \code{summary} can be used to obtain and print a summary of the regression used by the benchmark.
 The functions \code{plot} and \code{autoplot} (the latter requires to load \pkg{ggplot2}) produces graphics of the benchmarked
 serie and the bending serie.
 The function \link{in_sample} produces in-sample predictions with the inner regression.
