@@ -45,7 +45,7 @@ shinyBenchmark <- function(hfserie,lfserie,file,benchmark_name) {
   # if (isTRUE(option_shinyBenchmarks_get()) || )
 }
 
-runapp_disaggr <- function(hfserie,lfserie,file,benchmark_name,olddf) {
+runapp_disaggr <- function(hfserie,lfserie,file,benchmark_name) {
   oldbn <- twoStepsBenchmark(hfserie,lfserie,
                              include.differenciation.prec,include.rho.prec,
                              set.coeff.prec,set.const.prec,

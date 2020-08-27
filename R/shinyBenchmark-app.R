@@ -1,3 +1,4 @@
+#' @import shiny
 shinyBenchmark_ui_module <- function(id) {
     ns <- NS(id)
     fluidPage(
@@ -17,7 +18,7 @@ shinyBenchmark_ui_module <- function(id) {
                 h5(tags$u("Windows"),align="center"),
                 uiOutput(ns("coeffcalcsliderInput")),
                 uiOutput(ns("benchmarksliderInput")),
-                actionButton(ns("validation"),"Validate")
+                uiOutput(ns("validationbutton"))
             ),
             mainPanel(
                 width = 10,
@@ -37,44 +38,69 @@ shinyBenchmark_ui_module <- function(id) {
     )
 }
 
-shinyBenchmark_server_module <- function(id,hfserie,lfserie,oldbn,indicname) {
+slider_windows <- function(ns,lfserie,ui_out,label) {
+    renderUI(
+        sliderInput(ns(ui_out),
+                    label,
+                    min = tsp(lfserie())[1],
+                    max = tsp(lfserie())[2],
+                    value = c(tsp(lfserie())[1],tsp(lfserie())[2]),
+                    step = deltat(lfserie()))
+    )
+}
+
+shinyBenchmark_server_module <- function(id,oldbn,indicname,compare,function_mode=TRUE) {
     moduleServer(id,function(input, output, session) {
-        output$titlePanel <- renderUI(titlePanel(paste0("shinyBenchmark : ",indicname())))
-        output$coeffcalcsliderInput <- renderUI(
-            sliderInput(session$ns("coeffcalc"),
-                        "Coefficients:",
-                        min = tsp(lfserie())[1],
-                        max = tsp(lfserie())[2],
-                        value = c(tsp(lfserie())[1],tsp(lfserie())[2]),
-                        step = deltat(lfserie()))
-        )
-        output$benchmarksliderInput <- renderUI(
-            sliderInput(session$ns("benchmark"),
-                        "Benchmark:",
-                        min = tsp(lfserie())[1],
-                        max = tsp(lfserie())[2],
-                        value = c(tsp(lfserie())[1],tsp(lfserie())[2]),
-                        step = deltat(lfserie()))
-        )
-        output$mainOutput <- renderUI({
-            if (input$plotchoice == "benchmark" || input$plotchoice == "insample") {
-                if (is.null(oldbn())) plotOutput(session$ns("newplot"))
-                else {
-                    fluidRow(
-                        column(width=6,h5(tags$u("Before"),align="center"),plotOutput(session$ns("oldplot"))),
-                        column(width=6,h5(tags$u("After"),align="center"),plotOutput(session$ns("newplot")))
-                    )
-                }
-            } else {
-                if (is.null(oldbn())) verbatimTextOutput(session$ns("newsum"))
-                else {
-                    fluidRow(
-                        column(width=6,h5(tags$u("Before"),align="center"),verbatimTextOutput(session$ns("oldsum"))),
-                        column(width=6,h5(tags$u("After"),align="center"),verbatimTextOutput(session$ns("newsum")))
-                    )
-                }
-            }
+        
+        lfserie <- reactive(model.list(oldbn())$lfserie)
+        hfserie <- reactive({
+            res <- model.list(oldbn())$hfserie
+            return(res[,colnames(res) != "constant"])
         })
+        
+        output$titlePanel <- renderUI(titlePanel(paste0("shinyBenchmark : ",indicname())))
+        
+        output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie,"coeffcalc","Coefficients:")
+        output$benchmarksliderInput <- slider_windows(session$ns,lfserie,"benchmark","Benchmark:")
+        
+        if (function_mode) {
+            output$validationbutton <- renderUI(actionButton(session$ns("validation"),"Validate"))
+            observeEvent(input$validation,stopApp(newbn()))
+            onSessionEnded(function() stopApp(structure(list(message = "shinyBenchmark cancelled", call = NULL),
+                                                        class = c("error", "condition"))))
+        } else output$validationbutton <- NULL
+        
+        output$mainOutput <- renderUI({
+            switch(input$plotchoice,
+                   benchmark={
+                       output$newplot <- renderPlot(ggplot2::autoplot(newbn()))
+                       if (!compare) return(plotOutput(session$ns("newplot")))
+                       output$oldplot <- renderPlot(ggplot2::autoplot(oldbn()))
+                       return(fluidRow(
+                           column(width=6,h5(tags$u("Before"),align="center"),plotOutput(session$ns("oldplot"))),
+                           column(width=6,h5(tags$u("After"),align="center"),plotOutput(session$ns("newplot")))
+                       ))
+                   },
+                   insample={
+                       output$newplot <- renderPlot(ggplot2::autoplot(in_sample(newbn())))
+                       if (!compare) return(plotOutput(session$ns("newplot")))
+                       output$oldplot <- renderPlot(ggplot2::autoplot(in_sample(oldbn())))
+                       return(fluidRow(
+                           column(width=6,h5(tags$u("Before"),align="center"),plotOutput(session$ns("oldplot"))),
+                           column(width=6,h5(tags$u("After"),align="center"),plotOutput(session$ns("newplot")))
+                       ))
+                   },
+                   summary={
+                       output$newsum <- renderPrint(print(summary(newbn()),call=FALSE))
+                       if (!compare) return(verbatimTextOutput(session$ns("newsum")))
+                       output$oldsum <- renderPrint(print(summary(oldbn()),call=FALSE))
+                       return(fluidRow(
+                           column(width=6,h5(tags$u("Before"),align="center"),verbatimTextOutput(session$ns("oldsum"))),
+                           column(width=6,h5(tags$u("After"),align="center"),verbatimTextOutput(session$ns("newsum")))
+                       ))
+                   })
+        })
+        
         set_coeff <- reactive({
             if (input$setcoeff_button) {
                 if (is.null(input$setcoeff) || is.na(input$setcoeff)) return(0)
@@ -89,7 +115,8 @@ shinyBenchmark_server_module <- function(id,hfserie,lfserie,oldbn,indicname) {
             }
             return(NULL)
         })
-        bn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
+        
+        newbn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                           include.differenciation = input$dif,
                                           include.rho = input$rho,
                                           set.coeff = set_coeff(),
@@ -98,27 +125,12 @@ shinyBenchmark_server_module <- function(id,hfserie,lfserie,oldbn,indicname) {
                                           end.coeff.calc = input$coeffcalc[2],
                                           start.benchmark = input$benchmark[1],
                                           end.benchmark = input$benchmark[2])})
-        observe(if (input$validation > 0) stopApp(bn()))
-        session$onSessionEnded(function() stopApp(errorCondition("shinyBenchmark cancelled")))
-        observe({switch(input$plotchoice,
-                        benchmark={
-                            output$newplot <- renderPlot(autoplot(bn()))
-                            output$oldplot <- renderPlot(autoplot(oldbn()))
-                        },
-                        insample={
-                            output$newplot <- renderPlot(autoplot(in_sample(bn())))
-                            output$oldplot <- renderPlot(autoplot(in_sample(oldbn())))
-                        },
-                        summary={
-                            output$newsum <- renderPrint(print(summary(bn()),call=FALSE))
-                            output$oldsum <- renderPrint(print(summary(oldbn()),call=FALSE))
-                        })})
     })
 }
 
 shinyBenchmark_ui <- shinyBenchmark_ui_module("shinyBenchmark")
-shinyBenchmark_server <- function(hfserie,lfserie,oldbn,indicname) {
+shinyBenchmark_server <- function(oldbn,indicname,compare,function_mode) {
     function(input,output,session) {
-        shinyBenchmark_server_module("shinyBenchmark",reactive(hfserie),reactive(lfserie),reactive(oldbn),reactive(indicname))
+        shinyBenchmark_server_module("shinyBenchmark",reactive(oldbn),reactive(indicname),compare,function_mode)
     }
 }
