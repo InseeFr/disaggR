@@ -28,9 +28,9 @@ praislm_impl <- function(X,y,include.rho) {
   df_residual <- nrow(X) - ncol(X)
   
   if (ncol(X) != 0) {
-    if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window")
+    if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window", call. = FALSE)
     PQR <- qr(X)
-    if (PQR$rank != ncol(X))  stop("The regressed series should have a perfect rank")
+    if (PQR$rank != ncol(X))  stop("The regressed series should have a perfect rank", call. = FALSE)
     
     coefficients <- qr.coef(PQR,y)
     
@@ -84,8 +84,8 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
                     include.rho=include.rho,
                     include.differenciation=include.differenciation,
                     set.coefficients=set_coefficients)
-  if ( !is.ts(X) || !is.ts(y) ) stop("Not a ts object")
-  if (is.null(dim(X))) stop("Not a matrix object")
+  if ( !is.ts(X) || !is.ts(y) ) stop("Not a ts object", call. = FALSE)
+  if (is.null(dim(X))) stop("Not a matrix object", call. = FALSE)
   
   if (include.differenciation) {
     X <- diff(X)
@@ -93,7 +93,7 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   }
 
   if (length(set_coefficients)==0) names(set_coefficients) <- character()
-  else if (is.null(names(set_coefficients))) stop("The coefficients setter must be empty or have names")
+  else if (is.null(names(set_coefficients))) stop("The coefficients setter must be empty or have names", call. = FALSE)
   
   coefficients <- rep(NA_real_,ncol(X))
   names(coefficients) <- colnames(X)
@@ -101,8 +101,8 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   names(se) <- colnames(X)
   
   match_set <- match(names(set_coefficients),colnames(X))
-  if (any(is.na(set_coefficients))) stop("A coefficient can't be set to NA")
-  if (any(is.na(match_set))) stop("The names of the set coefficients must be a column name of hfserie")
+  if (any(is.na(set_coefficients))) stop("A coefficient can't be set to NA", call. = FALSE)
+  if (any(is.na(match_set))) stop("The names of the set coefficients must be a column name of hfserie", call. = FALSE)
   coefficients[match_set] <- set_coefficients
   match_notset <- which(is.na(coefficients))
   

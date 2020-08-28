@@ -49,7 +49,7 @@ slider_windows <- function(ns,lfserie,ui_out,label) {
     )
 }
 
-shinyBenchmark_server_module <- function(id,oldbn,indicname,compare,function_mode=TRUE) {
+shinyBenchmark_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain,compare,function.mode=TRUE) {
     moduleServer(id,function(input, output, session) {
         
         lfserie <- reactive(model.list(oldbn())$lfserie)
@@ -58,14 +58,14 @@ shinyBenchmark_server_module <- function(id,oldbn,indicname,compare,function_mod
             return(res[,colnames(res) != "constant"])
         })
         
-        output$titlePanel <- renderUI(titlePanel(paste0("shinyBenchmark : ",indicname())))
+        output$titlePanel <- renderUI(titlePanel(paste0("shinyBenchmark : ",benchmark.name())))
         
         output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie,"coeffcalc","Coefficients:")
         output$benchmarksliderInput <- slider_windows(session$ns,lfserie,"benchmark","Benchmark:")
         
-        if (function_mode) {
+        if (function.mode) {
             output$validationbutton <- renderUI(actionButton(session$ns("validation"),"Validate"))
-            observeEvent(input$validation,stopApp(newbn()))
+            observeEvent(input$validation,stopApp(`attr<-`(newbn(),"ValidationDate",Sys.Date())))
             onSessionEnded(function() stopApp(structure(list(message = "shinyBenchmark cancelled", call = NULL),
                                                         class = c("error", "condition"))))
         } else output$validationbutton <- NULL
@@ -117,20 +117,22 @@ shinyBenchmark_server_module <- function(id,oldbn,indicname,compare,function_mod
         })
         
         newbn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                          include.differenciation = input$dif,
-                                          include.rho = input$rho,
-                                          set.coeff = set_coeff(),
-                                          set.const = set_const(),
-                                          start.coeff.calc = input$coeffcalc[1],
-                                          end.coeff.calc = input$coeffcalc[2],
-                                          start.benchmark = input$benchmark[1],
-                                          end.benchmark = input$benchmark[2])})
+                                             include.differenciation = input$dif,
+                                             include.rho = input$rho,
+                                             set.coeff = set_coeff(),
+                                             set.const = set_const(),
+                                             start.coeff.calc = input$coeffcalc[1],
+                                             end.coeff.calc = input$coeffcalc[2],
+                                             start.benchmark = input$benchmark[1],
+                                             end.benchmark = input$benchmark[2],
+                                             start.domain = start.domain(),
+                                             end.domain = end.domain())})
     })
 }
 
 shinyBenchmark_ui <- shinyBenchmark_ui_module("shinyBenchmark")
-shinyBenchmark_server <- function(oldbn,indicname,compare,function_mode) {
+shinyBenchmark_server <- function(oldbn,benchmark.name,start.domain,end.domain,compare,function.mode) {
     function(input,output,session) {
-        shinyBenchmark_server_module("shinyBenchmark",reactive(oldbn),reactive(indicname),compare,function_mode)
+        shinyBenchmark_server_module("shinyBenchmark",reactive(oldbn),reactive(benchmark.name),reactive(start.domain),reactive(end.domain),compare,function.mode)
     }
 }

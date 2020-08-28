@@ -28,36 +28,49 @@ update_shinyBenchmarks <- function() {
   )
 }
 
-shinyBenchmark <- function(hfserie,lfserie,file,benchmark_name) {
-  if (!(is.character(benchmark_name) && length(benchmark_name) == 1L)) stop("benchmark_name must be a character of length 1")
-  if (!(is.character(file) && length(file) == 1L)) stop("file must be a path, a character of length 1")
-  folder <- dirname(file)
-  if (!dir.exists(folder)) stop("The requested folder doesn't exist")
-  if (!file.exists(file)) {
-    if (!isTRUE(option_shinyBenchmarks_get())) warning("Creating shinyBenchmark file",call. = FALSE)
-    newmodel <- runapp_disaggr(hfserie,lfserie,file,benchmark_name)
-  }
-  # else {
-  #   
-  # }
-  # olddf <- read.csv(file)
-  # match(benchmark_name,
-  # if (isTRUE(option_shinyBenchmarks_get()) || )
-}
-
-runapp_disaggr <- function(hfserie,lfserie,file,benchmark_name) {
-  oldbn <- twoStepsBenchmark(hfserie,lfserie,
-                             include.differenciation.prec,include.rho.prec,
-                             set.coeff.prec,set.const.prec,
-                             start.coeff.calc.prec,end.coeff.calc.prec,
-                             start.benchmark.prec,end.benchmark.prec)
+runapp_disaggr <- function(oldbn,benchmark.name,start.domain,end.domain,compare) {
   shinyreturn <- shiny::runApp(
-    shiny::shinyApp(ui = disaggRui(hfserie,lfserie,
-                                   benchmark_name),
-                    server = disaggRserver(hfserie,lfserie,
-                                           oldbn,benchmark_name)
+    shiny::shinyApp(ui = shinyBenchmark_ui,
+                    server = shinyBenchmark_server(oldbn,benchmark.name,start.domain,end.domain,compare,TRUE)
     )
   )
-  if (inherits(shinyreturn,"error")) stop(shinyreturn, call. = FALSE)
+  if (inherits(shinyreturn,"error")) stop(shinyreturn)
   return(shinyreturn)
+}
+
+write_benchmark <- function(newbn,rds.file,version) {
+  saveRDS(newbn,file=rds.file,version = 3L)
+}
+
+validation_date <- function(object) {
+  if (!inherits(object,"twoStepsBenchmark")) stop("Not a twoStepsBenchmark")
+  return(attr(object,"ValidationDate"))
+}
+
+shinyBenchmark <- function(hfserie,lfserie,rds.file,start.domain = NULL,end.domain = NULL,benchmark.name=basename(rds.file),version = NULL) {
+  if (!(is.character(rds.file) && length(rds.file) == 1L)) stop("rds.file must be a file path, a character of length 1", call.= FALSE)
+  folder <- dirname(rds.file)
+  if (!dir.exists(folder)) stop("The requested folder doesn't exist", call.= FALSE)
+  if (!file.exists(rds.file)) {
+    if (!isTRUE(option_shinyBenchmarks_get())) warning("Creating shinyBenchmark rds.file",call. = FALSE)
+    newbn <- runapp_disaggr(twoStepsBenchmark(hfserie,lfserie),benchmark.name,start.domain,end.domain,compare=FALSE)
+    saveRDS(newbn,file=rds.file,version = version)
+    return(newbn)
+  } else {
+    oldbn <- readRDS(rds.file)
+    if (isTRUE(option_shinyBenchmarks_get()) || validation_date(oldbn) < option_shinyBenchmarks_get()) {
+      newbn <- runapp_disaggr(oldbn,benchmark.name,start.domain,end.domain,compare=TRUE)
+      saveRDS(newbn,file=rds.file,version = version)
+      return(newbn)
+    } else {
+      m <- model.list(oldbn)
+      return(twoStepsBenchmark(hfserie,lfserie,
+                               m$include.differenciation,m$include.rho,
+                               m$set.coeff,m$set.const,
+                               m$start.coeff.calc,m$end.coeff.calc,
+                               m$start.benchmark,m$end.benchmark,
+                               start.domain,end.domain,cl=match.call()))
+    }
+    
+  }
 }

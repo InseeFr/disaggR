@@ -86,7 +86,7 @@ eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rh
     smoothed_part <- bflSmooth(lfresiduals,frequency(hfserie_fitted))
   }
   else {
-    if (!is.ts(set.smoothed.part) || is.mts(set.smoothed.part)) stop("set.smoothed part must be an univariate time-serie")
+    if (!is.ts(set.smoothed.part) || is.mts(set.smoothed.part)) stop("set.smoothed part must be an univariate time-serie", call. = FALSE)
     smoothed_part <- set.smoothed.part
   }
 }
@@ -240,11 +240,11 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
                               start.benchmark=NULL,end.benchmark=NULL,
                               start.domain=NULL,end.domain=NULL,...) {
   
-  if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object")
+  if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
   
-  if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional")
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   
-  if  (!(frequency(hfserie) %% frequency(lfserie) == 0)) stop("The low frequency should divide the higher one")
+  if  (!(frequency(hfserie) %% frequency(lfserie) == 0)) stop("The low frequency should divide the higher one", call. = FALSE)
   
   maincl <- match.call()
   
@@ -256,11 +256,11 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   if (!include.differenciation) constant <- ts(rep(frequency(lfserie)/frequency(hfserie),n),frequency=frequency(hfserie),start=start(hfserie))
   else constant <- ts(1:n*(frequency(lfserie)/frequency(hfserie))^2,frequency=frequency(hfserie),start=start(hfserie))
   
-  if (length(set.const) > 1) stop("set.const must be of a single value")
+  if (length(set.const) > 1) stop("set.const must be of a single value", call. = FALSE)
   if (length(set.const) == 1) names(set.const) <- "constant"
   if ((NCOL(hfserie) == 1) && (length(set.coeff) == 1)) names(set.coeff) <- "hfserie"
   
-  if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names")
+  if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
 
   hfserie <- cbind(constant,hfserie)
   colnames(hfserie) <- sub("^(hfserie\\.)","",colnames(hfserie))
@@ -279,7 +279,7 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
                             start.coeff.calc=start(lfserie)[1],end.coeff.calc=end(lfserie)[1],
                             start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
                             start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
-  if (frequency(lfserie) != 1) stop("Not an annual time-serie")
+  if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)
   twoStepsBenchmark(hfserie,lfserie,
                     include.differenciation,include.rho,
                     set.coeff,set.const,
