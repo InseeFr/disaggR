@@ -20,14 +20,14 @@ frequency.
 
 ## Installation
 
-You can install the *stable* version from
+You can install the **stable** version from
 [CRAN](https://cran.r-project.org/package=disaggR).
 
 ``` r
 install.packages('disaggR', dependencies = TRUE)
 ```
 
-You can install the \_development- version from
+You can install the **development** version from
 [Github](https://github.com/arnaud-feldmann/disaggR).
 
 ``` r

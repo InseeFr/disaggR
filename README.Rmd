@@ -28,12 +28,13 @@ The R package disaggR is an implementation of the French Quarterly National Acco
 ## Installation
 
 You can install the _stable_ version from [CRAN](https://cran.r-project.org/package=disaggR).
+You can install the __stable__ version from [CRAN](https://cran.r-project.org/package=disaggR).
 
 ```{r, eval = FALSE}
 install.packages('disaggR', dependencies = TRUE)
 ```
 
-You can install the _development- version from [Github](https://github.com/arnaud-feldmann/disaggR).
+You can install the __development__ version from [Github](https://github.com/arnaud-feldmann/disaggR).
 
 ```{r, eval = FALSE}
 # install.packages("devtools")
