@@ -70,7 +70,6 @@ coefficients_application <- function(hfserie,lfserie,regcoefs) {
   # This window is the smallest that is all around the domain of the hfserie
   # that is compatible with the low frequency.
   
-  lfserie_win <- window(lfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
   hfserie_win <- window(hfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
   
   return(ts(as.numeric(hfserie_win %*% regcoefs),
