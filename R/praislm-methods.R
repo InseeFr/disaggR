@@ -100,10 +100,12 @@ summary.praislm <- function (object, ...) {
               if (rho != 0) residuals.decorrelated=do.call(c,Box.test(object$residuals.decorrelated, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]))
   colnames(pm) <- c("statistic","p.value")
   
+  incdiff <- model.list(object)$include.differenciation
+  
   res <- list(call = object$call, coefficients = TAB, r.squared = r.squared, 
               adj.r.squared = adj.r.squared, sigma = sqrt(sum((object$residuals)^2)/rdf), 
               df = object$df, residuals = object$residuals,
-              rho=rho,pm=pm)
+              rho=rho,pm=pm,incdiff=incdiff)
   class(res) <- "summary.praislm"
   res
 }
@@ -116,6 +118,10 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
     cat("\nCall:\n")
     print(x$call)
     cat("\n\n")
+  }
+  
+  if (x$incdiff) {
+    cat("The model includes a differenciation.","\n\n")
   }
   
   if (x$rho != 0) {
