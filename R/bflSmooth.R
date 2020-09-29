@@ -12,19 +12,23 @@ stairs_diagonal <- function(A,ratio,weights=1) {
   return(res)
 }
 
-weights_control_shaping <- function(weights,start,lf_freq,hf_length,hf_freq) {
-  if (is.null(weights)) return(1)
+weights_control <- function(weights,start,hf_length,hf_freq) {
+  if (is.null(weights)) return(NULL)
   if (!inherits(weights,"ts")) stop("The weights must be either NULL or a one-dimensional ts with the same window than the expected high-frequency serie", call. = FALSE)
   if (!is.null(dim(weights)) && dim(weights)[2] != 1) stop("The weights serie must be one-dimensional", call. = FALSE)
   tspw <- tsp(weights)
   if (tspw[3] != hf_freq) stop("The frequency of the weights must be the same than the new frequency", call. = FALSE)
   if (tspw[1] != start) stop("The weights serie must have the same start than the expected high-frequency serie", call. = FALSE)
   if (length(weights) != hf_length) stop("The weights serie must have the same end than the expected high-frequency serie", call. = FALSE)
-  weigths <- weights/tsExpand(aggregate.ts(weights,lf_freq),hf_freq,divide.by.ratio = FALSE)
-  return(weights)
+  return(NULL)
 }
 
 bflSmooth_matrices_impl <- function(lf_length,ratio,weights) {
+  weights <- {
+    if (is.null(weights)) 1
+    else weights/tsExpand(aggregate.ts(weights,frequency(weights)/ratio),
+                          frequency(weights),divide.by.ratio = FALSE)
+  }
   n <- ratio*lf_length
   Tmat <- lower.tri(matrix(1,n,n),diag=TRUE)
   MT <- stairs_diagonal(lf_length,ratio,weights) %*% Tmat
@@ -84,7 +88,7 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
 
   ratio <- nfrequency/tsplf[3]
   
-  weights <- weights_control_shaping(weights,tsplf[1],tsplf[3],ratio*length(lfserie),nfrequency)
+  weights_control(weights,tsplf[1],ratio*length(lfserie),nfrequency)
   
   matrices <- bflSmooth_matrices(lf_length = length(lfserie),
                                  ratio = nfrequency/tsplf[3],
