@@ -4,7 +4,7 @@
 \alias{bflSmooth}
 \title{Smooth a time serie}
 \usage{
-bflSmooth(lfserie, nfrequency)
+bflSmooth(lfserie, nfrequency, weights = NULL)
 }
 \arguments{
 \item{lfserie}{a time-serie to be smoothed}

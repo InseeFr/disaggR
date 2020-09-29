@@ -1,8 +1,3 @@
-tsExpand <- function(x,nfrequency){
-  ratio <- nfrequency/frequency(x)
-  ts(rep(x/ratio, each = ratio), start = tsp(x)[1], frequency = nfrequency)
-}
-
 #' @importFrom graphics plot points
 #' @export
 plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
