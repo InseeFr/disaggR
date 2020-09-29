@@ -84,7 +84,7 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
 
   ratio <- nfrequency/tsplf[3]
   
-  weights <- weights_control_shaping(weights,start,tsplf[3],ratio*length(lfserie),nfrequency)
+  weights <- weights_control_shaping(weights,tsplf[1],tsplf[3],ratio*length(lfserie),nfrequency)
   
   matrices <- bflSmooth_matrices(lf_length = length(lfserie),
                                  ratio = nfrequency/tsplf[3],
