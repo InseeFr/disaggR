@@ -8,15 +8,29 @@ stairs_diagonal <- function(A,ratio,weights=1) {
 
 weights_control_shaping <- function(weights,start,n,nfrequency) {
   if (is.null(weights)) return(1)
-  if (inherits(weights,"ts")) {
-    if (!is.null(dim(weights)) && dim(weights)[2] != 1) stop("The weights serie must be one-dimensional", call. = FALSE)
-    tspw <- tsp(weights)
-    if (tspw[3] != nfrequency) stop("The frequency of the weights must be the same than the new frequency", call. = FALSE)
-    if (tspw[1] != start) stop("The weights serie must have the same start than the expected high-frequency serie", call. = FALSE)
-    if (length(weights) != n) stop("The weights serie must have the same end than the expected high-frequency serie", call. = FALSE)
-    return(weights)
-  }
-  if !is.nu
+  if (!inherits(weights,"ts")) stop("The weights must be either NULL or a one-dimensional ts with the same window than the expected high-frequency serie", call. = FALSE)
+  if (!is.null(dim(weights)) && dim(weights)[2] != 1) stop("The weights serie must be one-dimensional", call. = FALSE)
+  tspw <- tsp(weights)
+  if (tspw[3] != nfrequency) stop("The frequency of the weights must be the same than the new frequency", call. = FALSE)
+  if (tspw[1] != start) stop("The weights serie must have the same start than the expected high-frequency serie", call. = FALSE)
+  if (length(weights) != n) stop("The weights serie must have the same end than the expected high-frequency serie", call. = FALSE)
+  return(weights)
+}
+
+bflSmooth_matrices <- function(lf_length,ratio,weights) {
+  n <- ratio*lf_length
+  Tmat <- lower.tri(matrix(1,n,n),diag=TRUE)
+  MT <- stairs_diagonal(lf_length,ratio,weights) %*% Tmat
+  m1 <- MT[,1]
+  tildem <- MT[,-1,drop=FALSE]
+  inversemm <- solve((tcrossprod(tildem)))
+  cp1 <- crossprod(m1,inversemm)
+  
+  return(list(Tmat=Tmat,
+              m1=m1,
+              tildem = tildem,
+              inversemm=inversemm,
+              cp1=cp1))
 }
 
 #' Smooth a time serie
@@ -42,19 +56,11 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
   if (nfrequency%%tsplf[3]!=0) stop("The new frequency must be a multiple of the lower one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   
-  ratio <- nfrequency/tsplf[3]
+  matrices <- bflSmooth_matrices(lf_length = length(lfserie),
+                                 ratio = nfrequency/tsplf[3],
+                                 weights = weights_control_shaping(weights))
   
-  n <- ratio*length(lfserie)
-  
-  weights <- weights_control_shaping(weights)
-  
-  Tmat <- lower.tri(matrix(1,n,n),diag=TRUE)
-  MT <- stairs_diagonal(length(lfserie),ratio,weights) %*% Tmat
-  m1 <- MT[,1]
-  tildem <- MT[,-1,drop=FALSE]
-  inversemm <- solve((tcrossprod(tildem)))
-  x11 <- as.numeric((crossprod(m1,inversemm) %*% lfserie)/(crossprod(m1,inversemm)%*%m1))
-  primey <- c(x11,crossprod(tildem,inversemm %*% (lfserie-m1*x11)))
-  return(ts(as.numeric(Tmat %*% primey),start=tsplf[1],frequency = nfrequency))
-  return(bflSmooth_impl(lfserie,nfrequency,weights=1))
+  x11 <- as.numeric(matrices$cp1 %*% lfserie/(matrices$cp1 %*% matrices$m1))
+  primey <- c(x11,crossprod(matrices$tildem,matrices$inversemm %*% (lfserie-matrices$m1*x11)))
+  return(ts(as.numeric(matrices$Tmat %*% primey),start=tsplf[1],frequency = nfrequency))
 }
