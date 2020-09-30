@@ -49,16 +49,17 @@ bflSmooth_matrices_generator <- function(cache_size=100L) {
   cache_next <- 1L
   bflSmooth_matrices <- function(lf_length,ratio,weights) {
     args <- list(lf_length,ratio,weights)
-    cached <- which(do.call(c,lapply(cache,function(x) identical(x$args,args))))
-    if (length(cached) == 0) {
+    cached_index <- Position(function(x) identical(x$args,args),cache)
+    if (is.na(cached_index)) {
       value <- bflSmooth_matrices_impl(lf_length,ratio,weights)
       cache[[cache_next]] <<- list(args=args,
                                    value=value)
       cache_next <<- cache_next %% cache_size + 1L
       return(value)
     }
-    return(cache[[cached[1]]]$value)
+    return(cache[[cached_index[1]]]$value)
   }
+  return(bflSmooth_matrices)
 }
 
 bflSmooth_matrices <- bflSmooth_matrices_generator()
@@ -73,7 +74,10 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' 
 #' @param lfserie a time-serie to be smoothed
 #' @param nfrequency the new high frequency. It must be a multiple of the low frequency.
-#' 
+#' @param weight NULL or a time-serie of the same size than the expected high-frequency serie.
+#' The weights are intendended as a way, by example, to smooth prices or rates relatively to an
+#' account. The high-frequency serie minimizes the squares of the variations, with the constraint that
+#' it is equal to the low-frequency one after being multiplied with the weights.
 #' @return A time serie of frequency nfrequency
 #' 
 #' @export
