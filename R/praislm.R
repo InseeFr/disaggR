@@ -9,17 +9,16 @@ omega_inv_sqrt <- function(x,rho) {
     res <- rbind(sqrt(1-rho^2)*x[1,],
                  x[-1,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
   }
-  res <- ts(res,start=start(x),frequency=frequency(x))
-  return(res)
+  ts(res,start=start(x),frequency=frequency(x))
 }
 
 autocor <- function(x) {
   x_center <- x-mean(x)
   tailxc <- x_center[-1]
   headxc <- x_center[-length(x_center)]
-  rho <- as.numeric(crossprod(tailxc,headxc)/
-                      sqrt(crossprod(tailxc)) /
-                      sqrt(crossprod(headxc)))
+  as.numeric(crossprod(tailxc,headxc)/
+               sqrt(crossprod(tailxc)) /
+               sqrt(crossprod(headxc)))
     # Not exactly pearson but is a bit better to estimate the rho of an AR1
 }
 
@@ -69,13 +68,13 @@ praislm_impl <- function(X,y,include.rho) {
     residuals_decor <- y
     se <- numeric()
   }
-  return(list(coefficients = coefficients,
-              residuals = residuals,
-              fitted=fitted,
-              df.residual=df_residual,
-              se=se,
-              rho=rho,
-              residuals.decorrelated=residuals_decor))
+  list(coefficients = coefficients,
+       residuals = residuals,
+       fitted=fitted,
+       df.residual=df_residual,
+       se=se,
+       rho=rho,
+       residuals.decorrelated=residuals_decor)
 }
 
 praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl) {
@@ -127,5 +126,5 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
               model.list=modellist,
               call=cl)
   class(res) <- "praislm"
-  return(res)
+  res
 }
