@@ -47,7 +47,7 @@ test_that("cache works for smoothing", {
   randomarg <- function(n) {
     lfserie <- ts(arima.sim(n,model = list(order=c(1,1,0),ar=0.7)),freq=sample(1:4,1,T),start=2010)
     hf_freq <- sample(1:4,1,T)*frequency(lfserie)
-    weights <- ts(arima.sim(hf_freq/frequency(lfserie)*length(lfserie),model = list(order=c(1,1,0),ar=0.7)),freq=hf_freq,start=2010)
+    weights <- ts(arima.sim(hf_freq/frequency(lfserie)*length(lfserie),model = list(order=c(1,1,0),ar=0.7))[-1],freq=hf_freq,start=2010)
     list(lfserie,hf_freq,weights)
   }
   randomargs <- lapply(rep(30,150),randomarg)
