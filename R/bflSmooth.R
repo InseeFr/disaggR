@@ -74,9 +74,9 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' @param lfserie a time-serie to be smoothed
 #' @param nfrequency the new high frequency. It must be a multiple of the low frequency.
 #' @param weight NULL or a time-serie of the same size than the expected high-frequency serie.
-#' The weights are intendended as a way, by example, to smooth prices or rates relatively to an
-#' account. The high-frequency serie minimizes the squares of the variations, with the constraint that
-#' it is equal to the low-frequency one after being multiplied with the weights.
+#' The weights permits, by example, to smooth prices or rates relatively to a high-frequency
+#' account. The results minimizes the squares of the variations, with the constraint that
+#' it is equal to the low-frequency one after being multiplied by the weights.
 #' @return A time serie of frequency nfrequency
 #' 
 #' @importFrom stats diffinv
