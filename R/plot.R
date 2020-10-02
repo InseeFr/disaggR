@@ -1,8 +1,3 @@
-tsExpand <- function(x,nfrequency){
-  ratio <- nfrequency/frequency(x)
-  ts(rep(x/ratio, each = ratio), start = tsp(x)[1], frequency = nfrequency)
-}
-
 #' @importFrom graphics plot points
 #' @export
 plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
@@ -13,7 +8,7 @@ plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
   plot(window(tsbench,start=lims[1],end=lims[2],extend=TRUE)
        , xlab = xlab, ylab = ylab, ...)
   points(tsExpand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
-  return(invisible(NULL))
+  invisible()
 }
 
 #' @export
@@ -23,5 +18,5 @@ plot.insample <- function(x, xlab="", ylab="", ...) {
             ceiling(max(time(x)[!is.na(x[,1])|!is.na(x[,2])])))
   plot(window(x,start=lims[1],end=lims[2],extend=TRUE), plot.type="single", lty=c(1L,2L), xlab = xlab, ylab = ylab,
        main = paste0("In-sample predictions (", attr(x,"type"),")"), ...)
-  return(invisible(NULL))
+  invisible()
 }

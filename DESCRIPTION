@@ -2,7 +2,7 @@ Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks for Time Series Disaggregation
 Version: 0.1.7
-Date: 2020-08-04
+Date: 2020-09-22
 Author: Arnaud Feldmann
 Maintainer: Arnaud Feldmann <arnaud.feldmann@gmail.com>
 Description: The twoStepsBenchmark() function and its wrappers allow you to disaggregate a low frequency time serie with time series of higher frequency, using the French National Accounts methodology.

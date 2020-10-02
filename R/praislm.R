@@ -9,17 +9,16 @@ omega_inv_sqrt <- function(x,rho) {
     res <- rbind(sqrt(1-rho^2)*x[1,],
                  x[-1,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
   }
-  res <- ts(res,start=start(x),frequency=frequency(x))
-  return(res)
+  ts(res,start=start(x),frequency=frequency(x))
 }
 
 autocor <- function(x) {
   x_center <- x-mean(x)
   tailxc <- x_center[-1]
   headxc <- x_center[-length(x_center)]
-  rho <- as.numeric(crossprod(tailxc,headxc)/
-                      sqrt(crossprod(tailxc)) /
-                      sqrt(crossprod(headxc)))
+  as.numeric(crossprod(tailxc,headxc)/
+               sqrt(crossprod(tailxc)) /
+               sqrt(crossprod(headxc)))
     # Not exactly pearson but is a bit better to estimate the rho of an AR1
 }
 
@@ -35,23 +34,23 @@ praislm_impl <- function(X,y,include.rho) {
     coefficients <- qr.coef(PQR,y)
     
     if (include.rho) {
-      drho <- 1
       rho_prec <- 0
-      i_max = 50L
+      rho <- 1
       i <- 1L
       
-      while (drho>0.001 && i<=i_max) {
-        rho <- autocor(y - X %*% coefficients)
-        
-        drho <- abs(rho-rho_prec)
+      while (abs(rho-rho_prec)>0.001) {
         rho_prec <- rho
+        rho <- autocor(y - X %*% coefficients)
         
         y_star <- omega_inv_sqrt(y,rho)
         X_star <- omega_inv_sqrt(X,rho)
         
         PQR <- qr(X_star)
         coefficients <- qr.coef(PQR,y_star)
-        if (i == i_max) warning("Maximum iterations without convergence")
+        if (i == 50L) {
+          warning("Maximum iterations without convergence")
+          break
+        }
         i <- i+1
       }
     }
@@ -69,13 +68,13 @@ praislm_impl <- function(X,y,include.rho) {
     residuals_decor <- y
     se <- numeric()
   }
-  return(list(coefficients = coefficients,
-              residuals = residuals,
-              fitted=fitted,
-              df.residual=df_residual,
-              se=se,
-              rho=rho,
-              residuals.decorrelated=residuals_decor))
+  list(coefficients = coefficients,
+       residuals = residuals,
+       fitted=fitted,
+       df.residual=df_residual,
+       se=se,
+       rho=rho,
+       residuals.decorrelated=residuals_decor)
 }
 
 praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl) {
@@ -127,5 +126,5 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
               model.list=modellist,
               call=cl)
   class(res) <- "praislm"
-  return(res)
+  res
 }

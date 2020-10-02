@@ -63,7 +63,7 @@ vcov.praislm <- function(object, ...) {
   X <- m$X[,!(colnames(m$X) %in% names(m$set.coefficients))]
   if (m$include.differenciation) X <- diff(X)
 
-  return(epsilon_variance*solve(crossprod(X,omega_inv)%*%X))
+  epsilon_variance*solve(crossprod(X,omega_inv)%*%X)
 }
 
 #' @export

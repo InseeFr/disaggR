@@ -31,3 +31,27 @@ test_that("Smoothing works", {
                     0.14749174,0.23329629,0.27619856),start=c(2010,7),freq=12))
 })
 
+test_that("cache works for smoothing", {
+  set.seed(10)
+  randomarg <- function(n) {
+    lfserie <- ts(arima.sim(n,model = list(order=c(1,1,0),ar=0.7)),freq=sample(1:4,1,T),start=2010)
+    hf_freq <- sample(1:4,1,T)*frequency(lfserie)
+    list(lfserie,hf_freq)
+  }
+  randomargs <- lapply(rep(30,150),randomarg)
+  randomres <- function(notused) lapply(randomargs,function(x) bflSmooth(x[[1]],x[[2]]))
+  reslist <- lapply(rep(1,100),randomres)
+  expect_true(all(sapply(reslist, FUN = identical, randomres(1))))
+  
+  set.seed(3)
+  randomarg <- function(n) {
+    lfserie <- ts(arima.sim(n,model = list(order=c(1,1,0),ar=0.7)),freq=sample(1:4,1,T),start=2010)
+    hf_freq <- sample(1:4,1,T)*frequency(lfserie)
+    weights <- ts(arima.sim(hf_freq/frequency(lfserie)*length(lfserie),model = list(order=c(1,1,0),ar=0.7))[-1],freq=hf_freq,start=2010)
+    list(lfserie,hf_freq,weights)
+  }
+  randomargs <- lapply(rep(30,150),randomarg)
+  randomres <- function(notused) lapply(randomargs,function(x) bflSmooth(x[[1]],x[[2]],x[[3]]))
+  reslist <- lapply(rep(1,100),randomres)
+  expect_true(all(sapply(reslist, FUN = identical, randomres(1))))
+})

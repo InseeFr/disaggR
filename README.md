@@ -8,6 +8,7 @@ status](https://github.com/arnaud-feldmann/disaggR/workflows/R-CMD-check/badge.s
 [![codecov](https://codecov.io/gh/arnaud-feldmann/disaggR/branch/master/graph/badge.svg)](https://codecov.io/gh/arnaud-feldmann/disaggR)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/disaggR)](https://cran.r-project.org/package=disaggR)
+[![Downloads](https://cranlogs.r-pkg.org/badges/disaggR)](https://cran.r-project.org/package=disaggR)
 
 <!-- badges: end -->
 

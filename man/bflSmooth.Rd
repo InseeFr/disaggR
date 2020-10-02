@@ -4,12 +4,17 @@
 \alias{bflSmooth}
 \title{Smooth a time serie}
 \usage{
-bflSmooth(lfserie, nfrequency)
+bflSmooth(lfserie, nfrequency, weights = NULL)
 }
 \arguments{
 \item{lfserie}{a time-serie to be smoothed}
 
 \item{nfrequency}{the new high frequency. It must be a multiple of the low frequency.}
+
+\item{weights}{NULL or a time-serie of the same size than the expected high-frequency serie.
+The weights permits, by example, to smooth prices or rates relatively to a high-frequency
+account. The results minimizes the squares of the variations, with the constraint that
+it is equal to the low-frequency one after being multiplied by the weights.}
 }
 \value{
 A time serie of frequency nfrequency
