@@ -32,6 +32,9 @@ test_that("Smoothing works", {
 })
 
 test_that("cache works for smoothing", {
+  bflSmooth_matrices_cache <- bflSmooth_matrices_generator()
+  expect_identical(bflSmooth_matrices_cache(20,12,NULL),bflSmooth_matrices_impl(20,12,NULL))
+  expect_identical(bflSmooth_matrices_cache(20,12,NULL),bflSmooth_matrices_impl(20,12,NULL))
   set.seed(10)
   randomarg <- function(n) {
     lfserie <- ts(arima.sim(n,model = list(order=c(1,1,0),ar=0.7)),freq=sample(1:4,1,T),start=2010)
@@ -54,4 +57,13 @@ test_that("cache works for smoothing", {
   randomres <- function(notused) lapply(randomargs,function(x) bflSmooth(x[[1]],x[[2]],x[[3]]))
   reslist <- lapply(rep(1,100),randomres)
   expect_true(all(sapply(reslist, FUN = identical, randomres(1))))
+})
+
+test_that("error weights", {
+  expect_error(bflSmooth(construction,12,weights = 14),"must be either NULL or a one-dimensional ts")
+  expect_error(bflSmooth(construction,12,weights = 14),"must be either NULL or a one-dimensional ts")
+  bflSmooth(aggregate(turnover,1),12,weights=window(turnover,start=c(2000,1),end=c(2019,12)))
+  expect_error(bflSmooth(aggregate(turnover,1),12,weights=window(cbind(turnover,turnover),start=c(2000,1),end=c(2019,12)))," must be one-dimensional")
+  expect_error(bflSmooth(aggregate(turnover,1),12,weights=window(turnover,start=c(1999,1),end=c(2018,12),extend=TRUE)),"same start than the expected high-frequency")
+  expect_error(bflSmooth(aggregate(turnover,1),12,weights=window(turnover,start=c(2000,1),extend=TRUE)),"same end than the expected high-frequency")
 })
