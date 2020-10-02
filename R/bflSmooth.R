@@ -29,36 +29,36 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights) {
     else weights/tsExpand(aggregate.ts(weights,frequency(weights)/ratio),
                           frequency(weights),divide.by.ratio = FALSE)
   }
-  n <- ratio*lf_length
-  Tmat <- lower.tri(matrix(1,n,n),diag=TRUE)
-  MT <- stairs_diagonal(lf_length,ratio,weights) %*% Tmat
+  MT <- t(apply(stairs_diagonal(lf_length,ratio,weights),1,function(x) rev(cumsum(rev(x)))))
   m1 <- MT[,1]
   tildem <- MT[,-1,drop=FALSE]
   inversemm <- solve((tcrossprod(tildem)))
   cprod1 <- crossprod(m1,inversemm)
   cprod2 <- crossprod(tildem,inversemm)
   
-  return(list(Tmat=Tmat,
-              m1=m1,
+  return(list(m1=m1,
               cprod1=cprod1,
               cprod2=cprod2))
 }
 
+# This function generates a wrapper of bflSmooth_matrices_impl that gives the
+# same results but uses cache, which is useful considering a lot of similar
 bflSmooth_matrices_generator <- function(cache_size=100L) {
   cache <- vector("list",cache_size)
   cache_next <- 1L
   bflSmooth_matrices <- function(lf_length,ratio,weights) {
     args <- list(lf_length,ratio,weights)
-    cached <- which(do.call(c,lapply(cache,function(x) identical(x$args,args))))
-    if (length(cached) == 0) {
+    cached_index <- Position(function(x) identical(x$args,args),cache)
+    if (is.na(cached_index)) {
       value <- bflSmooth_matrices_impl(lf_length,ratio,weights)
       cache[[cache_next]] <<- list(args=args,
                                    value=value)
       cache_next <<- cache_next %% cache_size + 1L
       return(value)
     }
-    return(cache[[cached[1]]]$value)
+    return(cache[[cached_index[1]]]$value)
   }
+  return(bflSmooth_matrices)
 }
 
 bflSmooth_matrices <- bflSmooth_matrices_generator()
@@ -76,6 +76,7 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' 
 #' @return A time serie of frequency nfrequency
 #' 
+#' @importFrom stats diffinv
 #' @export
 bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
   if (!inherits(lfserie,"ts")) stop("Not a ts object", call. = FALSE)
@@ -95,6 +96,6 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
                                  weights = weights)
   
   x11 <- as.numeric(matrices$cprod1 %*% lfserie/(matrices$cprod1 %*% matrices$m1))
-  primey <- c(x11,matrices$cprod2 %*% (lfserie-matrices$m1*x11))
-  return(ts(as.numeric(matrices$Tmat %*% primey),start=tsplf[1],frequency = nfrequency))
+  res <- cumsum(c(x11,matrices$cprod2 %*% (lfserie-matrices$m1*x11)))
+  return(ts(res,start=tsplf[1],frequency = nfrequency))
 }
