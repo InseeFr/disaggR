@@ -72,17 +72,13 @@ coefficients_application <- function(hfserie,lfserie,regcoefs) {
   
   hfserie_win <- window(hfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
   
-  ts(as.numeric(hfserie_win %*% regcoefs),
-     start=tsp(hfserie_win)[1],
-     frequency=frequency(hfserie_win))
+  ts_from_tsp(as.numeric(hfserie_win %*% regcoefs),tsp(hfserie_win))
 }
 
 eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {
   if (is.null(set.smoothed.part)) {
     hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = frequency(lfserie))
-    lfresiduals <- ts_fastop(window(lfserie,start=start(hfserie_fitted_aggreg),end=end(hfserie_fitted_aggreg),extend = TRUE),
-                             hfserie_fitted_aggreg,
-                             '-')
+    lfresiduals <- window(lfserie,start=start(hfserie_fitted_aggreg),end=end(hfserie_fitted_aggreg),extend = TRUE) %-% hfserie_fitted_aggreg
     lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
     bflSmooth(lfresiduals,frequency(hfserie_fitted))
   }
@@ -115,9 +111,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   
   smoothed_part  <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
   
-  rests <- ts_fastop(hfserie_fitted,
-                     window(smoothed_part,start=start(hfserie_fitted),end = end(hfserie_fitted),extend=TRUE),
-                     `+`)
+  rests <- hfserie_fitted %+% window(smoothed_part,start=start(hfserie_fitted),end = end(hfserie_fitted),extend=TRUE)
   
   res <- list(benchmarked.serie = window(rests,start=tsp(hfserie)[1],end=tsp(hfserie)[2],extend = TRUE),
               fitted.values = window(hfserie_fitted,end=tsp(hfserie)[2],extend = TRUE),
@@ -254,19 +248,21 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   if (is.null(set.coeff)) set.coeff <- numeric()
   if (is.null(set.const)) set.const <- numeric()
   
-  n <- if (is.matrix(hfserie)) nrow(hfserie) else length(hfserie)
-  
-  if (!include.differenciation) constant <- ts(rep(frequency(lfserie)/frequency(hfserie),n),frequency=frequency(hfserie),start=start(hfserie))
-  else constant <- ts(1:n*(frequency(lfserie)/frequency(hfserie))^2,frequency=frequency(hfserie),start=start(hfserie))
-  
+  constant <- {
+    if (include.differenciation) 1:NROW(hfserie)*(frequency(lfserie)/frequency(hfserie))^2
+    else                         rep(frequency(lfserie)/frequency(hfserie),NROW(hfserie))
+  }
+ 
   if (length(set.const) > 1) stop("set.const must be of a single value", call. = FALSE)
   if (length(set.const) == 1) names(set.const) <- "constant"
   if ((NCOL(hfserie) == 1) && (length(set.coeff) == 1)) names(set.coeff) <- "hfserie"
   
   if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
   
-  hfserie <- cbind(constant,hfserie)
-  colnames(hfserie) <- sub("^(hfserie\\.)","",colnames(hfserie))
+  hfserie <- ts(matrix(c(constant,hfserie),nrow = NROW(hfserie),ncol = NCOL(hfserie) + 1),
+                start = start(hfserie),
+                frequency = frequency(hfserie),
+                names = c("constant",if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie)))
   
   twoStepsBenchmark_impl(hfserie,
                          lfserie,
