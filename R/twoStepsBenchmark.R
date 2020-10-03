@@ -80,7 +80,9 @@ coefficients_application <- function(hfserie,lfserie,regcoefs) {
 eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {
   if (is.null(set.smoothed.part)) {
     hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = frequency(lfserie))
-    lfresiduals <- window(lfserie,start=tsp(hfserie_fitted)[1],end=tsp(hfserie_fitted)[2],extend = TRUE)-hfserie_fitted_aggreg
+    lfresiduals <- ts_fastop(window(lfserie,start=start(hfserie_fitted_aggreg),end=end(hfserie_fitted_aggreg),extend = TRUE),
+                             hfserie_fitted_aggreg,
+                             '-')
     lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
     bflSmooth(lfresiduals,frequency(hfserie_fitted))
   }
@@ -113,7 +115,9 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   
   smoothed_part  <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
   
-  rests <- hfserie_fitted+smoothed_part
+  rests <- ts_fastop(hfserie_fitted,
+                     window(smoothed_part,start=start(hfserie_fitted),end = end(hfserie_fitted),extend=TRUE),
+                     `+`)
   
   res <- list(benchmarked.serie = window(rests,start=tsp(hfserie)[1],end=tsp(hfserie)[2],extend = TRUE),
               fitted.values = window(hfserie_fitted,end=tsp(hfserie)[2],extend = TRUE),
@@ -260,7 +264,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
   if ((NCOL(hfserie) == 1) && (length(set.coeff) == 1)) names(set.coeff) <- "hfserie"
   
   if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
-
+  
   hfserie <- cbind(constant,hfserie)
   colnames(hfserie) <- sub("^(hfserie\\.)","",colnames(hfserie))
   

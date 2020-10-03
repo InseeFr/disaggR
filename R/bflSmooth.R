@@ -1,9 +1,3 @@
-tsExpand <- function(x,nfrequency,divide.by.ratio=TRUE){
-  ratio <- nfrequency/frequency(x)
-  res <- if (divide.by.ratio) x/ratio else x
-  ts(rep(res, each = ratio), start = tsp(x)[1], frequency = nfrequency)
-}
-
 stairs_diagonal <- function(A,ratio,weights=1) {
   res <- matrix(0,A,ratio*A)
   res[matrix(c(rep(1:A,each=ratio),
@@ -88,7 +82,7 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
   if (nfrequency==tsplf[3]) return(lfserie)
   if (nfrequency%%tsplf[3]!=0) stop("The new frequency must be a multiple of the lower one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
-
+  
   ratio <- nfrequency/tsplf[3]
   
   weights_control(weights,tsplf[1],ratio*length(lfserie),nfrequency)

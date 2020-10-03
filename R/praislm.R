@@ -1,9 +1,3 @@
-tsfromtsp <- function(x,tspx) {
-  tsp(x) <- tspx
-  class(x) <- "ts"
-  x
-}
-
 # this function multiplies by omega_inv_sqrt without
 # having to create the matrix (it is helpful if there are a lot of obs)
 omega_inv_sqrt <- function(x,rho) {
