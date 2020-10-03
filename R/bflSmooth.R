@@ -74,11 +74,11 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' @param nfrequency the new high frequency. It must be a multiple of the low frequency.
 #' @param weights NULL or a time-serie of the same size than the expected high-frequency serie.
 #' The weights permits, by example, to smooth prices or rates relatively to a high-frequency
-#' account. The results minimizes the squares of the variations, with the constraint that
-#' it is equal to the low-frequency one after being multiplied by the weights.
+#' account. The results minimizes the squares of the variations, with the constraint that,
+#' if multiplied by the weights then aggregated, they are equal to the low-frequency serie,
+#' multiplied by the aggregated weigths.
 #' @return A time serie of frequency nfrequency
 #' 
-#' @importFrom stats diffinv
 #' @export
 bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
   if (!inherits(lfserie,"ts")) stop("Not a ts object", call. = FALSE)
