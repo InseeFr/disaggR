@@ -1,15 +1,20 @@
+tsfromtsp <- function(x,tspx) {
+  tsp(x) <- tspx
+  class(x) <- "ts"
+  x
+}
+
 # this function multiplies by omega_inv_sqrt without
 # having to create the matrix (it is helpful if there are a lot of obs)
 omega_inv_sqrt <- function(x,rho) {
   if (is.null(dim(x))) {
-    res <- c(sqrt(1-rho^2)*x[1],
-             x[-1]-rho*x[-length(x)])
+    c(sqrt(1-rho^2)*x[1],
+      x[-1]-rho*x[-length(x)])
   }
   else {
-    res <- rbind(sqrt(1-rho^2)*x[1,],
-                 x[-1,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
+    rbind(sqrt(1-rho^2)*x[1,],
+          x[-1,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
   }
-  ts(res,start=start(x),frequency=frequency(x))
 }
 
 autocor <- function(x) {
@@ -54,7 +59,7 @@ praislm_impl <- function(X,y,include.rho) {
         i <- i+1
       }
     }
-    fitted <- ts(X %*% coefficients,start=start(X),frequency = frequency(X))
+    fitted <- X %*% coefficients
     residuals <- y-fitted
     residuals_decor <- omega_inv_sqrt(residuals,rho)
     resvar <- sum(residuals_decor^2) / df_residual
@@ -63,7 +68,7 @@ praislm_impl <- function(X,y,include.rho) {
   }
   else {
     coefficients <- numeric()
-    fitted <- ts(rep(0,length(y)),start=start(y),frequency=frequency(y))
+    fitted <- rep(0,length(y))
     residuals <- y
     residuals_decor <- y
     se <- numeric()
@@ -85,10 +90,16 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
                     set.coefficients=set_coefficients)
   if ( !is.ts(X) || !is.ts(y) ) stop("Not a ts object", call. = FALSE)
   if (is.null(dim(X))) stop("Not a matrix object", call. = FALSE)
+  if (any(tsp(X) != tsp(y))) stop("X and y should have the same windows and frequencies", call. = FALSE)
+
+  tspx <- tsp(X)
+  X <- matrix(as.numeric(X),nrow = nrow(X),ncol = ncol(X),dimnames = dimnames(X))
+  y <- as.numeric(y)
   
   if (include.differenciation) {
     X <- diff(X)
     y <- diff(y)
+    tspx[1] <- tspx[1] + 1/tspx[3]
   }
 
   if (length(set_coefficients)==0) names(set_coefficients) <- character()
@@ -105,7 +116,7 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   coefficients[match_set] <- set_coefficients
   match_notset <- which(is.na(coefficients))
   
-  offset <- ts(X[,match_set,drop=FALSE] %*% set_coefficients,start=start(X),frequency = frequency(X))
+  offset <- X[,match_set,drop=FALSE] %*% set_coefficients
 
   calculated <- praislm_impl(X[,match_notset,drop=FALSE],y-offset,include.rho)
   
@@ -116,13 +127,13 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   fitted <- calculated$fitted + offset
   
   res <- list(coefficients=coefficients,
-              residuals=drop(calculated$residuals),
-              fitted.values=drop(fitted),
+              residuals=tsfromtsp(drop(calculated$residuals),tspx),
+              fitted.values=tsfromtsp(drop(fitted),tspx),
               se=se,
               df.residual=calculated$df.residual,
               rho=calculated$rho,
-              residuals.decorrelated=drop(calculated$residuals.decor),
-              fitted.values.decorrelated=drop(omega_inv_sqrt(fitted,calculated$rho)),
+              residuals.decorrelated=tsfromtsp(drop(calculated$residuals.decor),tspx),
+              fitted.values.decorrelated=tsfromtsp(drop(omega_inv_sqrt(fitted,calculated$rho)),tspx),
               model.list=modellist,
               call=cl)
   class(res) <- "praislm"
