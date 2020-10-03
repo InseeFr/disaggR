@@ -61,7 +61,7 @@ test_that("cache works for smoothing", {
 
 test_that("error weights", {
   expect_error(bflSmooth(construction,12,weights = 14),"must be either NULL or a one-dimensional ts")
-  expect_error(bflSmooth(construction,12,weights = 14),"must be either NULL or a one-dimensional ts")
+  expect_error(bflSmooth(aggregate(turnover,1),12,weights=ts(1:(12*20),freq=4,start=2000)),"frequency of the weights")
   bflSmooth(aggregate(turnover,1),12,weights=window(turnover,start=c(2000,1),end=c(2019,12)))
   expect_error(bflSmooth(aggregate(turnover,1),12,weights=window(cbind(turnover,turnover),start=c(2000,1),end=c(2019,12)))," must be one-dimensional")
   expect_error(bflSmooth(aggregate(turnover,1),12,weights=window(turnover,start=c(1999,1),end=c(2018,12),extend=TRUE)),"same start than the expected high-frequency")
