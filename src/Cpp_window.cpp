@@ -70,7 +70,6 @@ NumericVector window_impl(NumericVector const& x,double const& tseps,NumericVect
   winparam(x,tseps,start,end,
            lengthy,casenumber,i0,i1,i1minusi0,max1,max2,ystart,yend,xfreq);
   NumericVector y(lengthy);
-  
   switch(casenumber) {
   case 1:
     y=NumericVector(lengthy,NA_REAL);
@@ -126,8 +125,10 @@ NumericMatrix window_impl(NumericMatrix const& x,double const& tseps,NumericVect
 }
 
 RcppExport SEXP Cpp_window(SEXP x,SEXP tseps,SEXP start,SEXP end) {
+  BEGIN_RCPP
   SEXP res;
   if (Rf_isMatrix(x)) res = window_impl((NumericMatrix const&)x,as<double>(tseps),(NumericVector const&)start,(NumericVector const&)end);
   else res = window_impl((NumericVector const&)x,as<double>(tseps),(NumericVector const&)start,(NumericVector const&)end);
   return res;
+  END_RCPP
 }
