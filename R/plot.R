@@ -7,7 +7,7 @@ plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
             ceiling(max(time(tsbench)[!is.na(tsbench)])))
   plot(window(tsbench,start=lims[1],end=lims[2],extend=TRUE)
        , xlab = xlab, ylab = ylab, ...)
-  points(tsExpand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
+  points(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
   invisible()
 }
 
@@ -62,7 +62,7 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
 autoplot.twoStepsBenchmark <- function(object) {
   model <- model.list(object)
   x <- na.omit(as.ts(object))
-  lfdf <- dftsforggplot(tsExpand(model$lfserie,nfrequency = frequency(model$hfserie)),series_names = "Low-Frequency serie")
+  lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),series_names = "Low-Frequency serie")
   lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie),each=frequency(model$hfserie)/frequency(model$lfserie))
   lfdf <- lfdf[!is.na(lfdf$Values),]
   ggplotts(x,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype") +

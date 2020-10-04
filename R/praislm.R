@@ -121,13 +121,13 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   fitted <- calculated$fitted + offset
   
   res <- list(coefficients=coefficients,
-              residuals=tsfromtsp(drop(calculated$residuals),tspx),
-              fitted.values=tsfromtsp(drop(fitted),tspx),
+              residuals=ts_from_tsp(drop(calculated$residuals),tspx),
+              fitted.values=ts_from_tsp(drop(fitted),tspx),
               se=se,
               df.residual=calculated$df.residual,
               rho=calculated$rho,
-              residuals.decorrelated=tsfromtsp(drop(calculated$residuals.decor),tspx),
-              fitted.values.decorrelated=tsfromtsp(drop(omega_inv_sqrt(fitted,calculated$rho)),tspx),
+              residuals.decorrelated=ts_from_tsp(drop(calculated$residuals.decor),tspx),
+              fitted.values.decorrelated=ts_from_tsp(drop(omega_inv_sqrt(fitted,calculated$rho)),tspx),
               model.list=modellist,
               call=cl)
   class(res) <- "praislm"

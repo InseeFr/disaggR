@@ -9,6 +9,8 @@
 #'
 #' @import stats
 #' @keywords internal
+#' @useDynLib disaggR, .registration=TRUE
+#' @importFrom Rcpp sourceCpp
 "_PACKAGE"
 
 globalVariables(c("Date","Values","Variables","Low-Frequency Periods"))
