@@ -36,9 +36,9 @@ void winparam(VectorOrMatrix x,double const& tseps,NumericVector const& start,Nu
   }
   if (pstart > pend) stop("'start' cannot be after 'end'");
   double stoff=ceil((pstart-xstart)*xfreq-tseps);
-  ystart=(round(xstart*xfreq)+stoff)/xfreq;
+  ystart=stoff/xfreq+xstart;
   double enoff=floor((pend-xend)*xfreq+tseps);
-  yend=(round(xend*xfreq)+enoff)/xfreq;
+  yend=enoff/xfreq+xend;
   int nold=round(xfreq * (xend - xstart))+1;
   
   if (pstart > xend + tseps/xfreq || pend < xstart - tseps/xfreq) {
