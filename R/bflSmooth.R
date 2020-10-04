@@ -92,6 +92,6 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
                                  weights = weights)
   
   x11 <- as.numeric(matrices$cprod1 %*% lfserie/(matrices$cprod1 %*% matrices$m1))
-  res <- cumsum(c(x11,matrices$cprod2 %*% (lfserie-matrices$m1*x11)))
+  res <- cumsum(c(x11,matrices$cprod2 %*% (as.numeric(lfserie)-matrices$m1*x11)))
   ts(res,start=tsplf[1],frequency = nfrequency)
 }
