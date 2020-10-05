@@ -36,9 +36,9 @@ void winparam(VectorOrMatrix x,double const& tseps,NumericVector const& start,Nu
   }
   if (pstart > pend) stop("'start' cannot be after 'end'");
   double stoff=ceil((pstart-xstart)*xfreq-tseps);
-  ystart=(round(xstart*xfreq)+stoff)/xfreq;
+  ystart=stoff/xfreq+xstart;
   double enoff=floor((pend-xend)*xfreq+tseps);
-  yend=(round(xend*xfreq)+enoff)/xfreq;
+  yend=enoff/xfreq+xend;
   int nold=round(xfreq * (xend - xstart))+1;
   
   if (pstart > xend + tseps/xfreq || pend < xstart - tseps/xfreq) {
@@ -70,7 +70,6 @@ NumericVector window_impl(NumericVector const& x,double const& tseps,NumericVect
   winparam(x,tseps,start,end,
            lengthy,casenumber,i0,i1,i1minusi0,max1,max2,ystart,yend,xfreq);
   NumericVector y(lengthy);
-  
   switch(casenumber) {
   case 1:
     y=NumericVector(lengthy,NA_REAL);
@@ -120,27 +119,17 @@ NumericMatrix window_impl(NumericMatrix const& x,double const& tseps,NumericVect
     break;
   }
   y.attr("tsp")= NumericVector::create(ystart,yend,xfreq);
-  y.attr("class")= StringVector::create("ts");
+  y.attr("class")= StringVector::create("mts","ts","matrix");
   if ((x.hasAttribute("dimnames"))) y.attr("dimnames") = x.attr("dimnames");
   return y;
 }
 
-SEXP window(SEXP const& x,double const& tseps,NumericVector const& start,NumericVector const& end) {
+RcppExport SEXP Cpp_window(SEXP x,SEXP tseps,SEXP start,SEXP end) {
+  BEGIN_RCPP
   SEXP res;
-  if (Rf_isMatrix(x)) res = window_impl((NumericMatrix const&)x,tseps,start,end);
-  else res = window_impl((NumericVector const&)x,tseps,start,end);
+  if (Rf_isMatrix(x)) res = window_impl((NumericMatrix const&)x,as<double>(tseps),(NumericVector const&)start,(NumericVector const&)end);
+  else if (Rf_isNumeric(x)) res = window_impl((NumericVector const&)x,as<double>(tseps),(NumericVector const&)start,(NumericVector const&)end);
+  else stop("Not a ts object");
   return res;
-}
-
-RcppExport SEXP Cpp_window(SEXP xSEXP, SEXP tsepsSEXP, SEXP startSEXP, SEXP endSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP const& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< double const& >::type tseps(tsepsSEXP);
-    Rcpp::traits::input_parameter< NumericVector const& >::type start(startSEXP);
-    Rcpp::traits::input_parameter< NumericVector const& >::type end(endSEXP);
-    rcpp_result_gen = Rcpp::wrap(window(x, tseps, start, end));
-    return rcpp_result_gen;
-END_RCPP
+  END_RCPP
 }
