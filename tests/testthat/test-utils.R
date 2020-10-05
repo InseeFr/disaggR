@@ -75,7 +75,9 @@ test_that("window", {
   statsd <- Map(win2,series,start,end)
   expect_true(do.call(all,Map(all.equal,statsw,statsd)))
   
-  expect_error(window(NULL))
-  expect_error(window(NA))
-  expect_error(window("a"))
+  expect_error(disaggR:::window(NULL))
+  expect_error(disaggR:::window(NA))
+  expect_error(disaggR:::window("a"))
+  expect_error(disaggR:::window(ts(1:10),start="a"))
+  expect_error(disaggR:::window(ts(1:10),end="a"))
 })
