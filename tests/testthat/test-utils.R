@@ -80,4 +80,9 @@ test_that("window", {
   expect_error(disaggR:::window("a"))
   expect_error(disaggR:::window(ts(1:10),start="a"))
   expect_error(disaggR:::window(ts(1:10),end="a"))
+  expect_error(disaggR:::window(ts(1:10),start=c(1,1,1)))
+  expect_error(disaggR:::window(ts(1:10),start=numeric()))
+  expect_error(disaggR:::window(ts(1:10),end=c(1,1,1)))
+  expect_error(disaggR:::window(ts(1:10),end=numeric()))
+  
 })
