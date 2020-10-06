@@ -12,10 +12,9 @@ bflSmooth(lfserie, nfrequency, weights = NULL)
 \item{nfrequency}{the new high frequency. It must be a multiple of the low frequency.}
 
 \item{weights}{NULL or a time-serie of the same size than the expected high-frequency serie.
-The weights permits, by example, to smooth prices or rates relatively to a high-frequency
-account. The results minimizes the squares of the variations, with the constraint that,
-if multiplied by the weights then aggregated, they are equal to the low-frequency serie,
-multiplied by the aggregated weigths.}
+If the weights are submitted, it is the rate hfserie/weights that is smoothed. By example,
+if weights is a volume and lfserie a value, the result is a disaggregated value with a smoothed
+price.}
 }
 \value{
 A time serie of frequency nfrequency

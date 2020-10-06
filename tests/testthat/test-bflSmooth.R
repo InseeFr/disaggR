@@ -67,3 +67,8 @@ test_that("error weights", {
   expect_error(bflSmooth(aggregate(turnover,1),12,weights=window(turnover,start=c(1999,1),end=c(2018,12),extend=TRUE)),"same start than the expected high-frequency")
   expect_error(bflSmooth(aggregate(turnover,1),12,weights=window(turnover,start=c(2000,1),extend=TRUE)),"same end than the expected high-frequency")
 })
+
+test_that("weights", {
+  expect_equal(aggregate.ts(bflSmooth(construction,12,window(turnover,end=c(2019,12))),1),
+                            construction)
+})
