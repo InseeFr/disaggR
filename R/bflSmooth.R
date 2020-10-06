@@ -7,7 +7,7 @@ stairs_diagonal <- function(A,ratio,weights=1) {
 }
 
 weights_control <- function(weights,start,hf_length,hf_freq) {
-  if (is.null(weights)) return()
+  if (identical(weights,1)) return()
   if (!inherits(weights,"ts")) stop("The weights must be either NULL or a one-dimensional ts with the same window than the expected high-frequency serie", call. = FALSE)
   if (!is.null(dim(weights)) && dim(weights)[2] != 1) stop("The weights serie must be one-dimensional", call. = FALSE)
   tspw <- tsp(weights)
@@ -17,12 +17,13 @@ weights_control <- function(weights,start,hf_length,hf_freq) {
   return()
 }
 
-bflSmooth_matrices_impl <- function(lf_length,ratio,weights) {
-  weights <- {
-    if (is.null(weights)) 1
-    else weights/ts_expand(aggregate.ts(weights,frequency(weights)/ratio),
-                           frequency(weights),divide.by.ratio = FALSE)
+bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
+  if (!identical(1,weights)) {
+    aggregated_weights <- aggregate.ts(weights,frequency(weights)/ratio)
+    weights <- weights/ts_expand(aggregated_weights,
+                                 frequency(weights),divide.by.ratio = FALSE)
   }
+  
   MT <- t(apply(stairs_diagonal(lf_length,ratio,weights),1,function(x) rev(cumsum(rev(x)))))
   m1 <- MT[,1]
   tildem <- MT[,-1,drop=FALSE]
@@ -30,9 +31,15 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights) {
   cprod1 <- crossprod(m1,inversemm)
   cprod2 <- crossprod(tildem,inversemm)
   
-  list(m1=m1,
-       cprod1=cprod1,
-       cprod2=cprod2)
+  if (lfserie.is.rate||identical(1,weights)) {
+    list(m1=m1,
+         cprod1=cprod1,
+         cprod2=cprod2)
+  } else {
+    list(m1=diag(aggregated_weights) %*% m1,
+         cprod1=cprod1 %*% diag(1/aggregated_weights),
+         cprod2=cprod2 %*% diag(1/aggregated_weights))
+  }
 }
 
 # This function generates a wrapper of bflSmooth_matrices_impl that gives the
@@ -40,11 +47,11 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights) {
 bflSmooth_matrices_generator <- function(cache_size=100L) {
   cache <- vector("list",cache_size)
   cache_next <- 1L
-  function(lf_length,ratio,weights) {
-    args <- list(lf_length,ratio,weights)
+  function(lf_length,ratio,weights,lfserie.is.rate) {
+    args <- list(lf_length,ratio,weights,lfserie.is.rate)
     cached_index <- Position(function(x) identical(x$args,args),cache)
     if (is.na(cached_index)) {
-      value <- bflSmooth_matrices_impl(lf_length,ratio,weights)
+      value <- bflSmooth_matrices_impl(lf_length,ratio,weights,lfserie.is.rate)
       cache[[cache_next]] <<- list(args=args,
                                    value=value)
       cache_next <<- cache_next %% cache_size + 1L
@@ -75,7 +82,7 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' 
 #' @export
 bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=TRUE) {
-  if ((!is.null(weights)) && !lfserie.is.rate) return(Recall(lfserie/aggregate.ts(weights),nfrequency,weights)*weights)
+  if (is.null(weights)) weights <- 1
   if (!inherits(lfserie,"ts")) stop("Not a ts object", call. = FALSE)
   tsplf <- tsp(lfserie)
   if (as.integer(tsplf[3]) != tsplf[3]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
@@ -90,9 +97,11 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=TRUE) {
   
   matrices <- bflSmooth_matrices(lf_length = length(lfserie),
                                  ratio = nfrequency/tsplf[3],
-                                 weights = weights)
+                                 weights = weights,
+                                 lfserie.is.rate)
   
   x11 <- as.numeric(matrices$cprod1 %*% lfserie/(matrices$cprod1 %*% matrices$m1))
   res <- cumsum(c(x11,matrices$cprod2 %*% (as.numeric(lfserie)-matrices$m1*x11)))
+  if (!lfserie.is.rate) res <- res * as.numeric(weights)
   ts(res,start=tsplf[1],frequency = nfrequency)
 }
