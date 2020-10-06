@@ -74,7 +74,8 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' @return A time serie of frequency nfrequency
 #' 
 #' @export
-bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
+bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=TRUE) {
+  if ((!is.null(weights)) && !lfserie.is.rate) return(Recall(lfserie/aggregate.ts(weights),nfrequency,weights)*weights)
   if (!inherits(lfserie,"ts")) stop("Not a ts object", call. = FALSE)
   tsplf <- tsp(lfserie)
   if (as.integer(tsplf[3]) != tsplf[3]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
