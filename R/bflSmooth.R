@@ -17,7 +17,7 @@ weights_control <- function(weights,start,hf_length,hf_freq) {
   return()
 }
 
-bflSmooth_matrices_impl <- function(lf_length,ratio,weights) {
+bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
   if (is.null(weights)) {
     aggregated_weights <- rep(1,lf_length)
     weights <- 1
@@ -38,21 +38,27 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights) {
   # A * as.numeric(x) stands for diag(x) %*% A
   # t(t(A) * as.numeric(x)) stands for A %*% diag(x)
   
-  list(m1=m1*as.numeric(aggregated_weights),
-       cprod1=t(t(cprod1)/as.numeric(aggregated_weights)),
-       cprod2=t(t(cprod2)/as.numeric(aggregated_weights)))
+  if (lfserie.is.rate||is.null(weights)) {
+    list(m1=m1,
+         cprod1=cprod1,
+         cprod2=cprod2)
+  } else {
+    list(m1=m1*as.numeric(aggregated_weights),
+         cprod1=t(t(cprod1)/as.numeric(aggregated_weights)),
+         cprod2=t(t(cprod2)/as.numeric(aggregated_weights)))
+  }
 }
 
 # This function generates a wrapper of bflSmooth_matrices_impl that gives the
-# same results but uses cache, which is useful considering a lot of similar calls
+# same results but uses cache, which is useful considering a lot of similar
 bflSmooth_matrices_generator <- function(cache_size=100L) {
   cache <- vector("list",cache_size)
   cache_next <- 1L
-  function(lf_length,ratio,weights) {
-    args <- list(lf_length,ratio,weights)
+  function(lf_length,ratio,weights,lfserie.is.rate) {
+    args <- list(lf_length,ratio,weights,lfserie.is.rate)
     cached_index <- Position(function(x) identical(x$args,args),cache)
     if (is.na(cached_index)) {
-      value <- bflSmooth_matrices_impl(lf_length,ratio,weights)
+      value <- bflSmooth_matrices_impl(lf_length,ratio,weights,lfserie.is.rate)
       cache[[cache_next]] <<- list(args=args,
                                    value=value)
       cache_next <<- cache_next %% cache_size + 1L
@@ -67,7 +73,14 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' Smooth a time serie
 #' 
 #' bflSmooth smoothes a time-serie into a time serie of a higher frequency that exactly
-#' aggregate into the higher one. The process followed is Boot, Feibes and Lisman
+#' aggregate into the higher one. The process followed is Boot, Feibes and Lisman, which
+#' minimizes the squares of the variations.
+#' 
+#' If `weights` isn't `NULL` the results depends of `lfserie.is.rate` :
+#' 
+#' * if `FALSE` the rate output/weights is smoothed with the constraint that the aggregated output
+#' is equal to lfserie.
+#' * if `TRUE` the output is the rate to be smoothed, and the output is the aggregated rate.
 #' 
 #' @author
 #' Arnaud Feldmann
@@ -75,13 +88,12 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' @param lfserie a time-serie to be smoothed
 #' @param nfrequency the new high frequency. It must be a multiple of the low frequency.
 #' @param weights NULL or a time-serie of the same size than the expected high-frequency serie.
-#' If the weights are submitted, it is the rate hfserie/weights that is smoothed. By example,
-#' if weights is a volume and lfserie a value, the result is a disaggregated value with a smoothed
-#' price.
+
+#' 
 #' @return A time serie of frequency nfrequency
 #' 
 #' @export
-bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
+bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=FALSE) {
   if (!inherits(lfserie,"ts")) stop("Not a ts object", call. = FALSE)
   tsplf <- tsp(lfserie)
   if (as.integer(tsplf[3]) != tsplf[3]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
@@ -89,6 +101,9 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
   if (nfrequency==tsplf[3]) return(lfserie)
   if (nfrequency%%tsplf[3]!=0) stop("The new frequency must be a multiple of the lower one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
+  if (is.null(weights) && lfserie.is.rate) {
+    warning("weights is NULL. Ignoring lfserie.is.rate")
+  }
   
   ratio <- nfrequency/tsplf[3]
   
@@ -96,10 +111,11 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL) {
   
   matrices <- bflSmooth_matrices(lf_length = length(lfserie),
                                  ratio = nfrequency/tsplf[3],
-                                 weights = weights)
+                                 weights = weights,
+                                 lfserie.is.rate)
   
   x11 <- as.numeric(matrices$cprod1 %*% lfserie/(matrices$cprod1 %*% matrices$m1))
   res <- cumsum(c(x11,matrices$cprod2 %*% (as.numeric(lfserie)-matrices$m1*x11)))
-  if (!is.null(weights)) res <- res * as.numeric(weights)
+  if (!lfserie.is.rate && !is.null(weights)) res <- res * as.numeric(weights)
   ts(res,start=tsplf[1],frequency = nfrequency)
 }

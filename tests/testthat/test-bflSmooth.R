@@ -33,8 +33,8 @@ test_that("Smoothing works", {
 
 test_that("cache works for smoothing", {
   bflSmooth_matrices_cache <- bflSmooth_matrices_generator()
-  expect_identical(bflSmooth_matrices_cache(20,12,NULL),bflSmooth_matrices_impl(20,12,NULL))
-  expect_identical(bflSmooth_matrices_cache(20,12,NULL),bflSmooth_matrices_impl(20,12,NULL))
+  expect_identical(bflSmooth_matrices_cache(20,12,NULL,TRUE),bflSmooth_matrices_impl(20,12,NULL,TRUE))
+  expect_identical(bflSmooth_matrices_cache(20,12,NULL,TRUE),bflSmooth_matrices_impl(20,12,NULL,TRUE))
   set.seed(10)
   randomarg <- function(n) {
     lfserie <- ts(arima.sim(n,model = list(order=c(1,1,0),ar=0.7)),freq=sample(1:4,1,T),start=2010)
