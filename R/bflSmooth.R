@@ -44,7 +44,7 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights) {
 }
 
 # This function generates a wrapper of bflSmooth_matrices_impl that gives the
-# same results but uses cache, which is useful considering a lot of similar
+# same results but uses cache, which is useful considering a lot of similar calls
 bflSmooth_matrices_generator <- function(cache_size=100L) {
   cache <- vector("list",cache_size)
   cache_next <- 1L
