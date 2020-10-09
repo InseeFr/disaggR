@@ -23,4 +23,5 @@ Suggests:
 	vdiffr
 Depends: 
   R (>= 2.10)
+BugReports: https://github.com/arnaud-feldmann/disaggR/issues
 LazyData: yes
