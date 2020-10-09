@@ -1,11 +1,11 @@
 test_that("window", {
   set.seed(1)
-  frequencyx <- c(sample(1:40,100,replace = TRUE),rnorm(100,10,10))
-  datax <- lapply(vapply(sample(1:50,200,replace = TRUE),identity,1),rnorm)
-  startx <- rnorm(200,0,sd = 100)
+  frequencyx <- c(sample(1:40,5000,replace = TRUE),rnorm(5000,10,10))
+  datax <- lapply(vapply(sample(1:50,10000,replace = TRUE),identity,1),rnorm)
+  startx <- rnorm(10000,0,sd = 100)
   series <- Map(ts,datax,start=startx,frequency=abs(frequencyx))
-  start <- rnorm(200,0,sd = 100)
-  end <- rnorm(200,0,sd = 100)
+  start <- rnorm(10000,0,sd = 100)
+  end <- rnorm(10000,0,sd = 100)
 
   win1 <- function(x,start,end) {
     list(tryCatch(stats::window(x,start,end,extend=TRUE), error = function(e) FALSE),
@@ -19,10 +19,10 @@ test_that("window", {
   }
   statsw <- Map(win1,series,start,end)
   statsd <- Map(win2,series,start,end)
-  expect_true(do.call(all,Map(all.equal,statsw,statsd)))
+  expect_true(identical(statsw,statsd))
   
-  start <- Map(c,floor(rnorm(200,0,sd = 100)),sample.int(40))
-  end <- Map(c,floor(rnorm(200,0,sd = 100)),sample.int(40))
+  start <- Map(c,floor(rnorm(10000,0,sd = 100)),sample.int(40,size = 10000,replace=TRUE))
+  end <- Map(c,floor(rnorm(10000,0,sd = 100)),sample.int(40,size = 10000,replace=TRUE))
   win1 <- function(x,start,end) {
     list(tryCatch(stats::window(x,start,end,extend=TRUE), error = function(e) FALSE),
          tryCatch(stats::window(x,start=start,extend=TRUE), error = function(e) FALSE),
@@ -36,12 +36,13 @@ test_that("window", {
   
   statsw <- Map(win1,series,start,end)
   statsd <- Map(win2,series,start,end)
-  expect_true(do.call(all,Map(all.equal,statsw,statsd)))
   
-  frequencyx <- c(sample(1:40,100,replace = TRUE),rnorm(100,10,10))
-  datax <- lapply(vapply(sample(1:50,200,replace = TRUE),identity,1),
+  expect_true(identical(statsw,statsd))
+  
+  frequencyx <- c(sample(1:40,5000,replace = TRUE),rnorm(5000,10,10))
+  datax <- lapply(vapply(sample(1:50,10000,replace = TRUE),identity,1),
                   function(n) matrix(rnorm(n),rnorm(n),nrow=n,ncol=2))
-  startx <- rnorm(200,0,sd = 100)
+  startx <- rnorm(10000,0,sd = 100)
   series <- Map(ts,datax,start=startx,frequency=abs(frequencyx))
   
   win1 <- function(x,start,end) {
@@ -56,10 +57,10 @@ test_that("window", {
   }
   statsw <- Map(win1,series,start,end)
   statsd <- Map(win2,series,start,end)
-  expect_true(do.call(all,Map(all.equal,statsw,statsd)))
+  identical(statsw,statsd)
   
-  start <- Map(c,floor(rnorm(200,0,sd = 100)),sample.int(40))
-  end <- Map(c,floor(rnorm(200,0,sd = 100)),sample.int(40))
+  start <- Map(c,floor(rnorm(10000,0,sd = 100)),sample.int(40,size = 10000,replace=TRUE))
+  end <- Map(c,floor(rnorm(10000,0,sd = 100)),sample.int(40,size = 10000,replace=TRUE))
   win1 <- function(x,start,end) {
     list(tryCatch(stats::window(x,start,end,extend=TRUE), error = function(e) FALSE),
          tryCatch(stats::window(x,start=start,extend=TRUE), error = function(e) FALSE),
@@ -73,7 +74,7 @@ test_that("window", {
   
   statsw <- Map(win1,series,start,end)
   statsd <- Map(win2,series,start,end)
-  expect_true(do.call(all,Map(all.equal,statsw,statsd)))
+  identical(statsw,statsd)
   
   expect_error(disaggR:::window(NULL))
   expect_error(disaggR:::window(NA))

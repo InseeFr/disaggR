@@ -1,5 +1,7 @@
 #include <Rcpp.h>
 
+// This is a translation of R window
+
 using namespace Rcpp;
 
 template <class VectorOrMatrix>
@@ -40,6 +42,8 @@ void winparam(VectorOrMatrix x,double const& tseps,NumericVector const& start,Nu
   double enoff=floor((pend-xend)*xfreq+tseps);
   yend=enoff/xfreq+xend;
   int nold=round(xfreq * (xend - xstart))+1;
+  
+  if (ystart > yend && (ystart - yend) * xfreq < tseps) yend=ystart;
   
   if (pstart > xend + tseps/xfreq || pend < xstart - tseps/xfreq) {
     lengthy=floor(1 + (pend - pstart) * xfreq + tseps);
