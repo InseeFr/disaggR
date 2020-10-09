@@ -2,18 +2,18 @@
 # having to create the matrix (it is helpful if there are a lot of obs)
 omega_inv_sqrt <- function(x,rho) {
   if (is.null(dim(x))) {
-    c(sqrt(1-rho^2)*x[1],
-      x[-1]-rho*x[-length(x)])
+    c(sqrt(1-rho^2)*x[1L],
+      x[-1L]-rho*x[-length(x)])
   }
   else {
-    rbind(sqrt(1-rho^2)*x[1,],
-          x[-1,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
+    rbind(sqrt(1-rho^2)*x[1L,],
+          x[-1L,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
   }
 }
 
 autocor <- function(x) {
   x_center <- x-mean(x)
-  tailxc <- x_center[-1]
+  tailxc <- x_center[-1L]
   headxc <- x_center[-length(x_center)]
   as.numeric(crossprod(tailxc,headxc)/
                sqrt(crossprod(tailxc)) /
@@ -25,7 +25,7 @@ praislm_impl <- function(X,y,include.rho) {
   rho <- 0
   df_residual <- nrow(X) - ncol(X)
   
-  if (ncol(X) != 0) {
+  if (ncol(X) != 0L) {
     if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window", call. = FALSE)
     PQR <- qr(X)
     if (PQR$rank != ncol(X))  stop("The regressed series should have a perfect rank", call. = FALSE)
@@ -57,7 +57,7 @@ praislm_impl <- function(X,y,include.rho) {
     residuals <- y-fitted
     residuals_decor <- omega_inv_sqrt(residuals,rho)
     resvar <- sum(residuals_decor^2) / df_residual
-    R <- chol2inv(PQR$qr[1:ncol(X), 1:ncol(X), drop = FALSE])
+    R <- chol2inv(PQR$qr[1L:ncol(X), 1L:ncol(X), drop = FALSE])
     se <- sqrt(diag(R) * resvar)
   }
   else {
@@ -93,10 +93,10 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   if (include.differenciation) {
     X <- diff(X)
     y <- diff(y)
-    tspx[1] <- tspx[1] + 1/tspx[3]
+    tspx[1L] <- tspx[1L] + 1/tspx[3L]
   }
 
-  if (length(set_coefficients)==0) names(set_coefficients) <- character()
+  if (length(set_coefficients) == 0L) names(set_coefficients) <- character()
   else if (is.null(names(set_coefficients))) stop("The coefficients setter must be empty or have names", call. = FALSE)
   
   coefficients <- rep(NA_real_,ncol(X))

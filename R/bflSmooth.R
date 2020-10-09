@@ -1,18 +1,18 @@
 stairs_diagonal <- function(A,ratio,weights=1) {
   res <- matrix(0,A,ratio*A)
-  res[matrix(c(rep(1:A,each=ratio),
+  res[matrix(c(rep(1L:A,each=ratio),
                seq_len(ncol(res))),
-             ncol = 2)] <- weights
+             ncol = 2L)] <- weights
   res
 }
 
 weights_control <- function(weights,start,hf_length,hf_freq) {
   if (is.null(weights)) return()
   if (!inherits(weights,"ts")) stop("The weights must be either NULL or a one-dimensional ts with the same window than the expected high-frequency serie", call. = FALSE)
-  if (!is.null(dim(weights)) && dim(weights)[2] != 1) stop("The weights serie must be one-dimensional", call. = FALSE)
+  if (!is.null(dim(weights)) && dim(weights)[2L] != 1L) stop("The weights serie must be one-dimensional", call. = FALSE)
   tspw <- tsp(weights)
-  if (tspw[3] != hf_freq) stop("The frequency of the weights must be the same than the new frequency", call. = FALSE)
-  if (tspw[1] != start) stop("The weights serie must have the same start than the expected high-frequency serie", call. = FALSE)
+  if (tspw[3L] != hf_freq) stop("The frequency of the weights must be the same than the new frequency", call. = FALSE)
+  if (tspw[1L] != start) stop("The weights serie must have the same start than the expected high-frequency serie", call. = FALSE)
   if (length(weights) != hf_length) stop("The weights serie must have the same end than the expected high-frequency serie", call. = FALSE)
   return()
 }
@@ -29,8 +29,8 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
   }
   
   MT <- t(apply(stairs_diagonal(lf_length,ratio,weights),1,function(x) rev(cumsum(rev(x)))))
-  m1 <- MT[,1]
-  tildem <- MT[,-1,drop=FALSE]
+  m1 <- MT[,1L]
+  tildem <- MT[,-1L,drop=FALSE]
   inversemm <- solve((tcrossprod(tildem)))
   cprod1 <- crossprod(m1,inversemm)
   cprod2 <- crossprod(tildem,inversemm)
@@ -96,27 +96,27 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=FALSE) {
   if (!inherits(lfserie,"ts")) stop("Not a ts object", call. = FALSE)
   tsplf <- tsp(lfserie)
-  if (as.integer(tsplf[3]) != tsplf[3]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
-  if (nfrequency==0) stop("The new frequency must be strictly positive", call. = FALSE)
-  if (nfrequency%%tsplf[3]!=0) stop("The new frequency must be a multiple of the lower one", call. = FALSE)
-  if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
+  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
+  if (nfrequency == 0) stop("The new frequency must be strictly positive", call. = FALSE)
+  if (nfrequency %% tsplf[3L] != 0L) stop("The new frequency must be a multiple of the lower one", call. = FALSE)
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   if (is.null(weights) && lfserie.is.rate) {
     warning("weights is NULL. Ignoring lfserie.is.rate")
   }
   
-  ratio <- nfrequency/tsplf[3]
+  ratio <- nfrequency/tsplf[3L]
   
-  weights_control(weights,tsplf[1],ratio*length(lfserie),nfrequency)
+  weights_control(weights,tsplf[1L],ratio*length(lfserie),nfrequency)
   
-  if (nfrequency==tsplf[3]) return(lfserie)
+  if (nfrequency == tsplf[3L]) return(lfserie)
   
   matrices <- bflSmooth_matrices(lf_length = length(lfserie),
-                                 ratio = nfrequency/tsplf[3],
+                                 ratio = nfrequency/tsplf[3L],
                                  weights = weights,
                                  lfserie.is.rate)
   
   x11 <- as.numeric(matrices$cprod1 %*% lfserie/(matrices$cprod1 %*% matrices$m1))
   res <- cumsum(c(x11,matrices$cprod2 %*% (as.numeric(lfserie)-matrices$m1*x11)))
   if (!lfserie.is.rate && !is.null(weights)) res <- res * as.numeric(weights)
-  ts(res,start=tsplf[1],frequency = nfrequency)
+  ts(res,start=tsplf[1L],frequency = nfrequency)
 }
