@@ -12,6 +12,8 @@ bflSmooth(lfserie, nfrequency, weights = NULL, lfserie.is.rate = FALSE)
 \item{nfrequency}{the new high frequency. It must be a multiple of the low frequency.}
 
 \item{weights}{NULL or a time-serie of the same size than the expected high-frequency serie.}
+
+\item{lfserie.is.rate}{TRUE or FALSE. only means a thing if weights isn't NULL.}
 }
 \value{
 A time serie of frequency nfrequency

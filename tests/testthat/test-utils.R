@@ -88,9 +88,8 @@ test_that("window", {
   
 })
 
-
 test_that("fastop errors",{
-  expect_error(disaggR::fast_op(ts(1:10),1:10,`+`),"two time-series")
-  expect_error(disaggR::fast_op(1:10,ts(1:10),`+`),"two time-series")
-  expect_error(disaggR::fast_op(ts(1:10),ts(1:10,freq=4),`+`),"same frequency")
+  expect_error(disaggR:::fast_op(ts(1:10),1:10,`+`),"two time-series")
+  expect_error(disaggR:::fast_op(1:10,ts(1:10),`+`),"two time-series")
+  expect_error(disaggR:::fast_op(ts(1:10),ts(1:10,freq=4),`+`),"same frequency")
 })

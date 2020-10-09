@@ -88,7 +88,7 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' @param lfserie a time-serie to be smoothed
 #' @param nfrequency the new high frequency. It must be a multiple of the low frequency.
 #' @param weights NULL or a time-serie of the same size than the expected high-frequency serie.
-
+#' @param lfserie.is.rate TRUE or FALSE. only means a thing if weights isn't NULL.
 #' 
 #' @return A time serie of frequency nfrequency
 #' 
@@ -98,7 +98,6 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=FALSE) {
   tsplf <- tsp(lfserie)
   if (as.integer(tsplf[3]) != tsplf[3]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
   if (nfrequency==0) stop("The new frequency must be strictly positive", call. = FALSE)
-  if (nfrequency==tsplf[3]) return(lfserie)
   if (nfrequency%%tsplf[3]!=0) stop("The new frequency must be a multiple of the lower one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   if (is.null(weights) && lfserie.is.rate) {
@@ -108,6 +107,8 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=FALSE) {
   ratio <- nfrequency/tsplf[3]
   
   weights_control(weights,tsplf[1],ratio*length(lfserie),nfrequency)
+  
+  if (nfrequency==tsplf[3]) return(lfserie)
   
   matrices <- bflSmooth_matrices(lf_length = length(lfserie),
                                  ratio = nfrequency/tsplf[3],
