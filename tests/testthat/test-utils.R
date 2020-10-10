@@ -1,6 +1,6 @@
 test_that("window", {
   set.seed(10)
-  frequencyx <- c(sample(1:40,5000,replace = TRUE),rnorm(5000,10,10))
+  frequencyx <- c(sample(1:40,10000,replace = TRUE))
   datax <- lapply(vapply(sample(1:50,10000,replace = TRUE),identity,1),rnorm)
   startx <- rnorm(10000,0,sd = 100)
   series <- Map(ts,datax,start=startx,frequency=abs(frequencyx))
@@ -39,7 +39,7 @@ test_that("window", {
   
   expect_true(isTRUE(all.equal(statsw,statsd)))
   
-  frequencyx <- c(sample(1:40,5000,replace = TRUE),rnorm(5000,10,10))
+  frequencyx <- c(sample(1:40,10000,replace = TRUE))
   datax <- lapply(vapply(sample(1:50,10000,replace = TRUE),identity,1),
                   function(n) matrix(rnorm(n),rnorm(n),nrow=n,ncol=2))
   startx <- rnorm(10000,0,sd = 100)
