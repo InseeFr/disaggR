@@ -348,6 +348,8 @@ test_that("errors",{
                regexp = "one-dimensional")
   expect_error(twoStepsBenchmark(turnover,ts(1:700,start=2000,frequency=7)),
                regexp = "should divide")
+  expect_error(twoStepsBenchmark(ts(1:10,frequency=0.5),ts(1:10,frequency=0.25)),
+               regexp = "integer")
 })
 
 test_that("reUseBenchmark works",{

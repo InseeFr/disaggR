@@ -235,13 +235,12 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
                               start.coeff.calc=NULL,end.coeff.calc=NULL,
                               start.benchmark=NULL,end.benchmark=NULL,
-                              start.domain=NULL,end.domain=NULL,...) {
-  
+                            start.domain=NULL,end.domain=NULL,...) {
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
-  
-  if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1L) stop("The low frequency serie must be one-dimensional", call. = FALSE)
-  
+  tsplf <- tsp(lfserie)
+  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
   if  (!(frequency(hfserie) %% frequency(lfserie) == 0L)) stop("The low frequency should divide the higher one", call. = FALSE)
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   
   maincl <- match.call()
   
