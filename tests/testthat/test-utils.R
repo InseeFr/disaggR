@@ -19,7 +19,7 @@ test_that("window", {
   }
   statsw <- Map(win1,series,start,end)
   statsd <- Map(win2,series,start,end)
-  expect_true(identical(statsw,statsd))
+  expect_true(isTRUE(all.equal(statsw,statsd)))
   
   start <- Map(c,floor(rnorm(10000,0,sd = 100)),sample.int(40,size = 10000,replace=TRUE))
   end <- Map(c,floor(rnorm(10000,0,sd = 100)),sample.int(40,size = 10000,replace=TRUE))
@@ -37,7 +37,7 @@ test_that("window", {
   statsw <- Map(win1,series,start,end)
   statsd <- Map(win2,series,start,end)
   
-  expect_true(identical(statsw,statsd))
+  expect_true(isTRUE(all.equal(statsw,statsd)))
   
   frequencyx <- c(sample(1:40,5000,replace = TRUE),rnorm(5000,10,10))
   datax <- lapply(vapply(sample(1:50,10000,replace = TRUE),identity,1),
@@ -57,7 +57,7 @@ test_that("window", {
   }
   statsw <- Map(win1,series,start,end)
   statsd <- Map(win2,series,start,end)
-  expect_true(identical(statsw,statsd))
+  expect_true(isTRUE(all.equal(statsw,statsd)))
   
   start <- Map(c,floor(rnorm(10000,0,sd = 100)),sample.int(40,size = 10000,replace=TRUE))
   end <- Map(c,floor(rnorm(10000,0,sd = 100)),sample.int(40,size = 10000,replace=TRUE))
@@ -74,7 +74,7 @@ test_that("window", {
   
   statsw <- Map(win1,series,start,end)
   statsd <- Map(win2,series,start,end)
-  expect_true(identical(statsw,statsd))
+  expect_true(isTRUE(all.equal(statsw,statsd)))
   
   expect_error(disaggR:::window(NULL))
   expect_error(disaggR:::window(NA))

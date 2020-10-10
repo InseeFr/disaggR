@@ -1,7 +1,7 @@
 Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks for Time Series Disaggregation
-Version: 0.1.7
+Version: 0.1.8
 Date: 2020-10-09
 Author: Arnaud Feldmann
 Maintainer: Arnaud Feldmann <arnaud.feldmann@gmail.com>
