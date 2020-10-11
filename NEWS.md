@@ -1,3 +1,6 @@
+# disaggR 0.1.9
+* fixed the R check for old-release (3.6.3).
+
 # disaggR 0.1.8
 * fixed the R check for Solaris.
 
