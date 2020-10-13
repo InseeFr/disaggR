@@ -2,24 +2,22 @@
 # having to create the matrix (it is helpful if there are a lot of obs)
 omega_inv_sqrt <- function(x,rho) {
   if (is.null(dim(x))) {
-    res <- c(sqrt(1-rho^2)*x[1],
-             x[-1]-rho*x[-length(x)])
+    c(sqrt(1-rho^2)*x[1L],
+      x[-1L]-rho*x[-length(x)])
   }
   else {
-    res <- rbind(sqrt(1-rho^2)*x[1,],
-                 x[-1,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
+    rbind(sqrt(1-rho^2)*x[1L,],
+          x[-1L,,drop=FALSE]-rho*x[-nrow(x),,drop=FALSE])
   }
-  res <- ts(res,start=start(x),frequency=frequency(x))
-  return(res)
 }
 
 autocor <- function(x) {
   x_center <- x-mean(x)
-  tailxc <- x_center[-1]
+  tailxc <- x_center[-1L]
   headxc <- x_center[-length(x_center)]
-  rho <- as.numeric(crossprod(tailxc,headxc)/
-                      sqrt(crossprod(tailxc)) /
-                      sqrt(crossprod(headxc)))
+  as.numeric(crossprod(tailxc,headxc)/
+               sqrt(crossprod(tailxc)) /
+               sqrt(crossprod(headxc)))
     # Not exactly pearson but is a bit better to estimate the rho of an AR1
 }
 
@@ -27,7 +25,7 @@ praislm_impl <- function(X,y,include.rho) {
   rho <- 0
   df_residual <- nrow(X) - ncol(X)
   
-  if (ncol(X) != 0) {
+  if (ncol(X) != 0L) {
     if (any(is.na(X))) stop("The high frequency serie must have values in the full coefficients calculation window", call. = FALSE)
     PQR <- qr(X)
     if (PQR$rank != ncol(X))  stop("The regressed series should have a perfect rank", call. = FALSE)
@@ -35,47 +33,47 @@ praislm_impl <- function(X,y,include.rho) {
     coefficients <- qr.coef(PQR,y)
     
     if (include.rho) {
-      drho <- 1
       rho_prec <- 0
-      i_max = 50L
+      rho <- 1
       i <- 1L
       
-      while (drho>0.001 && i<=i_max) {
-        rho <- autocor(y - X %*% coefficients)
-        
-        drho <- abs(rho-rho_prec)
+      while (abs(rho-rho_prec)>0.001) {
         rho_prec <- rho
+        rho <- autocor(y - X %*% coefficients)
         
         y_star <- omega_inv_sqrt(y,rho)
         X_star <- omega_inv_sqrt(X,rho)
         
         PQR <- qr(X_star)
         coefficients <- qr.coef(PQR,y_star)
-        if (i == i_max) warning("Maximum iterations without convergence")
+        if (i == 50L) {
+          warning("Maximum iterations without convergence")
+          break
+        }
         i <- i+1
       }
     }
-    fitted <- ts(X %*% coefficients,start=start(X),frequency = frequency(X))
+    fitted <- X %*% coefficients
     residuals <- y-fitted
     residuals_decor <- omega_inv_sqrt(residuals,rho)
     resvar <- sum(residuals_decor^2) / df_residual
-    R <- chol2inv(PQR$qr[1:ncol(X), 1:ncol(X), drop = FALSE])
+    R <- chol2inv(PQR$qr[1L:ncol(X), 1L:ncol(X), drop = FALSE])
     se <- sqrt(diag(R) * resvar)
   }
   else {
     coefficients <- numeric()
-    fitted <- ts(rep(0,length(y)),start=start(y),frequency=frequency(y))
+    fitted <- rep(0,length(y))
     residuals <- y
     residuals_decor <- y
     se <- numeric()
   }
-  return(list(coefficients = coefficients,
-              residuals = residuals,
-              fitted=fitted,
-              df.residual=df_residual,
-              se=se,
-              rho=rho,
-              residuals.decorrelated=residuals_decor))
+  list(coefficients = coefficients,
+       residuals = residuals,
+       fitted=fitted,
+       df.residual=df_residual,
+       se=se,
+       rho=rho,
+       residuals.decorrelated=residuals_decor)
 }
 
 praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl) {
@@ -86,13 +84,19 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
                     set.coefficients=set_coefficients)
   if ( !is.ts(X) || !is.ts(y) ) stop("Not a ts object", call. = FALSE)
   if (is.null(dim(X))) stop("Not a matrix object", call. = FALSE)
+  if (any(tsp(X) != tsp(y))) stop("X and y should have the same windows and frequencies", call. = FALSE)
+
+  tspx <- tsp(X)
+  X <- matrix(as.numeric(X),nrow = nrow(X),ncol = ncol(X),dimnames = dimnames(X))
+  y <- as.numeric(y)
   
   if (include.differenciation) {
     X <- diff(X)
     y <- diff(y)
+    tspx[1L] <- tspx[1L] + 1/tspx[3L]
   }
 
-  if (length(set_coefficients)==0) names(set_coefficients) <- character()
+  if (length(set_coefficients) == 0L) names(set_coefficients) <- character()
   else if (is.null(names(set_coefficients))) stop("The coefficients setter must be empty or have names", call. = FALSE)
   
   coefficients <- rep(NA_real_,ncol(X))
@@ -106,7 +110,7 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   coefficients[match_set] <- set_coefficients
   match_notset <- which(is.na(coefficients))
   
-  offset <- ts(X[,match_set,drop=FALSE] %*% set_coefficients,start=start(X),frequency = frequency(X))
+  offset <- X[,match_set,drop=FALSE] %*% set_coefficients
 
   calculated <- praislm_impl(X[,match_notset,drop=FALSE],y-offset,include.rho)
   
@@ -117,15 +121,15 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   fitted <- calculated$fitted + offset
   
   res <- list(coefficients=coefficients,
-              residuals=drop(calculated$residuals),
-              fitted.values=drop(fitted),
+              residuals=ts_from_tsp(drop(calculated$residuals),tspx),
+              fitted.values=ts_from_tsp(drop(fitted),tspx),
               se=se,
               df.residual=calculated$df.residual,
               rho=calculated$rho,
-              residuals.decorrelated=drop(calculated$residuals.decor),
-              fitted.values.decorrelated=drop(omega_inv_sqrt(fitted,calculated$rho)),
+              residuals.decorrelated=ts_from_tsp(drop(calculated$residuals.decor),tspx),
+              fitted.values.decorrelated=ts_from_tsp(drop(omega_inv_sqrt(fitted,calculated$rho)),tspx),
               model.list=modellist,
               call=cl)
   class(res) <- "praislm"
-  return(res)
+  res
 }

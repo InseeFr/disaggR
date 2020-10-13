@@ -29,23 +29,23 @@ residuals_extrap <- function(lfresiduals,rho,include.differenciation) {
     lastval <- valplaces[length(valplaces)]
     if (rho==0) rhoinverse <- 0 else rhoinverse <- 1/rho
     if (lastval != length(lfresiduals)) {
-      lfresiduals[(lastval+1):length(lfresiduals)] <-
-        residuals_extrap_sequence(lfresiduals[lastval-1],
+      lfresiduals[(lastval+1L):length(lfresiduals)] <-
+        residuals_extrap_sequence(lfresiduals[lastval-1L],
                                   lfresiduals[lastval],
                                   rho,
                                   length(lfresiduals)-lastval,
                                   include.differenciation)
     }
     if (firstval != 1L) {
-      lfresiduals[(firstval-1):1] <-
-        residuals_extrap_sequence(lfresiduals[firstval+1],
+      lfresiduals[(firstval-1L):1L] <-
+        residuals_extrap_sequence(lfresiduals[firstval+1L],
                                   lfresiduals[firstval],
                                   rhoinverse,
                                   firstval-1,
                                   include.differenciation)
     }
   }
-  return(lfresiduals)
+  lfresiduals
 }
 
 regression_estimation <- function(hfserie,lfserie,
@@ -55,39 +55,36 @@ regression_estimation <- function(hfserie,lfserie,
   y <- window(lfserie,start=start.coeff.calc,end=end.coeff.calc,extend = TRUE)
   tspy <- tsp(y)
   x <- aggregate.ts(
-    window(hfserie,tspy[1],tspy[2]+1/tspy[3]-1/frequency(hfserie),extend = TRUE),
-    nfrequency = tspy[3]
+    window(hfserie,tspy[1L],tspy[2L]+1/tspy[3L]-1/frequency(hfserie),extend = TRUE),
+    nfrequency = tspy[3L]
   )
-  return(praislm(x,y,include.rho,include.differenciation,set_coefficients,cl))
+  praislm(x,y,include.rho,include.differenciation,set_coefficients,cl)
 }
 
 coefficients_application <- function(hfserie,lfserie,regcoefs) {
   tsphf <- tsp(hfserie)
   tsplf <- tsp(lfserie)
   
-  startdomain_extended <- floor(tsphf[1]*tsplf[3])/tsplf[3]
-  enddomain_extended <- ceiling((tsphf[2]+1/tsphf[3])*tsplf[3])/tsplf[3]-1/tsphf[3]
+  startdomain_extended <- floor(tsphf[1L]*tsplf[3L])/tsplf[3L]
+  enddomain_extended <- ceiling((tsphf[2L]+1/tsphf[3L])*tsplf[3L])/tsplf[3L]-1/tsphf[3L]
   # This window is the smallest that is all around the domain of the hfserie
   # that is compatible with the low frequency.
   
-  lfserie_win <- window(lfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
   hfserie_win <- window(hfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
   
-  return(ts(as.numeric(hfserie_win %*% regcoefs),
-            start=tsp(hfserie_win)[1],
-            frequency=frequency(hfserie_win)))
+  ts_from_tsp(as.numeric(hfserie_win %*% regcoefs),tsp(hfserie_win))
 }
 
 eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {
   if (is.null(set.smoothed.part)) {
     hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = frequency(lfserie))
-    lfresiduals <- window(lfserie,start=tsp(hfserie_fitted)[1],end=tsp(hfserie_fitted)[2],extend = TRUE)-hfserie_fitted_aggreg
+    lfresiduals <- window(lfserie,start=start(hfserie_fitted_aggreg),end=end(hfserie_fitted_aggreg),extend = TRUE) - hfserie_fitted_aggreg
     lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
-    smoothed_part <- bflSmooth(lfresiduals,frequency(hfserie_fitted))
+    bflSmooth(lfresiduals,frequency(hfserie_fitted))
   }
   else {
     if (!is.ts(set.smoothed.part) || is.mts(set.smoothed.part)) stop("set.smoothed part must be an univariate time-serie", call. = FALSE)
-    smoothed_part <- set.smoothed.part
+    set.smoothed.part
   }
 }
 
@@ -114,7 +111,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   
   smoothed_part  <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
   
-  rests <- hfserie_fitted+smoothed_part
+  rests <- hfserie_fitted + window(smoothed_part,start=start(hfserie_fitted),end = end(hfserie_fitted),extend=TRUE)
   
   res <- list(benchmarked.serie = window(rests,start=tsp(hfserie)[1],end=tsp(hfserie)[2],extend = TRUE),
               fitted.values = window(hfserie_fitted,end=tsp(hfserie)[2],extend = TRUE),
@@ -133,7 +130,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                 end.domain = end.domain),
               call = cl)
   class(res) <- c("twoStepsBenchmark","list")
-  return(res)
+  res
 }
 
 #' Bends a time-serie with a lower frequency one
@@ -238,46 +235,47 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
                               start.coeff.calc=NULL,end.coeff.calc=NULL,
                               start.benchmark=NULL,end.benchmark=NULL,
-                              start.domain=NULL,end.domain=NULL,...) {
-  
+                            start.domain=NULL,end.domain=NULL,...) {
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
-  
-  if (!is.null(dim(lfserie)) && dim(lfserie)[2] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
-  
-  if  (!(frequency(hfserie) %% frequency(lfserie) == 0)) stop("The low frequency should divide the higher one", call. = FALSE)
+  tsplf <- tsp(lfserie)
+  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
+  if  (!(frequency(hfserie) %% frequency(lfserie) == 0L)) stop("The low frequency should divide the higher one", call. = FALSE)
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   
   maincl <- match.call()
   
   if (is.null(set.coeff)) set.coeff <- numeric()
   if (is.null(set.const)) set.const <- numeric()
   
-  n <- if (is.matrix(hfserie)) nrow(hfserie) else length(hfserie)
-  
-  if (!include.differenciation) constant <- ts(rep(frequency(lfserie)/frequency(hfserie),n),frequency=frequency(hfserie),start=start(hfserie))
-  else constant <- ts(1:n*(frequency(lfserie)/frequency(hfserie))^2,frequency=frequency(hfserie),start=start(hfserie))
-  
-  if (length(set.const) > 1) stop("set.const must be of a single value", call. = FALSE)
-  if (length(set.const) == 1) names(set.const) <- "constant"
-  if ((NCOL(hfserie) == 1) && (length(set.coeff) == 1)) names(set.coeff) <- "hfserie"
+  constant <- {
+    if (include.differenciation) 1L:NROW(hfserie)*(frequency(lfserie)/frequency(hfserie))^2
+    else                         rep(frequency(lfserie)/frequency(hfserie),NROW(hfserie))
+  }
+ 
+  if (length(set.const) > 1L) stop("set.const must be of a single value", call. = FALSE)
+  if (length(set.const) == 1L) names(set.const) <- "constant"
+  if ((NCOL(hfserie) == 1L) && (length(set.coeff) == 1L)) names(set.coeff) <- "hfserie"
   
   if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
-
-  hfserie <- cbind(constant,hfserie)
-  colnames(hfserie) <- sub("^(hfserie\\.)","",colnames(hfserie))
   
-  return(twoStepsBenchmark_impl(hfserie,
-                                lfserie,
-                                include.differenciation,include.rho,
-                                c(set.const,set.coeff),
-                                start.coeff.calc,end.coeff.calc,
-                                start.benchmark,end.benchmark,
-                                start.domain,end.domain,maincl,...))
+  hfserie <- ts(matrix(c(constant,hfserie),nrow = NROW(hfserie),ncol = NCOL(hfserie) + 1L),
+                start = start(hfserie),
+                frequency = frequency(hfserie),
+                names = c("constant",if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie)))
+  
+  twoStepsBenchmark_impl(hfserie,
+                         lfserie,
+                         include.differenciation,include.rho,
+                         c(set.const,set.coeff),
+                         start.coeff.calc,end.coeff.calc,
+                         start.benchmark,end.benchmark,
+                         start.domain,end.domain,maincl,...)
 }
 
 #' @export
 annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
-                            start.coeff.calc=start(lfserie)[1],end.coeff.calc=end(lfserie)[1],
-                            start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
+                            start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
+                            start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
                             start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
   if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)
   twoStepsBenchmark(hfserie,lfserie,

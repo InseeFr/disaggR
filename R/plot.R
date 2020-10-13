@@ -1,8 +1,3 @@
-tsExpand <- function(x,nfrequency){
-  ratio <- nfrequency/frequency(x)
-  ts(rep(x/ratio, each = ratio), start = tsp(x)[1], frequency = nfrequency)
-}
-
 #' @importFrom graphics plot points
 #' @export
 plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
@@ -12,8 +7,8 @@ plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
             ceiling(max(time(tsbench)[!is.na(tsbench)])))
   plot(window(tsbench,start=lims[1],end=lims[2],extend=TRUE)
        , xlab = xlab, ylab = ylab, ...)
-  points(tsExpand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
-  return(invisible(NULL))
+  points(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
+  invisible()
 }
 
 #' @export
@@ -23,5 +18,61 @@ plot.insample <- function(x, xlab="", ylab="", ...) {
             ceiling(max(time(x)[!is.na(x[,1])|!is.na(x[,2])])))
   plot(window(x,start=lims[1],end=lims[2],extend=TRUE), plot.type="single", lty=c(1L,2L), xlab = xlab, ylab = ylab,
        main = paste0("In-sample predictions (", attr(x,"type"),")"), ...)
-  return(invisible(NULL))
+  invisible()
+}
+
+#' @importFrom ggplot2 %+replace%
+ggthemets <- function() ggplot2::theme_classic() %+replace%
+  ggplot2::theme(axis.title.x = ggplot2::element_blank(),
+                 axis.title.y = ggplot2::element_blank(),
+                 panel.grid.major = ggplot2::element_line(colour = "#cccccc"),                                                                     legend.position = "bottom")
+
+dftsforggplot <- function(object,series_names=NULL) {
+  if (is.null(series_names)) series_names <- colnames(object)
+  if (is.null(series_names)) series_names <- paste("Serie",1:NCOL(object))
+  data.frame(
+    Date = as.numeric(time(object)+deltat(object)/2),
+    Values = as.numeric(object),
+    Variables = factor(do.call(c,lapply(series_names,rep.int,times=NROW(object))),
+                       levels=series_names)
+  )
+}
+
+ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="colour",series_names=NULL,theme=ggthemets(),...) {
+  exprs <- structure(lapply(variable_aes, function(x) quote(Variables)),
+                     names=variable_aes)
+  df <- dftsforggplot(object,series_names)
+  lims <- c(floor(min(df$Date[!is.na(df$Values)])),
+            ceiling(max(df$Date[!is.na(df$Values)])))
+  ggplot2::ggplot() +
+    ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,group=Variables,,,!!!exprs),
+                       df,
+                       show.legend = show.legend,na.rm = TRUE,...) +
+    ggplot2::scale_x_continuous(
+      limits = lims,
+      breaks = lims[1]:(lims[2]-1),
+      minor_breaks = numeric(),
+      expand=c(0,0)
+    ) + 
+    theme
+}
+
+#' @importFrom ggplot2 autoplot
+#' @export 
+autoplot.twoStepsBenchmark <- function(object) {
+  model <- model.list(object)
+  x <- na.omit(as.ts(object))
+  lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),series_names = "Low-Frequency serie")
+  lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie),each=frequency(model$hfserie)/frequency(model$lfserie))
+  lfdf <- lfdf[!is.na(lfdf$Values),]
+  ggplotts(x,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype") +
+    ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf) +
+    ggplot2::labs(linetype=ggplot2::element_blank())
+}
+
+#' @importFrom ggplot2 autoplot
+#' @export
+autoplot.insample <- function(object) {
+  ggplotts(object,variable_aes = "linetype") +
+    ggplot2::labs(linetype=attr(object,"type"))
 }

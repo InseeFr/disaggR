@@ -4,19 +4,32 @@
 \alias{bflSmooth}
 \title{Smooth a time serie}
 \usage{
-bflSmooth(lfserie, nfrequency)
+bflSmooth(lfserie, nfrequency, weights = NULL, lfserie.is.rate = FALSE)
 }
 \arguments{
 \item{lfserie}{a time-serie to be smoothed}
 
 \item{nfrequency}{the new high frequency. It must be a multiple of the low frequency.}
+
+\item{weights}{NULL or a time-serie of the same size than the expected high-frequency serie.}
+
+\item{lfserie.is.rate}{TRUE or FALSE. only means a thing if weights isn't NULL.}
 }
 \value{
 A time serie of frequency nfrequency
 }
 \description{
 bflSmooth smoothes a time-serie into a time serie of a higher frequency that exactly
-aggregate into the higher one. The process followed is Boot, Feibes and Lisman
+aggregate into the higher one. The process followed is Boot, Feibes and Lisman, which
+minimizes the squares of the variations.
+}
+\details{
+If \code{weights} isn't \code{NULL} the results depends of \code{lfserie.is.rate} :
+\itemize{
+\item if \code{FALSE} the rate output/weights is smoothed with the constraint that the aggregated output
+is equal to lfserie.
+\item if \code{TRUE} the output is the rate to be smoothed, and the output is the aggregated rate.
+}
 }
 \author{
 Arnaud Feldmann

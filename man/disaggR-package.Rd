@@ -11,4 +11,11 @@ The aggregated sum of the resulting time-serie is strictly equal to the low-freq
 Typically, the low frequency serie is an annual one, unknown for the last year, and the high frequency is either quarterly or mensual.
 See "Methodology of quarterly national accounts", Insee Méthodes N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item Report bugs at \url{https://github.com/arnaud-feldmann/disaggR/issues}
+}
+
+}
 \keyword{internal}

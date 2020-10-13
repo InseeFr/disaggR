@@ -47,6 +47,7 @@ validation_date <- function(object) {
   return(attr(object,"ValidationDate"))
 }
 
+#' @import shiny
 shinyBenchmark <- function(hfserie,lfserie,rds.file,start.domain = NULL,end.domain = NULL,benchmark.name=basename(rds.file),version = NULL) {
   if (!(is.character(rds.file) && length(rds.file) == 1L)) stop("rds.file must be a file path, a character of length 1", call.= FALSE)
   folder <- dirname(rds.file)
