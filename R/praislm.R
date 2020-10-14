@@ -50,7 +50,7 @@ praislm_impl <- function(X,y,include.rho) {
           warning("Maximum iterations without convergence")
           break
         }
-        i <- i+1
+        i <- i+1L
       }
     }
     fitted <- X %*% coefficients
