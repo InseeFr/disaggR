@@ -1,5 +1,5 @@
 #' @import shiny
-shinyBenchmark_ui_module <- function(id) {
+reView_ui_module <- function(id) {
   ns <- NS(id)
   fluidPage(
     uiOutput("titlePanel"),
@@ -49,7 +49,7 @@ slider_windows <- function(ns,lfserie,ui_out,label) {
   )
 }
 
-shinyBenchmark_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain,compare,function.mode=TRUE) {
+reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain,compare,function.mode=TRUE) {
   moduleServer(id,function(input, output, session) {
     
     lfserie <- reactive(model.list(oldbn())$lfserie)
@@ -58,7 +58,7 @@ shinyBenchmark_server_module <- function(id,oldbn,benchmark.name,start.domain,en
       return(res[,colnames(res) != "constant"])
     })
     
-    output$titlePanel <- renderUI(titlePanel(paste0("shinyBenchmark : ",benchmark.name())))
+    output$titlePanel <- renderUI(titlePanel(paste0("reView : ",benchmark.name())))
     
     output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie,"coeffcalc","Coefficients:")
     output$benchmarksliderInput <- slider_windows(session$ns,lfserie,"benchmark","Benchmark:")
@@ -66,7 +66,7 @@ shinyBenchmark_server_module <- function(id,oldbn,benchmark.name,start.domain,en
     if (function.mode) {
       output$validationbutton <- renderUI(actionButton(session$ns("validation"),"Validate"))
       observeEvent(input$validation,stopApp(`attr<-`(newbn(),"ValidationDate",Sys.Date())))
-      onSessionEnded(function() stopApp(structure(list(message = "shinyBenchmark cancelled", call = NULL),
+      onSessionEnded(function() stopApp(structure(list(message = "reView cancelled", call = NULL),
                                                   class = c("error", "condition"))))
     } else output$validationbutton <- NULL
     
@@ -130,17 +130,17 @@ shinyBenchmark_server_module <- function(id,oldbn,benchmark.name,start.domain,en
   })
 }
 
-shinyBenchmark_ui <- shinyBenchmark_ui_module("shinyBenchmark")
-shinyBenchmark_server <- function(oldbn,benchmark.name,start.domain,end.domain,compare,function.mode) {
+reView_ui <- reView_ui_module("reView")
+reView_server <- function(oldbn,benchmark.name,start.domain,end.domain,compare,function.mode) {
   function(input,output,session) {
-    shinyBenchmark_server_module("shinyBenchmark",reactive(oldbn),reactive(benchmark.name),reactive(start.domain),reactive(end.domain),compare,function.mode)
+    reView_server_module("reView",reactive(oldbn),reactive(benchmark.name),reactive(start.domain),reactive(end.domain),compare,function.mode)
   }
 }
 
 runapp_disaggr <- function(oldbn,benchmark.name,start.domain,end.domain,compare) {
   shinyreturn <- shiny::runApp(
-    shiny::shinyApp(ui = shinyBenchmark_ui,
-                    server = shinyBenchmark_server(oldbn,benchmark.name,start.domain,end.domain,compare,TRUE)
+    shiny::shinyApp(ui = reView_ui,
+                    server = reView_server(oldbn,benchmark.name,start.domain,end.domain,compare,TRUE)
     ),
     quiet = TRUE
   )
@@ -149,6 +149,6 @@ runapp_disaggr <- function(oldbn,benchmark.name,start.domain,end.domain,compare)
 }
 
 #' @import shiny
-viewBenchmark <- function(benchmark,start.domain = NULL,end.domain = NULL) {
+reView <- function(benchmark,start.domain = NULL,end.domain = NULL) {
   runapp_disaggr(benchmark,deparse(a$call),start.domain,end.domain,compare=TRUE)
 }
