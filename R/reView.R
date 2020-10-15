@@ -1,40 +1,49 @@
 #' @import shiny
 reView_ui_module <- function(id) {
   ns <- NS(id)
-  fluidPage(
-    uiOutput("titlePanel"),
-    sidebarLayout(
-      sidebarPanel(
-        width = 2,
-        h5(tags$u("Include"),align="center"),
-        checkboxInput(ns("dif"),"Differenciation"),
-        checkboxInput(ns("rho"),"Rho"),
-        h5(tags$u("Set"),align="center"),
-        checkboxInput(ns("setcoeff_button"),"Coefficient"),
-        conditionalPanel("input.setcoeff_button",numericInput(ns("setcoeff"),"",1),ns = ns),
-        checkboxInput(ns("setconst_button"),"Constant"),
-        conditionalPanel("input.setconst_button",numericInput(ns("setconst"),"",0),ns = ns),
-        uiOutput(ns("setconst")),
-        h5(tags$u("Windows"),align="center"),
-        uiOutput(ns("coeffcalcsliderInput")),
-        uiOutput(ns("benchmarksliderInput")),
-        uiOutput(ns("validationbutton"))
-      ),
-      mainPanel(
-        width = 10,
-        fluidRow(
-          column(12,
-                 radioButtons(ns("plotchoice"),"",
-                              choiceNames = c("Benchmark","In-sample predictions","Summary"),
-                              choiceValues = c("benchmark","insample","summary"),
-                              selected = "benchmark",
-                              inline = TRUE)
-          ),
-          align="center"
-        ),
-        uiOutput(ns("mainOutput"))
-      )
-    )
+  navbarPage(title = "reView",id = ns("menu"),selected = "Modify",
+             tabPanel("Modify",
+                      sidebarLayout(
+                        sidebarPanel(
+                          width = 2,
+                          tags$style("h4 { font-family: 'Source Sans Pro', sans-serif; font-weight: 400; line-height: 32px; text-align: center;}"),
+                          h4("Include"),
+                          prettySwitch(ns("dif"),"Differenciation",fill = TRUE,status = "primary"),
+                          prettySwitch(ns("rho"),"Rho", fill = TRUE,status = "primary"),
+                          h4("Set"),
+                          # prettySwitch(ns("setcoeff_button"),"Coefficient",fill=TRUE,status="primary"),
+                          # conditionalPanel("input.setcoeff_button",numericInput(ns("setcoeff"),NULL,1),ns = ns),
+                          # prettySwitch(ns("setconst_button"),"Constant",fill=TRUE,status="primary"),
+                          # conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
+                          fluidRow(column(6,align="left",prettySwitch(ns("setcoeff_button"),"Coefficient", fill = TRUE,status = "primary")),
+                                   column(6,align="right",dropdownButton(numericInput(ns("setcoeff"),NULL,1),size="xs", icon = icon("gear")))),
+                          fluidRow(column(6,align="left",prettySwitch(ns("setconst_button"),"Constant", fill = TRUE,status = "primary")),
+                                   column(6,align="right",dropdownButton(numericInput(ns("setconst"),NULL,0),size="xs", icon = icon("gear")))),
+                          uiOutput(ns("setconst")),
+                          h4("Windows"),
+                          uiOutput(ns("coeffcalcsliderInput")),
+                          uiOutput(ns("benchmarksliderInput"))
+                        ),
+                        mainPanel(
+                          width = 10,
+                          fluidRow(
+                            column(12,
+                                   radioGroupButtons(ns("plotchoice"),NULL,
+                                                     choices = c("Benchmark","In-sample predictions","Summary"),
+                                                     selected = "Benchmark",
+                                                     justified = TRUE)
+                            ),
+                            align="center"
+                          ),
+                          uiOutput(ns("mainOutput"),style="  padding: 6px 8px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  background-color: #ffffff;
+  border: 1px solid #e3e3e3;
+  border-radius: 2px;")
+                        )
+                      )
+             )
   )
 }
 
@@ -58,45 +67,39 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
       return(res[,colnames(res) != "constant"])
     })
     
-    output$titlePanel <- renderUI(titlePanel(paste0("reView : ",benchmark.name())))
-    
     output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie,"coeffcalc","Coefficients:")
     output$benchmarksliderInput <- slider_windows(session$ns,lfserie,"benchmark","Benchmark:")
     
-    if (function.mode) {
-      output$validationbutton <- renderUI(actionButton(session$ns("validation"),"Validate"))
-      observeEvent(input$validation,stopApp(`attr<-`(newbn(),"ValidationDate",Sys.Date())))
-      onSessionEnded(function() stopApp(structure(list(message = "reView cancelled", call = NULL),
-                                                  class = c("error", "condition"))))
-    } else output$validationbutton <- NULL
-    
     output$mainOutput <- renderUI({
       switch(input$plotchoice,
-             benchmark={
+             "Benchmark"={
                output$newplot <- renderPlot(ggplot2::autoplot(newbn()))
                if (!compare) return(plotOutput(session$ns("newplot")))
                output$oldplot <- renderPlot(ggplot2::autoplot(oldbn()))
                return(fluidRow(
-                 column(width=6,h5(tags$u("Before"),align="center"),plotOutput(session$ns("oldplot"))),
-                 column(width=6,h5(tags$u("After"),align="center"),plotOutput(session$ns("newplot")))
+                 column(width=6,h4("Before"),plotOutput(session$ns("oldplot")),
+                        style="border-right:1px dashed #e3e3e3;"),
+                 column(width=6,h4("After"),plotOutput(session$ns("newplot")))
                ))
              },
-             insample={
+             "In-sample predictions"={
                output$newplot <- renderPlot(ggplot2::autoplot(in_sample(newbn())))
                if (!compare) return(plotOutput(session$ns("newplot")))
                output$oldplot <- renderPlot(ggplot2::autoplot(in_sample(oldbn())))
                return(fluidRow(
-                 column(width=6,h5(tags$u("Before"),align="center"),plotOutput(session$ns("oldplot"))),
-                 column(width=6,h5(tags$u("After"),align="center"),plotOutput(session$ns("newplot")))
+                 column(width=6,h4("Before"),plotOutput(session$ns("oldplot")),
+                        style="border-right:1px dashed #e3e3e3;"),
+                 column(width=6,h4("After"),plotOutput(session$ns("newplot")))
                ))
              },
-             summary={
+             "Summary"={
                output$newsum <- renderPrint(print(summary(newbn()),call=FALSE))
                if (!compare) return(verbatimTextOutput(session$ns("newsum")))
                output$oldsum <- renderPrint(print(summary(oldbn()),call=FALSE))
                return(fluidRow(
-                 column(width=6,h5(tags$u("Before"),align="center"),verbatimTextOutput(session$ns("oldsum"))),
-                 column(width=6,h5(tags$u("After"),align="center"),verbatimTextOutput(session$ns("newsum")))
+                 column(width=6,h4("Before"),verbatimTextOutput(session$ns("oldsum")),
+                        style="border-right:1px dashed #e3e3e3;"),
+                 column(width=6,h4("After"),verbatimTextOutput(session$ns("newsum")))
                ))
              })
     })
@@ -131,16 +134,16 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
 }
 
 reView_ui <- reView_ui_module("reView")
-reView_server <- function(oldbn,benchmark.name,start.domain,end.domain,compare,function.mode) {
+reView_server <- function(oldbn,benchmark.name,start.domain,end.domain,compare) {
   function(input,output,session) {
-    reView_server_module("reView",reactive(oldbn),reactive(benchmark.name),reactive(start.domain),reactive(end.domain),compare,function.mode)
+    reView_server_module("reView",reactive(oldbn),reactive(benchmark.name),reactive(start.domain),reactive(end.domain),compare)
   }
 }
 
 runapp_disaggr <- function(oldbn,benchmark.name,start.domain,end.domain,compare) {
   shinyreturn <- shiny::runApp(
     shiny::shinyApp(ui = reView_ui,
-                    server = reView_server(oldbn,benchmark.name,start.domain,end.domain,compare,TRUE)
+                    server = reView_server(oldbn,benchmark.name,start.domain,end.domain,compare)
     ),
     quiet = TRUE
   )
@@ -148,7 +151,7 @@ runapp_disaggr <- function(oldbn,benchmark.name,start.domain,end.domain,compare)
   shinyreturn
 }
 
-#' @import shiny
+#' @import shiny shinyWidgets
 reView <- function(benchmark,start.domain = NULL,end.domain = NULL) {
   runapp_disaggr(benchmark,deparse(a$call),start.domain,end.domain,compare=TRUE)
 }
