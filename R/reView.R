@@ -1,7 +1,16 @@
 #' @import shiny
 reView_ui_module <- function(id) {
   ns <- NS(id)
-  navbarPage(title = "reView",id = ns("menu"),selected = "Modify",
+  navbarPage(title = "reView",id = ns("menu"),selected = "Presets",
+             tabPanel("Presets",
+                      fluidRow(column(6,
+                                      plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "200px"),
+                                      plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "200px"),
+                                      plotOutput(ns("model5_plot"),click=ns("model3_click"),height = "200px"))
+                               ,column(6,
+                                       plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "200px"),
+                                       plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "200px"),
+                                       plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "200px")))),
              tabPanel("Modify",
                       sidebarLayout(
                         sidebarPanel(
@@ -22,7 +31,8 @@ reView_ui_module <- function(id) {
                           uiOutput(ns("setconst")),
                           h4("Windows"),
                           uiOutput(ns("coeffcalcsliderInput")),
-                          uiOutput(ns("benchmarksliderInput"))
+                          uiOutput(ns("benchmarksliderInput")),
+                          actionButton(ns("validation"),"Validate",width = "100%")
                         ),
                         mainPanel(
                           width = 10,
@@ -42,6 +52,13 @@ reView_ui_module <- function(id) {
   border: 1px solid #e3e3e3;
   border-radius: 2px;")
                         )
+                      )
+             ),
+             tabPanel("Export",
+                      fluidRow(
+                        column(width=6,h4("Before"),verbatimTextOutput(ns("oldcall")),
+                               style="border-right:1px dashed #e3e3e3;"),
+                        column(width=6,h4("After"),verbatimTextOutput(ns("newcall")))
                       )
              )
   )
@@ -65,6 +82,131 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
     hfserie <- reactive({
       res <- model.list(oldbn())$hfserie
       return(res[,colnames(res) != "constant"])
+    })
+    
+    model1 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
+                                          include.differenciation = TRUE,
+                                          include.rho = FALSE,
+                                          set.coeff = NULL,
+                                          set.const = NULL,
+                                          start.coeff.calc = input$coeffcalc[1],
+                                          end.coeff.calc = input$coeffcalc[2],
+                                          start.benchmark = input$benchmark[1],
+                                          end.benchmark = input$benchmark[2],
+                                          start.domain = start.domain(),
+                                          end.domain = end.domain())})
+    model2 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
+                                          include.differenciation = TRUE,
+                                          include.rho = FALSE,
+                                          set.coeff = NULL,
+                                          set.const = 0,
+                                          start.coeff.calc = input$coeffcalc[1],
+                                          end.coeff.calc = input$coeffcalc[2],
+                                          start.benchmark = input$benchmark[1],
+                                          end.benchmark = input$benchmark[2],
+                                          start.domain = start.domain(),
+                                          end.domain = end.domain())})
+    model3 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
+                                          include.differenciation = FALSE,
+                                          include.rho = FALSE,
+                                          set.coeff = NULL,
+                                          set.const = NULL,
+                                          start.coeff.calc = input$coeffcalc[1],
+                                          end.coeff.calc = input$coeffcalc[2],
+                                          start.benchmark = input$benchmark[1],
+                                          end.benchmark = input$benchmark[2],
+                                          start.domain = start.domain(),
+                                          end.domain = end.domain())})
+    model4 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
+                                          include.differenciation = FALSE,
+                                          include.rho = TRUE,
+                                          set.coeff = NULL,
+                                          set.const = NULL,
+                                          start.coeff.calc = input$coeffcalc[1],
+                                          end.coeff.calc = input$coeffcalc[2],
+                                          start.benchmark = input$benchmark[1],
+                                          end.benchmark = input$benchmark[2],
+                                          start.domain = start.domain(),
+                                          end.domain = end.domain())})
+    model5 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
+                                          include.differenciation = FALSE,
+                                          include.rho = FALSE,
+                                          set.coeff = NULL,
+                                          set.const = 0,
+                                          start.coeff.calc = input$coeffcalc[1],
+                                          end.coeff.calc = input$coeffcalc[2],
+                                          start.benchmark = input$benchmark[1],
+                                          end.benchmark = input$benchmark[2],
+                                          start.domain = start.domain(),
+                                          end.domain = end.domain())})
+    model6 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
+                                          include.differenciation = FALSE,
+                                          include.rho = TRUE,
+                                          set.coeff = NULL,
+                                          set.const = 0,
+                                          start.coeff.calc = input$coeffcalc[1],
+                                          end.coeff.calc = input$coeffcalc[2],
+                                          start.benchmark = input$benchmark[1],
+                                          end.benchmark = input$benchmark[2],
+                                          start.domain = start.domain(),
+                                          end.domain = end.domain())})
+   
+    output$model1_plot <- renderPlot(ggplot2::autoplot(in_sample(model1())) + ggplot2::theme(legend.position = "none"))
+    output$model2_plot <- renderPlot(ggplot2::autoplot(in_sample(model2())) + ggplot2::theme(legend.position = "none"))
+    output$model3_plot <- renderPlot(ggplot2::autoplot(in_sample(model3())) + ggplot2::theme(legend.position = "none"))
+    output$model4_plot <- renderPlot(ggplot2::autoplot(in_sample(model4())) + ggplot2::theme(legend.position = "none"))
+    output$model5_plot <- renderPlot(ggplot2::autoplot(in_sample(model5())))
+    output$model6_plot <- renderPlot(ggplot2::autoplot(in_sample(model6())))
+    
+    observeEvent(input$model1_click,{
+      updatePrettySwitch(session,"dif",value = TRUE)
+      updatePrettySwitch(session,"rho",value = FALSE)
+      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
+      updatePrettySwitch(session,"setconst_button",value = FALSE)
+      updateNavbarPage(session,"menu","Modify")
+    })
+    
+    observeEvent(input$model2_click,{
+      updatePrettySwitch(session,"dif",value = TRUE)
+      updatePrettySwitch(session,"rho",value = FALSE)
+      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
+      updatePrettySwitch(session,"setconst_button",value = TRUE)
+      updateNumericInput(session,"setconst",value = 0)
+      updateNavbarPage(session,"menu","Modify")
+    })
+    
+    observeEvent(input$model3_click,{
+      updatePrettySwitch(session,"dif",value = FALSE)
+      updatePrettySwitch(session,"rho",value = FALSE)
+      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
+      updatePrettySwitch(session,"setconst_button",value = FALSE)
+      updateNavbarPage(session,"menu","Modify")
+    })
+    
+    observeEvent(input$model4_click,{
+      updatePrettySwitch(session,"dif",value = FALSE)
+      updatePrettySwitch(session,"rho",value = TRUE)
+      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
+      updatePrettySwitch(session,"setconst_button",value = FALSE)
+      updateNavbarPage(session,"menu","Modify")
+    })
+    
+    observeEvent(input$model5_click,{
+      updatePrettySwitch(session,"dif",value = FALSE)
+      updatePrettySwitch(session,"rho",value = FALSE)
+      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
+      updatePrettySwitch(session,"setconst_button",value = TRUE)
+      updateNumericInput(session,"setconst",value = 0)
+      updateNavbarPage(session,"menu","Modify")
+    })
+    
+    observeEvent(input$model6_click,{
+      updatePrettySwitch(session,"dif",value = FALSE)
+      updatePrettySwitch(session,"rho",value = TRUE)
+      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
+      updatePrettySwitch(session,"setconst_button",value = TRUE)
+      updateNumericInput(session,"setconst",value = 0)
+      updateNavbarPage(session,"menu","Modify")
     })
     
     output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie,"coeffcalc","Coefficients:")
@@ -118,6 +260,23 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
       }
       return(NULL)
     })
+    
+    observeEvent(input$validation, updateNavbarPage(session,"menu","Export"))
+
+    output$oldcall <- renderText(deparse(oldbn()$call)) # a ameliorer
+    output$newcall <- renderText(paste0("twoStepsBenchmark(",
+                                         "hfserie = ",deparse(oldbn()$call$hfserie),",\n\t",
+                                         "lfserie = ",deparse(oldbn()$call$lfserie),",\n\t",
+                                         "include.differenciation = ",input$dif,",\n\t",
+                                         "include.rho = ", input$rho,",\n\t",
+                                         "set.coeff = ", set_coeff(),",\n\t",
+                                         "set.const = ", set_const(),",\n\t",
+                                         "start.coeff.calc = ", input$coeffcalc[1],",\n\t",
+                                         "end.coeff.calc = ", input$coeffcalc[2],",\n\t",
+                                         "start.benchmark = ", input$benchmark[1],",\n\t",
+                                         "end.benchmark = ", input$benchmark[2],",\n\t",
+                                         "start.domain = ", start.domain(),",\n\t",
+                                         "end.domain = ", end.domain()))
     
     newbn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                          include.differenciation = input$dif,
