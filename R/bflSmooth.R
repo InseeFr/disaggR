@@ -18,10 +18,7 @@ weights_control <- function(weights,start,hf_length,hf_freq) {
 }
 
 bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
-  if (is.null(weights)) {
-    aggregated_weights <- rep(1,lf_length)
-    weights <- 1
-  }
+  if (is.null(weights)) weights <- 1
   else {
     aggregated_weights <- aggregate.ts(weights,frequency(weights)/ratio)
     weights <- weights/ts_expand(aggregated_weights,
@@ -38,7 +35,7 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
   # A * as.numeric(x) stands for diag(x) %*% A
   # t(t(A) * as.numeric(x)) stands for A %*% diag(x)
   
-  if (lfserie.is.rate||is.null(weights)) {
+  if (lfserie.is.rate||identical(weights,1)) {
     list(m1=m1,
          cprod1=cprod1,
          cprod2=cprod2)
@@ -99,6 +96,7 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=FALSE) {
   if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   if (is.null(weights) && lfserie.is.rate) {
     warning("weights is NULL. Ignoring lfserie.is.rate")
+    lfserie.is.rate <- FALSE
   }
   
   ratio <- nfrequency/tsplf[3L]

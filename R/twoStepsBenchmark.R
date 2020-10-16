@@ -8,8 +8,8 @@ residuals_extrap_sequence <- function(u0,u1,rho,n,include.differenciation) {
 
 #' Extrapolation function for the residuals in a twoStepsBenchmark
 #' 
-#' This function is the rule to extrapolate the low-frequency residuals
-#' If include.differenciation is true, u(n+1)-u(n) = rho*(u(n)-u(n-1))
+#' This function is the rule to extrapolate the low-frequency residuals.
+#' If include.differenciation is `TRUE`, u(n+1)-u(n) = rho*(u(n)-u(n-1))
 #' Else u(n+1) = rho * u(n)
 #'
 #' @param lfresiduals the residuals to extrapolate
@@ -41,7 +41,7 @@ residuals_extrap <- function(lfresiduals,rho,include.differenciation) {
         residuals_extrap_sequence(lfresiduals[firstval+1L],
                                   lfresiduals[firstval],
                                   rhoinverse,
-                                  firstval-1,
+                                  firstval-1L,
                                   include.differenciation)
     }
   }
