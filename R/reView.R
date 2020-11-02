@@ -83,8 +83,8 @@ presets_ggplot <- function(hfserie,lfserie,
     ggplot2::autoplot(
       in_sample(
         twoStepsBenchmark(hfserie,lfserie,
-                          include.differenciation = presets$include.differenciation[[type]],
-                          include.rho = presets$include.rho[[type]],
+                          include.differenciation = presets$include.differenciation[type],
+                          include.rho = presets$include.rho[type],
                           set.const = presets$set.const[[type]],
                           start.coeff.calc = start.coeff.calc,
                           end.coeff.calc = end.coeff.calc,
@@ -94,12 +94,21 @@ presets_ggplot <- function(hfserie,lfserie,
     )
   })
 }
-# 
-# presets_observeClicks <- lapply(1L:6L,
-#                                 function(type) {
-#                                   observeEvent(input[[paste0("model",type,"_click")]],
-#                                                )
-#                                 })
+
+presets_observeClicks <- function(session,input) {
+  lapply(1L:6L,
+         function(type) {
+           observeEvent(input[[paste0("model",type,"_click")]],{
+             updateCheckboxInput(session,"dif",value = presets$include.differenciation[type])
+             updateCheckboxInput(session,"rho",value = presets$include.rho[type])
+             updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+             setconst <- presets$set.const[[type]]
+             updateCheckboxInput(session,"setconst_button",value = !is.null(setconst))
+             updateNumericInput(session,"setconst",value = setconst)
+             updateNavbarPage(session,"menu","Modify")
+           })
+         })
+}
 
 reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=TRUE) {
   moduleServer(id,function(input, output, session) {
@@ -123,60 +132,11 @@ reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=T
     output$model5_plot <- renderPlot(presets_ggplot_list()[[5L]])
     output$model6_plot <- renderPlot(presets_ggplot_list()[[6L]])
     
-    observeEvent(input$model1_click,{
-      updateCheckboxInput(session,"dif",value = TRUE)
-      updateCheckboxInput(session,"rho",value = FALSE)
-      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-      updateCheckboxInput(session,"setconst_button",value = FALSE)
-      updateNavbarPage(session,"menu","Modify")
-    })
-    
-    observeEvent(input$model2_click,{
-      updateCheckboxInput(session,"dif",value = TRUE)
-      updateCheckboxInput(session,"rho",value = FALSE)
-      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-      updateCheckboxInput(session,"setconst_button",value = TRUE)
-      updateNumericInput(session,"setconst",value = 0)
-      updateNavbarPage(session,"menu","Modify")
-    })
-    
-    observeEvent(input$model3_click,{
-      updateCheckboxInput(session,"dif",value = FALSE)
-      updateCheckboxInput(session,"rho",value = FALSE)
-      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-      updateCheckboxInput(session,"setconst_button",value = FALSE)
-      updateNavbarPage(session,"menu","Modify")
-    })
-    
-    observeEvent(input$model4_click,{
-      updateCheckboxInput(session,"dif",value = FALSE)
-      updateCheckboxInput(session,"rho",value = TRUE)
-      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-      updateCheckboxInput(session,"setconst_button",value = FALSE)
-      updateNavbarPage(session,"menu","Modify")
-    })
-    
-    observeEvent(input$model5_click,{
-      updateCheckboxInput(session,"dif",value = FALSE)
-      updateCheckboxInput(session,"rho",value = FALSE)
-      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-      updateCheckboxInput(session,"setconst_button",value = TRUE)
-      updateNumericInput(session,"setconst",value = 0)
-      updateNavbarPage(session,"menu","Modify")
-    })
-    
-    observeEvent(input$model6_click,{
-      updateCheckboxInput(session,"dif",value = FALSE)
-      updateCheckboxInput(session,"rho",value = TRUE)
-      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-      updateCheckboxInput(session,"setconst_button",value = TRUE)
-      updateNumericInput(session,"setconst",value = 0)
-      updateNavbarPage(session,"menu","Modify")
-    })
+    presets_observeClicks(session,input)
     
     output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie(),"coeffcalc","Coefficients:")
     output$benchmarksliderInput <- slider_windows(session$ns,lfserie(),"benchmark","Benchmark:")
-
+    
     output$mainOutput <- renderUI({
       switch(input$plotchoice,
              "Benchmark"={
@@ -227,19 +187,19 @@ reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=T
     })
     
     observeEvent(input$validation, updateNavbarPage(session,"menu","Export"))
-
+    
     output$oldcall <- renderText(deparse(oldbn()$call)) # a ameliorer
     output$newcall <- renderText(paste0("twoStepsBenchmark(",
-                                         "hfserie = ",deparse(oldbn()$call$hfserie),",\n\t",
-                                         "lfserie = ",deparse(oldbn()$call$lfserie),",\n\t",
-                                         "include.differenciation = ",input$dif,",\n\t",
-                                         "include.rho = ", input$rho,",\n\t",
-                                         "set.coeff = ", set_coeff(),",\n\t",
-                                         "set.const = ", set_const(),",\n\t",
-                                         "start.coeff.calc = ", input$coeffcalc[1],",\n\t",
-                                         "end.coeff.calc = ", input$coeffcalc[2],",\n\t",
-                                         "start.benchmark = ", input$benchmark[1],",\n\t",
-                                         "end.benchmark = ", input$benchmark[2],",\n\t"))
+                                        "hfserie = ",deparse(oldbn()$call$hfserie),",\n\t",
+                                        "lfserie = ",deparse(oldbn()$call$lfserie),",\n\t",
+                                        "include.differenciation = ",input$dif,",\n\t",
+                                        "include.rho = ", input$rho,",\n\t",
+                                        "set.coeff = ", set_coeff(),",\n\t",
+                                        "set.const = ", set_const(),",\n\t",
+                                        "start.coeff.calc = ", input$coeffcalc[1],",\n\t",
+                                        "end.coeff.calc = ", input$coeffcalc[2],",\n\t",
+                                        "start.benchmark = ", input$benchmark[1],",\n\t",
+                                        "end.benchmark = ", input$benchmark[2],",\n\t"))
     
     newbn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                          include.differenciation = input$dif,
