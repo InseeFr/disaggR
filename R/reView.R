@@ -27,7 +27,6 @@ reView_ui_module <- function(id) {
                           h4("Windows"),
                           uiOutput(ns("coeffcalcsliderInput")),
                           uiOutput(ns("benchmarksliderInput")),
-                          uiOutput(ns("domainsliderInput")),
                           actionButton(ns("validation"),"Validate",width = "100%")
                         ),
                         mainPanel(
@@ -64,13 +63,43 @@ slider_windows <- function(ns,initserie,ui_out,label,extend=0) {
   renderUI(
     sliderInput(ns(ui_out),
                 label,
-                min = tsp(initserie)[1] - ceiling(length(initserie) * extend/100) * deltat(initserie),
-                max = tsp(initserie)[2] + ceiling(length(initserie) * extend/100) * deltat(initserie),
+                min = tsp(initserie)[1],
+                max = tsp(initserie)[2],
                 value = c(tsp(initserie)[1],tsp(initserie)[2]),
                 step = deltat(initserie),
                 sep = " ")
   )
 }
+
+presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
+                include.rho = c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE),
+                set.const = list(NULL,0,NULL,NULL,0,0))
+
+presets_ggplot <- function(hfserie,lfserie,
+                           start.coeff.calc,end.coeff.calc,
+                           start.benchmark,end.benchmark,
+                           type) {
+  lapply(1L:6L,function(type) {
+    ggplot2::autoplot(
+      in_sample(
+        twoStepsBenchmark(hfserie,lfserie,
+                          include.differenciation = presets$include.differenciation[[type]],
+                          include.rho = presets$include.rho[[type]],
+                          set.const = presets$set.const[[type]],
+                          start.coeff.calc = start.coeff.calc,
+                          end.coeff.calc = end.coeff.calc,
+                          start.benchmark = start.benchmark,
+                          end.benchmark = end.benchmark)
+      )
+    )
+  })
+}
+# 
+# presets_observeClicks <- lapply(1L:6L,
+#                                 function(type) {
+#                                   observeEvent(input[[paste0("model",type,"_click")]],
+#                                                )
+#                                 })
 
 reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=TRUE) {
   moduleServer(id,function(input, output, session) {
@@ -81,79 +110,18 @@ reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=T
       return(res[,colnames(res) != "constant"])
     })
     
-    model1 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                          include.differenciation = TRUE,
-                                          include.rho = FALSE,
-                                          set.coeff = NULL,
-                                          set.const = NULL,
-                                          start.coeff.calc = input$coeffcalc[1],
-                                          end.coeff.calc = input$coeffcalc[2],
-                                          start.benchmark = input$benchmark[1],
-                                          end.benchmark = input$benchmark[2],
-                                          start.domain = input$domain[1],
-                                          end.domain = input$domain[2])})
-    model2 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                          include.differenciation = TRUE,
-                                          include.rho = FALSE,
-                                          set.coeff = NULL,
-                                          set.const = 0,
-                                          start.coeff.calc = input$coeffcalc[1],
-                                          end.coeff.calc = input$coeffcalc[2],
-                                          start.benchmark = input$benchmark[1],
-                                          end.benchmark = input$benchmark[2],
-                                          start.domain = input$domain[1],
-                                          end.domain = input$domain[2])})
-    model3 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                          include.differenciation = FALSE,
-                                          include.rho = FALSE,
-                                          set.coeff = NULL,
-                                          set.const = NULL,
-                                          start.coeff.calc = input$coeffcalc[1],
-                                          end.coeff.calc = input$coeffcalc[2],
-                                          start.benchmark = input$benchmark[1],
-                                          end.benchmark = input$benchmark[2],
-                                          start.domain = input$domain[1],
-                                          end.domain = input$domain[2])})
-    model4 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                          include.differenciation = FALSE,
-                                          include.rho = TRUE,
-                                          set.coeff = NULL,
-                                          set.const = NULL,
-                                          start.coeff.calc = input$coeffcalc[1],
-                                          end.coeff.calc = input$coeffcalc[2],
-                                          start.benchmark = input$benchmark[1],
-                                          end.benchmark = input$benchmark[2],
-                                          start.domain = input$domain[1],
-                                          end.domain = input$domain[2])})
-    model5 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                          include.differenciation = FALSE,
-                                          include.rho = FALSE,
-                                          set.coeff = NULL,
-                                          set.const = 0,
-                                          start.coeff.calc = input$coeffcalc[1],
-                                          end.coeff.calc = input$coeffcalc[2],
-                                          start.benchmark = input$benchmark[1],
-                                          end.benchmark = input$benchmark[2],
-                                          start.domain = input$domain[1],
-                                          end.domain = input$domain[2])})
-    model6 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                          include.differenciation = FALSE,
-                                          include.rho = TRUE,
-                                          set.coeff = NULL,
-                                          set.const = 0,
-                                          start.coeff.calc = input$coeffcalc[1],
-                                          end.coeff.calc = input$coeffcalc[2],
-                                          start.benchmark = input$benchmark[1],
-                                          end.benchmark = input$benchmark[2],
-                                          start.domain = input$domain[1],
-                                          end.domain = input$domain[2])})
-   
-    output$model1_plot <- renderPlot(ggplot2::autoplot(in_sample(model1())) + ggplot2::theme(legend.position = "none"))
-    output$model2_plot <- renderPlot(ggplot2::autoplot(in_sample(model2())) + ggplot2::theme(legend.position = "none"))
-    output$model3_plot <- renderPlot(ggplot2::autoplot(in_sample(model3())) + ggplot2::theme(legend.position = "none"))
-    output$model4_plot <- renderPlot(ggplot2::autoplot(in_sample(model4())) + ggplot2::theme(legend.position = "none"))
-    output$model5_plot <- renderPlot(ggplot2::autoplot(in_sample(model5())))
-    output$model6_plot <- renderPlot(ggplot2::autoplot(in_sample(model6())))
+    presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie(),
+                                                   start.coeff.calc = input$coeffcalc[1],
+                                                   end.coeff.calc = input$coeffcalc[2],
+                                                   start.benchmark = input$benchmark[1],
+                                                   end.benchmark = input$benchmark[2],
+                                                   type = type))
+    output$model1_plot <- renderPlot(presets_ggplot_list()[[1L]]  + ggplot2::theme(legend.position = "none"))
+    output$model2_plot <- renderPlot(presets_ggplot_list()[[2L]]  + ggplot2::theme(legend.position = "none"))
+    output$model3_plot <- renderPlot(presets_ggplot_list()[[3L]]  + ggplot2::theme(legend.position = "none"))
+    output$model4_plot <- renderPlot(presets_ggplot_list()[[4L]]  + ggplot2::theme(legend.position = "none"))
+    output$model5_plot <- renderPlot(presets_ggplot_list()[[5L]])
+    output$model6_plot <- renderPlot(presets_ggplot_list()[[6L]])
     
     observeEvent(input$model1_click,{
       updateCheckboxInput(session,"dif",value = TRUE)
@@ -208,8 +176,7 @@ reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=T
     
     output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie(),"coeffcalc","Coefficients:")
     output$benchmarksliderInput <- slider_windows(session$ns,lfserie(),"benchmark","Benchmark:")
-    output$domainsliderInput <- slider_windows(session$ns,lfserie(),"domain","Domain:",extend=10)
-    
+
     output$mainOutput <- renderUI({
       switch(input$plotchoice,
              "Benchmark"={
@@ -272,9 +239,7 @@ reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=T
                                          "start.coeff.calc = ", input$coeffcalc[1],",\n\t",
                                          "end.coeff.calc = ", input$coeffcalc[2],",\n\t",
                                          "start.benchmark = ", input$benchmark[1],",\n\t",
-                                         "end.benchmark = ", input$benchmark[2],",\n\t",
-                                         "start.domain = ", input$domain[1],",\n\t",
-                                         "end.domain = ", input$domain[2]))
+                                         "end.benchmark = ", input$benchmark[2],",\n\t"))
     
     newbn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                          include.differenciation = input$dif,
@@ -284,9 +249,7 @@ reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=T
                                          start.coeff.calc = input$coeffcalc[1],
                                          end.coeff.calc = input$coeffcalc[2],
                                          start.benchmark = input$benchmark[1],
-                                         end.benchmark = input$benchmark[2],
-                                         start.domain = input$domain[1],
-                                         end.domain = input$domain[2])})
+                                         end.benchmark = input$benchmark[2])})
   })
 }
 
