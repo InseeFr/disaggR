@@ -17,18 +17,13 @@ reView_ui_module <- function(id) {
                           width = 2,
                           tags$style("h4 { font-family: 'Source Sans Pro', sans-serif; font-weight: 400; line-height: 32px; text-align: center;}"),
                           h4("Include"),
-                          prettySwitch(ns("dif"),"Differenciation",fill = TRUE,status = "primary"),
-                          prettySwitch(ns("rho"),"Rho", fill = TRUE,status = "primary"),
+                          checkboxInput(ns("dif"),"Differenciation"),
+                          checkboxInput(ns("rho"),"Rho"),
                           h4("Set"),
-                          # prettySwitch(ns("setcoeff_button"),"Coefficient",fill=TRUE,status="primary"),
-                          # conditionalPanel("input.setcoeff_button",numericInput(ns("setcoeff"),NULL,1),ns = ns),
-                          # prettySwitch(ns("setconst_button"),"Constant",fill=TRUE,status="primary"),
-                          # conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
-                          fluidRow(column(6,align="left",prettySwitch(ns("setcoeff_button"),"Coefficient", fill = TRUE,status = "primary")),
-                                   column(6,align="right",dropdownButton(numericInput(ns("setcoeff"),NULL,1),size="xs", icon = icon("gear")))),
-                          fluidRow(column(6,align="left",prettySwitch(ns("setconst_button"),"Constant", fill = TRUE,status = "primary")),
-                                   column(6,align="right",dropdownButton(numericInput(ns("setconst"),NULL,0),size="xs", icon = icon("gear")))),
-                          uiOutput(ns("setconst")),
+                          checkboxInput(ns("setcoeff_button"),"Coefficient"),
+                          conditionalPanel("input.setcoeff_button",numericInput(ns("setcoeff"),NULL,1),ns = ns),
+                          checkboxInput(ns("setconst_button"),"Constant"),
+                          conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
                           h4("Windows"),
                           uiOutput(ns("coeffcalcsliderInput")),
                           uiOutput(ns("benchmarksliderInput")),
@@ -38,10 +33,9 @@ reView_ui_module <- function(id) {
                           width = 10,
                           fluidRow(
                             column(12,
-                                   radioGroupButtons(ns("plotchoice"),NULL,
-                                                     choices = c("Benchmark","In-sample predictions","Summary"),
-                                                     selected = "Benchmark",
-                                                     justified = TRUE)
+                                   radioButtons(ns("plotchoice"),NULL,
+                                                choices = c("Benchmark","In-sample predictions","Summary"),
+                                                selected = "Benchmark",inline=TRUE)
                             ),
                             align="center"
                           ),
@@ -159,52 +153,52 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
     output$model6_plot <- renderPlot(ggplot2::autoplot(in_sample(model6())))
     
     observeEvent(input$model1_click,{
-      updatePrettySwitch(session,"dif",value = TRUE)
-      updatePrettySwitch(session,"rho",value = FALSE)
-      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
-      updatePrettySwitch(session,"setconst_button",value = FALSE)
+      updateCheckboxInput(session,"dif",value = TRUE)
+      updateCheckboxInput(session,"rho",value = FALSE)
+      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+      updateCheckboxInput(session,"setconst_button",value = FALSE)
       updateNavbarPage(session,"menu","Modify")
     })
     
     observeEvent(input$model2_click,{
-      updatePrettySwitch(session,"dif",value = TRUE)
-      updatePrettySwitch(session,"rho",value = FALSE)
-      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
-      updatePrettySwitch(session,"setconst_button",value = TRUE)
+      updateCheckboxInput(session,"dif",value = TRUE)
+      updateCheckboxInput(session,"rho",value = FALSE)
+      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+      updateCheckboxInput(session,"setconst_button",value = TRUE)
       updateNumericInput(session,"setconst",value = 0)
       updateNavbarPage(session,"menu","Modify")
     })
     
     observeEvent(input$model3_click,{
-      updatePrettySwitch(session,"dif",value = FALSE)
-      updatePrettySwitch(session,"rho",value = FALSE)
-      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
-      updatePrettySwitch(session,"setconst_button",value = FALSE)
+      updateCheckboxInput(session,"dif",value = FALSE)
+      updateCheckboxInput(session,"rho",value = FALSE)
+      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+      updateCheckboxInput(session,"setconst_button",value = FALSE)
       updateNavbarPage(session,"menu","Modify")
     })
     
     observeEvent(input$model4_click,{
-      updatePrettySwitch(session,"dif",value = FALSE)
-      updatePrettySwitch(session,"rho",value = TRUE)
-      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
-      updatePrettySwitch(session,"setconst_button",value = FALSE)
+      updateCheckboxInput(session,"dif",value = FALSE)
+      updateCheckboxInput(session,"rho",value = TRUE)
+      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+      updateCheckboxInput(session,"setconst_button",value = FALSE)
       updateNavbarPage(session,"menu","Modify")
     })
     
     observeEvent(input$model5_click,{
-      updatePrettySwitch(session,"dif",value = FALSE)
-      updatePrettySwitch(session,"rho",value = FALSE)
-      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
-      updatePrettySwitch(session,"setconst_button",value = TRUE)
+      updateCheckboxInput(session,"dif",value = FALSE)
+      updateCheckboxInput(session,"rho",value = FALSE)
+      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+      updateCheckboxInput(session,"setconst_button",value = TRUE)
       updateNumericInput(session,"setconst",value = 0)
       updateNavbarPage(session,"menu","Modify")
     })
     
     observeEvent(input$model6_click,{
-      updatePrettySwitch(session,"dif",value = FALSE)
-      updatePrettySwitch(session,"rho",value = TRUE)
-      updatePrettySwitch(session,"setcoeff_button",value = FALSE)
-      updatePrettySwitch(session,"setconst_button",value = TRUE)
+      updateCheckboxInput(session,"dif",value = FALSE)
+      updateCheckboxInput(session,"rho",value = TRUE)
+      updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+      updateCheckboxInput(session,"setconst_button",value = TRUE)
       updateNumericInput(session,"setconst",value = 0)
       updateNavbarPage(session,"menu","Modify")
     })
@@ -310,7 +304,7 @@ runapp_disaggr <- function(oldbn,benchmark.name,start.domain,end.domain,compare)
   shinyreturn
 }
 
-#' @import shiny shinyWidgets
+#' @import shiny
 reView <- function(benchmark,start.domain = NULL,end.domain = NULL) {
   runapp_disaggr(benchmark,deparse(a$call),start.domain,end.domain,compare=TRUE)
 }
