@@ -1,3 +1,7 @@
+# disaggR 0.2.0
+* reView : a shiny application for twoStepsBenchmarks.
+* start.domain and end.domain know crops the hfserie *after* having calculated the coefficients. That way, it is possible to evaluate the coefficients on a full hfserie, cropping them for the application.
+
 # disaggR 0.1.9
 * fixed the R check for old-release (3.6.3).
 

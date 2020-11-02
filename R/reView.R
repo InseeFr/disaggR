@@ -27,6 +27,7 @@ reView_ui_module <- function(id) {
                           h4("Windows"),
                           uiOutput(ns("coeffcalcsliderInput")),
                           uiOutput(ns("benchmarksliderInput")),
+                          uiOutput(ns("domainsliderInput")),
                           actionButton(ns("validation"),"Validate",width = "100%")
                         ),
                         mainPanel(
@@ -39,12 +40,13 @@ reView_ui_module <- function(id) {
                             ),
                             align="center"
                           ),
-                          uiOutput(ns("mainOutput"),style="  padding: 6px 8px;
-  margin-top: 6px;
-  margin-bottom: 6px;
-  background-color: #ffffff;
-  border: 1px solid #e3e3e3;
-  border-radius: 2px;")
+                          uiOutput(ns("mainOutput"),
+                                   style = "padding: 6px 8px;
+                                   margin-top: 6px;
+                                   margin-bottom: 6px;
+                                   background-color: #ffffff;
+                                   border: 1px solid #e3e3e3;
+                                   border-radius: 2px;")
                         )
                       )
              ),
@@ -58,18 +60,19 @@ reView_ui_module <- function(id) {
   )
 }
 
-slider_windows <- function(ns,lfserie,ui_out,label) {
+slider_windows <- function(ns,initserie,ui_out,label,extend=0) {
   renderUI(
     sliderInput(ns(ui_out),
                 label,
-                min = tsp(lfserie())[1],
-                max = tsp(lfserie())[2],
-                value = c(tsp(lfserie())[1],tsp(lfserie())[2]),
-                step = deltat(lfserie()))
+                min = tsp(initserie)[1] - ceiling(length(initserie) * extend/100) * deltat(initserie),
+                max = tsp(initserie)[2] + ceiling(length(initserie) * extend/100) * deltat(initserie),
+                value = c(tsp(initserie)[1],tsp(initserie)[2]),
+                step = deltat(initserie),
+                sep = " ")
   )
 }
 
-reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain,compare,function.mode=TRUE) {
+reView_server_module <- function(id,oldbn,benchmark.name,compare,function.mode=TRUE) {
   moduleServer(id,function(input, output, session) {
     
     lfserie <- reactive(model.list(oldbn())$lfserie)
@@ -87,8 +90,8 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
                                           end.coeff.calc = input$coeffcalc[2],
                                           start.benchmark = input$benchmark[1],
                                           end.benchmark = input$benchmark[2],
-                                          start.domain = start.domain(),
-                                          end.domain = end.domain())})
+                                          start.domain = input$domain[1],
+                                          end.domain = input$domain[2])})
     model2 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                           include.differenciation = TRUE,
                                           include.rho = FALSE,
@@ -98,8 +101,8 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
                                           end.coeff.calc = input$coeffcalc[2],
                                           start.benchmark = input$benchmark[1],
                                           end.benchmark = input$benchmark[2],
-                                          start.domain = start.domain(),
-                                          end.domain = end.domain())})
+                                          start.domain = input$domain[1],
+                                          end.domain = input$domain[2])})
     model3 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                           include.differenciation = FALSE,
                                           include.rho = FALSE,
@@ -109,8 +112,8 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
                                           end.coeff.calc = input$coeffcalc[2],
                                           start.benchmark = input$benchmark[1],
                                           end.benchmark = input$benchmark[2],
-                                          start.domain = start.domain(),
-                                          end.domain = end.domain())})
+                                          start.domain = input$domain[1],
+                                          end.domain = input$domain[2])})
     model4 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                           include.differenciation = FALSE,
                                           include.rho = TRUE,
@@ -120,8 +123,8 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
                                           end.coeff.calc = input$coeffcalc[2],
                                           start.benchmark = input$benchmark[1],
                                           end.benchmark = input$benchmark[2],
-                                          start.domain = start.domain(),
-                                          end.domain = end.domain())})
+                                          start.domain = input$domain[1],
+                                          end.domain = input$domain[2])})
     model5 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                           include.differenciation = FALSE,
                                           include.rho = FALSE,
@@ -131,8 +134,8 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
                                           end.coeff.calc = input$coeffcalc[2],
                                           start.benchmark = input$benchmark[1],
                                           end.benchmark = input$benchmark[2],
-                                          start.domain = start.domain(),
-                                          end.domain = end.domain())})
+                                          start.domain = input$domain[1],
+                                          end.domain = input$domain[2])})
     model6 <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                           include.differenciation = FALSE,
                                           include.rho = TRUE,
@@ -142,8 +145,8 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
                                           end.coeff.calc = input$coeffcalc[2],
                                           start.benchmark = input$benchmark[1],
                                           end.benchmark = input$benchmark[2],
-                                          start.domain = start.domain(),
-                                          end.domain = end.domain())})
+                                          start.domain = input$domain[1],
+                                          end.domain = input$domain[2])})
    
     output$model1_plot <- renderPlot(ggplot2::autoplot(in_sample(model1())) + ggplot2::theme(legend.position = "none"))
     output$model2_plot <- renderPlot(ggplot2::autoplot(in_sample(model2())) + ggplot2::theme(legend.position = "none"))
@@ -203,8 +206,9 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
       updateNavbarPage(session,"menu","Modify")
     })
     
-    output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie,"coeffcalc","Coefficients:")
-    output$benchmarksliderInput <- slider_windows(session$ns,lfserie,"benchmark","Benchmark:")
+    output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie(),"coeffcalc","Coefficients:")
+    output$benchmarksliderInput <- slider_windows(session$ns,lfserie(),"benchmark","Benchmark:")
+    output$domainsliderInput <- slider_windows(session$ns,lfserie(),"domain","Domain:",extend=10)
     
     output$mainOutput <- renderUI({
       switch(input$plotchoice,
@@ -269,8 +273,8 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
                                          "end.coeff.calc = ", input$coeffcalc[2],",\n\t",
                                          "start.benchmark = ", input$benchmark[1],",\n\t",
                                          "end.benchmark = ", input$benchmark[2],",\n\t",
-                                         "start.domain = ", start.domain(),",\n\t",
-                                         "end.domain = ", end.domain()))
+                                         "start.domain = ", input$domain[1],",\n\t",
+                                         "end.domain = ", input$domain[2]))
     
     newbn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                          include.differenciation = input$dif,
@@ -281,30 +285,30 @@ reView_server_module <- function(id,oldbn,benchmark.name,start.domain,end.domain
                                          end.coeff.calc = input$coeffcalc[2],
                                          start.benchmark = input$benchmark[1],
                                          end.benchmark = input$benchmark[2],
-                                         start.domain = start.domain(),
-                                         end.domain = end.domain())})
+                                         start.domain = input$domain[1],
+                                         end.domain = input$domain[2])})
   })
 }
 
 reView_ui <- reView_ui_module("reView")
-reView_server <- function(oldbn,benchmark.name,start.domain,end.domain,compare) {
+reView_server <- function(oldbn,benchmark.name,compare) {
   function(input,output,session) {
-    reView_server_module("reView",reactive(oldbn),reactive(benchmark.name),reactive(start.domain),reactive(end.domain),compare)
+    reView_server_module("reView",reactive(oldbn),reactive(benchmark.name),compare)
   }
 }
 
-runapp_disaggr <- function(oldbn,benchmark.name,start.domain,end.domain,compare) {
+runapp_disaggr <- function(oldbn,benchmark.name,compare) {
   shinyreturn <- shiny::runApp(
     shiny::shinyApp(ui = reView_ui,
-                    server = reView_server(oldbn,benchmark.name,start.domain,end.domain,compare)
+                    server = reView_server(oldbn,benchmark.name,compare)
     ),
     quiet = TRUE
   )
   if (inherits(shinyreturn,"error")) stop(shinyreturn)
-  shinyreturn
+  shinyreturnl
 }
 
 #' @import shiny
-reView <- function(benchmark,start.domain = NULL,end.domain = NULL) {
-  runapp_disaggr(benchmark,deparse(a$call),start.domain,end.domain,compare=TRUE)
+reView <- function(benchmark) {
+  runapp_disaggr(benchmark,deparse(a$call),compare=TRUE)
 }
