@@ -4,12 +4,18 @@ reView_ui_module <- function(id) {
   navbarPage(title = "reView",id = ns("menu"),selected = "Presets",
              tabPanel("Presets",
                       fluidRow(column(6,
+                                      p("Model 1 (",em("differences — with constant",.noWS = "outside"),"): "),
                                       plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "200px"),
+                                      p("Model 3 (",em("levels - with constant",.noWS = "outside"),"):"),
                                       plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "200px"),
-                                      plotOutput(ns("model5_plot"),click=ns("model3_click"),height = "200px"))
+                                      p("Model 5 (",em("levels",.noWS = "outside"),")"),
+                                      plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "200px"))
                                ,column(6,
+                                       p("Model 2 (",em("differences",.noWS = "outside"),")"),
                                        plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "200px"),
+                                       p("Model 4 (",em("levels - with constant and rho",.noWS = "outside"),")"),
                                        plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "200px"),
+                                       p("Model 6 (",em("levels - with rho",.noWS = "outside"),")"),
                                        plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "200px")))),
              tabPanel("Modify",
                       sidebarLayout(
@@ -231,6 +237,7 @@ runapp_disaggr <- function(oldbn,benchmark.name,compare) {
   shinyreturnl
 }
 
+#' @export
 #' @import shiny
 reView <- function(benchmark) {
   runapp_disaggr(benchmark,deparse(a$call),compare=TRUE)
