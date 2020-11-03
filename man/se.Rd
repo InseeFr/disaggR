@@ -18,3 +18,4 @@ their standard error.
 The function \code{se} returns the standard error the coefficients
 from either a \link{praislm} or a \link{twoStepsBenchmark} object.
 }
+\keyword{internal}

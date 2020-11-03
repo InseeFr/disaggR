@@ -76,6 +76,8 @@ praislm_impl <- function(X,y,include.rho) {
        residuals.decorrelated=residuals_decor)
 }
 
+#' @rdname prais
+#' @keywords internal
 praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl) {
   modellist <- list(X=X,
                     y=y,
