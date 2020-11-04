@@ -28,6 +28,33 @@ presets_ggplot <- function(hfserie,lfserie,
   })
 }
 
+display_vector <- function(x) switch(length(x),
+                                     as.character(x),
+                                     paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")"))
+
+renderBenchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
+  model <- model.list(benchmark)
+  
+  coefs <- model$set.coefficients
+  set.const <- coefs[names(coefs) == "constant"]
+  set.coeff <- coefs[names(coefs) != "constant"]
+  
+  paste0("twoStepsBenchmark(",
+         "\n\thfserie = ",hfserie_name,
+         ",\n\tlfserie = ",lfserie_name,
+         ",\n\tinclude.differenciation = ",model$include.differenciation,
+         ",\n\tinclude.rho = ", model$include.rho,
+         if (!is.null(set.coeff) && !length(set.coeff) == 0) paste0(",\n\tset.coeff = ", display_vector(set.coeff)),
+         if (!is.null(set.const) && !length(set.const) == 0) paste0(",\n\tset.const = ", display_vector(set.const)),
+         if (!is.null(model$start.coeff.calc)) paste0(",\n\tstart.coeff.calc = ", display_vector(model$start.coeff.calc)),
+         if (!is.null(model$end.coeff.calc)) paste0(",\n\tend.coeff.calc = ", display_vector(model$end.coeff.calc)),
+         if (!is.null(model$start.benchmark)) paste0(",\n\tstart.benchmark = ", display_vector(model$start.benchmark)),
+         if (!is.null(model$end.benchmark)) paste0(",\n\tend.benchmark = ", display_vector(model$end.benchmark)),
+         if (!is.null(model$start.domain)) paste0(",\n\tstart.domain = ", display_vector(model$start.domain)),
+         if (!is.null(model$end.domain)) paste0(",\n\tend.domain = ", display_vector(model$end.domain)),
+         "\n)")
+}
+
 #### ui ####
 
 reView_ui_module_tab1 <- function(id) {
@@ -153,7 +180,6 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,oldbn,compare,selected_
                    setconst <- presets$set.const[[selected_preset()]]
                    updateCheckboxInput(session,"setconst_button",value = !is.null(setconst))
                    updateNumericInput(session,"setconst",value = setconst)
-                   updateNavbarPage(session,"menu","Modify")
                  },ignoreNULL = TRUE)
                  
                  output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie(),"coeffcalc","Coefficients:")
@@ -228,8 +254,10 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,oldbn,compare,selected_
 reView_server_module_tab3 <- function(id,oldbn,selected_bn) {
   moduleServer(id,
                function(input,output,session) {
-                 output$oldcall <- renderText(deparse(oldbn()$call))
-                 observeEvent(selected_bn(),output$newcall <- renderText(deparse(selected_bn()$call)),ignoreNULL = TRUE)
+                 hfserie_name <- reactive(deparse(oldbn()$call$hfserie))
+                 lfserie_name <- reactive(deparse(oldbn()$call$lfserie))
+                 output$oldcall <- reactive(renderBenchmarkCall(oldbn(),hfserie_name(),lfserie_name()))
+                 output$newcall <- reactive(renderBenchmarkCall(selected_bn(),hfserie_name(),lfserie_name()))
                })
 }
 

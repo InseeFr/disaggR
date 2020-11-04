@@ -18,4 +18,13 @@ Useful links:
 }
 
 }
+\author{
+\strong{Maintainer}: Arnaud FELDMANN \email{arnaud.feldmann@insee.fr}
+
+Other contributors:
+\itemize{
+  \item Institut national de la statistique et des études économiques (https://www.insee.fr/) [copyright holder]
+}
+
+}
 \keyword{internal}
