@@ -29,11 +29,11 @@ install.packages('disaggR', dependencies = TRUE)
 ```
 
 You can install the **development** version from
-[Github](https://github.com/arnaud-feldmann/disaggR).
+[Github](https://github.com/InseeFr/disaggR).
 
 ``` r
 # install.packages("devtools")
-install_github("arnaud-feldmann/disaggR")
+install_github("InseeFr/disaggR")
 ```
 
 ## Usage
