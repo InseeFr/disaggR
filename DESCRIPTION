@@ -1,10 +1,16 @@
 Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks for Time Series Disaggregation
-Version: 0.1.9
+Version: 0.2.0
 Date: 2020-10-09
-Author: Arnaud Feldmann
-Maintainer: Arnaud Feldmann <arnaud.feldmann@gmail.com>
+Authors@R: 
+    c(person(given = "Arnaud",
+             family = "FELDMANN",
+             role = c("aut", "cre"),
+             email = "arnaud.feldmann@insee.fr"),
+      person(given = "Institut national de la statistique et des études économiques",
+             role = "cph",
+             comment = "https://www.insee.fr/"))
 Description: The twoStepsBenchmark() function and its wrappers allow you to disaggregate a low frequency time serie with time series of higher frequency, using the French National Accounts methodology.
 	The aggregated sum of the resulting time-serie is strictly equal to the low-frequency serie within the benchmarking window.
 	Typically, the low frequency serie is an annual one, unknown for the last year, and the high frequency is either quarterly or mensual.
@@ -14,7 +20,7 @@ Imports:
 	Rcpp
 LinkingTo:
   Rcpp
-License: GPL (>= 2)
+License: MIT
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

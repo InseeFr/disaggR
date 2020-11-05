@@ -21,8 +21,8 @@ a numeric, the extrapolated sequence of residuals, to replace the NA of
 the residuals
 }
 \description{
-This function is the rule to extrapolate the low-frequency residuals
-If include.differenciation is true, u(n+1)-u(n) = rho*(u(n)-u(n-1))
+This function is the rule to extrapolate the low-frequency residuals.
+If include.differenciation is \code{TRUE}, u(n+1)-u(n) = rho*(u(n)-u(n-1))
 Else u(n+1) = rho * u(n)
 }
 \keyword{internal}
