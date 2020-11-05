@@ -34,11 +34,11 @@ You can install the __stable__ version from [CRAN](https://cran.r-project.org/pa
 install.packages('disaggR', dependencies = TRUE)
 ```
 
-You can install the __development__ version from [Github](https://github.com/arnaud-feldmann/disaggR).
+You can install the __development__ version from [Github](https://github.com/InseeFr/disaggR).
 
 ```{r, eval = FALSE}
 # install.packages("devtools")
-install_github("arnaud-feldmann/disaggR")
+install_github("InseeFr/disaggR")
 ```
 
 ## Usage
