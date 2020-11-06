@@ -10,6 +10,7 @@ Authors@R:
              email = "arnaud.feldmann@insee.fr"),
       person(given = "Institut national de la statistique et des études économiques",
              role = "cph",
+             email = "comptes-trimestriels@insee.fr",
              comment = "https://www.insee.fr/"))
 Description: The twoStepsBenchmark() function and its wrappers allow you to disaggregate a low frequency time serie with time series of higher frequency, using the French National Accounts methodology.
 	The aggregated sum of the resulting time-serie is strictly equal to the low-frequency serie within the benchmarking window.
@@ -32,3 +33,14 @@ Depends:
   R (>= 2.10)
 BugReports: https://github.com/arnaud-feldmann/disaggR/issues
 LazyData: yes
+Collate: 
+    'bflSmooth.R'
+    'comparisons.R'
+    'data.R'
+    'disaggR.R'
+    'methods.R'
+    'plot.R'
+    'praislm.R'
+    'reView.R'
+    'twoStepsBenchmark.R'
+    'utils.R'

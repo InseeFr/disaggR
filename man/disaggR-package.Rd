@@ -23,7 +23,7 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item Institut national de la statistique et des études économiques (https://www.insee.fr/) [copyright holder]
+  \item Institut national de la statistique et des études économiques \email{comptes-trimestriels@insee.fr} (https://www.insee.fr/) [copyright holder]
 }
 
 }

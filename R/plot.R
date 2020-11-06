@@ -12,7 +12,7 @@ plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
 }
 
 #' @export
-plot.insample <- function(x, xlab="", ylab="", ...) {
+plot.comparison <- function(x, xlab="", ylab="", ...) {
   class(x) <- class(x)[-1]
   lims <- c(floor(min(time(x)[!is.na(x[,1])|!is.na(x[,2])])),
             ceiling(max(time(x)[!is.na(x[,1])|!is.na(x[,2])])))
@@ -72,7 +72,7 @@ autoplot.twoStepsBenchmark <- function(object) {
 
 #' @importFrom ggplot2 autoplot
 #' @export
-autoplot.insample <- function(object) {
+autoplot.comparison <- function(object) {
   ggplotts(object,variable_aes = "linetype") +
     ggplot2::labs(linetype=attr(object,"type"))
 }
