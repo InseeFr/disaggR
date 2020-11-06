@@ -14,8 +14,12 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 include.rho = c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE),
                 set.const = list(NULL,0,NULL,NULL,0,0))
 
+<<<<<<< HEAD
 presets_ggplot <- function(hfserie,lfserie,
                            type) {
+=======
+presets_ggplot <- function(hfserie,lfserie) {
+>>>>>>> master
   lapply(1L:6L,function(type) {
     ggplot2::autoplot(
       in_sample(
@@ -60,6 +64,7 @@ renderBenchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 reView_ui_module_tab1 <- function(id) {
   ns <- NS(id)
   fluidRow(column(6,
+<<<<<<< HEAD
                   p("Model 1 (",em("differences — with constant",.noWS = "outside"),"): "),
                   plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "200px"),
                   p("Model 3 (",em("levels — with constant",.noWS = "outside"),"):"),
@@ -72,6 +77,20 @@ reView_ui_module_tab1 <- function(id) {
                    p("Model 4 (",em("autocorrelated levels — with constant",.noWS = "outside"),")"),
                    plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "200px"),
                    p("Model 6 (",em("autocorrelated levels — without constant",.noWS = "outside"),")"),
+=======
+                  p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
+                  plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "200px"),
+                  p("Model 3 (",em("levels \u2014 with constant",.noWS = "outside"),"):"),
+                  plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "200px"),
+                  p("Model 5 (",em("levels \u2014 without constant",.noWS = "outside"),")"),
+                  plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "200px"))
+           ,column(6,
+                   p("Model 2 (",em("differences \u2014 without constant",.noWS = "outside"),")"),
+                   plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "200px"),
+                   p("Model 4 (",em("autocorrelated levels \u2014 with constant",.noWS = "outside"),")"),
+                   plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "200px"),
+                   p("Model 6 (",em("autocorrelated levels \u2014 without constant",.noWS = "outside"),")"),
+>>>>>>> master
                    plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "200px")))
 }
 
@@ -124,7 +143,11 @@ reView_ui_module_tab3 <- function(id) {
   )
 }
 
+<<<<<<< HEAD
 #' @import shiny
+=======
+#' @rdname reView
+>>>>>>> master
 #' @export
 #' @keywords internal
 reView_ui_module <- function(id) {
@@ -149,7 +172,11 @@ reView_server_module_tab1 <- function(id,hfserie,lfserie) {
   moduleServer(id,
                function(input,output,session) {
                  
+<<<<<<< HEAD
                  presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie(),type = type))
+=======
+                 presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie()))
+>>>>>>> master
                  output$model1_plot <- renderPlot(presets_ggplot_list()[[1L]]  + ggplot2::theme(legend.position = "none"))
                  output$model2_plot <- renderPlot(presets_ggplot_list()[[2L]]  + ggplot2::theme(legend.position = "none"))
                  output$model3_plot <- renderPlot(presets_ggplot_list()[[3L]]  + ggplot2::theme(legend.position = "none"))
@@ -262,6 +289,10 @@ reView_server_module_tab3 <- function(id,old_bn,selected_bn) {
                })
 }
 
+<<<<<<< HEAD
+=======
+#' @rdname reView
+>>>>>>> master
 #' @export
 #' @keywords internal
 reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
@@ -307,7 +338,14 @@ runapp_disaggr <- function(old_bn,compare) {
   if (inherits(shinyreturn,"error")) stop(shinyreturn)
   shinyreturn
 }
+<<<<<<< HEAD
 
+=======
+#' reView
+#' 
+#'  A shiny app to reView twoStepsBenchmarks.
+#' 
+>>>>>>> master
 #' @export
 #' @import shiny
 reView <- function(benchmark) {
