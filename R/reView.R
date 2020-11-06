@@ -106,11 +106,11 @@ reView_ui_module_tab2 <- function(id) {
       ),
       uiOutput(ns("mainOutput"),
                style = "padding: 6px 8px;
-                                   margin-top: 6px;
-                                   margin-bottom: 6px;
-                                   background-color: #ffffff;
-                                   border: 1px solid #e3e3e3;
-                                   border-radius: 2px;")
+                        margin-top: 6px;
+                        margin-bottom: 6px;
+                        background-color: #ffffff;
+                        border: 1px solid #e3e3e3;
+                        border-radius: 2px;")
     )
   )
 }
@@ -169,7 +169,7 @@ reView_server_module_tab1 <- function(id,hfserie,lfserie) {
                })
 }
 
-reView_server_module_tab2 <- function(id,lfserie,hfserie,oldbn,compare,selected_preset) {
+reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset) {
   moduleServer(id,
                function(input,output,session) {
                  
@@ -188,9 +188,9 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,oldbn,compare,selected_
                  output$mainOutput <- renderUI({
                    switch(input$plotchoice,
                           "Benchmark"={
-                            output$newplot <- renderPlot(ggplot2::autoplot(newbn()))
+                            output$newplot <- renderPlot(ggplot2::autoplot(new_bn()))
                             if (!compare) return(plotOutput(session$ns("newplot")))
-                            output$oldplot <- renderPlot(ggplot2::autoplot(oldbn()))
+                            output$oldplot <- renderPlot(ggplot2::autoplot(old_bn()))
                             return(fluidRow(
                               column(width=6,h4("Before"),plotOutput(session$ns("oldplot")),
                                      style="border-right:1px dashed #e3e3e3;"),
@@ -198,9 +198,9 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,oldbn,compare,selected_
                             ))
                           },
                           "In-sample predictions"={
-                            output$newplot <- renderPlot(ggplot2::autoplot(in_sample(newbn())))
+                            output$newplot <- renderPlot(ggplot2::autoplot(in_sample(new_bn())))
                             if (!compare) return(plotOutput(session$ns("newplot")))
-                            output$oldplot <- renderPlot(ggplot2::autoplot(in_sample(oldbn())))
+                            output$oldplot <- renderPlot(ggplot2::autoplot(in_sample(old_bn())))
                             return(fluidRow(
                               column(width=6,h4("Before"),plotOutput(session$ns("oldplot")),
                                      style="border-right:1px dashed #e3e3e3;"),
@@ -208,9 +208,9 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,oldbn,compare,selected_
                             ))
                           },
                           "Summary"={
-                            output$newsum <- renderPrint(print(summary(newbn()),call=FALSE))
+                            output$newsum <- renderPrint(print(summary(new_bn()),call=FALSE))
                             if (!compare) return(verbatimTextOutput(session$ns("newsum")))
-                            output$oldsum <- renderPrint(print(summary(oldbn()),call=FALSE))
+                            output$oldsum <- renderPrint(print(summary(old_bn()),call=FALSE))
                             return(fluidRow(
                               column(width=6,h4("Before"),verbatimTextOutput(session$ns("oldsum")),
                                      style="border-right:1px dashed #e3e3e3;"),
@@ -219,25 +219,23 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,oldbn,compare,selected_
                           })
                  })
                  
-                 set_coeff <- reactive({
-                   if (input$setcoeff_button) {
-                     if (is.null(input$setcoeff) || is.na(input$setcoeff)) return(0)
-                     return(input$setcoeff)
-                   }
-                   return(NULL)
-                 })
-                 set_const <- reactive({
-                   if (input$setconst_button) {
-                     if (is.null(input$setconst) || is.na(input$setconst)) return(0)
-                     return(input$setconst)
-                   }
-                   return(NULL)
-                 })
-                 newbn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
+                 new_bn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                                       include.differenciation = input$dif,
                                                       include.rho = input$rho,
-                                                      set.coeff = set_coeff(),
-                                                      set.const = set_const(),
+                                                      set.coeff = {
+                                                        if (input$setcoeff_button) {
+                                                          if (is.na(input$setcoeff)) 0
+                                                          else input$setcoeff
+                                                        }
+                                                        else NULL
+                                                      },
+                                                      set.const = {
+                                                        if (input$setconst_button) {
+                                                          if (is.na(input$setconst)) 0
+                                                          else input$setconst
+                                                        }
+                                                        else NULL
+                                                      },
                                                       start.coeff.calc = input$coeffcalc[1],
                                                       end.coeff.calc = input$coeffcalc[2],
                                                       start.benchmark = input$benchmark[1],
@@ -245,30 +243,30 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,oldbn,compare,selected_
                  selected_bn <- reactiveVal(NULL)
                  observeEvent(input$validation,{
                    selected_bn(NULL)
-                   selected_bn(newbn())
+                   selected_bn(new_bn())
                  })
                  return(selected_bn)
                })
 }
 
-reView_server_module_tab3 <- function(id,oldbn,selected_bn) {
+reView_server_module_tab3 <- function(id,old_bn,selected_bn) {
   moduleServer(id,
                function(input,output,session) {
-                 hfserie_name <- reactive(deparse(oldbn()$call$hfserie))
-                 lfserie_name <- reactive(deparse(oldbn()$call$lfserie))
-                 output$oldcall <- reactive(renderBenchmarkCall(oldbn(),hfserie_name(),lfserie_name()))
+                 hfserie_name <- reactive(deparse(old_bn()$call$hfserie))
+                 lfserie_name <- reactive(deparse(old_bn()$call$lfserie))
+                 output$oldcall <- reactive(renderBenchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
                  output$newcall <- reactive(renderBenchmarkCall(selected_bn(),hfserie_name(),lfserie_name()))
                })
 }
 
 #' @export
 #' @keywords internal
-reView_server_module <- function(id,oldbn,compare,function.mode=TRUE) {
+reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
   moduleServer(id,function(input, output, session) {
     
-    lfserie <- reactive(model.list(oldbn())$lfserie)
+    lfserie <- reactive(model.list(old_bn())$lfserie)
     hfserie <- reactive({
-      res <- model.list(oldbn())$hfserie
+      res <- model.list(old_bn())$hfserie
       return(res[,colnames(res) != "constant"])
     })
     
@@ -279,27 +277,27 @@ reView_server_module <- function(id,oldbn,compare,function.mode=TRUE) {
     
     # tab 2 : Modify
     
-    selected_bn <- reView_server_module_tab2("reViewtab2",lfserie,hfserie,oldbn,compare,selected_preset)
+    selected_bn <- reView_server_module_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset)
     observeEvent(selected_bn(),updateNavbarPage(session,"menu","Export"),ignoreInit = TRUE)
     
     # tab3 : Export
     
-    reView_server_module_tab3("reViewtab3",oldbn,selected_bn)
+    reView_server_module_tab3("reViewtab3",old_bn,selected_bn)
     
   })
 }
-reView_server <- function(oldbn,compare) {
+reView_server <- function(old_bn,compare) {
   function(input,output,session) {
-    reView_server_module("reView",reactive(oldbn),compare)
+    reView_server_module("reView",reactive(old_bn),compare)
   }
 }
 
 #### runner ####
 
-runapp_disaggr <- function(oldbn,compare) {
+runapp_disaggr <- function(old_bn,compare) {
   shinyreturn <- shiny::runApp(
     shiny::shinyApp(ui = reView_ui,
-                    server = reView_server(oldbn,compare)
+                    server = reView_server(old_bn,compare)
     ),
     quiet = TRUE
   )
