@@ -165,7 +165,7 @@ reView_server_module_tab1 <- function(id,hfserie,lfserie) {
                                   selected_preset(type)
                                 })
                  })
-                 return(selected_preset)
+                 selected_preset
                })
 }
 
@@ -248,7 +248,7 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                    selected_bn(NULL)
                    selected_bn(new_bn())
                  })
-                 return(selected_bn)
+                 selected_bn
                })
 }
 
@@ -270,7 +270,7 @@ reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
     lfserie <- reactive(model.list(old_bn())$lfserie)
     hfserie <- reactive({
       res <- model.list(old_bn())$hfserie
-      return(res[,colnames(res) != "constant"])
+      res[,colnames(res) != "constant"]
     })
     
     # tab 1 : Presets
