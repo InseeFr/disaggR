@@ -36,26 +36,30 @@ dftsforggplot <- function(object,series_names=NULL) {
     Values = as.numeric(object),
     Variables = factor(do.call(c,lapply(series_names,rep.int,times=NROW(object))),
                        levels=series_names)
-  )
+  )[!is.na(as.numeric(object)),]
 }
 
-ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="colour",series_names=NULL,theme=ggthemets(),...) {
+#' @importFrom ggplot2 geom_line geom_bar stat_summary
+ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="colour",series_names=NULL,theme=ggthemets(),type="line",do.sum=FALSE,...) {
   exprs <- structure(lapply(variable_aes, function(x) quote(Variables)),
                      names=variable_aes)
   df <- dftsforggplot(object,series_names)
-  lims <- c(floor(min(df$Date[!is.na(df$Values)])),
-            ceiling(max(df$Date[!is.na(df$Values)])))
-  ggplot2::ggplot() +
-    ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,group=Variables,,,!!!exprs),
-                       df,
-                       show.legend = show.legend,na.rm = TRUE,...) +
+  lims <- c(floor(min(df$Date)),
+            ceiling(max(df$Date)))
+  ggplot2::ggplot(df,ggplot2::aes(x=Date,y=Values,group=Variables,,,!!!exprs),
+                  show.legend = show.legend,...) +
+    switch(type,
+           line=ggplot2::geom_line(),
+           bar=ggplot2::geom_bar(stat="identity")
+           ) +
     ggplot2::scale_x_continuous(
       limits = lims,
       breaks = lims[1]:(lims[2]-1),
       minor_breaks = numeric(),
       expand=c(0,0)
     ) + 
-    theme
+    theme +
+    if (do.sum) ggplot2::stat_summary(fun = sum, geom="line", colour = "black", size = 0.5, alpha=1,na.rm = TRUE)
 }
 
 #' @importFrom ggplot2 autoplot
@@ -74,6 +78,8 @@ autoplot.twoStepsBenchmark <- function(object) {
 #' @importFrom ggplot2 autoplot
 #' @export
 autoplot.comparison <- function(object) {
-  ggplotts(object,variable_aes = "linetype") +
+  if (attr(object,"type") == "contributions") ggplotts(object[,colnames(object) != "Benchmark",drop=FALSE],variable_aes = "fill",type = "bar",do.sum=TRUE) +
+    ggplot2::labs(fill=attr(object,"type"))
+  else ggplotts(object,variable_aes = "linetype") +
     ggplot2::labs(linetype=attr(object,"type"))
 }

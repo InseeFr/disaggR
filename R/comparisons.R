@@ -67,26 +67,28 @@ compare_to_hfserie.twoStepsBenchmark <- function(object,type="changes") {
   
   benchmark <- na.omit(as.ts(object))
   
-  series <- window(cbind(benchmark,hfserie),start = start(benchmark),end = end(benchmark))
+  series <- cbind(benchmark,hfserie)
   
   series <- switch(type,
                    levels = series,
                    "levels-rebased" = ts(t(t(series)/series[1L,]) * 100,start=start(series),frequency=frequency(series)),
                    changes = (series/stats::lag(series,-1)-1)*100,
                    contributions = {
-                     diff(ts(t(t(series) * c(1,coef(object)[names(coef(object)) != "constant"])),
+                     series_with_smoothed_part <- cbind(series,smoothed.part(object))
+                     diff(ts(t(t(series_with_smoothed_part) * c(1,coef(object)[names(coef(object)) != "constant"],1)),
                              start = start(series),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
                    },
                    stop("The type argument of in_sample should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
   )
   
-  structure(series,
+  structure(window(series,start=start(benchmark),end=end(benchmark),extend=TRUE),
             type=type,
             class=c("comparetohfserie","comparison",class(series)),
             dimnames=list(NULL,
                           c("Benchmark",
-                            if (is.null(colnames(hfserie))) "High-Frequency serie" else colnames(hfserie)
+                            if (is.null(colnames(hfserie))) "High-Frequency serie" else colnames(hfserie),
+                            if (type == "contributions") "Smoothed part"
                           ))
   )
 }

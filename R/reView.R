@@ -188,15 +188,12 @@ tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,
       verbatimTextOutput(ns(output_name))
     },
     "Comparison" = {
-      output[[paste0(old_or_new,"plotlevels")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="levels-rebased")) + ggplot2::theme(legend.position = "none"))
-      output[[paste0(old_or_new,"plotchanges")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="changes")) + ggplot2::theme(legend.position = "none"))
+      output[[paste0(old_or_new,"plotlevels")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="levels-rebased")))
+      output[[paste0(old_or_new,"plotchanges")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="changes")))
       output[[paste0(old_or_new,"plotcontrib")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="contributions")))
       column(12,
-             "Levels (rebased)",
              plotOutput(ns(paste0(old_or_new,"plotlevels")),height = "200px"),
-             "Changes",
              plotOutput(ns(paste0(old_or_new,"plotchanges")),height = "200px"),
-             "Contributions",
              plotOutput(ns(paste0(old_or_new,"plotcontrib")),height = "200px"))
     }
   )
