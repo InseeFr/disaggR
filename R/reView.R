@@ -98,7 +98,7 @@ reView_ui_module_tab2 <- function(id) {
       width = 10,
       fluidRow(
         column(12,
-               radioButtons(ns("plotchoice"),NULL,
+               radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","In-sample predictions","Summary"),
                             selected = "Benchmark",inline=TRUE)
         ),
@@ -169,6 +169,39 @@ reView_server_module_tab1 <- function(id,hfserie,lfserie) {
                })
 }
 
+tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,ns) {
+  switch(mainout_choice,
+    "Benchmark" = {
+      output_name <- paste0(old_or_new,"plot")
+      output[[output_name]] <- renderPlot(ggplot2::autoplot(benchmark()))
+      plotOutput(ns(output_name))
+    },
+    "In-sample predictions" = {
+      output_name <- paste0(old_or_new,"plot")
+      output[[output_name]] <- renderPlot(ggplot2::autoplot(in_sample(benchmark())))
+      plotOutput(ns(output_name))
+    },
+    "Summary" = {
+      output_name <- paste0(old_or_new,"verbat")
+      output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
+      verbatimTextOutput(ns(output_name))
+    }
+  )
+}
+
+tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) {
+  if (compare) {
+    fluidRow(
+      column(width=6,h4("Before"),
+             tab2_mainout_switch_impl(old_bn,mainout_choice,output,"old",ns),
+             style="border-right:1px dashed #e3e3e3;"),
+      column(width=6,h4("After"),
+             tab2_mainout_switch_impl(new_bn,mainout_choice,output,"new",ns))
+    )
+  }
+  else tab2_mainout_switch_impl(new_bn,mainout_choice,output,"newoutput",ns)
+}
+
 reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset) {
   moduleServer(id,
                function(input,output,session) {
@@ -186,37 +219,7 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                  output$benchmarksliderInput <- slider_windows(session$ns,lfserie(),"benchmark","Benchmark:")
                  
                  output$mainOutput <- renderUI({
-                   switch(input$plotchoice,
-                          "Benchmark"={
-                            output$newplot <- renderPlot(ggplot2::autoplot(new_bn()))
-                            if (!compare) return(plotOutput(session$ns("newplot")))
-                            output$oldplot <- renderPlot(ggplot2::autoplot(old_bn()))
-                            return(fluidRow(
-                              column(width=6,h4("Before"),plotOutput(session$ns("oldplot")),
-                                     style="border-right:1px dashed #e3e3e3;"),
-                              column(width=6,h4("After"),plotOutput(session$ns("newplot")))
-                            ))
-                          },
-                          "In-sample predictions"={
-                            output$newplot <- renderPlot(ggplot2::autoplot(in_sample(new_bn())))
-                            if (!compare) return(plotOutput(session$ns("newplot")))
-                            output$oldplot <- renderPlot(ggplot2::autoplot(in_sample(old_bn())))
-                            return(fluidRow(
-                              column(width=6,h4("Before"),plotOutput(session$ns("oldplot")),
-                                     style="border-right:1px dashed #e3e3e3;"),
-                              column(width=6,h4("After"),plotOutput(session$ns("newplot")))
-                            ))
-                          },
-                          "Summary"={
-                            output$newsum <- renderPrint(print(summary(new_bn()),call=FALSE))
-                            if (!compare) return(verbatimTextOutput(session$ns("newsum")))
-                            output$oldsum <- renderPrint(print(summary(old_bn()),call=FALSE))
-                            return(fluidRow(
-                              column(width=6,h4("Before"),verbatimTextOutput(session$ns("oldsum")),
-                                     style="border-right:1px dashed #e3e3e3;"),
-                              column(width=6,h4("After"),verbatimTextOutput(session$ns("newsum")))
-                            ))
-                          })
+                   tab2_mainout_switch(new_bn,old_bn,input$mainout_choice,output,session$ns,compare)
                  })
                  
                  new_bn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
