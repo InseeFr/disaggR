@@ -25,7 +25,8 @@ plot.comparison <- function(x, xlab="", ylab="", ...) {
 ggthemets <- function() ggplot2::theme_classic() %+replace%
   ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                  axis.title.y = ggplot2::element_blank(),
-                 panel.grid.major = ggplot2::element_line(colour = "#cccccc"),                                                                     legend.position = "bottom")
+                 panel.grid.major = ggplot2::element_line(colour = "#cccccc"),
+                 legend.position = "bottom")
 
 dftsforggplot <- function(object,series_names=NULL) {
   if (is.null(series_names)) series_names <- colnames(object)

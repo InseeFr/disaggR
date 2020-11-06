@@ -33,6 +33,7 @@ display_vector <- function(x) switch(length(x),
                                      paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")"))
 
 renderBenchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
+  if (is.null(benchmark)) return(NULL)
   model <- model.list(benchmark)
   
   coefs <- model$set.coefficients
@@ -99,7 +100,7 @@ reView_ui_module_tab2 <- function(id) {
       fluidRow(
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
-                            choices = c("Benchmark","In-sample predictions","Summary"),
+                            choices = c("Benchmark","In-sample predictions","Summary","Comparison"),
                             selected = "Benchmark",inline=TRUE)
         ),
         align="center"
@@ -185,12 +186,24 @@ tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,
       output_name <- paste0(old_or_new,"verbat")
       output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
       verbatimTextOutput(ns(output_name))
+    },
+    "Comparison" = {
+      output[[paste0(old_or_new,"plotlevels")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="levels-rebased")) + ggplot2::theme(legend.position = "none"))
+      output[[paste0(old_or_new,"plotchanges")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="changes")) + ggplot2::theme(legend.position = "none"))
+      output[[paste0(old_or_new,"plotcontrib")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="contributions")))
+      column(12,
+             "Levels (rebased)",
+             plotOutput(ns(paste0(old_or_new,"plotlevels")),height = "200px"),
+             "Changes",
+             plotOutput(ns(paste0(old_or_new,"plotchanges")),height = "200px"),
+             "Contributions",
+             plotOutput(ns(paste0(old_or_new,"plotcontrib")),height = "200px"))
     }
   )
 }
 
 tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) {
-  if (compare) {
+  if (compare && !mainout_choice == "Comparison") {
     fluidRow(
       column(width=6,h4("Before"),
              tab2_mainout_switch_impl(old_bn,mainout_choice,output,"old",ns),
@@ -199,7 +212,7 @@ tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) 
              tab2_mainout_switch_impl(new_bn,mainout_choice,output,"new",ns))
     )
   }
-  else tab2_mainout_switch_impl(new_bn,mainout_choice,output,"newoutput",ns)
+  else fluidRow(tab2_mainout_switch_impl(new_bn,mainout_choice,output,"newoutput",ns))
 }
 
 reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset) {

@@ -76,8 +76,8 @@ compare_to_hfserie.twoStepsBenchmark <- function(object,type="changes") {
                    contributions = {
                      diff(ts(t(t(series) * c(1,coef(object)[names(coef(object)) != "constant"])),
                              start = start(series),
-                             frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100}
-                   ,
+                             frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
+                   },
                    stop("The type argument of in_sample should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
   )
   
