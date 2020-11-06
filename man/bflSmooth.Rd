@@ -31,6 +31,3 @@ is equal to lfserie.
 \item if \code{TRUE} the output is the rate to be smoothed, and the output is the aggregated rate.
 }
 }
-\author{
-Arnaud Feldmann
-}

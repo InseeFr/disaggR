@@ -98,30 +98,30 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    maincl,cl=NULL,set.smoothed.part=NULL) {
   if (is.null(cl)) cl <- maincl
   
-  hfserie <- window(hfserie,start.domain,end.domain,extend=TRUE)
-  
   regresults     <- regression_estimation(hfserie,lfserie,
                                           include.differenciation,include.rho,
                                           start.coeff.calc,end.coeff.calc,
                                           set_coefficients,cl)
   
+  hfserie_cropped <- window(hfserie,start=start.domain,end=end.domain,extend=TRUE)
+  
   lfserie_cropped <- window(lfserie,start=start.benchmark,end=end.benchmark,extend=TRUE)
   
-  hfserie_fitted <- coefficients_application(hfserie,lfserie_cropped,regresults$coefficients)
+  hfserie_fitted <- coefficients_application(hfserie_cropped,lfserie_cropped,regresults$coefficients)
   
   smoothed_part  <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
   
   rests <- hfserie_fitted + window(smoothed_part,start=start(hfserie_fitted),end = end(hfserie_fitted),extend=TRUE)
   
-  res <- list(benchmarked.serie = window(rests,start=tsp(hfserie)[1],end=tsp(hfserie)[2],extend = TRUE),
-              fitted.values = window(hfserie_fitted,end=tsp(hfserie)[2],extend = TRUE),
+  res <- list(benchmarked.serie = window(rests,start=tsp(hfserie_cropped)[1],end=tsp(hfserie_cropped)[2],extend = TRUE),
+              fitted.values = window(hfserie_fitted,start=tsp(hfserie_cropped)[1],end=tsp(hfserie_cropped)[2],extend = TRUE),
               regression = regresults,
               smoothed.part = smoothed_part,
               model.list = list(hfserie = hfserie,
-                                lfserie =lfserie,
+                                lfserie = lfserie,
                                 include.rho = include.rho,
-                                include.differenciation=include.differenciation,
-                                set.coefficients=set_coefficients,
+                                include.differenciation = include.differenciation,
+                                set.coefficients = set_coefficients,
                                 start.coeff.calc = start.coeff.calc,
                                 end.coeff.calc = end.coeff.calc,
                                 start.benchmark = start.benchmark,
@@ -235,7 +235,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
                               start.coeff.calc=NULL,end.coeff.calc=NULL,
                               start.benchmark=NULL,end.benchmark=NULL,
-                            start.domain=NULL,end.domain=NULL,...) {
+                              start.domain=NULL,end.domain=NULL,...) {
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
   tsplf <- tsp(lfserie)
   if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)

@@ -47,7 +47,7 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
 }
 
 # This function generates a wrapper of bflSmooth_matrices_impl that gives the
-# same results but uses cache, which is useful considering a lot of similar
+# same results but uses cache, which is useful considering a lot of similar calls
 bflSmooth_matrices_generator <- function(cache_size=100L) {
   cache <- vector("list",cache_size)
   cache_next <- 1L
@@ -78,9 +78,6 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' * if `FALSE` the rate output/weights is smoothed with the constraint that the aggregated output
 #' is equal to lfserie.
 #' * if `TRUE` the output is the rate to be smoothed, and the output is the aggregated rate.
-#' 
-#' @author
-#' Arnaud Feldmann
 #' 
 #' @param lfserie a time-serie to be smoothed
 #' @param nfrequency the new high frequency. It must be a multiple of the low frequency.
