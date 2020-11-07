@@ -142,7 +142,7 @@ reView_ui_module_tab3 <- function(id) {
              column(width=6,div("After",class="section"),div(id=ns("tocopy"),verbatimTextOutput(ns("newcall"))))
            ),
            fluidRow(
-             column(3,actionButton(ns("Cancel"),"Cancel and restart",width = "100%",
+             column(3,actionButton(ns("Reset"),"Reset",width = "100%",
                                    class="btn-warning")),
              column(3,actionButton(ns("Quit"),"Quit",width = "100%",
                                    class="btn-danger")),
@@ -257,7 +257,7 @@ tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) 
   else fluidRow(column(12,tab2_mainout_switch_impl(new_bn,mainout_choice,output,"newoutput",ns,old_bn)))
 }
 
-reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset) {
+reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset,reset) {
   moduleServer(id,
                function(input,output,session) {
                  
@@ -270,7 +270,7 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                    updateNumericInput(session,"setconst",value = setconst)
                  },ignoreNULL = TRUE)
                  
-                 observeEvent(old_bn(),{
+                 observeEvent({reset();old_bn()},{
                    model <- get_model(old_bn())
                    updateCheckboxInput(session,"dif",value = model$include.differenciation)
                    updateCheckboxInput(session,"rho",value = model$include.rho)
@@ -323,13 +323,17 @@ reView_server_module_tab3 <- function(id,old_bn,new_bn) {
                  selected_call <- reactive(benchmarkCall(new_bn(),hfserie_name(),lfserie_name()))
                  output$oldcall <- renderText(benchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
                  output$newcall <- renderText(selected_call())
-                 observeEvent(input$Copy,{
-                   session$sendCustomMessage("copy", selected_call())
-                 })
+                 
                  observeEvent(input$Quit,{
                    if (Sys.getenv('SHINY_PORT') == "") stopApp(new_bn())
                    else session$sendCustomMessage("closewindow", "anymessage")
                  })
+                 
+                 observeEvent(input$Copy,{
+                   session$sendCustomMessage("copy", selected_call())
+                 })
+                 
+                 reactive(input$Reset)
                })
 }
 
@@ -352,12 +356,12 @@ reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
     
     # tab 2 : Modify
     
-    new_bn <- reView_server_module_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset)
+    new_bn <- reView_server_module_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset,reset)
 
     # tab3 : Export
     
-    reView_server_module_tab3("reViewtab3",old_bn,new_bn)
-    
+    reset <- reView_server_module_tab3("reViewtab3",old_bn,new_bn)
+    observeEvent(reset(),updateNavbarPage(session,"menu","Presets"),ignoreInit = TRUE)    
   })
 }
 reView_server <- function(old_bn,compare) {
