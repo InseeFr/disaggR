@@ -7,6 +7,4 @@ function copy(text) {
     input.select();
     document.execCommand('copy');
     document.body.removeChild(input);
-	
-    alert("Copied !");
 }

@@ -331,6 +331,12 @@ reView_server_module_tab3 <- function(id,old_bn,new_bn) {
                  
                  observeEvent(input$Copy,{
                    session$sendCustomMessage("copy", selected_call())
+                   showModal(
+                     modalDialog(title = "reView",
+                                 "New model copied in the clipboard !",
+                                 easyClose = TRUE,
+                                 footer = NULL)
+                  )
                  })
                  
                  reactive(input$Reset)
@@ -361,7 +367,7 @@ reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
     # tab3 : Export
     
     reset <- reView_server_module_tab3("reViewtab3",old_bn,new_bn)
-    observeEvent(reset(),updateNavbarPage(session,"menu","Presets"),ignoreInit = TRUE)    
+    observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)    
   })
 }
 reView_server <- function(old_bn,compare) {
