@@ -1,3 +1,6 @@
+copyjs <- function() includeScript(system.file("js/copy.js", package = "disaggR"))
+closewindowjs <- function() includeScript(system.file("js/closewindow.js", package = "disaggR"))
+
 slider_windows <- function(ns,initserie,ui_out,label) {
   renderUI(
     sliderInput(ns(ui_out),
@@ -82,21 +85,27 @@ reView_ui_module_tab1 <- function(id) {
                    plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "200px")))
 }
 
+boxstyle <- "padding: 6px 8px;
+             margin-top: 6px;
+             margin-bottom: 6px;
+             background-color: #ffffff;
+             border: 1px solid #e3e3e3;
+             border-radius: 2px;"
+
 reView_ui_module_tab2 <- function(id) {
   ns <- NS(id)
   sidebarLayout(
     sidebarPanel(
       width = 2,
-      tags$style("h4 { font-family: 'Source Sans Pro', sans-serif; font-weight: 400; line-height: 32px; text-align: center;}"),
-      h4("Include"),
+      div("Include",class="section"),
       checkboxInput(ns("dif"),"Differenciation"),
       checkboxInput(ns("rho"),"Rho"),
-      h4("Set"),
+      div("Set",class="section"),
       checkboxInput(ns("setcoeff_button"),"Coefficient",),
       conditionalPanel("input.setcoeff_button",numericInput(ns("setcoeff"),NULL,1),ns = ns),
       checkboxInput(ns("setconst_button"),"Constant"),
       conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
-      h4("Windows"),
+      div("Windows",class="section"),
       uiOutput(ns("coeffcalcsliderInput")),
       uiOutput(ns("benchmarksliderInput"))
     ),
@@ -123,26 +132,25 @@ reView_ui_module_tab2 <- function(id) {
   )
 }
 
-copyjs <- function() {
-  includeScript(system.file("js/copy.js", package = "disaggR"))
-}
-
 reView_ui_module_tab3 <- function(id) {
   ns <- NS(id)
-  column(12,
-         tags$head(copyjs()),
-         fluidRow(
-           column(width=6,h4("Before"),verbatimTextOutput(ns("oldcall")),
-                  style="border-right:1px dashed #e3e3e3;"),
-           column(width=6,h4("After"),div(id=ns("tocopy"),verbatimTextOutput(ns("newcall"))))
-         ),
-         fluidRow(
-           column(6,),
-           column(3,actionButton(ns("Export"),"Export to PDF",width = "100%")),
-           column(3,actionButton(ns("Copy"), "Copy to clipboard",
-                                 width = "100%",class="btn-primary"))
+  fluidRow(
+    column(12,
+           fluidRow(
+             column(width=6,div("Before",class="section"),verbatimTextOutput(ns("oldcall")),
+                    style="border-right:1px dashed #e3e3e3;"),
+             column(width=6,div("After",class="section"),div(id=ns("tocopy"),verbatimTextOutput(ns("newcall"))))
+           ),
+           fluidRow(
+             column(3,actionButton(ns("Cancel"),"Cancel and restart",width = "100%",
+                                   class="btn-warning")),
+             column(3,actionButton(ns("Quit"),"Quit",width = "100%",
+                                   class="btn-danger")),
+             column(3,actionButton(ns("Export"),"Export to PDF",width = "100%")),
+             column(3,actionButton(ns("Copy"), "Copy to clipboard",
+                                   width = "100%",class="btn-primary"))
            )
-  )
+    ))
 }
 
 #' @rdname reView
@@ -151,6 +159,9 @@ reView_ui_module_tab3 <- function(id) {
 reView_ui_module <- function(id) {
   ns <- NS(id)
   navbarPage(title = "reView",id = ns("menu"),selected = "Presets",
+             tags$head(copyjs(),
+                       closewindowjs()),
+             tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
              tabPanel("Presets",
                       reView_ui_module_tab1(ns("reViewtab1")),
              ),
@@ -236,10 +247,10 @@ tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,
 tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) {
   if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
     fluidRow(
-      column(width=6,h4("Before"),
+      column(width=6,div("Before",class="section"),
              tab2_mainout_switch_impl(old_bn,mainout_choice,output,"old",ns),
              style="border-right:1px dashed #e3e3e3;"),
-      column(width=6,h4("After"),
+      column(width=6,div("After",class="section"),
              tab2_mainout_switch_impl(new_bn,mainout_choice,output,"new",ns))
     )
   }
@@ -315,6 +326,10 @@ reView_server_module_tab3 <- function(id,old_bn,new_bn) {
                  observeEvent(input$Copy,{
                    session$sendCustomMessage("copy", selected_call())
                  })
+                 observeEvent(input$Quit,{
+                   if (Sys.getenv('SHINY_PORT') == "") stopApp(new_bn())
+                   else session$sendCustomMessage("closewindow", "anymessage")
+                 })
                })
 }
 
@@ -361,7 +376,7 @@ runapp_disaggr <- function(old_bn,compare) {
     quiet = TRUE
   )
   if (inherits(shinyreturn,"error")) stop(shinyreturn)
-  shinyreturn
+  invisible(shinyreturn)
 }
 
 #' reView
