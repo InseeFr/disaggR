@@ -32,6 +32,36 @@ display_vector <- function(x) switch(length(x),
                                      as.character(x),
                                      paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")"))
 
+get_model <- function(benchmark) {
+  model <- model.list(benchmark)
+  model$set.coeff <- model$set.coefficients[names(model$set.coefficients) != "constant"]
+  model$set.const <- model$set.coefficients[names(model$set.coefficients) == "constant"]
+  model$set.coefficents <- NULL
+  model
+}
+
+benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
+  if (is.null(benchmark)) return(NULL)
+  model <- get_model(benchmark)
+  
+  paste0("twoStepsBenchmark(",
+         "\n\thfserie = ",hfserie_name,
+         ",\n\tlfserie = ",lfserie_name,
+         ",\n\tinclude.differenciation = ",model$include.differenciation,
+         ",\n\tinclude.rho = ", model$include.rho,
+         if (!length(model$set.coeff) == 0) paste0(",\n\tset.coeff = ", display_vector(model$set.coeff)),
+         if (!length(model$set.const) == 0) paste0(",\n\tset.const = ", display_vector(model$set.const)),
+         if (!is.null(model$start.coeff.calc)) paste0(",\n\tstart.coeff.calc = ", display_vector(model$start.coeff.calc)),
+         if (!is.null(model$end.coeff.calc)) paste0(",\n\tend.coeff.calc = ", display_vector(model$end.coeff.calc)),
+         if (!is.null(model$start.benchmark)) paste0(",\n\tstart.benchmark = ", display_vector(model$start.benchmark)),
+         if (!is.null(model$end.benchmark)) paste0(",\n\tend.benchmark = ", display_vector(model$end.benchmark)),
+         if (!is.null(model$start.domain)) paste0(",\n\tstart.domain = ", display_vector(model$start.domain)),
+         if (!is.null(model$end.domain)) paste0(",\n\tend.domain = ", display_vector(model$end.domain)),
+         "\n)")
+}
+
+
+
 #### ui ####
 
 reView_ui_module_tab1 <- function(id) {
@@ -62,7 +92,7 @@ reView_ui_module_tab2 <- function(id) {
       checkboxInput(ns("dif"),"Differenciation"),
       checkboxInput(ns("rho"),"Rho"),
       h4("Set"),
-      checkboxInput(ns("setcoeff_button"),"Coefficient"),
+      checkboxInput(ns("setcoeff_button"),"Coefficient",),
       conditionalPanel("input.setcoeff_button",numericInput(ns("setcoeff"),NULL,1),ns = ns),
       checkboxInput(ns("setconst_button"),"Constant"),
       conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
@@ -132,7 +162,8 @@ reView_ui_module <- function(id) {
              )
   )
 }
-reView_ui <- reView_ui_module("reView")
+
+reView_ui <- function(old_bn) reView_ui_module("reView")
 
 #### server ####
 
@@ -228,6 +259,20 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                    updateNumericInput(session,"setconst",value = setconst)
                  },ignoreNULL = TRUE)
                  
+                 observeEvent(old_bn(),{
+                   model <- get_model(old_bn())
+                   updateCheckboxInput(session,"dif",value = model$include.differenciation)
+                   updateCheckboxInput(session,"rho",value = model$include.rho)
+                   if (length(model$set.coeff) != 0) {
+                     updateCheckboxInput(session,"setcoeff_button",value = TRUE)
+                     updateNumericInput(session,"setcoeff",value = as.numeric(model$set.coeff))
+                   } else updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+                   if (length(model$set.const) != 0) {
+                     updateCheckboxInput(session,"setconst_button",value = TRUE)
+                     updateNumericInput(session,"setconst",value = as.numeric(model$set.const))
+                   } else updateCheckboxInput(session,"setconst_button",value = FALSE)
+                 })
+                 
                  output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie(),"coeffcalc","Coefficients:")
                  output$benchmarksliderInput <- slider_windows(session$ns,lfserie(),"benchmark","Benchmark:")
                  
@@ -257,30 +302,6 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                                                       start.benchmark = input$benchmark[1],
                                                       end.benchmark = input$benchmark[2])})
                  new_bn})
-}
-
-benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
-  if (is.null(benchmark)) return(NULL)
-  model <- model.list(benchmark)
-  
-  coefs <- model$set.coefficients
-  set.const <- coefs[names(coefs) == "constant"]
-  set.coeff <- coefs[names(coefs) != "constant"]
-  
-  paste0("twoStepsBenchmark(",
-         "\n\thfserie = ",hfserie_name,
-         ",\n\tlfserie = ",lfserie_name,
-         ",\n\tinclude.differenciation = ",model$include.differenciation,
-         ",\n\tinclude.rho = ", model$include.rho,
-         if (!is.null(set.coeff) && !length(set.coeff) == 0) paste0(",\n\tset.coeff = ", display_vector(set.coeff)),
-         if (!is.null(set.const) && !length(set.const) == 0) paste0(",\n\tset.const = ", display_vector(set.const)),
-         if (!is.null(model$start.coeff.calc)) paste0(",\n\tstart.coeff.calc = ", display_vector(model$start.coeff.calc)),
-         if (!is.null(model$end.coeff.calc)) paste0(",\n\tend.coeff.calc = ", display_vector(model$end.coeff.calc)),
-         if (!is.null(model$start.benchmark)) paste0(",\n\tstart.benchmark = ", display_vector(model$start.benchmark)),
-         if (!is.null(model$end.benchmark)) paste0(",\n\tend.benchmark = ", display_vector(model$end.benchmark)),
-         if (!is.null(model$start.domain)) paste0(",\n\tstart.domain = ", display_vector(model$start.domain)),
-         if (!is.null(model$end.domain)) paste0(",\n\tend.domain = ", display_vector(model$end.domain)),
-         "\n)")
 }
 
 reView_server_module_tab3 <- function(id,old_bn,new_bn) {
@@ -334,7 +355,7 @@ reView_server <- function(old_bn,compare) {
 
 runapp_disaggr <- function(old_bn,compare) {
   shinyreturn <- shiny::runApp(
-    shiny::shinyApp(ui = reView_ui,
+    shiny::shinyApp(ui = reView_ui(old_bn),
                     server = reView_server(old_bn,compare)
     ),
     quiet = TRUE
@@ -350,5 +371,7 @@ runapp_disaggr <- function(old_bn,compare) {
 #' @export
 #' @import shiny
 reView <- function(benchmark) {
+  if (length(coef(benchmark)) > 2) stop("This reviewing application is
+                                        only for univariate benchmarks.")
   runapp_disaggr(benchmark,compare=TRUE)
 }
