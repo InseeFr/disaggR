@@ -1,5 +1,5 @@
 ts_from_tsp <- function(x,tspx) {
-  structure(as.numeric(x), tsp=tspx, class="ts")
+  ts(x, start=tspx[1L], frequency=tspx[3L])
 }
 
 drop_tsp <- function(x) {
@@ -47,4 +47,4 @@ fast_op <- function(e1,e2,FUN) {
   structure(FUN(drop_tsp(e1),drop_tsp(e2)), tsp=tsp(e1), class="ts")
 }
 
-#`Ops.ts` <- function(e1,e2) fast_op(e1,e2,match.fun(.Generic))
+`Ops.ts` <- function(e1,e2) fast_op(e1,e2,match.fun(.Generic))

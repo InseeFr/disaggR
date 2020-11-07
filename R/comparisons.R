@@ -8,7 +8,7 @@
 #' The predicted values are different from the fitted values :
 #' * they are eventually reintegrated
 #' * the autocorrelated part of the residuals is added
-#' Besides, changes are relative to the latest response value,
+#' Besides, changes are relative to the latest benchmark value,
 #' not the latest predicted value.
 #' 
 #' @param object an object of class `praislm` or `twoStepsBenchmark`
@@ -48,7 +48,7 @@ in_sample.praislm <- function(object,type="changes") {
 
   structure(series,
             type=type,
-            class=c("insample","comparison",class(series)),
+            class=c("insample","tscomparison",class(series)),
             dimnames=list(NULL,c("Benchmark","Predicted value")))
 }
 
@@ -58,10 +58,10 @@ in_sample.twoStepsBenchmark <- function(object,type="changes") {
 }
 
 #' @export
-compare_to_hfserie <- function(object,type="changes") UseMethod("compare_to_hfserie")
+in_dicator <- function(object,type="changes") UseMethod("in_dicator")
 
 #' @export
-compare_to_hfserie.twoStepsBenchmark <- function(object,type="changes") {
+in_dicator.twoStepsBenchmark <- function(object,type="changes") {
   hfserie <- model.list(object)$hfserie
   hfserie <- hfserie[,colnames(hfserie) != "constant"]
   
@@ -84,7 +84,7 @@ compare_to_hfserie.twoStepsBenchmark <- function(object,type="changes") {
   
   structure(window(series,start=start(benchmark),end=end(benchmark),extend=TRUE),
             type=type,
-            class=c("comparetohfserie","comparison",class(series)),
+            class=c("indicator","tscomparison",class(series)),
             dimnames=list(NULL,
                           c("Benchmark",
                             if (is.null(colnames(hfserie))) "High-Frequency serie" else colnames(hfserie),
@@ -94,18 +94,32 @@ compare_to_hfserie.twoStepsBenchmark <- function(object,type="changes") {
 }
 
 #' @export
-print.comparetohfserie <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
-  cat("Comparison (", attr(x,"type"),"):\n", sep = "")
-  print.comparison(x,digits,...)
+in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisions")
+
+#' @export
+in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
+  if (!inherits(object_old,"twoStepsBenchmark")) stop("old_object must be a twoStepsBenchmark", call. = FALSE)
+  series <- in_dicator(object,type)-in_dicator(object_old,type)
+  class(series) <- c("inrevisions","tscomparison",class(series))
+  series
 }
 
 #' @export
-print.insample <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
-  cat("In-sample predictions (", attr(x,"type"),"):\n", sep = "")
-  print.comparison(x,digits,...)
-}
+print.indicator <- function(x, digits = max(3L, getOption("digits") - 3L),...) NextMethod()
 
-print.comparison <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
+#' @export
+print.insample <- function(x,digits = max(3L, getOption("digits") - 3L),...) NextMethod()
+
+#' @export
+print.inrevisions <- function(x, digits = max(3L, getOption("digits") - 3L),...) NextMethod()
+
+#' @export
+print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
+  label <- switch(attr(.Class,"previous")[1L],
+                  indicator="Comparison with indicators",
+                  insample="In-sample predictions",
+                  inrevisions="Comparison between two benchmarks")
+  cat(label, " (", attr(x,"type"),"):\n", sep = "")
   attr(x,"type") <- NULL
   print(.preformat.ts(x, any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
         quote = FALSE, right = TRUE,digits = digits,

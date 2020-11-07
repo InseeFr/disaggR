@@ -32,30 +32,6 @@ display_vector <- function(x) switch(length(x),
                                      as.character(x),
                                      paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")"))
 
-renderBenchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
-  if (is.null(benchmark)) return(NULL)
-  model <- model.list(benchmark)
-  
-  coefs <- model$set.coefficients
-  set.const <- coefs[names(coefs) == "constant"]
-  set.coeff <- coefs[names(coefs) != "constant"]
-  
-  paste0("twoStepsBenchmark(",
-         "\n\thfserie = ",hfserie_name,
-         ",\n\tlfserie = ",lfserie_name,
-         ",\n\tinclude.differenciation = ",model$include.differenciation,
-         ",\n\tinclude.rho = ", model$include.rho,
-         if (!is.null(set.coeff) && !length(set.coeff) == 0) paste0(",\n\tset.coeff = ", display_vector(set.coeff)),
-         if (!is.null(set.const) && !length(set.const) == 0) paste0(",\n\tset.const = ", display_vector(set.const)),
-         if (!is.null(model$start.coeff.calc)) paste0(",\n\tstart.coeff.calc = ", display_vector(model$start.coeff.calc)),
-         if (!is.null(model$end.coeff.calc)) paste0(",\n\tend.coeff.calc = ", display_vector(model$end.coeff.calc)),
-         if (!is.null(model$start.benchmark)) paste0(",\n\tstart.benchmark = ", display_vector(model$start.benchmark)),
-         if (!is.null(model$end.benchmark)) paste0(",\n\tend.benchmark = ", display_vector(model$end.benchmark)),
-         if (!is.null(model$start.domain)) paste0(",\n\tstart.domain = ", display_vector(model$start.domain)),
-         if (!is.null(model$end.domain)) paste0(",\n\tend.domain = ", display_vector(model$end.domain)),
-         "\n)")
-}
-
 #### ui ####
 
 reView_ui_module_tab1 <- function(id) {
@@ -92,15 +68,16 @@ reView_ui_module_tab2 <- function(id) {
       conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
       h4("Windows"),
       uiOutput(ns("coeffcalcsliderInput")),
-      uiOutput(ns("benchmarksliderInput")),
-      actionButton(ns("validation"),"Validate",width = "100%")
+      uiOutput(ns("benchmarksliderInput"))
     ),
     mainPanel(
       width = 10,
       fluidRow(
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
-                            choices = c("Benchmark","In-sample predictions","Summary","Comparison"),
+                            choices = c("Benchmark","In-sample predictions",
+                                        "Benchmark summary","Comparison with indicator",
+                                        "Revisions"),
                             selected = "Benchmark",inline=TRUE)
         ),
         align="center"
@@ -116,12 +93,25 @@ reView_ui_module_tab2 <- function(id) {
   )
 }
 
+copyjs <- function() {
+  includeScript(system.file("js/copy.js", package = "disaggR"))
+}
+
 reView_ui_module_tab3 <- function(id) {
   ns <- NS(id)
-  fluidRow(
-    column(width=6,h4("Before"),verbatimTextOutput(ns("oldcall")),
-           style="border-right:1px dashed #e3e3e3;"),
-    column(width=6,h4("After"),verbatimTextOutput(ns("newcall")))
+  column(12,
+         tags$head(copyjs()),
+         fluidRow(
+           column(width=6,h4("Before"),verbatimTextOutput(ns("oldcall")),
+                  style="border-right:1px dashed #e3e3e3;"),
+           column(width=6,h4("After"),div(id=ns("tocopy"),verbatimTextOutput(ns("newcall"))))
+         ),
+         fluidRow(
+           column(6,),
+           column(3,actionButton(ns("Export"),"Export to PDF",width = "100%")),
+           column(3,actionButton(ns("Copy"), "Copy to clipboard",
+                                 width = "100%",class="btn-primary"))
+           )
   )
 }
 
@@ -170,7 +160,9 @@ reView_server_module_tab1 <- function(id,hfserie,lfserie) {
                })
 }
 
-tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,ns) {
+#' @importFrom gridExtra grid.arrange
+tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,ns,oldbn=NULL) {
+                                    # The oldbn arg is only for revisions
   switch(mainout_choice,
     "Benchmark" = {
       output_name <- paste0(old_or_new,"plot")
@@ -182,25 +174,36 @@ tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,
       output[[output_name]] <- renderPlot(ggplot2::autoplot(in_sample(benchmark())))
       plotOutput(ns(output_name))
     },
-    "Summary" = {
+    "Benchmark summary" = {
       output_name <- paste0(old_or_new,"verbat")
       output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
       verbatimTextOutput(ns(output_name))
     },
-    "Comparison" = {
-      output[[paste0(old_or_new,"plotlevels")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="levels-rebased")))
-      output[[paste0(old_or_new,"plotchanges")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="changes")))
-      output[[paste0(old_or_new,"plotcontrib")]] <- renderPlot(ggplot2::autoplot(compare_to_hfserie(benchmark(),type="contributions")))
-      column(12,
-             plotOutput(ns(paste0(old_or_new,"plotlevels")),height = "200px"),
-             plotOutput(ns(paste0(old_or_new,"plotchanges")),height = "200px"),
-             plotOutput(ns(paste0(old_or_new,"plotcontrib")),height = "200px"))
+    "Comparison with indicator" = {
+      output_name <- paste0(old_or_new,"plot")
+      output[[output_name]] <- renderPlot(grid.arrange(
+        ggplot2::autoplot(in_dicator(benchmark(),type="levels-rebased")),
+        ggplot2::autoplot(in_dicator(benchmark(),type="changes")),
+        ggplot2::autoplot(in_dicator(benchmark(),type="contributions")),
+        ncol=1L, nrow = 3L
+      ))
+      plotOutput(ns(output_name),height="500px")
+    },
+    "Revisions" = {
+      output_name <- paste0(old_or_new,"plot")
+      output[[output_name]] <- renderPlot(grid.arrange(
+        ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="levels-rebased")),
+        ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="changes")),
+        ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="contributions")),
+        ncol=1L, nrow = 3L
+      ))
+      plotOutput(ns(output_name),height="500px")
     }
   )
 }
 
 tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) {
-  if (compare && !mainout_choice == "Comparison") {
+  if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
     fluidRow(
       column(width=6,h4("Before"),
              tab2_mainout_switch_impl(old_bn,mainout_choice,output,"old",ns),
@@ -209,7 +212,7 @@ tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) 
              tab2_mainout_switch_impl(new_bn,mainout_choice,output,"new",ns))
     )
   }
-  else fluidRow(tab2_mainout_switch_impl(new_bn,mainout_choice,output,"newoutput",ns))
+  else fluidRow(column(12,tab2_mainout_switch_impl(new_bn,mainout_choice,output,"newoutput",ns,old_bn)))
 }
 
 reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset) {
@@ -253,22 +256,44 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                                                       end.coeff.calc = input$coeffcalc[2],
                                                       start.benchmark = input$benchmark[1],
                                                       end.benchmark = input$benchmark[2])})
-                 selected_bn <- reactiveVal(NULL)
-                 observeEvent(input$validation,{
-                   selected_bn(NULL)
-                   selected_bn(new_bn())
-                 })
-                 selected_bn
-               })
+                 new_bn})
 }
 
-reView_server_module_tab3 <- function(id,old_bn,selected_bn) {
+benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
+  if (is.null(benchmark)) return(NULL)
+  model <- model.list(benchmark)
+  
+  coefs <- model$set.coefficients
+  set.const <- coefs[names(coefs) == "constant"]
+  set.coeff <- coefs[names(coefs) != "constant"]
+  
+  paste0("twoStepsBenchmark(",
+         "\n\thfserie = ",hfserie_name,
+         ",\n\tlfserie = ",lfserie_name,
+         ",\n\tinclude.differenciation = ",model$include.differenciation,
+         ",\n\tinclude.rho = ", model$include.rho,
+         if (!is.null(set.coeff) && !length(set.coeff) == 0) paste0(",\n\tset.coeff = ", display_vector(set.coeff)),
+         if (!is.null(set.const) && !length(set.const) == 0) paste0(",\n\tset.const = ", display_vector(set.const)),
+         if (!is.null(model$start.coeff.calc)) paste0(",\n\tstart.coeff.calc = ", display_vector(model$start.coeff.calc)),
+         if (!is.null(model$end.coeff.calc)) paste0(",\n\tend.coeff.calc = ", display_vector(model$end.coeff.calc)),
+         if (!is.null(model$start.benchmark)) paste0(",\n\tstart.benchmark = ", display_vector(model$start.benchmark)),
+         if (!is.null(model$end.benchmark)) paste0(",\n\tend.benchmark = ", display_vector(model$end.benchmark)),
+         if (!is.null(model$start.domain)) paste0(",\n\tstart.domain = ", display_vector(model$start.domain)),
+         if (!is.null(model$end.domain)) paste0(",\n\tend.domain = ", display_vector(model$end.domain)),
+         "\n)")
+}
+
+reView_server_module_tab3 <- function(id,old_bn,new_bn) {
   moduleServer(id,
                function(input,output,session) {
                  hfserie_name <- reactive(deparse(old_bn()$call$hfserie))
                  lfserie_name <- reactive(deparse(old_bn()$call$lfserie))
-                 output$oldcall <- reactive(renderBenchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
-                 output$newcall <- reactive(renderBenchmarkCall(selected_bn(),hfserie_name(),lfserie_name()))
+                 selected_call <- reactive(benchmarkCall(new_bn(),hfserie_name(),lfserie_name()))
+                 output$oldcall <- renderText(benchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
+                 output$newcall <- renderText(selected_call())
+                 observeEvent(input$Copy,{
+                   session$sendCustomMessage("copy", selected_call())
+                 })
                })
 }
 
@@ -291,12 +316,11 @@ reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
     
     # tab 2 : Modify
     
-    selected_bn <- reView_server_module_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset)
-    observeEvent(selected_bn(),updateNavbarPage(session,"menu","Export"),ignoreInit = TRUE)
-    
+    new_bn <- reView_server_module_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset)
+
     # tab3 : Export
     
-    reView_server_module_tab3("reViewtab3",old_bn,selected_bn)
+    reView_server_module_tab3("reViewtab3",old_bn,new_bn)
     
   })
 }

@@ -75,11 +75,25 @@ autoplot.twoStepsBenchmark <- function(object) {
     ggplot2::labs(linetype=ggplot2::element_blank())
 }
 
+autoplot.indicator <- function(object) NextMethod()
+autoplot.insample <- function(object) NextMethod()
+autoplot.inrevisions <- function(object) NextMethod()
+
 #' @importFrom ggplot2 autoplot
 #' @export
-autoplot.comparison <- function(object) {
-  if (attr(object,"type") == "contributions") ggplotts(object[,colnames(object) != "Benchmark",drop=FALSE],variable_aes = "fill",type = "bar",do.sum=TRUE) +
-    ggplot2::labs(fill=attr(object,"type"))
+autoplot.tscomparison <- function(object) {
+  type_label <- switch(attr(object,"type"),
+                       levels="Levels",
+                       `levels-rebased`="Rebased levels",
+                       changes="Changes",
+                       contributions="Contributions"
+                       )
+  is_contrib <- attr(object,"type") == "contributions"
+  if (attr(.Class,"previous")[1L] == "inrevisions" || is_contrib) ggplotts(object[,(is_contrib & colnames(object) != "Benchmark" )| !is_contrib,drop=FALSE],
+                                                                           variable_aes = "fill",type = "bar",
+                                                                           do.sum=is_contrib,
+                                                                           if (!is_contrib) position = position_dodge()) +
+    ggplot2::labs(fill=type_label)
   else ggplotts(object,variable_aes = "linetype") +
-    ggplot2::labs(linetype=attr(object,"type"))
+    ggplot2::labs(linetype=type_label)
 }

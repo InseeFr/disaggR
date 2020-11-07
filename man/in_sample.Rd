@@ -28,7 +28,7 @@ The predicted values are different from the fitted values :
 \itemize{
 \item they are eventually reintegrated
 \item the autocorrelated part of the residuals is added
-Besides, changes are relative to the latest response value,
+Besides, changes are relative to the latest benchmark value,
 not the latest predicted value.
 }
 }
