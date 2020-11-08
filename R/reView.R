@@ -224,12 +224,26 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                             ns)
     },
     "In-sample predictions" = {
-      plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark()),
-                                                       start=plotswin()[1L],
-                                                       end=plotswin()[2L])),
-                            output,
-                            paste0(old_or_new,"plot"),
-                            ns)
+      fluidRow(
+        column(12,
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark(),
+                                                                           type="levels"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                     output,
+                                     paste0(old_or_new,"plotlev"),
+                                     ns,
+                                     height="300px"),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark(),
+                                                                           type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                     output,
+                                     paste0(old_or_new,"plotcha"),
+                                     ns,
+                                     height="300px")
+        )
+      )
     },
     "Benchmark summary" = {
       output_name <- paste0(old_or_new,"verbat")
