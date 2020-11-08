@@ -1,6 +1,15 @@
 copyjs <- function() includeScript(system.file("js/copy.js", package = "disaggR"))
 closewindowjs <- function() includeScript(system.file("js/closewindow.js", package = "disaggR"))
 
+plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
+  output[[output_name]] <- renderPlot(object())
+  plotOutput(ns(output_name),
+             brush = brushOpts(ns("brush"), direction = "x", resetOnNew = TRUE),
+             dblclick = ns("click"),
+             ...)
+}
+
+
 slider_windows <- function(ns,initserie,ui_out,label) {
   renderUI(
     sliderInput(ns(ui_out),
@@ -10,6 +19,20 @@ slider_windows <- function(ns,initserie,ui_out,label) {
                 value = c(tsp(initserie)[1],tsp(initserie)[2]),
                 step = deltat(initserie),
                 sep = " ")
+  )
+}
+
+numeric_windows <- function(ns,initserie,ui_out_prefix,label) {
+  renderUI(
+    fluidRow(
+      column(2,tags$b(label)),
+      column(5,numericInput(ns(paste0(ui_out_prefix,"min")),
+                            label = NULL,
+                            value = tsp(initserie)[1L],
+                            min = tsp(initserie)[1L]-10,
+                            max = tsp(initserie)[2L]+10,
+                            step = deltat(initserie))),
+      column(5,numericInput(ns(paste0(ui_out_prefix,"max")),label = NULL,value = tsp(initserie)[2],step = deltat(initserie))))
   )
 }
 
@@ -127,7 +150,9 @@ reView_ui_module_tab2 <- function(id) {
                         margin-bottom: 6px;
                         background-color: #ffffff;
                         border: 1px solid #e3e3e3;
-                        border-radius: 2px;")
+                        border-radius: 2px;"),
+      fluidRow(div("Opened windows",class="section")),
+      fluidRow(column(12,uiOutput(ns("plotswinnumericInputs"))),align="center")
     )
   )
 }
@@ -202,19 +227,20 @@ reView_server_module_tab1 <- function(id,hfserie,lfserie) {
                })
 }
 
-#' @importFrom gridExtra grid.arrange
 tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,ns,oldbn=NULL) {
                                     # The oldbn arg is only for revisions
   switch(mainout_choice,
     "Benchmark" = {
-      output_name <- paste0(old_or_new,"plot")
-      output[[output_name]] <- renderPlot(ggplot2::autoplot(benchmark()))
-      plotOutput(ns(output_name))
+      plotOutBrushAndRender(reactive(ggplot2::autoplot(benchmark())),
+                            output,
+                            paste0(old_or_new,"plot"),
+                            ns)
     },
     "In-sample predictions" = {
-      output_name <- paste0(old_or_new,"plot")
-      output[[output_name]] <- renderPlot(ggplot2::autoplot(in_sample(benchmark())))
-      plotOutput(ns(output_name))
+      plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark()))),
+                            output,
+                            paste0(old_or_new,"plot"),
+                            ns)
     },
     "Benchmark summary" = {
       output_name <- paste0(old_or_new,"verbat")
@@ -222,24 +248,46 @@ tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,
       verbatimTextOutput(ns(output_name))
     },
     "Comparison with indicator" = {
-      output_name <- paste0(old_or_new,"plot")
-      output[[output_name]] <- renderPlot(grid.arrange(
-        ggplot2::autoplot(in_dicator(benchmark(),type="levels-rebased")),
-        ggplot2::autoplot(in_dicator(benchmark(),type="changes")),
-        ggplot2::autoplot(in_dicator(benchmark(),type="contributions")),
-        ncol=1L, nrow = 3L
-      ))
-      plotOutput(ns(output_name),height="500px")
+      fluidRow(
+        column(12,
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),type="levels-rebased"))),
+                                     output,
+                                     paste0(old_or_new,"plotlev"),
+                                     ns,
+                                     height="200px"),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),type="changes"))),
+                                     output,
+                                     paste0(old_or_new,"plotcha"),
+                                     ns,
+                                     height="200px"),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),type="contributions"))),
+                                     output,
+                                     paste0(old_or_new,"plotctb"),
+                                     ns,
+                                     height="200px")
+               )
+      )
     },
     "Revisions" = {
-      output_name <- paste0(old_or_new,"plot")
-      output[[output_name]] <- renderPlot(grid.arrange(
-        ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="levels-rebased")),
-        ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="changes")),
-        ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="contributions")),
-        ncol=1L, nrow = 3L
-      ))
-      plotOutput(ns(output_name),height="500px")
+      fluidRow(
+        column(12,
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="levels-rebased"))),
+                                     output,
+                                     paste0(old_or_new,"plotlev"),
+                                     ns,
+                                     height="200px"),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="changes"))),
+                                     output,
+                                     paste0(old_or_new,"plotcha"),
+                                     ns,
+                                     height="200px"),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="contributions"))),
+                                     output,
+                                     paste0(old_or_new,"plotctb"),
+                                     ns,
+                                     height="200px")
+        )
+      )
     }
   )
 }
@@ -290,6 +338,19 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                  output$mainOutput <- renderUI({
                    tab2_mainout_switch(new_bn,old_bn,input$mainout_choice,output,session$ns,compare)
                  })
+                 
+                 output$plotswinnumericInputs <- numeric_windows(session$ns,lfserie(),"plotswin","Plots:")
+                 
+                 observeEvent(input$brush,{
+                   tsplf <- tsp(lfserie())
+                   updateNumericInput(session, "plotswinmin",value = round(tsplf[3L]*(input$brush$xmin-tsplf[1L])) + tsplf[1L])
+                   updateNumericInput(session, "plotswinmax",value = round(tsplf[3L]*(input$brush$xmax-tsplf[2L])) + tsplf[2L])
+                 },
+                 ignoreNULL = TRUE)
+                 
+                 observeEvent(input$click,
+                              updateDateRangeInput(session, "range", start = tsp(lfserie())[1L], end = tsp(lfserie)[2L]),
+                              ignoreNULL = TRUE)
                  
                  new_bn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                                       include.differenciation = input$dif,

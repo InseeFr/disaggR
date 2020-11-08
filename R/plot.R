@@ -42,7 +42,7 @@ dftsforggplot <- function(object,series_names=NULL) {
   )[!is.na(as.numeric(object)),]
 }
 
-#' @importFrom ggplot2 geom_line geom_bar stat_summary
+#' @importFrom ggplot2 geom_line geom_bar stat_summary aes element_text
 ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="colour",series_names=NULL,theme=ggthemets(),type="line",do.sum=FALSE,...) {
   exprs <- structure(lapply(variable_aes, function(x) quote(Variables)),
                      names=variable_aes)
