@@ -26,7 +26,10 @@ ggthemets <- function() ggplot2::theme_classic() %+replace%
   ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                  axis.title.y = ggplot2::element_blank(),
                  panel.grid.major = ggplot2::element_line(colour = "#cccccc"),
-                 legend.position = "bottom")
+                 legend.position = "bottom",
+                 plot.tag.position = "top",
+                 plot.tag = element_text(size = 10,colour="red")
+  )
 
 dftsforggplot <- function(object,series_names=NULL) {
   if (is.null(series_names)) series_names <- colnames(object)
@@ -46,12 +49,14 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
   df <- dftsforggplot(object,series_names)
   lims <- c(floor(min(df$Date)),
             ceiling(max(df$Date)))
-  ggplot2::ggplot(df,ggplot2::aes(x=Date,y=Values,group=Variables,,,!!!exprs),
-                  show.legend = show.legend,...) +
-    switch(type,
-           line=ggplot2::geom_line(),
-           bar=ggplot2::geom_bar(stat="identity")
-           ) +
+  g <- ggplot2::ggplot(df,ggplot2::aes(x=Date,y=Values),
+                       show.legend = show.legend,...)
+  switch(type,
+         line=g + ggplot2::geom_line(aes(,,!!!exprs,group=Variables)),
+         bar=g+ ggplot2::geom_bar(stat="identity",aes(,,!!!exprs,group=Variables)),
+         lollipop=g +ggplot2::geom_point(alpha=0.8,size=1,aes(,,!!!exprs,group=Variables))+
+           geom_bar(stat="identity",position="dodge",width=0.015,colour="black")
+  ) +
     ggplot2::scale_x_continuous(
       limits = lims,
       breaks = lims[1]:(lims[2]-1),
@@ -88,12 +93,20 @@ autoplot.tscomparison <- function(object) {
                        changes="Changes",
                        contributions="Contributions"
                        )
-  is_contrib <- attr(object,"type") == "contributions"
-  if (attr(.Class,"previous")[1L] == "inrevisions" || is_contrib) ggplotts(object[,(is_contrib & colnames(object) != "Benchmark" )| !is_contrib,drop=FALSE],
-                                                                           variable_aes = "fill",type = "bar",
-                                                                           do.sum=is_contrib,
-                                                                           if (!is_contrib) position = position_dodge()) +
-    ggplot2::labs(fill=type_label)
+  
+  if (attr(object,"type") == "contributions") {
+    ggplotts(object[,(colnames(object) != "Benchmark"),drop=FALSE],
+             variable_aes = "fill",type = "bar",
+             do.sum=TRUE) +
+      ggplot2::labs(fill=type_label)
+  }
+  else if (attr(.Class,"previous")[1L] == "inrevisions") {
+    ggplotts(object[,(colnames(object) == "Benchmark"),drop=FALSE],variable_aes = "shape",type="lollipop") +
+      ggplot2::labs(shape=type_label) +
+      if (sum(abs(object[,(colnames(object) != "Benchmark"),drop=FALSE]),na.rm = TRUE) > 1e-7) {
+        labs(tag="Warning : The indicators contain revisions!")
+      }
+  }
   else ggplotts(object,variable_aes = "linetype") +
     ggplot2::labs(linetype=type_label)
 }

@@ -35,9 +35,9 @@ BugReports: https://github.com/arnaud-feldmann/disaggR/issues
 LazyData: yes
 Collate: 
     'bflSmooth.R'
-    'comparisons.R'
     'data.R'
     'disaggR.R'
+	'in.R'
     'methods.R'
     'plot.R'
     'praislm.R'

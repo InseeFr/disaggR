@@ -87,7 +87,7 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
             class=c("indicator","tscomparison",class(series)),
             dimnames=list(NULL,
                           c("Benchmark",
-                            if (is.null(colnames(hfserie))) "High-Frequency serie" else colnames(hfserie),
+                            if (is.null(colnames(hfserie))) "High-frequency serie" else colnames(hfserie),
                             if (type == "contributions") "Smoothed part"
                           ))
   )
