@@ -348,9 +348,12 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                  },
                  ignoreNULL = TRUE)
                  
-                 observeEvent(input$click,
-                              updateDateRangeInput(session, "range", start = tsp(lfserie())[1L], end = tsp(lfserie)[2L]),
-                              ignoreNULL = TRUE)
+                 observeEvent(input$click,{
+                   tsplf <- tsp(lfserie())
+                   updateNumericInput(session, "plotswinmin",value = tsplf[1L])
+                   updateNumericInput(session, "plotswinmax",value = tsplf[2L])
+                 },
+                 ignoreNULL = TRUE)
                  
                  new_bn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
                                                       include.differenciation = input$dif,
