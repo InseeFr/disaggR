@@ -388,6 +388,10 @@ reView_server_module_tab3 <- function(id,old_bn,new_bn) {
                  output$oldcall <- renderText(benchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
                  output$newcall <- renderText(selected_call())
                  
+                 session$onSessionEnded(function() {
+                   if (Sys.getenv('SHINY_PORT') == "") stopApp()
+                 })
+                 
                  observeEvent(input$Quit,{
                    if (Sys.getenv('SHINY_PORT') == "") stopApp(new_bn())
                    else session$sendCustomMessage("closewindow", "anymessage")
@@ -449,7 +453,7 @@ runapp_disaggr <- function(old_bn,compare) {
     ),
     quiet = TRUE
   )
-  if (inherits(shinyreturn,"error")) stop(shinyreturn)
+  if (inherits(shinyreturn,"error")) shinyreturn <- NULL
   invisible(shinyreturn)
 }
 
