@@ -39,14 +39,17 @@ dftsforggplot <- function(object,series_names=NULL) {
     Values = as.numeric(object),
     Variables = factor(do.call(c,lapply(series_names,rep.int,times=NROW(object))),
                        levels=series_names)
-  )[!is.na(as.numeric(object)),]
+  )
 }
 
 #' @importFrom ggplot2 geom_line geom_bar stat_summary aes element_text
 ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="colour",series_names=NULL,theme=ggthemets(),type="line",do.sum=FALSE,...) {
   exprs <- structure(lapply(variable_aes, function(x) quote(Variables)),
                      names=variable_aes)
+  
   df <- dftsforggplot(object,series_names)
+  df <- df[!is.na(df$Values),]
+  
   lims <- c(floor(min(df$Date)),
             ceiling(max(df$Date)))
   g <- ggplot2::ggplot(df,ggplot2::aes(x=Date,y=Values),
@@ -71,11 +74,17 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
 #' @export 
 autoplot.twoStepsBenchmark <- function(object,start=NULL,end=NULL) {
   model <- model.list(object)
-  x <- window(as.ts(object),start=start,end=end,extend=TRUE)
-  lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),series_names = "Low-Frequency serie")
-  lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie),each=frequency(model$hfserie)/frequency(model$lfserie))
+  
+  benchmark <- window(as.ts(object),start=start,end=end,extend=TRUE)
+  lfserie <- window(model$lfserie,start=start,end=end,extend=TRUE)
+  
+  lfdf <- dftsforggplot(ts_expand(lfserie,nfrequency = frequency(model$hfserie)),
+                        series_names = "Low-Frequency serie")
+  lfdf[,"Low-Frequency Periods"] <- rep(time(lfserie),
+                                        each=frequency(model$hfserie)/frequency(lfserie))
   lfdf <- lfdf[!is.na(lfdf$Values),]
-  ggplotts(x,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype") +
+  
+  ggplotts(benchmark,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype") +
     ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf) +
     ggplot2::labs(linetype=ggplot2::element_blank())
 }
