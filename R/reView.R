@@ -137,8 +137,7 @@ reView_ui_tab2 <- function(id) {
                         margin-bottom: 6px;
                         background-color: #ffffff;
                         border: 1px solid #e3e3e3;
-                        border-radius: 2px;"),
-      fluidRow(div("Opened windows",class="section"))
+                        border-radius: 2px;")
     )
   )
 }
