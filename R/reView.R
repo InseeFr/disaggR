@@ -22,20 +22,6 @@ slider_windows <- function(ns,initserie,ui_out,label) {
   )
 }
 
-numeric_windows <- function(ns,initserie,ui_out_prefix,label) {
-  renderUI(
-    fluidRow(
-      column(2,tags$b(label)),
-      column(5,numericInput(ns(paste0(ui_out_prefix,"min")),
-                            label = NULL,
-                            value = tsp(initserie)[1L],
-                            min = tsp(initserie)[1L]-10,
-                            max = tsp(initserie)[2L]+10,
-                            step = deltat(initserie))),
-      column(5,numericInput(ns(paste0(ui_out_prefix,"max")),label = NULL,value = tsp(initserie)[2],step = deltat(initserie))))
-  )
-}
-
 presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 include.rho = c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE),
                 set.const = list(NULL,0,NULL,NULL,0,0))
@@ -90,7 +76,7 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 
 #### ui ####
 
-reView_ui_module_tab1 <- function(id) {
+reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   fluidRow(column(6,
                   p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
@@ -115,7 +101,7 @@ boxstyle <- "padding: 6px 8px;
              border: 1px solid #e3e3e3;
              border-radius: 2px;"
 
-reView_ui_module_tab2 <- function(id) {
+reView_ui_tab2 <- function(id) {
   ns <- NS(id)
   sidebarLayout(
     sidebarPanel(
@@ -130,7 +116,8 @@ reView_ui_module_tab2 <- function(id) {
       conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
       div("Windows",class="section"),
       uiOutput(ns("coeffcalcsliderInput")),
-      uiOutput(ns("benchmarksliderInput"))
+      uiOutput(ns("benchmarksliderInput")),
+      uiOutput(ns("plotswinsliderInput"))
     ),
     mainPanel(
       width = 10,
@@ -151,13 +138,12 @@ reView_ui_module_tab2 <- function(id) {
                         background-color: #ffffff;
                         border: 1px solid #e3e3e3;
                         border-radius: 2px;"),
-      fluidRow(div("Opened windows",class="section")),
-      fluidRow(column(12,uiOutput(ns("plotswinnumericInputs"))),align="center")
+      fluidRow(div("Opened windows",class="section"))
     )
   )
 }
 
-reView_ui_module_tab3 <- function(id) {
+reView_ui_tab3 <- function(id) {
   ns <- NS(id)
   fluidRow(
     column(12,
@@ -188,13 +174,13 @@ reView_ui_module <- function(id) {
                        closewindowjs()),
              tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
              tabPanel("Presets",
-                      reView_ui_module_tab1(ns("reViewtab1")),
+                      reView_ui_tab1(ns("reViewtab1")),
              ),
              tabPanel("Modify",
-                      reView_ui_module_tab2(ns("reViewtab2"))
+                      reView_ui_tab2(ns("reViewtab2"))
              ),
              tabPanel("Export",
-                      reView_ui_module_tab3(ns("reViewtab3"))
+                      reView_ui_tab3(ns("reViewtab3"))
              )
   )
 }
@@ -203,7 +189,7 @@ reView_ui <- function(old_bn) reView_ui_module("reView")
 
 #### server ####
 
-reView_server_module_tab1 <- function(id,hfserie,lfserie) {
+reView_server_tab1 <- function(id,hfserie,lfserie) {
   moduleServer(id,
                function(input,output,session) {
                  
@@ -227,17 +213,21 @@ reView_server_module_tab1 <- function(id,hfserie,lfserie) {
                })
 }
 
-tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,ns,oldbn=NULL) {
+reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,output,old_or_new,ns,oldbn=NULL) {
                                     # The oldbn arg is only for revisions
   switch(mainout_choice,
     "Benchmark" = {
-      plotOutBrushAndRender(reactive(ggplot2::autoplot(benchmark())),
+      plotOutBrushAndRender(reactive(ggplot2::autoplot(benchmark(),
+                                                       start=plotswin()[1L],
+                                                       end=plotswin()[2L])),
                             output,
                             paste0(old_or_new,"plot"),
                             ns)
     },
     "In-sample predictions" = {
-      plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark()))),
+      plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark()),
+                                                       start=plotswin()[1L],
+                                                       end=plotswin()[2L])),
                             output,
                             paste0(old_or_new,"plot"),
                             ns)
@@ -250,17 +240,26 @@ tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,
     "Comparison with indicator" = {
       fluidRow(
         column(12,
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),type="levels-rebased"))),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
+                                                                           type="levels-rebased"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
                                      output,
                                      paste0(old_or_new,"plotlev"),
                                      ns,
                                      height="200px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),type="changes"))),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
+                                                                           type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
                                      output,
                                      paste0(old_or_new,"plotcha"),
                                      ns,
                                      height="200px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),type="contributions"))),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
+                                                                           type="contributions"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
                                      output,
                                      paste0(old_or_new,"plotctb"),
                                      ns,
@@ -271,17 +270,26 @@ tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,
     "Revisions" = {
       fluidRow(
         column(12,
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="levels-rebased"))),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="levels-rebased"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
                                      output,
                                      paste0(old_or_new,"plotlev"),
                                      ns,
                                      height="200px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="changes"))),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
                                      output,
                                      paste0(old_or_new,"plotcha"),
                                      ns,
                                      height="200px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),type="contributions"))),
+               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="contributions"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
                                      output,
                                      paste0(old_or_new,"plotctb"),
                                      ns,
@@ -292,20 +300,20 @@ tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,
   )
 }
 
-tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) {
+reView_server_tab2_switch <- function(new_bn,old_bn,mainout_choice,plotswin,output,ns,compare) {
   if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
     fluidRow(
       column(width=6,div("Before",class="section"),
-             tab2_mainout_switch_impl(old_bn,mainout_choice,output,"old",ns),
+             reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
              style="border-right:1px dashed #e3e3e3;"),
       column(width=6,div("After",class="section"),
-             tab2_mainout_switch_impl(new_bn,mainout_choice,output,"new",ns))
+             reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns))
     )
   }
-  else fluidRow(column(12,tab2_mainout_switch_impl(new_bn,mainout_choice,output,"newoutput",ns,old_bn)))
+  else fluidRow(column(12,reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"newoutput",ns,old_bn)))
 }
 
-reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset,reset) {
+reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset,reset) {
   moduleServer(id,
                function(input,output,session) {
                  
@@ -334,24 +342,31 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                  
                  output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie(),"coeffcalc","Coefficients:")
                  output$benchmarksliderInput <- slider_windows(session$ns,lfserie(),"benchmark","Benchmark:")
+                 output$plotswinsliderInput <- slider_windows(session$ns,lfserie(),"plotswin","Plots:")
                  
                  output$mainOutput <- renderUI({
-                   tab2_mainout_switch(new_bn,old_bn,input$mainout_choice,output,session$ns,compare)
+                   reView_server_tab2_switch(new_bn,old_bn,
+                                             input$mainout_choice,
+                                             reactive(c(input$plotswin[1L],
+                                                        input$plotswin[2L]+
+                                                          deltat(lfserie())-
+                                                          deltat(hfserie()))),
+                                             output,session$ns,compare)
                  })
-                 
-                 output$plotswinnumericInputs <- numeric_windows(session$ns,lfserie(),"plotswin","Plots:")
                  
                  observeEvent(input$brush,{
                    tsplf <- tsp(lfserie())
-                   updateNumericInput(session, "plotswinmin",value = round(tsplf[3L]*(input$brush$xmin-tsplf[1L])) + tsplf[1L])
-                   updateNumericInput(session, "plotswinmax",value = round(tsplf[3L]*(input$brush$xmax-tsplf[2L])) + tsplf[2L])
+                   updateSliderInput(session, "plotswin",
+                                     value = c(round(tsplf[3L]*(input$brush$xmin-tsplf[1L])) + tsplf[1L],
+                                               round(tsplf[3L]*(input$brush$xmax-tsplf[2L])) + tsplf[2L]))
+                   session$resetBrush("brush")
                  },
                  ignoreNULL = TRUE)
                  
                  observeEvent(input$click,{
                    tsplf <- tsp(lfserie())
-                   updateNumericInput(session, "plotswinmin",value = tsplf[1L])
-                   updateNumericInput(session, "plotswinmax",value = tsplf[2L])
+                   updateSliderInput(session, "plotswin",
+                                     value = c(tsplf[1L],tsplf[2L]))
                  },
                  ignoreNULL = TRUE)
                  
@@ -379,7 +394,7 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                  new_bn})
 }
 
-reView_server_module_tab3 <- function(id,old_bn,new_bn) {
+reView_server_tab3 <- function(id,old_bn,new_bn) {
   moduleServer(id,
                function(input,output,session) {
                  hfserie_name <- reactive(deparse(old_bn()$call$hfserie))
@@ -425,16 +440,16 @@ reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
     
     # tab 1 : Presets
     
-    selected_preset <- reView_server_module_tab1("reViewtab1",hfserie,lfserie)
+    selected_preset <- reView_server_tab1("reViewtab1",hfserie,lfserie)
     observeEvent(selected_preset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)
     
     # tab 2 : Modify
     
-    new_bn <- reView_server_module_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset,reset)
+    new_bn <- reView_server_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset,reset)
 
     # tab3 : Export
     
-    reset <- reView_server_module_tab3("reViewtab3",old_bn,new_bn)
+    reset <- reView_server_tab3("reViewtab3",old_bn,new_bn)
     observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)    
   })
 }

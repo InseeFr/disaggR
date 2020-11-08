@@ -54,7 +54,7 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
   switch(type,
          line=g + ggplot2::geom_line(aes(,,!!!exprs,group=Variables)),
          bar=g+ ggplot2::geom_bar(stat="identity",aes(,,!!!exprs,group=Variables)),
-         lollipop=g +ggplot2::geom_point(alpha=0.8,size=1,aes(,,!!!exprs,group=Variables))+
+         lollipop=g +ggplot2::geom_point(alpha=0.8,size=1.5,aes(,,!!!exprs,group=Variables))+
            geom_bar(stat="identity",position="dodge",width=0.015,colour="black")
   ) +
     ggplot2::scale_x_continuous(
@@ -67,11 +67,11 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
     if (do.sum) ggplot2::stat_summary(fun = sum, geom="line", colour = "black", size = 0.5, alpha=1,na.rm = TRUE)
 }
 
-#' @importFrom ggplot2 autoplot
+#' @importFrom ggplot2 autoplot labs
 #' @export 
-autoplot.twoStepsBenchmark <- function(object) {
+autoplot.twoStepsBenchmark <- function(object,start=NULL,end=NULL) {
   model <- model.list(object)
-  x <- na.omit(as.ts(object))
+  x <- window(as.ts(object),start=start,end=end,extend=TRUE)
   lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),series_names = "Low-Frequency serie")
   lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie),each=frequency(model$hfserie)/frequency(model$lfserie))
   lfdf <- lfdf[!is.na(lfdf$Values),]
@@ -80,13 +80,14 @@ autoplot.twoStepsBenchmark <- function(object) {
     ggplot2::labs(linetype=ggplot2::element_blank())
 }
 
-autoplot.indicator <- function(object) NextMethod()
-autoplot.insample <- function(object) NextMethod()
-autoplot.inrevisions <- function(object) NextMethod()
+autoplot.indicator <- function(object,start=NULL,end=NULL) NextMethod()
+autoplot.insample <- function(object,start=NULL,end=NULL) NextMethod()
+autoplot.inrevisions <- function(object,start=NULL,end=NULL) NextMethod()
 
 #' @importFrom ggplot2 autoplot
 #' @export
-autoplot.tscomparison <- function(object) {
+autoplot.tscomparison <- function(object,start=NULL,end=NULL) {
+  
   type_label <- switch(attr(object,"type"),
                        levels="Levels",
                        `levels-rebased`="Rebased levels",
@@ -94,7 +95,9 @@ autoplot.tscomparison <- function(object) {
                        contributions="Contributions"
                        )
   
-  if (attr(object,"type") == "contributions") {
+  object <- window(object,start=start,end=end,extend=TRUE)
+  
+  if (type_label == "Contributions") {
     ggplotts(object[,(colnames(object) != "Benchmark"),drop=FALSE],
              variable_aes = "fill",type = "bar",
              do.sum=TRUE) +
