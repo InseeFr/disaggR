@@ -1,18 +1,22 @@
 #' @importFrom graphics plot points
 #' @export
-plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "", ...) {
+plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "",
+                                   start=NULL,end=NULL, ...) {
   model <- model.list(x)
-  tsbench <- as.ts(x)
-  lims <- c(floor(min(time(tsbench)[!is.na(tsbench)])),
-            ceiling(max(time(tsbench)[!is.na(tsbench)])))
-  plot(window(tsbench,start=lims[1],end=lims[2],extend=TRUE)
+  
+  benchmark <- window(as.ts(x),start=start,end=end,extend=TRUE)
+  lfserie <- window(model$lfserie,start=start,end=end,extend=TRUE)
+  
+  lims <- c(floor(min(time(benchmark)[!is.na(benchmark)])),
+            ceiling(max(time(benchmark)[!is.na(benchmark)])))
+  plot(window(benchmark,start=lims[1],end=lims[2],extend=TRUE)
        , xlab = xlab, ylab = ylab, ...)
   points(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
   invisible()
 }
 
 #' @export
-plot.comparison <- function(x, xlab="", ylab="", ...) {
+plot.tscomparison <- function(x, xlab="", ylab="", ...) {
   class(x) <- class(x)[-1]
   lims <- c(floor(min(time(x)[!is.na(x[,1])|!is.na(x[,2])])),
             ceiling(max(time(x)[!is.na(x[,1])|!is.na(x[,2])])))
@@ -43,15 +47,17 @@ dftsforggplot <- function(object,series_names=NULL) {
 }
 
 #' @importFrom ggplot2 geom_line geom_bar stat_summary aes element_text
-ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="colour",series_names=NULL,theme=ggthemets(),type="line",do.sum=FALSE,...) {
+ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="colour",
+                     series_names=NULL,theme=ggthemets(),type="line",do.sum=FALSE,
+                     start=NULL,end=NULL,...) {
   exprs <- structure(lapply(variable_aes, function(x) quote(Variables)),
                      names=variable_aes)
   
   df <- dftsforggplot(object,series_names)
   df <- df[!is.na(df$Values),]
   
-  lims <- c(floor(min(df$Date)),
-            ceiling(max(df$Date)))
+  lims <- c(if (is.null(start)) floor(min(df$Date)) else start,
+            if (is.null(end)) ceiling(max(df$Date)) else end)
   g <- ggplot2::ggplot(df,ggplot2::aes(x=Date,y=Values),
                        show.legend = show.legend,...)
   switch(type,
@@ -84,7 +90,8 @@ autoplot.twoStepsBenchmark <- function(object,start=NULL,end=NULL) {
                                         each=frequency(model$hfserie)/frequency(lfserie))
   lfdf <- lfdf[!is.na(lfdf$Values),]
   
-  ggplotts(benchmark,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype") +
+  ggplotts(benchmark,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype",
+           start=start,end=end) +
     ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf) +
     ggplot2::labs(linetype=ggplot2::element_blank())
 }
@@ -108,17 +115,20 @@ autoplot.tscomparison <- function(object,start=NULL,end=NULL) {
   
   if (type_label == "Contributions") {
     ggplotts(object[,(colnames(object) != "Benchmark"),drop=FALSE],
-             variable_aes = "fill",type = "bar",
-             do.sum=TRUE) +
+             variable_aes = "fill",type = "bar",do.sum=TRUE,
+             start=start,end=end) +
       ggplot2::labs(fill=type_label)
   }
   else if (attr(.Class,"previous")[1L] == "inrevisions") {
-    ggplotts(object[,(colnames(object) == "Benchmark"),drop=FALSE],variable_aes = "shape",type="lollipop") +
+    ggplotts(object[,(colnames(object) == "Benchmark"),drop=FALSE],
+             variable_aes = "shape",type="lollipop",
+             start=start,end=end) +
       ggplot2::labs(shape=type_label) +
       if (sum(abs(object[,(colnames(object) != "Benchmark"),drop=FALSE]),na.rm = TRUE) > 1e-7) {
         labs(tag="Warning : The indicators contain revisions!")
       }
   }
-  else ggplotts(object,variable_aes = "linetype") +
+  else ggplotts(object,variable_aes = "linetype",
+                start=start,end=end) +
     ggplot2::labs(linetype=type_label)
 }
