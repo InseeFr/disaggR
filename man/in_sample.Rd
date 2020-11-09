@@ -27,10 +27,11 @@ a \link{praislm} or a \link{twoStepsBenchmark} object.
 The predicted values are different from the fitted values :
 \itemize{
 \item they are eventually reintegrated
-\item the autocorrelated part of the residuals is added
+\item the autocorrelated part of the residuals is added.
+}
+
 Besides, changes are relative to the latest benchmark value,
 not the latest predicted value.
-}
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)

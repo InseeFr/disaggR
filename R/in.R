@@ -6,8 +6,10 @@
 #' a \link{praislm} or a \link{twoStepsBenchmark} object.
 #' 
 #' The predicted values are different from the fitted values :
+#' 
 #' * they are eventually reintegrated
-#' * the autocorrelated part of the residuals is added
+#' * the autocorrelated part of the residuals is added.
+#' 
 #' Besides, changes are relative to the latest benchmark value,
 #' not the latest predicted value.
 #' 
