@@ -3,25 +3,39 @@
 plot.twoStepsBenchmark <- function(x, xlab = "", ylab = "",
                                    start=NULL,end=NULL, ...) {
   model <- model.list(x)
+  tsbench <- as.ts(x)
   
-  benchmark <- window(as.ts(x),start=start,end=end,extend=TRUE)
-  lfserie <- window(model$lfserie,start=start,end=end,extend=TRUE)
+  lims <- c(if (is.null(start)) floor(min(time(tsbench)[!is.na(tsbench)])) else start,
+            if (is.null(end)) ceiling(max(time(tsbench)[!is.na(tsbench)])) else end)
   
-  lims <- c(floor(min(time(benchmark)[!is.na(benchmark)])),
-            ceiling(max(time(benchmark)[!is.na(benchmark)])))
-  plot(window(benchmark,start=lims[1],end=lims[2],extend=TRUE)
+  plot(window(tsbench,start=lims[1L],end=lims[2L],extend=TRUE)
        , xlab = xlab, ylab = ylab, ...)
-  points(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),cex=0.25,pch=20)
+  points(window(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
+                start=lims[1L],end=lims[2L],extend=TRUE),cex=0.25,pch=20)
   invisible()
 }
 
+type_label <- function(object) {
+  switch(attr(object,"type"),
+         levels="Levels",
+         `levels-rebased`="Rebased levels",
+         changes="Changes",
+         contributions="Contributions"
+  )
+}
+
+plot.indicator <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
+plot.insample <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
+plot.inrevisions <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
+
 #' @export
-plot.tscomparison <- function(x, xlab="", ylab="", ...) {
+plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL, ...) {
   class(x) <- class(x)[-1]
-  lims <- c(floor(min(time(x)[!is.na(x[,1])|!is.na(x[,2])])),
-            ceiling(max(time(x)[!is.na(x[,1])|!is.na(x[,2])])))
+  lims <- c(if (is.null(start)) floor(min(time(x)[apply(x,1L,function(x) !all(is.na(x)))])) else start,
+            if (is.null(end)) ceiling(max(time(x)[apply(x,1L,function(x) !all(is.na(x)))])) else end)
   plot(window(x,start=lims[1],end=lims[2],extend=TRUE), plot.type="single", lty=c(1L,2L), xlab = xlab, ylab = ylab,
-       main = paste0("In-sample predictions (", attr(x,"type"),")"), ...)
+       main = paste0("In-sample predictions (",
+                     type_label(x),")"), ...)
   invisible()
 }
 
@@ -54,10 +68,28 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
                      names=variable_aes)
   
   df <- dftsforggplot(object,series_names)
-  df <- df[!is.na(df$Values),]
+  isnaval <- is.na(df$Values)
   
-  lims <- c(if (is.null(start)) floor(min(df$Date)) else start,
-            if (is.null(end)) ceiling(max(df$Date)) else end)
+  start <- {
+    if (is.null(start)) floor(min(df$Date[!isnaval]))
+    else switch(length(start),
+                start,
+                start[1L] +(start[2L] - 1)/frequency(object),
+                stop("bad value for 'start'"))
+  }
+  
+  end <- {
+    if (is.null(end)) ceiling(max(df$Date[!isnaval]))
+    else switch(length(end),
+                end,
+                end[1L] + (end[2L] - 1)/frequency(object), 
+                stop("bad value for 'end'"))
+  }
+  
+  df <- df[df$Date >= start & df$Date<= end & !isnaval,]
+  
+  lims <- c(start,end)
+  
   g <- ggplot2::ggplot(df,ggplot2::aes(x=Date,y=Values),
                        show.legend = show.legend,...)
   switch(type,
@@ -68,7 +100,7 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
   ) +
     ggplot2::scale_x_continuous(
       limits = lims,
-      breaks = lims[1]:(lims[2]-1),
+      breaks = (floor(lims[1L])+1L):(ceiling(lims[2L])-1L),
       minor_breaks = numeric(),
       expand=c(0,0)
     ) + 
@@ -81,18 +113,15 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
 autoplot.twoStepsBenchmark <- function(object,start=NULL,end=NULL) {
   model <- model.list(object)
   
-  benchmark <- window(as.ts(object),start=start,end=end,extend=TRUE)
-  lfserie <- window(model$lfserie,start=start,end=end,extend=TRUE)
-  
-  lfdf <- dftsforggplot(ts_expand(lfserie,nfrequency = frequency(model$hfserie)),
+  lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
                         series_names = "Low-Frequency serie")
-  lfdf[,"Low-Frequency Periods"] <- rep(time(lfserie),
-                                        each=frequency(model$hfserie)/frequency(lfserie))
-  lfdf <- lfdf[!is.na(lfdf$Values),]
+  lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie),
+                                        each=frequency(model$hfserie)/frequency(model$lfserie))
   
-  ggplotts(benchmark,show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype",
+  ggplotts(as.ts(object),show.legend = TRUE,series_names = "Benchmark",variable_aes = "linetype",
            start=start,end=end) +
-    ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf) +
+    ggplot2::geom_line(ggplot2::aes(x=Date,y=Values,linetype=Variables,group=`Low-Frequency Periods`),lfdf,
+                       na.rm = TRUE) +
     ggplot2::labs(linetype=ggplot2::element_blank())
 }
 
@@ -104,12 +133,7 @@ autoplot.inrevisions <- function(object,start=NULL,end=NULL) NextMethod()
 #' @export
 autoplot.tscomparison <- function(object,start=NULL,end=NULL) {
   
-  type_label <- switch(attr(object,"type"),
-                       levels="Levels",
-                       `levels-rebased`="Rebased levels",
-                       changes="Changes",
-                       contributions="Contributions"
-                       )
+  type_label <- type_label(object)
   
   object <- window(object,start=start,end=end,extend=TRUE)
   
