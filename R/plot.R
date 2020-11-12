@@ -28,9 +28,9 @@ plot.indicator <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
 plot.insample <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
 plot.inrevisions <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
 
-barplot.ts <- function (height,start,end,space = c(1L, 3L, 1L),col=hue_pal(c(0, 360) + 15,100,65,1)(NCOL(height)),
-                        main=NULL,
-                        ...) 
+barplot.mts <- function (height,start,end,space = c(1L, 3L, 1L),col=hue_pal(c(0, 360) + 15,100,65,1)(ncol(height)),
+                         main=NULL,
+                         ...) 
 {
   start <-  switch(length(start),
                    start,
@@ -45,7 +45,7 @@ barplot.ts <- function (height,start,end,space = c(1L, 3L, 1L),col=hue_pal(c(0, 
   time <- time(height)
   year <- floor(time)
   freq <- frequency(height)
-  nheight <- NCOL(height)
+  nheight <- ncol(height)
   
   pser <- height * (height > 0)
   nser <- height * (height < 0)
@@ -58,18 +58,17 @@ barplot.ts <- function (height,start,end,space = c(1L, 3L, 1L),col=hue_pal(c(0, 
   abline(v = (floor(start)+1L):(ceiling(end)-1L),lty="dotted",lwd=par("lwd"),col="grey")
   
   xxx <- 1/sum(c(2, freq, freq - 1) * space[1:3])
+  
   cc <- cycle(pser)
-  xleft <- floor(round(time, 4)) + (space[1] + (cc - 
-                                                  1) * space[2] + (cc - 1) * space[3]) * xxx
+  xleft <- floor(round(time, 4)) +
+    (space[1] + (cc - 1) * space[2] +(cc - 1) * space[3]) * xxx
   xright <- xleft + space[2] * xxx
   
-  for (i in nheight:1) {
+  for (i in nheight:1L) {
     rect(xleft = xleft, xright = xright, ybottom = nnser, 
          ytop = ppser, col = col[i],border=FALSE)
-    if (nheight > 1) {
-      nnser <- nnser - nser[, i]
-      ppser <- ppser - pser[, i]
-    }
+    nnser <- nnser - nser[, i]
+    ppser <- ppser - pser[, i]
   }
   axis(side = 1, at = year, labels = NA, tick = TRUE)
   axis(side = 1, at = year + 0.5, labels = year, tick = FALSE, 
@@ -88,7 +87,7 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL, ...
   x <- window(x,start=start,end=end,extend=TRUE)
   
   if (type_label == "Contributions") {
-    barplot.ts(x[,colnames(x) != "Benchmark",drop=FALSE],start=start,end=end)
+    barplot.mts(x[,colnames(x) != "Benchmark",drop=FALSE],start=start,end=end)
     lines(x = as.vector(time(x)) + 0.5/frequency(x), y = as.vector(x[,"Benchmark"]))
   }
   else if (attr(.Class,"previous")[1L] == "inrevisions") {
