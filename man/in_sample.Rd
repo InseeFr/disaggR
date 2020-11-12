@@ -4,12 +4,12 @@
 \alias{in_sample}
 \title{Producing the in sample predictions of a prais-lm regression}
 \usage{
-in_sample(object, type = "changes")
+in_sample(object, mode = "changes")
 }
 \arguments{
 \item{object}{an object of class \code{praislm} or \code{twoStepsBenchmark}}
 
-\item{type}{"changes" or "levels". The results are either returned
+\item{mode}{"changes" or "levels". The results are either returned
 in changes or in levels.}
 }
 \value{
@@ -20,7 +20,7 @@ A \code{insample} class is added to the object. Then, the functions
 can be used to produce graphics.
 }
 \description{
-The function \code{in_sample} returns in-sample predictions from
+The function \code{tscomparison} returns in-sample predictions from
 a \link{praislm} or a \link{twoStepsBenchmark} object.
 }
 \details{

@@ -2,7 +2,7 @@
 
 #' Producing the in sample predictions of a prais-lm regression
 #' 
-#' The function `in_sample` returns in-sample predictions from
+#' The function `tscomparison` returns in-sample predictions from
 #' a \link{praislm} or a \link{twoStepsBenchmark} object.
 #' 
 #' The predicted values are different from the fitted values :
@@ -14,7 +14,7 @@
 #' not the latest predicted value.
 #' 
 #' @param object an object of class `praislm` or `twoStepsBenchmark`
-#' @param type "changes" or "levels". The results are either returned
+#' @param mode "changes" or "levels". The results are either returned
 #' in changes or in levels.
 #' @return
 #' a named matrix time-serie of two columns, one for the
@@ -26,17 +26,17 @@
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' in_sample(benchmark)
 #' @export
-in_sample <- function(object,type="changes") UseMethod("in_sample")
+in_sample <- function(object,mode="changes") UseMethod("in_sample")
 
 #' @export
-in_sample.praislm <- function(object,type="changes") {
+in_sample.praislm <- function(object,mode="changes") {
   autocor <- rho(object)*lag(residuals(object),-1)
   m <- model.list(object)
   y <- m$y
   y_lagged <- stats::lag(y,k=-1)
   predicted_diff <- if (m$include.differenciation) fitted(object) + autocor else fitted(object)+autocor-y_lagged
   
-  series <- switch(type,
+  series <- switch(mode,
                    levels={
                      predicted <- y_lagged+predicted_diff
                      cbind(y,predicted)
@@ -46,24 +46,25 @@ in_sample.praislm <- function(object,type="changes") {
                      predicted_changes <- (predicted_diff/y_lagged)*100
                      cbind(y_changes,predicted_changes)
                    },
-                   stop("The type argument of in_sample should be either \"levels\" or  \"changes\".",call. = FALSE))
+                   stop("The mode argument of in_sample should be either \"levels\" or  \"changes\".",call. = FALSE))
 
   structure(series,
-            type=type,
-            class=c("insample","tscomparison",class(series)),
+            mode=mode,
+            func="in_sample",
+            class=c("tscomparison",class(series)),
             dimnames=list(NULL,c("Benchmark","Predicted value")))
 }
 
 #' @export
-in_sample.twoStepsBenchmark <- function(object,type="changes") {
-  in_sample(prais(object),type=type)
+in_sample.twoStepsBenchmark <- function(object,mode="changes") {
+  in_sample(prais(object),mode=mode)
 }
 
 #' @export
-in_dicator <- function(object,type="changes") UseMethod("in_dicator")
+in_dicator <- function(object,mode="changes") UseMethod("in_dicator")
 
 #' @export
-in_dicator.twoStepsBenchmark <- function(object,type="changes") {
+in_dicator.twoStepsBenchmark <- function(object,mode="changes") {
   hfserie <- model.list(object)$hfserie
   hfserie <- hfserie[,colnames(hfserie) != "constant"]
   
@@ -71,58 +72,59 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
   
   series <- cbind(benchmark,hfserie)
   
-  series <- switch(type,
+  series <- switch(mode,
                    levels = series,
                    "levels-rebased" = ts(t(t(series)/series[1L,]) * 100,start=start(series),frequency=frequency(series)),
                    changes = (series/stats::lag(series,-1)-1)*100,
                    contributions = {
-                     series_with_smoothed_part <- cbind(series,smoothed.part(object))
-                     diff(ts(t(t(series_with_smoothed_part) * c(1,coef(object)[names(coef(object)) != "constant"],1)),
+                     series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],smoothed.part(object))
+                     diff(ts(t(t(series_with_smoothed_part) * c(coef(object)[names(coef(object)) != "constant"],1)),
                              start = start(series),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
                    },
-                   stop("The type argument of in_sample should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
+                   stop("The mode argument of in_sample should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
   )
   
   structure(window(series,start=start(benchmark),end=end(benchmark),extend=TRUE),
-            type=type,
-            class=c("indicator","tscomparison",class(series)),
+            mode=mode,
+            func="in_dicator",
+            class=c("tscomparison",class(series)),
             dimnames=list(NULL,
-                          c("Benchmark",
+                          c(if (mode != "contributions") "Benchmark",
                             if (is.null(colnames(hfserie))) "High-frequency serie" else colnames(hfserie),
-                            if (type == "contributions") "Smoothed part"
+                            if (mode == "contributions") "Smoothed part"
                           ))
   )
 }
 
 #' @export
-in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisions")
+in_revisions <- function(object,object_old,mode="changes") UseMethod("in_revisions")
 
 #' @export
-in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
+in_revisions.twoStepsBenchmark <- function(object,object_old,mode="changes") {
   if (!inherits(object_old,"twoStepsBenchmark")) stop("old_object must be a twoStepsBenchmark", call. = FALSE)
-  series <- in_dicator(object,type)-in_dicator(object_old,type)
-  class(series) <- c("inrevisions","tscomparison",class(series))
+  series <- in_dicator(object,mode)-in_dicator(object_old,mode)
+  class(series) <- c("tscomparison",class(series))
+  if (mode != "contributions") {
+    if (sum(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
+      warning("Warning : The indicators contain revisions!")
+    }
+    series <- structure(series[,"Benchmark",drop = FALSE],
+                        mode=attr(series,"mode"),
+                        func="in_revisions")
+  }
+  class(series) <- c("tscomparison",class(series))
   series
 }
 
 #' @export
-print.indicator <- function(x, digits = max(3L, getOption("digits") - 3L),...) NextMethod()
-
-#' @export
-print.insample <- function(x,digits = max(3L, getOption("digits") - 3L),...) NextMethod()
-
-#' @export
-print.inrevisions <- function(x, digits = max(3L, getOption("digits") - 3L),...) NextMethod()
-
-#' @export
 print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
-  label <- switch(attr(.Class,"previous")[1L],
+  label <- switch(attr(x,"func")[1L],
                   indicator="Comparison with indicators",
                   insample="In-sample predictions",
                   inrevisions="Comparison between two benchmarks")
-  cat(label, " (", attr(x,"type"),"):\n", sep = "")
-  attr(x,"type") <- NULL
+  cat(label, " (", attr(x,"mode"),"):\n", sep = "")
+  attr(x,"mode") <- NULL
   print(.preformat.ts(x, any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
         quote = FALSE, right = TRUE,digits = digits,
         ...)
