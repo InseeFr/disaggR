@@ -218,7 +218,7 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
   switch(type,
          line=g + ggplot2::geom_line(ggplot2::aes(,,!!!exprs,group=Variables)),
          bar=g+ ggplot2::geom_bar(ggplot2::aes(,,!!!exprs,group=Variables),stat="identity"),
-         segments=g +ggplot2::geom_segment(aes(xend=Date,,!!!exprs,group=Variables),yend=0)
+         segments=g +ggplot2::geom_segment(aes(xend=Date,,,!!!exprs,group=Variables),yend=0)
   ) +
     ggplot2::scale_x_continuous(
       limits = lims,
