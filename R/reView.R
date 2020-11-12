@@ -284,7 +284,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
       fluidRow(
         column(12,
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
-                                                                             mode="levels-rebased"),
+                                                                             mode="levels"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,

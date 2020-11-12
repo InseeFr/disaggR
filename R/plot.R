@@ -19,11 +19,18 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
   abline(v = (floor(xmin)+1L):(ceiling(xmax)-1L),lty="dotted",lwd=1,col="grey")
 }
 
+#' @export
+#' @importFrom scales brewer_pal hue_pal linetype_pal
+default_col_pal <- function(object) {
+  if (identical(attr(object,"mode"),"contributions")) brewer_pal(type = "qual",palette = 7L)
+  else brewer_pal(type = "qual",palette = 6L)
+}
+
 #' @importFrom graphics plot points
 #' @export
 plot.twoStepsBenchmark <- function(x, xlab="", ylab="",
                                    start = NULL, end = NULL,
-                                   col=hue_pal(c(0, 360) + 15,100,65,1),
+                                   col=default_col_pal(x),
                                    lty=linetype_pal(),
                                    ...) {
   
@@ -106,11 +113,10 @@ eval_function_if_is_one <- function(f,arg) {
   if (is.function(f)) f(arg) else f
 }
 
-#' @importFrom scales hue_pal linetype_pal
 #' @importFrom graphics lines.default points.default
 #' @export
 plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
-                              col=hue_pal(c(0, 360) + 15,100,65,1),
+                              col=default_col_pal(x),
                               lty=linetype_pal(),
                               ...) {
   
@@ -233,7 +239,7 @@ ggplotts <- function(object,show.legend = !is.null(dim(object)),variable_aes="co
 #' @importFrom ggplot2 autoplot labs
 #' @export 
 autoplot.twoStepsBenchmark <- function(object, xlab = "", ylab = "",start=NULL,end=NULL,
-                                       col = hue_pal(c(0, 360) + 15,100,65,1),
+                                       col = default_col_pal(object),
                                        lty = linetype_pal(),
                                        ...) {
   model <- model.list(object)
@@ -255,7 +261,6 @@ autoplot.twoStepsBenchmark <- function(object, xlab = "", ylab = "",start=NULL,e
                        na.rm = TRUE) +
     discrete_scale("colour","hue",col,na.translate = FALSE) +
     discrete_scale("linetype","hue",lty,na.translate = FALSE)
-    #ggplot2::labs(linetype=Variab)
 }
 
 make_function_if_it_isnt <- function(f) {
@@ -268,7 +273,7 @@ make_function_if_it_isnt <- function(f) {
 #' @importFrom ggplot2 discrete_scale
 #' @export 
 autoplot.tscomparison <- function(object, xlab = "", ylab = "",start=NULL,end=NULL,
-                                  col = hue_pal(c(0, 360) + 15,100,65,1),
+                                  col = default_col_pal(object),
                                   lty = linetype_pal(),
                                   ...) {
   
