@@ -28,14 +28,79 @@ plot.indicator <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
 plot.insample <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
 plot.inrevisions <- function(object,xlab="",start=NULL,end=NULL) NextMethod()
 
+barplot.ts <- function (height,start,end,space = c(1L, 3L, 1L),col=hue_pal(c(0, 360) + 15,100,65,1)(NCOL(height)),
+                        main=NULL,
+                        ...) 
+{
+  start <-  switch(length(start),
+                   start,
+                   start[1L] +(start[2L] - 1)/frequency(height),
+                   stop("bad value for 'start'"))
+  end <- switch(length(end),
+                end,
+                end[1L] + (end[2L] - 1)/frequency(height), 
+                stop("bad value for 'end'"))
+  
+  heigth <- window(height,start=start,end=end,extend=TRUE)
+  time <- time(height)
+  year <- floor(time)
+  freq <- frequency(height)
+  nheight <- NCOL(height)
+  
+  pser <- height * (height > 0)
+  nser <- height * (height < 0)
+  ppser <- ts_from_tsp(rowSums(pser),tsp(pser))
+  nnser <- ts_from_tsp(rowSums(nser),tsp(nser))
+  
+  plot(x= c(start,end), y = c(min(nnser,na.rm = TRUE),max(ppser,na.rm=TRUE)), type = "n", main = main, xaxs = "i", 
+       xaxt = "n", xlab = "", ylab = "")
+  grid(nx = NA,ny=NULL,col = "grey")
+  abline(v = (floor(start)+1L):(ceiling(end)-1L),lty="dotted",lwd=par("lwd"),col="grey")
+  
+  xxx <- 1/sum(c(2, freq, freq - 1) * space[1:3])
+  cc <- cycle(pser)
+  xleft <- floor(round(time, 4)) + (space[1] + (cc - 
+                                                  1) * space[2] + (cc - 1) * space[3]) * xxx
+  xright <- xleft + space[2] * xxx
+  
+  for (i in nheight:1) {
+    rect(xleft = xleft, xright = xright, ybottom = nnser, 
+         ytop = ppser, col = col[i],border=FALSE)
+    if (nheight > 1) {
+      nnser <- nnser - nser[, i]
+      ppser <- ppser - pser[, i]
+    }
+  }
+  axis(side = 1, at = year, labels = NA, tick = TRUE)
+  axis(side = 1, at = year + 0.5, labels = year, tick = FALSE, 
+       line = -1)
+  invisible()
+}
+
 #' @export
 plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL, ...) {
-  class(x) <- class(x)[-1]
-  lims <- c(if (is.null(start)) floor(min(time(x)[apply(x,1L,function(x) !all(is.na(x)))])) else start,
-            if (is.null(end)) ceiling(max(time(x)[apply(x,1L,function(x) !all(is.na(x)))])) else end)
-  plot(window(x,start=lims[1],end=lims[2],extend=TRUE), plot.type="single", lty=c(1L,2L), xlab = xlab, ylab = ylab,
-       main = paste0("In-sample predictions (",
-                     type_label(x),")"), ...)
+  
+  type_label <- type_label(x)
+  
+  start <- if (is.null(start)) floor(min(time(x)[apply(x,1L,function(x) !all(is.na(x)))])) else start
+  end <- if (is.null(end)) ceiling(max(time(x)[apply(x,1L,function(x) !all(is.na(x)))])) else end
+  
+  x <- window(x,start=start,end=end,extend=TRUE)
+  
+  if (type_label == "Contributions") {
+    barplot.ts(x[,colnames(x) != "Benchmark",drop=FALSE],start=start,end=end)
+    lines(x = as.vector(time(x)) + 0.5/frequency(x), y = as.vector(x[,"Benchmark"]))
+  }
+  else if (attr(.Class,"previous")[1L] == "inrevisions") {
+    df <- dftsforggplot(x[,"Benchmark",drop=FALSE])
+    plot(df$Date, df$Values, type="h", xlab = xlab, ylab = ylab,
+         ...)
+    points(df$Date,df$Values,pch = 20L)
+  }
+  else {
+    stats::plot.ts(x, plot.type="single", lty=c(1L,2L), xlab = xlab, ylab = ylab, ...)
+  }
+
   invisible()
 }
 
@@ -144,7 +209,7 @@ autoplot.tscomparison <- function(object,start=NULL,end=NULL) {
       ggplot2::labs(fill=type_label)
   }
   else if (attr(.Class,"previous")[1L] == "inrevisions") {
-    ggplotts(object[,(colnames(object) == "Benchmark"),drop=FALSE],
+    ggplotts(object[,"Benchmark",drop=FALSE],
              variable_aes = "shape",type="lollipop",
              start=start,end=end) +
       ggplot2::labs(shape=type_label) +
