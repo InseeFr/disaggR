@@ -10,88 +10,233 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   pdf_document:
     number_sections: yes
-geometry: a4paper,left=1cm,right=1cm,top=0.5cm,bottom=0.5cm
+    includes:
+      in_header: columns.tex
+papersize: a4
+geometry: left=1cm,right=1cm,top=0.5cm,bottom=0.5cm
 classoption: landscape
 ---
 
-```{r setup, include=F}
-knitr::opts_chunk$set(fig.width=12, fig.height=6,fig.align = "center")
+```{r include=F}
+knitr::opts_chunk$set(fig.align = "center",fig.width=12, fig.height=4)
+hfserie <- model.list(params$new_bn)$hfserie
+hfserie <- hfserie[,colnames(hfserie) != "constant"]
+presets_ggplot_list <- presets_ggplot(hfserie,model.list(params$new_bn)$lfserie)
 ```
+
+# Presets
+
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{Before}}
+
+\bigskip
+
+Model 1 (*differences --- with constant*)
+
+```{r echo=FALSE}
+presets_ggplot_list[[1]]
+```
+
+Model 3 (*levels --- with constant*)
+
+```{r echo=FALSE}
+presets_ggplot_list[[3]]
+```
+
+Model 5 (*levels --- without constant*)
+
+```{r echo=FALSE}
+presets_ggplot_list[[5]]
+```
+
+:::
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{After}}
+
+\bigskip
+
+Model 2 (*differences --- without constant*)
+
+```{r echo=FALSE}
+presets_ggplot_list[[2]]
+```
+
+Model 4 (*autocorrelated levels --- with constant*)
+
+```{r echo=FALSE}
+presets_ggplot_list[[4]]
+```
+
+Model 6 (*autocorrelated levels --- without constant*)
+
+```{r echo=FALSE}
+presets_ggplot_list[[6]]
+```
+
+:::
+
+::::::
+
+\clearpage
 
 # Benchmarks
 
-## After
+:::::: {.cols data-latex=""}
 
-### Code
+::: {.col data-latex="{0.5\textwidth}"}
 
-```{r echo=FALSE,asis=TRUE}
-params$new_call_text
+\centerline{\textbf{Before}}
+
+:::
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{After}}
+
+:::
+
+::::::
+
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+```{r echo=FALSE,comment="\t"}
+cat(params$old_call_text)
 ```
 
-### Plot
+:::
 
-```{r echo=FALSE,asis=TRUE}
-autoplot(params$new_bn)
+::: {.col data-latex="{0.5\textwidth}"}
+
+```{r echo=FALSE,comment="\t"}
+cat(params$new_call_text)
 ```
 
-## Before
+:::
 
-### Code
+::::::
 
-```{r echo=FALSE}
-params$old_call_text
-```
+\bigskip
 
-### Plot
-```{r echo=FALSE}
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+```{r echo=FALSE, fig.height=6}
 autoplot(params$old_bn)
 ```
 
-# In-sample predictions
+:::
 
-## After
-```{r echo=FALSE}
-autoplot(in_sample(params$new_bn,type="levels"))
-autoplot(in_sample(params$new_bn,type="changes"))
+::: {.col data-latex="{0.5\textwidth}"}
+
+```{r echo=FALSE, fig.height=6}
+autoplot(params$new_bn)
 ```
 
-## Before
-```{r echo=FALSE}
+:::
+
+::::::
+
+# In-sample predictions
+
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{Before}}
+
+```{r echo=FALSE, fig.height=7}
 autoplot(in_sample(params$old_bn,type="levels"))
 autoplot(in_sample(params$old_bn,type="changes"))
 ```
 
+:::
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{After}}
+
+```{r echo=FALSE, fig.height=7}
+autoplot(in_sample(params$new_bn,type="levels"))
+autoplot(in_sample(params$new_bn,type="changes"))
+```
+
+:::
+
+::::::
+
+\clearpage
+
 # Summary
 
-## After
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{Before}}
+
 ```{r echo=FALSE}
-summary(params$new_bn)
+print(summary(params$old_bn),call=FALSE)
 ```
 
-## Before
+:::
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{After}}
+
 ```{r echo=FALSE}
-summary(params$old_bn)
+print(summary(params$new_bn),call=FALSE)
 ```
+
+:::
+
+::::::
+
+\clearpage
 
 # Comparison with indicator
 
-## After
-```{r echo=FALSE}
-autoplot(in_dicator(params$new_bn,type="levels-rebased"))
-autoplot(in_dicator(params$new_bn,type="changes"))
-autoplot(in_dicator(params$new_bn,type="contributions"))
-```
+:::::: {.cols data-latex=""}
 
-## Before
-```{r echo=FALSE}
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{Before}}
+
+```{r echo=FALSE, fig.height=5}
 autoplot(in_dicator(params$old_bn,type="levels-rebased"))
 autoplot(in_dicator(params$old_bn,type="changes"))
 autoplot(in_dicator(params$old_bn,type="contributions"))
 ```
 
+:::
+
+::: {.col data-latex="{0.5\textwidth}"}
+
+\centerline{\textbf{After}}
+
+```{r echo=FALSE, fig.height=5}
+autoplot(in_dicator(params$new_bn,type="levels-rebased"))
+autoplot(in_dicator(params$new_bn,type="changes"))
+autoplot(in_dicator(params$new_bn,type="contributions"))
+```
+
+:::
+
+::::::
+
+\clearpage
+
 # Revisions
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.height=2.5}
 autoplot(in_revisions(params$new_bn,params$old_bn,type="levels"))
 autoplot(in_revisions(params$new_bn,params$old_bn,type="changes"))
 autoplot(in_revisions(params$new_bn,params$old_bn,type="contributions"))

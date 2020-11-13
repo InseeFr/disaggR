@@ -425,8 +425,11 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                    content = function(file) {
                      withProgress(message = "Generating PDF. Please wait...", {
                        setProgress(0, detail = "Creating temporary files")
-                       temp_report <- file.path(tempdir(), "report.Rmd")
+                       temd_dir <- tempdir()
+                       temp_report <- file.path(temd_dir, "report.Rmd")
+                       temp_header <- file.path(temd_dir, "columns.tex")
                        file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_report, overwrite = TRUE)
+                       file.copy(system.file("rmd/columns.tex", package = "disaggR"), temp_header, overwrite = TRUE)
                        params <- list(new_bn=new_bn(),
                                       old_bn=old_bn(),
                                       new_call_text=new_call_text(),
@@ -437,11 +440,11 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                                          params = params,
                                          envir = new.env(parent = globalenv()),
                                          output_format = "pdf_document")
-                       incProgress(0.9, detail = "Writing on your disk")
+                       setProgress(0.9, detail = "Writing on your disk")
                        pdf
                      })
-                   },
-                   contentType="application/octet-stream"
+                   }
+                  # ,contentType="application/octet-stream"
                  )
                  
                  session$onSessionEnded(function() {
