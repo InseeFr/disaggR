@@ -4,12 +4,12 @@
 \alias{in_sample}
 \title{Producing the in sample predictions of a prais-lm regression}
 \usage{
-in_sample(object, mode = "changes")
+in_sample(object, type = "changes")
 }
 \arguments{
 \item{object}{an object of class \code{praislm} or \code{twoStepsBenchmark}}
 
-\item{mode}{"changes" or "levels". The results are either returned
+\item{type}{"changes" or "levels". The results are either returned
 in changes or in levels.}
 }
 \value{

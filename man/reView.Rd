@@ -8,7 +8,7 @@
 \usage{
 reView_ui_module(id)
 
-reView_server_module(id, old_bn, compare, function.mode = TRUE)
+reView_server_module(id, old_bn, compare)
 
 reView(benchmark)
 }

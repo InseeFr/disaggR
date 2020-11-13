@@ -1,5 +1,5 @@
-mode_label <- function(object) {
-  switch(attr(object,"mode"),
+type_label <- function(object) {
+  switch(attr(object,"type"),
          levels="Levels",
          `levels-rebased`="Rebased levels",
          changes="Changes",
@@ -22,7 +22,7 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
 #' @export
 #' @importFrom scales brewer_pal hue_pal
 default_col_pal <- function(object) {
-  if (identical(attr(object,"mode"),"contributions")) brewer_pal(type = "qual",palette = 7L)
+  if (identical(attr(object,"type"),"contributions")) brewer_pal(type = "qual",palette = 7L)
   else brewer_pal(type = "qual",palette = 6L)
 }
 
@@ -75,8 +75,7 @@ plot.twoStepsBenchmark <- function(x, xlab="", ylab="",
 }
 
 barplot_mts_add <- function (height,xlab,ylab,col,space = c(1L, 3L, 1L),
-                         ...) 
-{
+                         ...) {
   
   timeh <- time(height)
   freq <- frequency(height)
@@ -125,7 +124,7 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
   col <- eval_function_if_is_one(col,NCOL(x))
   lty <- eval_function_if_is_one(lty,NCOL(x))
   
-  mode_label <- mode_label(x)
+  type_label <- type_label(x)
   func <- attr(x,"func")
   
   timex <- time(x)
@@ -136,7 +135,7 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
   
   timex_win <- as.vector(time(x)) + deltat(x)/2
   
-  if (mode_label == "Contributions") {
+  if (type_label == "Contributions") {
     barplot_mts_add(x,
                     col=col,
                     xlab = xlab, ylab = ylab,
@@ -282,30 +281,30 @@ autoplot.tscomparison <- function(object, xlab = "", ylab = "",start=NULL,end=NU
   col <- make_function_if_it_isnt(col)
   lty <- make_function_if_it_isnt(lty)
   
-  mode_label <- mode_label(object)
+  type_label <- type_label(object)
   func <- attr(object,"func")
   
   object <- window(object,start=start,end=end,extend=TRUE)
   
-  if (mode_label == "Contributions") {
+  if (type_label == "Contributions") {
     ggplotts(object,
              variable_aes = "fill",type = "bar",do.sum=TRUE,
              start=start,end=end) +
-      ggplot2::labs(fill=mode_label) +
+      ggplot2::labs(fill=type_label) +
       discrete_scale("fill","hue",col,na.translate = FALSE)
   }
   else if (func == "in_revisions") {
     ggplotts(object,
              variable_aes = "colour",type="segments",
              start=start,end=end) +
-      ggplot2::labs(colour=mode_label) +
+      ggplot2::labs(colour=type_label) +
       discrete_scale("colour","hue",col,na.translate = FALSE)
   }
   else ggplotts(object,
                 variable_aes = c("colour","linetype"),type="line",
                 start=start,end=end) +
-    ggplot2::labs(linetype=mode_label) +
-    ggplot2::labs(colour=mode_label) +
+    ggplot2::labs(linetype=type_label) +
+    ggplot2::labs(colour=type_label) +
     discrete_scale("colour","hue",col,na.translate = FALSE) +
     discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE)
 }

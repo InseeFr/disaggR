@@ -227,7 +227,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
       fluidRow(
         column(12,
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark(),
-                                                                           mode="levels"),
+                                                                           type="levels"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,
@@ -235,7 +235,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                      ns,
                                      height="300px"),
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark(),
-                                                                           mode="changes"),
+                                                                           type="changes"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,
@@ -254,7 +254,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
       fluidRow(
         column(12,
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
-                                                                           mode="levels-rebased"),
+                                                                           type="levels-rebased"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,
@@ -262,7 +262,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                      ns,
                                      height="200px"),
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
-                                                                           mode="changes"),
+                                                                           type="changes"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,
@@ -270,7 +270,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                      ns,
                                      height="200px"),
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
-                                                                           mode="contributions"),
+                                                                           type="contributions"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,
@@ -284,7 +284,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
       fluidRow(
         column(12,
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
-                                                                             mode="levels"),
+                                                                             type="levels"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,
@@ -292,7 +292,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                      ns,
                                      height="200px"),
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
-                                                                             mode="changes"),
+                                                                             type="changes"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,
@@ -300,7 +300,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                      ns,
                                      height="200px"),
                plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
-                                                                             mode="contributions"),
+                                                                             type="contributions"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                      output,
@@ -460,7 +460,7 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
 #' @rdname reView
 #' @export
 #' @keywords internal
-reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
+reView_server_module <- function(id,old_bn,compare) {
   moduleServer(id,function(input, output, session) {
     
     lfserie <- reactive(model.list(old_bn())$lfserie)
