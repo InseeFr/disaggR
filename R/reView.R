@@ -413,23 +413,30 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                function(input,output,session) {
                  hfserie_name <- reactive(deparse(old_bn()$call$hfserie))
                  lfserie_name <- reactive(deparse(old_bn()$call$lfserie))
-                 selected_call <- reactive(benchmarkCall(new_bn(),hfserie_name(),lfserie_name()))
-                 output$oldcall <- renderText(benchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
-                 output$newcall <- renderText(selected_call())
+                 new_call_text <- reactive(benchmarkCall(new_bn(),hfserie_name(),lfserie_name()))
+                 old_call_text <- reactive(benchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
+                 output$oldcall <- renderText(old_call_text())
+                 output$newcall <- renderText(new_call_text())
                  
                  file_name <- reactive(paste("benchmark",hfserie_name(),lfserie_name(),sep="-"))
                  
                  output$Export <- downloadHandler(
                    filename = paste0(file_name(),".pdf"),
                    content = function(file) {
+                     
                      tempReport <- file.path(tempdir(), "report.Rmd")
                      file.copy(system.file("rmd/report.Rmd", package = "disaggR"), tempReport, overwrite = TRUE)
-                     params <- list(new_bn=new_bn(),file_name=file_name())
-                     rmarkdown::render(tempReport,output_file = file,
-                                       params = params,
-                                       envir = new.env(parent = globalenv()),
-                                       quiet = TRUE,
-                                       output_format = "pdf_document")
+                     params <- list(new_bn=new_bn(),
+                                    old_bn=old_bn(),
+                                    new_call_text=new_call_text(),
+                                    old_call_text=old_call_text(),
+                                    file_name=file_name())
+                     withProgress(message = "Rendering PDF. Please wait...", {
+                       rmarkdown::render(tempReport,output_file = file,
+                                         params = params,
+                                         envir = new.env(parent = globalenv()),
+                                         output_format = "pdf_document")
+                     })
                    },
                    contentType="application/octet-stream"
                  )
@@ -444,7 +451,7 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                  })
                  
                  observeEvent(input$Copy,{
-                   session$sendCustomMessage("copy", selected_call())
+                   session$sendCustomMessage("copy", new_call_text())
                    showModal(
                      modalDialog(title = "reView",
                                  "New model copied in the clipboard !",

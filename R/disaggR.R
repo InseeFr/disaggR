@@ -11,6 +11,7 @@
 #' @keywords internal
 #' @useDynLib disaggR, .registration=TRUE
 #' @importFrom Rcpp sourceCpp
+#' @import ggplot2 shiny
 "_PACKAGE"
 
 globalVariables(c("Date","Values","Variables","Low-Frequency Periods"))

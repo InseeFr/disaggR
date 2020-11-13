@@ -1,13 +1,98 @@
 ---
 params:
   new_bn: NA
+  old_bn: NA
+  new_call_text: NA
+  old_call_text: NA
   file_name : NA
-
 title: "Benchmark report `r params$file_name`"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  pdf_document:
+    number_sections: yes
+geometry: a4paper,left=1cm,right=1cm,top=0.5cm,bottom=0.5cm
+classoption: landscape
 ---
 
-## Chosen benchmark
+```{r setup, include=F}
+knitr::opts_chunk$set(fig.width=12, fig.height=6,fig.align = "center")
+```
+
+# Benchmarks
+
+## After
+
+### Code
+
+```{r echo=FALSE,asis=TRUE}
+params$new_call_text
+```
+
+### Plot
+
+```{r echo=FALSE,asis=TRUE}
+autoplot(params$new_bn)
+```
+
+## Before
+
+### Code
 
 ```{r echo=FALSE}
-plot(in_sample(params$new_bn))
+params$old_call_text
+```
+
+### Plot
+```{r echo=FALSE}
+autoplot(params$old_bn)
+```
+
+# In-sample predictions
+
+## After
+```{r echo=FALSE}
+autoplot(in_sample(params$new_bn,type="levels"))
+autoplot(in_sample(params$new_bn,type="changes"))
+```
+
+## Before
+```{r echo=FALSE}
+autoplot(in_sample(params$old_bn,type="levels"))
+autoplot(in_sample(params$old_bn,type="changes"))
+```
+
+# Summary
+
+## After
+```{r echo=FALSE}
+summary(params$new_bn)
+```
+
+## Before
+```{r echo=FALSE}
+summary(params$old_bn)
+```
+
+# Comparison with indicator
+
+## After
+```{r echo=FALSE}
+autoplot(in_dicator(params$new_bn,type="levels-rebased"))
+autoplot(in_dicator(params$new_bn,type="changes"))
+autoplot(in_dicator(params$new_bn,type="contributions"))
+```
+
+## Before
+```{r echo=FALSE}
+autoplot(in_dicator(params$old_bn,type="levels-rebased"))
+autoplot(in_dicator(params$old_bn,type="changes"))
+autoplot(in_dicator(params$old_bn,type="contributions"))
+```
+
+# Revisions
+
+```{r echo=FALSE}
+autoplot(in_revisions(params$new_bn,params$old_bn,type="levels"))
+autoplot(in_revisions(params$new_bn,params$old_bn,type="changes"))
+autoplot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
 ```

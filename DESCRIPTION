@@ -35,16 +35,5 @@ Suggests:
 	vdiffr
 Depends: 
   R (>= 2.10)
-BugReports: https://github.com/arnaud-feldmann/disaggR/issues
+BugReports: https://github.com/InseeFr/disaggR/issues
 LazyData: yes
-Collate: 
-    'bflSmooth.R'
-    'data.R'
-    'disaggR.R'
-	'in.R'
-    'methods.R'
-    'plot.R'
-    'praislm.R'
-    'reView.R'
-    'twoStepsBenchmark.R'
-    'utils.R'
