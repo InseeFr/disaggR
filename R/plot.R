@@ -173,9 +173,7 @@ ggthemets <- function() ggplot2::theme_classic() %+replace%
   ggplot2::theme(axis.title.x = ggplot2::element_blank(),
                  axis.title.y = ggplot2::element_blank(),
                  panel.grid.major = ggplot2::element_line(colour = "#cccccc"),
-                 legend.position = "bottom",
-                 plot.tag.position = "top",
-                 plot.tag = element_text(size = 10,colour="red")
+                 legend.position = "bottom"
   )
 
 dftsforggplot <- function(object,series_names=NULL) {
