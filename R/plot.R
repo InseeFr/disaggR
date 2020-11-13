@@ -20,12 +20,13 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
 }
 
 #' @export
-#' @importFrom scales brewer_pal hue_pal linetype_pal
+#' @importFrom scales brewer_pal hue_pal
 default_col_pal <- function(object) {
   if (identical(attr(object,"mode"),"contributions")) brewer_pal(type = "qual",palette = 7L)
   else brewer_pal(type = "qual",palette = 6L)
 }
 
+#' @importFrom scales linetype_pal
 #' @importFrom graphics plot points
 #' @export
 plot.twoStepsBenchmark <- function(x, xlab="", ylab="",
@@ -113,6 +114,7 @@ eval_function_if_is_one <- function(f,arg) {
   if (is.function(f)) f(arg) else f
 }
 
+#' @importFrom scales linetype_pal
 #' @importFrom graphics lines.default points.default
 #' @export
 plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,

@@ -156,7 +156,7 @@ reView_ui_tab3 <- function(id) {
                                    class="btn-warning")),
              column(3,actionButton(ns("Quit"),"Quit",width = "100%",
                                    class="btn-danger")),
-             column(3,actionButton(ns("Export"),"Export to PDF",width = "100%")),
+             column(3,downloadButton(ns("Export"),"Export to PDF",style="width:100%;")),
              column(3,actionButton(ns("Copy"), "Copy to clipboard",
                                    width = "100%",class="btn-primary"))
            )
@@ -407,6 +407,7 @@ reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset
                  new_bn})
 }
 
+#' @importFrom rmarkdown render
 reView_server_tab3 <- function(id,old_bn,new_bn) {
   moduleServer(id,
                function(input,output,session) {
@@ -415,6 +416,23 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                  selected_call <- reactive(benchmarkCall(new_bn(),hfserie_name(),lfserie_name()))
                  output$oldcall <- renderText(benchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
                  output$newcall <- renderText(selected_call())
+                 
+                 file_name <- reactive(paste("benchmark",hfserie_name(),lfserie_name(),sep="-"))
+                 
+                 output$Export <- downloadHandler(
+                   filename = paste0(file_name(),".pdf"),
+                   content = function(file) {
+                     tempReport <- file.path(tempdir(), "report.Rmd")
+                     file.copy(system.file("rmd/report.Rmd", package = "disaggR"), tempReport, overwrite = TRUE)
+                     params <- list(new_bn=new_bn(),file_name=file_name())
+                     rmarkdown::render(tempReport,output_file = file,
+                                       params = params,
+                                       envir = new.env(parent = globalenv()),
+                                       quiet = TRUE,
+                                       output_format = "pdf_document")
+                   },
+                   contentType="application/octet-stream"
+                 )
                  
                  session$onSessionEnded(function() {
                    if (Sys.getenv('SHINY_PORT') == "") stopApp()
@@ -432,7 +450,7 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                                  "New model copied in the clipboard !",
                                  easyClose = TRUE,
                                  footer = NULL)
-                  )
+                   )
                  })
                  
                  reactive(input$Reset)

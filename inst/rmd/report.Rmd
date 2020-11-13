@@ -1,0 +1,13 @@
+---
+params:
+  new_bn: NA
+  file_name : NA
+
+title: "Benchmark report `r params$file_name`"
+---
+
+## Chosen benchmark
+
+```{r echo=FALSE}
+plot(in_sample(params$new_bn))
+```
