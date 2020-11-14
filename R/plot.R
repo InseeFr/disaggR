@@ -7,7 +7,22 @@ type_label <- function(object) {
   )
 }
 
+#' @export
+#' @importFrom scales brewer_pal hue_pal
+default_col_pal <- function(object) {
+  if (identical(attr(object,"type"),"contributions")) brewer_pal(type = "qual",palette = 7L)
+  else brewer_pal(type = "qual",palette = 6L)
+}
+
+#' @importFrom scales linetype_pal
+default_lty_pal <- function() linetype_pal()
+
+#### Base plots
+
 plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
+  if (is.null(xlab)) xlab <- ""
+  if (is.null(ylab)) ylab <- ""
+  
   sizey <- ymax-ymin
   plot(x= c(xmin,xmax), y = c(ymin,ymax),
        xlim = c(xmin,xmax),ylim= c(ymin-0.02*sizey,ymax+0.02*sizey),
@@ -27,16 +42,6 @@ plot_init_x <- function(x, xlab, ylab, ...) {
             ymin = min(x,na.rm = TRUE), ymax = max(x,na.rm = TRUE),
             xlab = xlab, ylab = ylab, ...)
 }
-
-#' @export
-#' @importFrom scales brewer_pal hue_pal
-default_col_pal <- function(object) {
-  if (identical(attr(object,"type"),"contributions")) brewer_pal(type = "qual",palette = 7L)
-  else brewer_pal(type = "qual",palette = 6L)
-}
-
-#' @importFrom scales linetype_pal
-default_lty_pal <- function() linetype_pal()
 
 barplot_mts <- function (height,xlab,ylab,col,space = c(1L, 3L, 1L), ...) {
   timeh <- time(height)
@@ -90,15 +95,15 @@ window_default <- function(x,start,end) {
   window(x,start=start,end=end,extend=TRUE)
 }
 
-eval_function_if_is_one <- function(f,arg) if (is.function(f)) f(arg) else f
+eval_function_if_it_is_one <- function(f,arg) if (is.function(f)) f(arg) else f
 
 plotts <-function(x,show.legend,col,lty,
                   series_names,type="line",
                   start,end,
                   xlab,ylab,...) {
   
-  col <- eval_function_if_is_one(col,NCOL(x))
-  lty <- eval_function_if_is_one(lty,NCOL(x))
+  col <- eval_function_if_it_is_one(col,NCOL(x))
+  lty <- eval_function_if_it_is_one(lty,NCOL(x))
   
   x <- window_default(x,start,end)
   
@@ -143,18 +148,18 @@ plotts <-function(x,show.legend,col,lty,
 }
 
 #' @export
-plot.twoStepsBenchmark <- function(x, xlab="", ylab="",
+plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                    start = NULL, end = NULL,
-                                   col=default_col_pal(x),
-                                   lty=default_lty_pal(),
-                                   show.legend=TRUE,
+                                   col = default_col_pal(x),
+                                   lty = default_lty_pal(),
+                                   show.legend = TRUE,
                                    ...) {
   
   model <- model.list(x)
   x <- as.ts(x)
   
-  col <- eval_function_if_is_one(col,2L)
-  lty <- eval_function_if_is_one(lty,2L)
+  col <- eval_function_if_it_is_one(col,2L)
+  lty <- eval_function_if_it_is_one(lty,2L)
   
   plotts(x = x,show.legend = FALSE,
          col = col[1L],lty = lty[1L],
@@ -218,10 +223,12 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
   invisible()
 }
 
+#### ggplot2 plots
+
 #' @export
-default_theme_ggplot <- function(show.legend) theme_classic() %+replace%
-  theme(axis.title.x = element_blank(),
-        axis.title.y = element_blank(),
+default_theme_ggplot <- function(show.legend,xlab,ylab) theme_classic() %+replace%
+  theme(axis.title.x = if (is.null(xlab)) element_blank(),
+        axis.title.y = if (is.null(ylab)) element_blank(),
         panel.grid.major = element_line(colour = "#cccccc"),
         legend.position = if (show.legend) "bottom" else "none"
   )
@@ -237,10 +244,10 @@ dftsforggplot <- function(object,series_names=NULL) {
   )
 }
 
-#' @importFrom ggplot2 geom_line geom_bar stat_summary aes element_text
 ggplotts <- function(object,show.legend,variable_aes,
                      series_names,theme,type,
-                     start = start, end = end,...) {
+                     start = start, end = end,
+                     xlab,ylab,...) {
   
   object <- window_default(object,start = start, end = end)
   
@@ -254,7 +261,8 @@ ggplotts <- function(object,show.legend,variable_aes,
   lims <- c(tsp(object)[1L],tsp(object)[2L] + deltat(object))
     # That x window is set to be able to translate x values
     # of deltat(x)/2 on the right like for base plot init
-  g <- ggplot(df,aes(x=Date,y=Values),show.legend = show.legend,...)
+  g <- ggplot(df,aes(x=Date,y=Values),show.legend = show.legend,...) +
+    xlab(xlab) + ylab(ylab)
   switch(type,
          line = g + geom_line(aes(,,!!!exprs,group=Variables)),
          bar = g + geom_bar(aes(,,!!!exprs,group=Variables),stat="identity") +
@@ -272,25 +280,25 @@ ggplotts <- function(object,show.legend,variable_aes,
     theme
 }
 
-make_function_if_it_isnt <- function(f) {
+function_if_it_isnt_one <- function(f) {
   if (is.function(f)) f else {
-    if (length(f) == 1) eval(bquote(function(n) rep(.(f),n)))
-    else eval(bquote(function(n) .(f)))
+    if (length(f) == 1L) eval(bquote(function(n) rep(.(f),n)))
+    else eval(bquote(function(n) .(f)[1L:n]))
   }
 }
 
 #' @export 
-autoplot.twoStepsBenchmark <- function(object, xlab = "", ylab = "",
+autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                        start=NULL,end=NULL,
                                        col = default_col_pal(object),
                                        lty = default_lty_pal(),
                                        show.legend = TRUE,
-                                       theme = default_theme_ggplot(show.legend),
+                                       theme = default_theme_ggplot(show.legend, xlab, ylab),
                                        ...) {
   model <- model.list(object)
   
-  col <- make_function_if_it_isnt(col)
-  lty <- make_function_if_it_isnt(lty)
+  col <- function_if_it_isnt_one(col)
+  lty <- function_if_it_isnt_one(lty)
   
   lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
                         series_names = "Low-Frequency serie")
@@ -300,7 +308,8 @@ autoplot.twoStepsBenchmark <- function(object, xlab = "", ylab = "",
   ggplotts(object = as.ts(object),show.legend = show.legend,
            variable_aes = c("colour","linetype"),series_names = "Benchmark",
            theme = theme, type = "line",
-           start = start, end = end, ...) +
+           start = start, end = end,
+           xlab = xlab, ylab = ylab, ...) +
     geom_line(aes(x=Date,y=Values,colour=Variables,linetype=Variables,
                   group=`Low-Frequency Periods`),lfdf,
               na.rm = TRUE) +
@@ -309,16 +318,16 @@ autoplot.twoStepsBenchmark <- function(object, xlab = "", ylab = "",
 }
 
 #' @export 
-autoplot.tscomparison <- function(object, xlab = "", ylab = "",
+autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                                   start=NULL,end=NULL,
                                   col = default_col_pal(object),
                                   lty = default_lty_pal(),
                                   show.legend = TRUE,
-                                  theme = default_theme_ggplot(show.legend),
+                                  theme = default_theme_ggplot(show.legend, xlab, ylab),
                                   ...) {
   
-  col <- make_function_if_it_isnt(col)
-  lty <- make_function_if_it_isnt(lty)
+  col <- function_if_it_isnt_one(col)
+  lty <- function_if_it_isnt_one(lty)
   
   type_label <- type_label(object)
   func <- attr(object,"func")
@@ -327,7 +336,8 @@ autoplot.tscomparison <- function(object, xlab = "", ylab = "",
     ggplotts(object, show.legend = show.legend,
              variable_aes = "fill", type = "bar",
              series_names = colnames(object), theme = theme,
-             start = start, end = end, ...) +
+             start = start, end = end,
+             xlab = xlab, ylab = ylab, ...) +
       labs(fill=type_label) +
       discrete_scale("fill","hue",col,na.translate = FALSE)
   }
@@ -335,14 +345,16 @@ autoplot.tscomparison <- function(object, xlab = "", ylab = "",
     ggplotts(object = object, show.legend = show.legend,
              variable_aes = "colour",type="segment",
              series_names = "Benchmark",theme = theme,
-             start = start, end = end, ...) +
+             start = start, end = end,
+             xlab = xlab, ylab = ylab, ...) +
       labs(colour=type_label) +
       discrete_scale("colour","hue",col,na.translate = FALSE)
   }
   else ggplotts(object = object, show.legend = show.legend,
                 variable_aes = c("colour","linetype"),type="line",
                 series_names = colnames(object), theme = theme,
-                start = start, end = end, ...) +
+                start = start, end = end,
+                xlab = xlab, ylab = ylab, ...) +
     labs(linetype=type_label) +
     labs(colour=type_label) +
     discrete_scale("colour","hue",col,na.translate = FALSE) +
