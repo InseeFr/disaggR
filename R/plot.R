@@ -80,7 +80,7 @@ window_default <- function(x,start,end) {
   timex <- time(x)
   
   non_na_vals <- {
-    if (NCOL(x) == 1L) timex[!all(is.na(x))]
+    if (NCOL(x) == 1L) !is.na(x)
     else apply(x,1L,function(x) !all(is.na(x)))
   }
   
