@@ -1,9 +1,10 @@
-#### In-sample
-
 #' Producing the in sample predictions of a prais-lm regression
 #' 
-#' The function `tscomparison` returns in-sample predictions from
+#' The function `in_sample` returns in-sample predictions from
 #' a \link{praislm} or a \link{twoStepsBenchmark} object.
+#' 
+#' The functions `plot` and `autoplot` can be used on this object to produce
+#' graphics.
 #' 
 #' The predicted values are different from the fitted values :
 #' 
@@ -19,9 +20,8 @@
 #' @return
 #' a named matrix time-serie of two columns, one for the
 #' response and the other for the predicted value.
-#' A `insample` class is added to the object. Then, the functions
-#' `plot` and `autoplot` (the latter requires to load \pkg{ggplot2})
-#' can be used to produce graphics.
+#' A `tscomparison` class is added to the object.
+#' @seealso in_dicator in_revisions
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' in_sample(benchmark)
@@ -60,6 +60,26 @@ in_sample.twoStepsBenchmark <- function(object,type="changes") {
   in_sample(prais(object),type=type)
 }
 
+#' Comparing a benchmark with its indicator
+#' 
+#' The function `in_dicator`takes a \link{twoStepsBenchmark} object
+#' as an input. It produces a comparison between the benchmarked time-serie and the
+#' input.
+#' 
+#' The functions `plot` and `autoplot` can be used on this object to produce
+#' graphics.
+#' 
+#' @param object an object of class twoStepsBenchmark`
+#' @param type "levels","levels-rebased", "changes" or "contributions". This
+#' defines the type of output.
+#' @return
+#' a named matrix time-serie of two columns, one for the
+#' response and the other for the predicted value.
+#' A `tscomparison` class is added to the object.
+#' @seealso in_sample in_revisions
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' in_dicator(benchmark)
 #' @export
 in_dicator <- function(object,type="changes") UseMethod("in_dicator")
 
@@ -97,6 +117,26 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
   )
 }
 
+#' Comparing two benchmarks together
+#' 
+#' The function `in_revisions`takes two \link{twoStepsBenchmark} objects
+#' as inputs, and produces a comparison between those.
+#' 
+#' The functions `plot` and `autoplot` can be used on this object to produce
+#' graphics.
+#' 
+#' @param object an object of class twoStepsBenchmark`
+#' @param object_old an object of class twoStepsBenchmark`
+#' @param type "levels","levels-rebased", "changes" or "contributions". This
+#' defines the type of output.
+#' @return
+#' a named matrix time-serie of two columns, one for the
+#' response and the other for the predicted value.
+#' A `tscomparison` class is added to the object.
+#' @seealso in_sample in_dicator
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' in_dicator(benchmark)
 #' @export
 in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisions")
 
