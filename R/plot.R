@@ -239,7 +239,10 @@ dftsforggplot <- function(object,series_names=NULL) {
 
 #' @importFrom ggplot2 geom_line geom_bar stat_summary aes element_text
 ggplotts <- function(object,show.legend,variable_aes,
-                     series_names,theme,type,...) {
+                     series_names,theme,type,
+                     start = start, end = end,...) {
+  
+  object <- window_default(object,start = start, end = end)
   
   exprs <- structure(lapply(variable_aes, function(x) quote(Variables)),
                      names=variable_aes)
@@ -289,16 +292,15 @@ autoplot.twoStepsBenchmark <- function(object, xlab = "", ylab = "",
   col <- make_function_if_it_isnt(col)
   lty <- make_function_if_it_isnt(lty)
   
-  object <- window_default(as.ts(object),start=start,end=end)
-  
   lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
                         series_names = "Low-Frequency serie")
   lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie) + deltat(model$hfserie),
                                         each=frequency(model$hfserie)/frequency(model$lfserie))
   
-  ggplotts(object = object,show.legend = show.legend,
+  ggplotts(object = as.ts(object),show.legend = show.legend,
            variable_aes = c("colour","linetype"),series_names = "Benchmark",
-           theme = theme, type = "line", ...) +
+           theme = theme, type = "line",
+           start = start, end = end, ...) +
     geom_line(aes(x=Date,y=Values,colour=Variables,linetype=Variables,
                   group=`Low-Frequency Periods`),lfdf,
               na.rm = TRUE) +
@@ -321,25 +323,26 @@ autoplot.tscomparison <- function(object, xlab = "", ylab = "",
   type_label <- type_label(object)
   func <- attr(object,"func")
   
-  object <- window_default(object,start=start,end=end)
-  
   if (type_label == "Contributions") {
     ggplotts(object, show.legend = show.legend,
              variable_aes = "fill", type = "bar",
-             series_names = colnames(object), theme = theme, ...) +
+             series_names = colnames(object), theme = theme,
+             start = start, end = end, ...) +
       labs(fill=type_label) +
       discrete_scale("fill","hue",col,na.translate = FALSE)
   }
   else if (func == "in_revisions") {
     ggplotts(object = object, show.legend = show.legend,
              variable_aes = "colour",type="segment",
-             series_names = "Benchmark",theme = theme, ...) +
+             series_names = "Benchmark",theme = theme,
+             start = start, end = end, ...) +
       labs(colour=type_label) +
       discrete_scale("colour","hue",col,na.translate = FALSE)
   }
   else ggplotts(object = object, show.legend = show.legend,
                 variable_aes = c("colour","linetype"),type="line",
-                series_names = colnames(object), theme = theme, ...) +
+                series_names = colnames(object), theme = theme,
+                start = start, end = end, ...) +
     labs(linetype=type_label) +
     labs(colour=type_label) +
     discrete_scale("colour","hue",col,na.translate = FALSE) +
