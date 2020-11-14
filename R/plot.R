@@ -7,6 +7,12 @@ type_label <- function(object) {
   )
 }
 
+#' Default color palette
+#' 
+#' The default color palette for the graphics, imported from the package.
+#' \pkg{scales}. The chosen palette function depends on the input object.
+#' 
+#' @keywords internal
 #' @export
 #' @importFrom scales brewer_pal hue_pal
 default_col_pal <- function(object) {
@@ -14,6 +20,13 @@ default_col_pal <- function(object) {
   else brewer_pal(type = "qual",palette = 6L)
 }
 
+#' Default color palette
+#' 
+#' The default palette for the graphics, imported from the package
+#' \pkg{scales}.
+#' 
+#' @keywords internal
+#' @export
 #' @importFrom scales linetype_pal
 default_lty_pal <- function() linetype_pal()
 
@@ -286,6 +299,9 @@ function_if_it_isnt_one <- function(f) {
     else eval(bquote(function(n) .(f)[1L:n]))
   }
 }
+
+#' @export
+ggplot2::autoplot
 
 #' @export 
 autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
