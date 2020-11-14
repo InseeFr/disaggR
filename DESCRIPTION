@@ -23,6 +23,8 @@ Description: The twoStepsBenchmark() function and its wrappers allow you to disa
 Imports:
   ggplot2,
 	Rcpp,
+	rmarkdown,
+	scales,
 	shiny
 LinkingTo:
   Rcpp
