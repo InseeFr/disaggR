@@ -29,7 +29,7 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
 
 presets_ggplot <- function(hfserie,lfserie) {
   lapply(1L:6L,function(type) {
-    ggplot2::autoplot(
+    autoplot(
       in_sample(
         twoStepsBenchmark(hfserie,lfserie,
                           include.differenciation = presets$include.differenciation[type],
@@ -193,10 +193,10 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
                function(input,output,session) {
                  
                  presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie()))
-                 output$model1_plot <- renderPlot(presets_ggplot_list()[[1L]]  + ggplot2::theme(legend.position = "none"))
-                 output$model2_plot <- renderPlot(presets_ggplot_list()[[2L]]  + ggplot2::theme(legend.position = "none"))
-                 output$model3_plot <- renderPlot(presets_ggplot_list()[[3L]]  + ggplot2::theme(legend.position = "none"))
-                 output$model4_plot <- renderPlot(presets_ggplot_list()[[4L]]  + ggplot2::theme(legend.position = "none"))
+                 output$model1_plot <- renderPlot(presets_ggplot_list()[[1L]]  + theme(legend.position = "none"))
+                 output$model2_plot <- renderPlot(presets_ggplot_list()[[2L]]  + theme(legend.position = "none"))
+                 output$model3_plot <- renderPlot(presets_ggplot_list()[[3L]]  + theme(legend.position = "none"))
+                 output$model4_plot <- renderPlot(presets_ggplot_list()[[4L]]  + theme(legend.position = "none"))
                  output$model5_plot <- renderPlot(presets_ggplot_list()[[5L]])
                  output$model6_plot <- renderPlot(presets_ggplot_list()[[6L]])
                  
@@ -213,103 +213,103 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
 }
 
 reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,output,old_or_new,ns,oldbn=NULL) {
-                                    # The oldbn arg is only for revisions
+  # The oldbn arg is only for revisions
   switch(mainout_choice,
-    "Benchmark" = {
-      plotOutBrushAndRender(reactive(ggplot2::autoplot(benchmark(),
-                                                       start=plotswin()[1L],
-                                                       end=plotswin()[2L])),
-                            output,
-                            paste0(old_or_new,"plot"),
-                            ns)
-    },
-    "In-sample predictions" = {
-      fluidRow(
-        column(12,
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark(),
-                                                                           type="levels"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plotlev"),
-                                     ns,
-                                     height="300px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_sample(benchmark(),
-                                                                           type="changes"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plotcha"),
-                                     ns,
-                                     height="300px")
-        )
-      )
-    },
-    "Benchmark summary" = {
-      output_name <- paste0(old_or_new,"verbat")
-      output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
-      verbatimTextOutput(ns(output_name))
-    },
-    "Comparison with indicator" = {
-      fluidRow(
-        column(12,
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
-                                                                           type="levels-rebased"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plotlev"),
-                                     ns,
-                                     height="200px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
-                                                                           type="changes"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plotcha"),
-                                     ns,
-                                     height="200px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_dicator(benchmark(),
-                                                                           type="contributions"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plotctb"),
-                                     ns,
-                                     height="200px")
-               )
-      )
-    },
-    "Revisions" = {
-      fluidRow(
-        column(12,
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
-                                                                             type="levels"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plotlev"),
-                                     ns,
-                                     height="200px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
-                                                                             type="changes"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plotcha"),
-                                     ns,
-                                     height="200px"),
-               plotOutBrushAndRender(reactive(ggplot2::autoplot(in_revisions(benchmark(),oldbn(),
-                                                                             type="contributions"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plotctb"),
-                                     ns,
-                                     height="200px")
-        )
-      )
-    }
+         "Benchmark" = {
+           plotOutBrushAndRender(reactive(autoplot(benchmark(),
+                                                   start=plotswin()[1L],
+                                                   end=plotswin()[2L])),
+                                 output,
+                                 paste0(old_or_new,"plot"),
+                                 ns)
+         },
+         "In-sample predictions" = {
+           fluidRow(
+             column(12,
+                    plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                      type="levels"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotlev"),
+                                          ns,
+                                          height="300px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                      type="changes"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotcha"),
+                                          ns,
+                                          height="300px")
+             )
+           )
+         },
+         "Benchmark summary" = {
+           output_name <- paste0(old_or_new,"verbat")
+           output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
+           verbatimTextOutput(ns(output_name))
+         },
+         "Comparison with indicator" = {
+           fluidRow(
+             column(12,
+                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                       type="levels-rebased"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotlev"),
+                                          ns,
+                                          height="200px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                       type="changes"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotcha"),
+                                          ns,
+                                          height="200px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                       type="contributions"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotctb"),
+                                          ns,
+                                          height="200px")
+             )
+           )
+         },
+         "Revisions" = {
+           fluidRow(
+             column(12,
+                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                         type="levels"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotlev"),
+                                          ns,
+                                          height="200px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                         type="changes"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotcha"),
+                                          ns,
+                                          height="200px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                         type="contributions"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotctb"),
+                                          ns,
+                                          height="200px")
+             )
+           )
+         }
   )
 }
 
@@ -384,26 +384,26 @@ reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset
                  ignoreNULL = TRUE)
                  
                  new_bn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                                      include.differenciation = input$dif,
-                                                      include.rho = input$rho,
-                                                      set.coeff = {
-                                                        if (input$setcoeff_button) {
-                                                          if (is.na(input$setcoeff)) 0
-                                                          else input$setcoeff
-                                                        }
-                                                        else NULL
-                                                      },
-                                                      set.const = {
-                                                        if (input$setconst_button) {
-                                                          if (is.na(input$setconst)) 0
-                                                          else input$setconst
-                                                        }
-                                                        else NULL
-                                                      },
-                                                      start.coeff.calc = input$coeffcalc[1],
-                                                      end.coeff.calc = input$coeffcalc[2],
-                                                      start.benchmark = input$benchmark[1],
-                                                      end.benchmark = input$benchmark[2])})
+                                                       include.differenciation = input$dif,
+                                                       include.rho = input$rho,
+                                                       set.coeff = {
+                                                         if (input$setcoeff_button) {
+                                                           if (is.na(input$setcoeff)) 0
+                                                           else input$setcoeff
+                                                         }
+                                                         else NULL
+                                                       },
+                                                       set.const = {
+                                                         if (input$setconst_button) {
+                                                           if (is.na(input$setconst)) 0
+                                                           else input$setconst
+                                                         }
+                                                         else NULL
+                                                       },
+                                                       start.coeff.calc = input$coeffcalc[1],
+                                                       end.coeff.calc = input$coeffcalc[2],
+                                                       start.benchmark = input$benchmark[1],
+                                                       end.benchmark = input$benchmark[2])})
                  new_bn})
 }
 
@@ -434,9 +434,9 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                                       file_name=file_name())
                        setProgress(0.5, detail = "Rendering PDF")
                        pdf <- rmarkdown::render(temp_report,output_file = file,
-                                         params = params,
-                                         envir = new.env(parent = globalenv()),
-                                         output_format = "pdf_document")
+                                                params = params,
+                                                envir = new.env(parent = globalenv()),
+                                                output_format = "pdf_document")
                        setProgress(0.9, detail = "Writing on your disk")
                        pdf
                      })
@@ -486,7 +486,7 @@ reView_server_module <- function(id,old_bn,compare) {
     # tab 2 : Modify
     
     new_bn <- reView_server_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset,reset)
-
+    
     # tab3 : Export
     
     reset <- reView_server_tab3("reViewtab3",old_bn,new_bn)
