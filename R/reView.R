@@ -1,3 +1,15 @@
+copyjs <- function() includeScript(system.file("js/copy.js", package = "disaggR"))
+closewindowjs <- function() includeScript(system.file("js/closewindow.js", package = "disaggR"))
+
+plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
+  output[[output_name]] <- renderPlot(object())
+  plotOutput(ns(output_name),
+             brush = brushOpts(ns("brush"), direction = "x", resetOnNew = TRUE),
+             dblclick = ns("click"),
+             ...)
+}
+
+
 slider_windows <- function(ns,initserie,ui_out,label) {
   renderUI(
     sliderInput(ns(ui_out),
@@ -14,9 +26,10 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 include.rho = c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE),
                 set.const = list(NULL,0,NULL,NULL,0,0))
 
+
 presets_ggplot <- function(hfserie,lfserie) {
   lapply(1L:6L,function(type) {
-    ggplot2::autoplot(
+    autoplot(
       in_sample(
         twoStepsBenchmark(hfserie,lfserie,
                           include.differenciation = presets$include.differenciation[type],
@@ -31,20 +44,25 @@ display_vector <- function(x) switch(length(x),
                                      as.character(x),
                                      paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")"))
 
-renderBenchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
+get_model <- function(benchmark) {
   model <- model.list(benchmark)
-  
-  coefs <- model$set.coefficients
-  set.const <- coefs[names(coefs) == "constant"]
-  set.coeff <- coefs[names(coefs) != "constant"]
+  model$set.coeff <- model$set.coefficients[names(model$set.coefficients) != "constant"]
+  model$set.const <- model$set.coefficients[names(model$set.coefficients) == "constant"]
+  model$set.coefficents <- NULL
+  model
+}
+
+benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
+  if (is.null(benchmark)) return(NULL)
+  model <- get_model(benchmark)
   
   paste0("twoStepsBenchmark(",
          "\n\thfserie = ",hfserie_name,
          ",\n\tlfserie = ",lfserie_name,
          ",\n\tinclude.differenciation = ",model$include.differenciation,
          ",\n\tinclude.rho = ", model$include.rho,
-         if (!is.null(set.coeff) && !length(set.coeff) == 0) paste0(",\n\tset.coeff = ", display_vector(set.coeff)),
-         if (!is.null(set.const) && !length(set.const) == 0) paste0(",\n\tset.const = ", display_vector(set.const)),
+         if (!length(model$set.coeff) == 0) paste0(",\n\tset.coeff = ", display_vector(model$set.coeff)),
+         if (!length(model$set.const) == 0) paste0(",\n\tset.const = ", display_vector(model$set.const)),
          if (!is.null(model$start.coeff.calc)) paste0(",\n\tstart.coeff.calc = ", display_vector(model$start.coeff.calc)),
          if (!is.null(model$end.coeff.calc)) paste0(",\n\tend.coeff.calc = ", display_vector(model$end.coeff.calc)),
          if (!is.null(model$start.benchmark)) paste0(",\n\tstart.benchmark = ", display_vector(model$start.benchmark)),
@@ -54,9 +72,11 @@ renderBenchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
          "\n)")
 }
 
+
+
 #### ui ####
 
-reView_ui_module_tab1 <- function(id) {
+reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   fluidRow(column(6,
                   p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
@@ -74,31 +94,39 @@ reView_ui_module_tab1 <- function(id) {
                    plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "200px")))
 }
 
-reView_ui_module_tab2 <- function(id) {
+boxstyle <- "padding: 6px 8px;
+             margin-top: 6px;
+             margin-bottom: 6px;
+             background-color: #ffffff;
+             border: 1px solid #e3e3e3;
+             border-radius: 2px;"
+
+reView_ui_tab2 <- function(id) {
   ns <- NS(id)
   sidebarLayout(
     sidebarPanel(
       width = 2,
-      tags$style("h4 { font-family: 'Source Sans Pro', sans-serif; font-weight: 400; line-height: 32px; text-align: center;}"),
-      h4("Include"),
+      div("Include",class="section"),
       checkboxInput(ns("dif"),"Differenciation"),
       checkboxInput(ns("rho"),"Rho"),
-      h4("Set"),
-      checkboxInput(ns("setcoeff_button"),"Coefficient"),
+      div("Set",class="section"),
+      checkboxInput(ns("setcoeff_button"),"Coefficient",),
       conditionalPanel("input.setcoeff_button",numericInput(ns("setcoeff"),NULL,1),ns = ns),
       checkboxInput(ns("setconst_button"),"Constant"),
       conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
-      h4("Windows"),
+      div("Windows",class="section"),
       uiOutput(ns("coeffcalcsliderInput")),
       uiOutput(ns("benchmarksliderInput")),
-      actionButton(ns("validation"),"Validate",width = "100%")
+      uiOutput(ns("plotswinsliderInput"))
     ),
     mainPanel(
       width = 10,
       fluidRow(
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
-                            choices = c("Benchmark","In-sample predictions","Summary"),
+                            choices = c("Benchmark","In-sample predictions",
+                                        "Benchmark summary","Comparison with indicator",
+                                        "Revisions"),
                             selected = "Benchmark",inline=TRUE)
         ),
         align="center"
@@ -114,13 +142,25 @@ reView_ui_module_tab2 <- function(id) {
   )
 }
 
-reView_ui_module_tab3 <- function(id) {
+reView_ui_tab3 <- function(id) {
   ns <- NS(id)
   fluidRow(
-    column(width=6,h4("Before"),verbatimTextOutput(ns("oldcall")),
-           style="border-right:1px dashed #e3e3e3;"),
-    column(width=6,h4("After"),verbatimTextOutput(ns("newcall")))
-  )
+    column(12,
+           fluidRow(
+             column(width=6,div("Before",class="section"),verbatimTextOutput(ns("oldcall")),
+                    style="border-right:1px dashed #e3e3e3;"),
+             column(width=6,div("After",class="section"),div(id=ns("tocopy"),verbatimTextOutput(ns("newcall"))))
+           ),
+           fluidRow(
+             column(3,actionButton(ns("Reset"),"Reset",width = "100%",
+                                   class="btn-warning")),
+             column(3,actionButton(ns("Quit"),"Quit",width = "100%",
+                                   class="btn-danger")),
+             column(3,downloadButton(ns("Export"),"Export to PDF",style="width:100%;")),
+             column(3,actionButton(ns("Copy"), "Copy to clipboard",
+                                   width = "100%",class="btn-primary"))
+           )
+    ))
 }
 
 #' @rdname reView
@@ -129,30 +169,34 @@ reView_ui_module_tab3 <- function(id) {
 reView_ui_module <- function(id) {
   ns <- NS(id)
   navbarPage(title = "reView",id = ns("menu"),selected = "Presets",
+             tags$head(copyjs(),
+                       closewindowjs()),
+             tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
              tabPanel("Presets",
-                      reView_ui_module_tab1(ns("reViewtab1")),
+                      reView_ui_tab1(ns("reViewtab1")),
              ),
              tabPanel("Modify",
-                      reView_ui_module_tab2(ns("reViewtab2"))
+                      reView_ui_tab2(ns("reViewtab2"))
              ),
              tabPanel("Export",
-                      reView_ui_module_tab3(ns("reViewtab3"))
+                      reView_ui_tab3(ns("reViewtab3"))
              )
   )
 }
-reView_ui <- reView_ui_module("reView")
+
+reView_ui <- function(old_bn) reView_ui_module("reView")
 
 #### server ####
 
-reView_server_module_tab1 <- function(id,hfserie,lfserie) {
+reView_server_tab1 <- function(id,hfserie,lfserie) {
   moduleServer(id,
                function(input,output,session) {
                  
                  presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie()))
-                 output$model1_plot <- renderPlot(presets_ggplot_list()[[1L]]  + ggplot2::theme(legend.position = "none"))
-                 output$model2_plot <- renderPlot(presets_ggplot_list()[[2L]]  + ggplot2::theme(legend.position = "none"))
-                 output$model3_plot <- renderPlot(presets_ggplot_list()[[3L]]  + ggplot2::theme(legend.position = "none"))
-                 output$model4_plot <- renderPlot(presets_ggplot_list()[[4L]]  + ggplot2::theme(legend.position = "none"))
+                 output$model1_plot <- renderPlot(presets_ggplot_list()[[1L]]  + theme(legend.position = "none"))
+                 output$model2_plot <- renderPlot(presets_ggplot_list()[[2L]]  + theme(legend.position = "none"))
+                 output$model3_plot <- renderPlot(presets_ggplot_list()[[3L]]  + theme(legend.position = "none"))
+                 output$model4_plot <- renderPlot(presets_ggplot_list()[[4L]]  + theme(legend.position = "none"))
                  output$model5_plot <- renderPlot(presets_ggplot_list()[[5L]])
                  output$model6_plot <- renderPlot(presets_ggplot_list()[[6L]])
                  
@@ -168,40 +212,121 @@ reView_server_module_tab1 <- function(id,hfserie,lfserie) {
                })
 }
 
-tab2_mainout_switch_impl <- function(benchmark,mainout_choice,output,old_or_new,ns) {
+reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,output,old_or_new,ns,oldbn=NULL) {
+  # The oldbn arg is only for revisions
   switch(mainout_choice,
-    "Benchmark" = {
-      output_name <- paste0(old_or_new,"plot")
-      output[[output_name]] <- renderPlot(ggplot2::autoplot(benchmark()))
-      plotOutput(ns(output_name))
-    },
-    "In-sample predictions" = {
-      output_name <- paste0(old_or_new,"plot")
-      output[[output_name]] <- renderPlot(ggplot2::autoplot(in_sample(benchmark())))
-      plotOutput(ns(output_name))
-    },
-    "Summary" = {
-      output_name <- paste0(old_or_new,"verbat")
-      output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
-      verbatimTextOutput(ns(output_name))
-    }
+         "Benchmark" = {
+           plotOutBrushAndRender(reactive(autoplot(benchmark(),
+                                                   start=plotswin()[1L],
+                                                   end=plotswin()[2L])),
+                                 output,
+                                 paste0(old_or_new,"plot"),
+                                 ns)
+         },
+         "In-sample predictions" = {
+           fluidRow(
+             column(12,
+                    plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                      type="levels"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotlev"),
+                                          ns,
+                                          height="300px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                      type="changes"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotcha"),
+                                          ns,
+                                          height="300px")
+             )
+           )
+         },
+         "Benchmark summary" = {
+           output_name <- paste0(old_or_new,"verbat")
+           output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
+           verbatimTextOutput(ns(output_name))
+         },
+         "Comparison with indicator" = {
+           fluidRow(
+             column(12,
+                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                       type="levels-rebased"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotlev"),
+                                          ns,
+                                          height="200px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                       type="changes"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotcha"),
+                                          ns,
+                                          height="200px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                       type="contributions"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotctb"),
+                                          ns,
+                                          height="200px")
+             )
+           )
+         },
+         "Revisions" = {
+           fluidRow(
+             column(12,
+                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                         type="levels"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotlev"),
+                                          ns,
+                                          height="200px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                         type="changes"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotcha"),
+                                          ns,
+                                          height="200px"),
+                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                         type="contributions"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
+                                          output,
+                                          paste0(old_or_new,"plotctb"),
+                                          ns,
+                                          height="200px")
+             )
+           )
+         }
   )
 }
 
-tab2_mainout_switch <- function(new_bn,old_bn,mainout_choice,output,ns,compare) {
-  if (compare) {
+reView_server_tab2_switch <- function(new_bn,old_bn,mainout_choice,plotswin,output,ns,compare) {
+  if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
     fluidRow(
-      column(width=6,h4("Before"),
-             tab2_mainout_switch_impl(old_bn,mainout_choice,output,"old",ns),
+      column(width=6,div("Before",class="section"),
+             reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
              style="border-right:1px dashed #e3e3e3;"),
-      column(width=6,h4("After"),
-             tab2_mainout_switch_impl(new_bn,mainout_choice,output,"new",ns))
+      column(width=6,div("After",class="section"),
+             reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns))
     )
   }
-  else tab2_mainout_switch_impl(new_bn,mainout_choice,output,"newoutput",ns)
+  else fluidRow(column(12,reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"newoutput",ns,old_bn)))
 }
 
-reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset) {
+reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset,reset) {
   moduleServer(id,
                function(input,output,session) {
                  
@@ -214,57 +339,137 @@ reView_server_module_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected
                    updateNumericInput(session,"setconst",value = setconst)
                  },ignoreNULL = TRUE)
                  
+                 observeEvent({reset();old_bn()},{
+                   model <- get_model(old_bn())
+                   updateCheckboxInput(session,"dif",value = model$include.differenciation)
+                   updateCheckboxInput(session,"rho",value = model$include.rho)
+                   if (length(model$set.coeff) != 0) {
+                     updateCheckboxInput(session,"setcoeff_button",value = TRUE)
+                     updateNumericInput(session,"setcoeff",value = as.numeric(model$set.coeff))
+                   } else updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+                   if (length(model$set.const) != 0) {
+                     updateCheckboxInput(session,"setconst_button",value = TRUE)
+                     updateNumericInput(session,"setconst",value = as.numeric(model$set.const))
+                   } else updateCheckboxInput(session,"setconst_button",value = FALSE)
+                 })
+                 
                  output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie(),"coeffcalc","Coefficients:")
                  output$benchmarksliderInput <- slider_windows(session$ns,lfserie(),"benchmark","Benchmark:")
+                 output$plotswinsliderInput <- slider_windows(session$ns,lfserie(),"plotswin","Plots:")
                  
                  output$mainOutput <- renderUI({
-                   tab2_mainout_switch(new_bn,old_bn,input$mainout_choice,output,session$ns,compare)
+                   reView_server_tab2_switch(new_bn,old_bn,
+                                             input$mainout_choice,
+                                             reactive(c(input$plotswin[1L],
+                                                        input$plotswin[2L]+
+                                                          deltat(lfserie())-
+                                                          deltat(hfserie()))),
+                                             output,session$ns,compare)
                  })
                  
+                 observeEvent(input$brush,{
+                   tsplf <- tsp(lfserie())
+                   updateSliderInput(session, "plotswin",
+                                     value = c(round(tsplf[3L]*(input$brush$xmin-tsplf[1L])) + tsplf[1L],
+                                               round(tsplf[3L]*(input$brush$xmax-tsplf[2L])) + tsplf[2L]))
+                   session$resetBrush("brush")
+                 },
+                 ignoreNULL = TRUE)
+                 
+                 observeEvent(input$click,{
+                   tsplf <- tsp(lfserie())
+                   updateSliderInput(session, "plotswin",
+                                     value = c(tsplf[1L],tsplf[2L]))
+                 },
+                 ignoreNULL = TRUE)
+                 
                  new_bn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                                      include.differenciation = input$dif,
-                                                      include.rho = input$rho,
-                                                      set.coeff = {
-                                                        if (input$setcoeff_button) {
-                                                          if (is.na(input$setcoeff)) 0
-                                                          else input$setcoeff
-                                                        }
-                                                        else NULL
-                                                      },
-                                                      set.const = {
-                                                        if (input$setconst_button) {
-                                                          if (is.na(input$setconst)) 0
-                                                          else input$setconst
-                                                        }
-                                                        else NULL
-                                                      },
-                                                      start.coeff.calc = input$coeffcalc[1],
-                                                      end.coeff.calc = input$coeffcalc[2],
-                                                      start.benchmark = input$benchmark[1],
-                                                      end.benchmark = input$benchmark[2])})
-                 selected_bn <- reactiveVal(NULL)
-                 observeEvent(input$validation,{
-                   selected_bn(NULL)
-                   selected_bn(new_bn())
-                 })
-                 selected_bn
-               })
+                                                       include.differenciation = input$dif,
+                                                       include.rho = input$rho,
+                                                       set.coeff = {
+                                                         if (input$setcoeff_button) {
+                                                           if (is.na(input$setcoeff)) 0
+                                                           else input$setcoeff
+                                                         }
+                                                         else NULL
+                                                       },
+                                                       set.const = {
+                                                         if (input$setconst_button) {
+                                                           if (is.na(input$setconst)) 0
+                                                           else input$setconst
+                                                         }
+                                                         else NULL
+                                                       },
+                                                       start.coeff.calc = input$coeffcalc[1],
+                                                       end.coeff.calc = input$coeffcalc[2],
+                                                       start.benchmark = input$benchmark[1],
+                                                       end.benchmark = input$benchmark[2])})
+                 new_bn})
 }
 
-reView_server_module_tab3 <- function(id,old_bn,selected_bn) {
+#' @importFrom rmarkdown render
+reView_server_tab3 <- function(id,old_bn,new_bn) {
   moduleServer(id,
                function(input,output,session) {
                  hfserie_name <- reactive(deparse(old_bn()$call$hfserie))
                  lfserie_name <- reactive(deparse(old_bn()$call$lfserie))
-                 output$oldcall <- reactive(renderBenchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
-                 output$newcall <- reactive(renderBenchmarkCall(selected_bn(),hfserie_name(),lfserie_name()))
+                 new_call_text <- reactive(benchmarkCall(new_bn(),hfserie_name(),lfserie_name()))
+                 old_call_text <- reactive(benchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
+                 output$oldcall <- renderText(old_call_text())
+                 output$newcall <- renderText(new_call_text())
+                 
+                 file_name <- reactive(paste("benchmark",hfserie_name(),lfserie_name(),sep="-"))
+                 
+                 output$Export <- downloadHandler(
+                   filename = paste0(file_name(),".pdf"),
+                   content = function(file) {
+                     withProgress(message = "Generating PDF. Please wait...", {
+                       setProgress(0, detail = "Creating temporary files")
+                       temp_report <- file.path(tempdir(), "report.Rmd")
+                       file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_report, overwrite = TRUE)
+                       params <- list(new_bn=new_bn(),
+                                      old_bn=old_bn(),
+                                      new_call_text=new_call_text(),
+                                      old_call_text=old_call_text(),
+                                      file_name=file_name())
+                       setProgress(0.5, detail = "Rendering PDF")
+                       pdf <- rmarkdown::render(temp_report,output_file = file,
+                                                params = params,
+                                                envir = new.env(parent = globalenv()),
+                                                output_format = "pdf_document")
+                       setProgress(0.9, detail = "Writing on your disk")
+                       pdf
+                     })
+                   },contentType="application/octet-stream"
+                 )
+                 
+                 session$onSessionEnded(function() {
+                   if (Sys.getenv('SHINY_PORT') == "") stopApp()
+                 })
+                 
+                 observeEvent(input$Quit,{
+                   if (Sys.getenv('SHINY_PORT') == "") stopApp(new_bn())
+                   else session$sendCustomMessage("closewindow", "anymessage")
+                 })
+                 
+                 observeEvent(input$Copy,{
+                   session$sendCustomMessage("copy", new_call_text())
+                   showModal(
+                     modalDialog(title = "reView",
+                                 "New model copied in the clipboard !",
+                                 easyClose = TRUE,
+                                 footer = NULL)
+                   )
+                 })
+                 
+                 reactive(input$Reset)
                })
 }
 
 #' @rdname reView
 #' @export
 #' @keywords internal
-reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
+reView_server_module <- function(id,old_bn,compare) {
   moduleServer(id,function(input, output, session) {
     
     lfserie <- reactive(model.list(old_bn())$lfserie)
@@ -275,18 +480,17 @@ reView_server_module <- function(id,old_bn,compare,function.mode=TRUE) {
     
     # tab 1 : Presets
     
-    selected_preset <- reView_server_module_tab1("reViewtab1",hfserie,lfserie)
+    selected_preset <- reView_server_tab1("reViewtab1",hfserie,lfserie)
     observeEvent(selected_preset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)
     
     # tab 2 : Modify
     
-    selected_bn <- reView_server_module_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset)
-    observeEvent(selected_bn(),updateNavbarPage(session,"menu","Export"),ignoreInit = TRUE)
+    new_bn <- reView_server_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset,reset)
     
     # tab3 : Export
     
-    reView_server_module_tab3("reViewtab3",old_bn,selected_bn)
-    
+    reset <- reView_server_tab3("reViewtab3",old_bn,new_bn)
+    observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)    
   })
 }
 reView_server <- function(old_bn,compare) {
@@ -299,14 +503,15 @@ reView_server <- function(old_bn,compare) {
 
 runapp_disaggr <- function(old_bn,compare) {
   shinyreturn <- shiny::runApp(
-    shiny::shinyApp(ui = reView_ui,
+    shiny::shinyApp(ui = reView_ui(old_bn),
                     server = reView_server(old_bn,compare)
     ),
     quiet = TRUE
   )
-  if (inherits(shinyreturn,"error")) stop(shinyreturn)
-  shinyreturn
+  if (inherits(shinyreturn,"error")) shinyreturn <- NULL
+  invisible(shinyreturn)
 }
+
 #' reView
 #' 
 #'  A shiny app to reView twoStepsBenchmarks.
@@ -314,5 +519,7 @@ runapp_disaggr <- function(old_bn,compare) {
 #' @export
 #' @import shiny
 reView <- function(benchmark) {
+  if (length(coef(benchmark)) > 2) stop("This reviewing application is
+                                        only for univariate benchmarks.")
   runapp_disaggr(benchmark,compare=TRUE)
 }

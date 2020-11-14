@@ -14,7 +14,7 @@ See "Methodology of quarterly national accounts", Insee Méthodes N°126, by Ins
 \seealso{
 Useful links:
 \itemize{
-  \item Report bugs at \url{https://github.com/arnaud-feldmann/disaggR/issues}
+  \item Report bugs at \url{https://github.com/InseeFr/disaggR/issues}
 }
 
 }
@@ -23,7 +23,8 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item Institut national de la statistique et des études économiques (https://www.insee.fr/) [copyright holder]
+  \item Franck ARNAUD (barplot method for mts class) [contributor]
+  \item Institut national de la statistique et des études économiques \email{comptes-trimestriels@insee.fr} (https://www.insee.fr/) [copyright holder]
 }
 
 }
