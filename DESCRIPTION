@@ -11,7 +11,7 @@ Authors@R:
       person(given = "Franck",
              family = "ARNAUD",
              role = "ctb",
-             comment = "barplot method for mts class"),
+             comment = "barplot base graphics method for the mts class"),
       person(given = "Institut national de la statistique et des études économiques",
              role = "cph",
              email = "comptes-trimestriels@insee.fr",
