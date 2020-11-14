@@ -10,7 +10,7 @@ type_label <- function(object) {
 plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
   sizey <- ymax-ymin
   plot(x= c(xmin,xmax), y = c(ymin,ymax),
-       xlim = c(xmin,xmax),ylim= c(ymin-0.1*sizey,ymax+0.1*sizey),
+       xlim = c(xmin,xmax),ylim= c(ymin-0.02*sizey,ymax+0.02*sizey),
        type = "n",
        xaxs = "i", xaxt = "n",
        yaxs = "i", yaxt = "n",

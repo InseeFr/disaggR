@@ -120,11 +120,12 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
 #' @export
 print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
   label <- switch(attr(x,"func")[1L],
-                  indicator="Comparison with indicators",
-                  insample="In-sample predictions",
-                  inrevisions="Comparison between two benchmarks")
+                  in_dicator="Comparison with indicators",
+                  in_sample="In-sample predictions",
+                  in_revisions="Comparison between two benchmarks")
   cat(label, " (", attr(x,"type"),"):\n", sep = "")
   attr(x,"type") <- NULL
+  attr(x,"func") <- NULL
   print(.preformat.ts(x, any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
         quote = FALSE, right = TRUE,digits = digits,
         ...)
