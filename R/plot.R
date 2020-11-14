@@ -238,6 +238,11 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
 
 #### ggplot2 plots
 
+#' Default ggplot theme
+#' 
+#' This is the default theme for the ggplot graphics produced with autoplot
+#' 
+#' @keywords internal
 #' @export
 default_theme_ggplot <- function(show.legend,xlab,ylab) theme_classic() %+replace%
   theme(axis.title.x = if (is.null(xlab)) element_blank(),
