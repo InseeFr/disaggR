@@ -45,7 +45,6 @@ install_github("InseeFr/disaggR")
 
 ```{r, echo = TRUE, results = 'hide', fig.show="hold", out.width="50%"}
 library(disaggR)
-library(ggplot2)
 
 benchmark <- twoStepsBenchmark(hfserie = turnover,
                                lfserie = construction,
@@ -55,4 +54,19 @@ coef(benchmark)
 summary(benchmark)
 autoplot(benchmark)
 autoplot(in_sample(benchmark))
+```
+
+```{r, echo = TRUE, results = 'hide', fig.show="hold", out.width="50%"}
+autoplot(in_dicator(benchmark,type="changes"),
+         start=c(2008,1),end=c(2019,12))
+autoplot(in_dicator(benchmark,type="contributions"),
+         start=c(2008,1),end=c(2019,12))
+```
+
+```{r, echo = TRUE, results = 'hide', fig.show="hold", fig.width=14, out.width="100%"}
+new_benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                   lfserie = construction,
+                                   include.differenciation = FALSE)
+autoplot(in_revisions(new_benchmark,
+                      benchmark))
 ```

@@ -40,7 +40,6 @@ install_github("InseeFr/disaggR")
 
 ``` r
 library(disaggR)
-library(ggplot2)
 
 benchmark <- twoStepsBenchmark(hfserie = turnover,
                                lfserie = construction,
@@ -53,3 +52,22 @@ autoplot(in_sample(benchmark))
 ```
 
 <img src="man/figures/README-unnamed-chunk-4-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-4-2.png" width="50%" />
+
+``` r
+autoplot(in_dicator(benchmark,type="changes"),
+         start=c(2008,1),end=c(2019,12))
+autoplot(in_dicator(benchmark,type="contributions"),
+         start=c(2008,1),end=c(2019,12))
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-5-2.png" width="50%" />
+
+``` r
+new_benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                   lfserie = construction,
+                                   include.differenciation = FALSE)
+autoplot(in_revisions(new_benchmark,
+                      benchmark))
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
