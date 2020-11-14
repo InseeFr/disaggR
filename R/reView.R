@@ -27,7 +27,7 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 set.const = list(NULL,0,NULL,NULL,0,0))
 
 
-presets_ggplot <- function(hfserie,lfserie) {
+presets_ggplot <- function(hfserie,lfserie,...) {
   lapply(1L:6L,function(type) {
     autoplot(
       in_sample(
@@ -35,7 +35,7 @@ presets_ggplot <- function(hfserie,lfserie) {
                           include.differenciation = presets$include.differenciation[type],
                           include.rho = presets$include.rho[type],
                           set.const = presets$set.const[[type]])
-      )
+      ), ...
     )
   })
 }
@@ -78,20 +78,23 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
-  fluidRow(column(6,
-                  p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
-                  plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "200px"),
-                  p("Model 3 (",em("levels \u2014 with constant",.noWS = "outside"),"):"),
-                  plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "200px"),
-                  p("Model 5 (",em("levels \u2014 without constant",.noWS = "outside"),")"),
-                  plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "200px"))
-           ,column(6,
-                   p("Model 2 (",em("differences \u2014 without constant",.noWS = "outside"),")"),
-                   plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "200px"),
-                   p("Model 4 (",em("autocorrelated levels \u2014 with constant",.noWS = "outside"),")"),
-                   plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "200px"),
-                   p("Model 6 (",em("autocorrelated levels \u2014 without constant",.noWS = "outside"),")"),
-                   plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "200px")))
+  fluidRow(
+    tags$style(type = "text/css", ".presetplot {height: calc(33vh - 52px) !important;}"),
+    column(6,
+           p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
+           div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "100%"),class="presetplot"),
+           p("Model 3 (",em("levels \u2014 with constant",.noWS = "outside"),"):"),
+           div(plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "100%"),class="presetplot"),
+           p("Model 5 (",em("levels \u2014 without constant",.noWS = "outside"),")"),
+           div(plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "100%"),class="presetplot"))
+    ,column(6,
+            p("Model 2 (",em("differences \u2014 without constant",.noWS = "outside"),")"),
+            div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "100%"),class="presetplot"),
+            p("Model 4 (",em("autocorrelated levels \u2014 with constant",.noWS = "outside"),")"),
+            div(plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "100%"),class="presetplot"),
+            p("Model 6 (",em("autocorrelated levels \u2014 without constant",.noWS = "outside"),")"),
+            div(plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "100%"),class="presetplot"))
+  )
 }
 
 boxstyle <- "padding: 6px 8px;
@@ -122,6 +125,9 @@ reView_ui_tab2 <- function(id) {
     mainPanel(
       width = 10,
       fluidRow(
+        tags$style(type = "text/css", ".oneplot {height: calc(100vh - 158px) !important;}
+                                       .twoplots {height: calc(50vh - 79px) !important;}
+                                       .threeplots {height: calc(33vh - 44px) !important;}"),
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","In-sample predictions",
@@ -192,13 +198,8 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
   moduleServer(id,
                function(input,output,session) {
                  
-                 presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie()))
-                 output$model1_plot <- renderPlot(presets_ggplot_list()[[1L]]  + theme(legend.position = "none"))
-                 output$model2_plot <- renderPlot(presets_ggplot_list()[[2L]]  + theme(legend.position = "none"))
-                 output$model3_plot <- renderPlot(presets_ggplot_list()[[3L]]  + theme(legend.position = "none"))
-                 output$model4_plot <- renderPlot(presets_ggplot_list()[[4L]]  + theme(legend.position = "none"))
-                 output$model5_plot <- renderPlot(presets_ggplot_list()[[5L]])
-                 output$model6_plot <- renderPlot(presets_ggplot_list()[[6L]])
+                 presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie(),show.legend = FALSE))
+                 lapply(1L:6L, function(n) output[[paste0("model",n,"_plot")]] <- renderPlot(presets_ggplot_list()[[n]]))
                  
                  selected_preset <- reactiveVal(NULL)
                  lapply(1L:6L,function(type) {
@@ -216,32 +217,32 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
   # The oldbn arg is only for revisions
   switch(mainout_choice,
          "Benchmark" = {
-           plotOutBrushAndRender(reactive(autoplot(benchmark(),
-                                                   start=plotswin()[1L],
-                                                   end=plotswin()[2L])),
-                                 output,
-                                 paste0(old_or_new,"plot"),
-                                 ns)
+           div(plotOutBrushAndRender(reactive(autoplot(benchmark(),
+                                                       start=plotswin()[1L],
+                                                       end=plotswin()[2L])),
+                                     output,
+                                     paste0(old_or_new,"plot"),
+                                     ns,height="100%"),class="oneplot")
          },
          "In-sample predictions" = {
            fluidRow(
              column(12,
-                    plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
-                                                                      type="levels"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotlev"),
-                                          ns,
-                                          height="300px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
-                                                                      type="changes"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotcha"),
-                                          ns,
-                                          height="300px")
+                    div(plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                          type="levels"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotlev"),
+                                              ns,
+                                              height="100%"),class="twoplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                          type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotcha"),
+                                              ns,
+                                              height="100%"),class="twoplots")
              )
            )
          },
@@ -253,60 +254,60 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
          "Comparison with indicator" = {
            fluidRow(
              column(12,
-                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
-                                                                       type="levels-rebased"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotlev"),
-                                          ns,
-                                          height="200px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
-                                                                       type="changes"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotcha"),
-                                          ns,
-                                          height="200px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
-                                                                       type="contributions"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotctb"),
-                                          ns,
-                                          height="200px")
+                    div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                           type="levels-rebased"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotlev"),
+                                              ns,
+                                              height="100%"),class="threeplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                           type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotcha"),
+                                              ns,
+                                              height="100%"),class="threeplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                           type="contributions"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotctb"),
+                                              ns,
+                                              height="100%"),class="threeplots")
              )
            )
          },
          "Revisions" = {
            fluidRow(
              column(12,
-                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
-                                                                         type="levels"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotlev"),
-                                          ns,
-                                          height="200px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
-                                                                         type="changes"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotcha"),
-                                          ns,
-                                          height="200px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
-                                                                         type="contributions"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotctb"),
-                                          ns,
-                                          height="200px")
+                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="levels"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotlev"),
+                                              ns,
+                                              height="100%"),class="threeplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotcha"),
+                                              ns,
+                                              height="100%"),class="threeplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="contributions"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotctb"),
+                                              ns,
+                                              height="100%"),class="threeplots")
              )
            )
          }
