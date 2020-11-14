@@ -55,9 +55,9 @@ autoplot(in_sample(benchmark))
 
 ``` r
 autoplot(in_dicator(benchmark,type="changes"),
-         start=c(2008,1),end=c(2019,12))
+         start=c(2010,1),end=c(2019,12))
 autoplot(in_dicator(benchmark,type="contributions"),
-         start=c(2008,1),end=c(2019,12))
+         start=c(2010,1),end=c(2019,12))
 ```
 
 <img src="man/figures/README-unnamed-chunk-5-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-5-2.png" width="50%" />
@@ -71,3 +71,10 @@ autoplot(in_revisions(new_benchmark,
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+You can also use the shiny application **reView**, to easily chose the
+best parameters for your benchmark.
+
+``` r
+reView(benchmark)
+```
