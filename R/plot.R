@@ -43,7 +43,7 @@ plot.twoStepsBenchmark <- function(x, xlab="", ylab="",
   
   timex <- time(x)
   start <- if (is.null(start)) floor(min(timex[!(is.na(x))])) else start
-  end <- if (is.null(end)) ceiling(max(timex[!(is.na(x))])) - deltat(x) else end
+  end <- if (is.null(end)) floor(max(timex[!(is.na(x))])) + 1 - deltat(x) else end
   
   x <- window(x,start=start,end=end,extend=TRUE)
   
@@ -129,7 +129,7 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
   
   timex <- time(x)
   start <- if (is.null(start)) floor(min(timex[apply(x,1L,function(x) !all(is.na(x)))])) else start
-  end <- if (is.null(end)) ceiling(max(timex[apply(x,1L,function(x) !all(is.na(x)))])) - deltat(x) else end
+  end <- if (is.null(end)) floor(max(timex[apply(x,1L,function(x) !all(is.na(x)))])) + 1 - deltat(x) else end
   
   x <- window(x,start=start,end=end,extend=TRUE)
   
