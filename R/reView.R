@@ -9,6 +9,12 @@ plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
              ...)
 }
 
+#' @importFrom grid grid.draw
+draw_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  grid.draw(tmp$grobs[[leg]])
+}
 
 slider_windows <- function(ns,initserie,ui_out,label) {
   renderUI(
@@ -27,7 +33,7 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 set.const = list(NULL,0,NULL,NULL,0,0))
 
 
-presets_ggplot <- function(hfserie,lfserie) {
+presets_ggplot <- function(hfserie,lfserie,...) {
   lapply(1L:6L,function(type) {
     autoplot(
       in_sample(
@@ -35,7 +41,7 @@ presets_ggplot <- function(hfserie,lfserie) {
                           include.differenciation = presets$include.differenciation[type],
                           include.rho = presets$include.rho[type],
                           set.const = presets$set.const[[type]])
-      )
+      ), ...
     )
   })
 }
@@ -78,28 +84,35 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
-  fluidRow(column(6,
-                  p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
-                  plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "200px"),
-                  p("Model 3 (",em("levels \u2014 with constant",.noWS = "outside"),"):"),
-                  plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "200px"),
-                  p("Model 5 (",em("levels \u2014 without constant",.noWS = "outside"),")"),
-                  plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "200px"))
-           ,column(6,
-                   p("Model 2 (",em("differences \u2014 without constant",.noWS = "outside"),")"),
-                   plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "200px"),
-                   p("Model 4 (",em("autocorrelated levels \u2014 with constant",.noWS = "outside"),")"),
-                   plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "200px"),
-                   p("Model 6 (",em("autocorrelated levels \u2014 without constant",.noWS = "outside"),")"),
-                   plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "200px")))
+  fluidRow(
+    tags$style(type = "text/css", ".presetplot {height: calc(33vh - 62px) !important;}"),
+    column(6,
+           p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
+           div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "100%"),class="presetplot"),
+           p("Model 3 (",em("levels \u2014 with constant",.noWS = "outside"),"):"),
+           div(plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "100%"),class="presetplot"),
+           p("Model 5 (",em("levels \u2014 without constant",.noWS = "outside"),")"),
+           div(plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "100%"),class="presetplot"))
+    ,column(6,
+            p("Model 2 (",em("differences \u2014 without constant",.noWS = "outside"),")"),
+            div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "100%"),class="presetplot"),
+            p("Model 4 (",em("autocorrelated levels \u2014 with constant",.noWS = "outside"),")"),
+            div(plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "100%"),class="presetplot"),
+            p("Model 6 (",em("autocorrelated levels \u2014 without constant",.noWS = "outside"),")"),
+            div(plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "100%"),class="presetplot")),
+    column(12,plotOutput(ns("legend"),height="30px"))
+  )
 }
 
 boxstyle <- "padding: 6px 8px;
              margin-top: 6px;
              margin-bottom: 6px;
-             background-color: #ffffff;
+             background-color: #fdfdfd;
              border: 1px solid #e3e3e3;
              border-radius: 2px;"
+
+lrmargins <- "margin-left: 3px;
+              margin-right: 3px"
 
 reView_ui_tab2 <- function(id) {
   ns <- NS(id)
@@ -122,6 +135,9 @@ reView_ui_tab2 <- function(id) {
     mainPanel(
       width = 10,
       fluidRow(
+        tags$style(type = "text/css", ".oneplot {height: calc(100vh - 158px) !important;}
+                                       .twoplots {height: calc(50vh - 79px) !important;}
+                                       .threeplots {height: calc(33vh - 44px) !important;}"),
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","In-sample predictions",
@@ -131,13 +147,7 @@ reView_ui_tab2 <- function(id) {
         ),
         align="center"
       ),
-      uiOutput(ns("mainOutput"),
-               style = "padding: 6px 8px;
-                        margin-top: 6px;
-                        margin-bottom: 6px;
-                        background-color: #ffffff;
-                        border: 1px solid #e3e3e3;
-                        border-radius: 2px;")
+      uiOutput(ns("mainOutput"))
     )
   )
 }
@@ -147,8 +157,7 @@ reView_ui_tab3 <- function(id) {
   fluidRow(
     column(12,
            fluidRow(
-             column(width=6,div("Before",class="section"),verbatimTextOutput(ns("oldcall")),
-                    style="border-right:1px dashed #e3e3e3;"),
+             column(width=6,div("Before",class="section"),verbatimTextOutput(ns("oldcall"))),
              column(width=6,div("After",class="section"),div(id=ns("tocopy"),verbatimTextOutput(ns("newcall"))))
            ),
            fluidRow(
@@ -159,8 +168,9 @@ reView_ui_tab3 <- function(id) {
              column(3,downloadButton(ns("Export"),"Export to PDF",style="width:100%;")),
              column(3,actionButton(ns("Copy"), "Copy to clipboard",
                                    width = "100%",class="btn-primary"))
-           )
-    ))
+           ),
+           style = boxstyle
+    ),style=lrmargins)
 }
 
 #' @rdname reView
@@ -193,12 +203,13 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
                function(input,output,session) {
                  
                  presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie()))
-                 output$model1_plot <- renderPlot(presets_ggplot_list()[[1L]]  + theme(legend.position = "none"))
-                 output$model2_plot <- renderPlot(presets_ggplot_list()[[2L]]  + theme(legend.position = "none"))
-                 output$model3_plot <- renderPlot(presets_ggplot_list()[[3L]]  + theme(legend.position = "none"))
-                 output$model4_plot <- renderPlot(presets_ggplot_list()[[4L]]  + theme(legend.position = "none"))
-                 output$model5_plot <- renderPlot(presets_ggplot_list()[[5L]])
-                 output$model6_plot <- renderPlot(presets_ggplot_list()[[6L]])
+                 
+                 output$legend <- renderPlot(draw_legend(presets_ggplot_list()[[1L]]))
+                 
+                 lapply(1L:6L, function(n) {
+                   output[[paste0("model",n,"_plot")]] <- renderPlot(presets_ggplot_list()[[n]] +
+                                                                       theme(legend.position = "none"))
+                 })
                  
                  selected_preset <- reactiveVal(NULL)
                  lapply(1L:6L,function(type) {
@@ -216,97 +227,97 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
   # The oldbn arg is only for revisions
   switch(mainout_choice,
          "Benchmark" = {
-           plotOutBrushAndRender(reactive(autoplot(benchmark(),
-                                                   start=plotswin()[1L],
-                                                   end=plotswin()[2L])),
-                                 output,
-                                 paste0(old_or_new,"plot"),
-                                 ns)
+           div(plotOutBrushAndRender(reactive(autoplot(benchmark(),
+                                                       start=plotswin()[1L],
+                                                       end=plotswin()[2L])),
+                                     output,
+                                     paste0(old_or_new,"plot"),
+                                     ns,height="100%"),class="oneplot")
          },
          "In-sample predictions" = {
            fluidRow(
              column(12,
-                    plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
-                                                                      type="levels"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotlev"),
-                                          ns,
-                                          height="300px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
-                                                                      type="changes"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotcha"),
-                                          ns,
-                                          height="300px")
+                    div(plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                          type="levels"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotlev"),
+                                              ns,
+                                              height="100%"),class="twoplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                          type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotcha"),
+                                              ns,
+                                              height="100%"),class="twoplots")
              )
            )
          },
          "Benchmark summary" = {
            output_name <- paste0(old_or_new,"verbat")
            output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
-           verbatimTextOutput(ns(output_name))
+           div(verbatimTextOutput(ns(output_name)),class="oneplot")
          },
          "Comparison with indicator" = {
            fluidRow(
              column(12,
-                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
-                                                                       type="levels-rebased"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotlev"),
-                                          ns,
-                                          height="200px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
-                                                                       type="changes"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotcha"),
-                                          ns,
-                                          height="200px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
-                                                                       type="contributions"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotctb"),
-                                          ns,
-                                          height="200px")
+                    div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                           type="levels-rebased"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotlev"),
+                                              ns,
+                                              height="100%"),class="threeplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                           type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotcha"),
+                                              ns,
+                                              height="100%"),class="threeplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                                                           type="contributions"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotctb"),
+                                              ns,
+                                              height="100%"),class="threeplots")
              )
            )
          },
          "Revisions" = {
            fluidRow(
              column(12,
-                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
-                                                                         type="levels"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotlev"),
-                                          ns,
-                                          height="200px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
-                                                                         type="changes"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotcha"),
-                                          ns,
-                                          height="200px"),
-                    plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
-                                                                         type="contributions"),
-                                                            start=plotswin()[1L],
-                                                            end=plotswin()[2L])),
-                                          output,
-                                          paste0(old_or_new,"plotctb"),
-                                          ns,
-                                          height="200px")
+                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="levels"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotlev"),
+                                              ns,
+                                              height="100%"),class="threeplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="changes"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotcha"),
+                                              ns,
+                                              height="100%"),class="threeplots"),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                                                             type="contributions"),
+                                                                start=plotswin()[1L],
+                                                                end=plotswin()[2L])),
+                                              output,
+                                              paste0(old_or_new,"plotctb"),
+                                              ns,
+                                              height="100%"),class="threeplots")
              )
            )
          }
@@ -316,14 +327,16 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
 reView_server_tab2_switch <- function(new_bn,old_bn,mainout_choice,plotswin,output,ns,compare) {
   if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
     fluidRow(
-      column(width=6,div("Before",class="section"),
+      column(6,fluidRow(column(12,div("Before",class="section"),
              reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
-             style="border-right:1px dashed #e3e3e3;"),
-      column(width=6,div("After",class="section"),
-             reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns))
+             style=boxstyle),style=lrmargins)),
+      column(6,fluidRow(column(12,div("After",class="section"),
+             reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns),
+             style=boxstyle),style="margin-right: 6px"))
     )
   }
-  else fluidRow(column(12,reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"newoutput",ns,old_bn)))
+  else fluidRow(column(12,div(reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"newoutput",ns,old_bn)),
+                       style=boxstyle),style=lrmargins)
 }
 
 reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset,reset) {
@@ -424,20 +437,19 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                    filename = paste0(file_name(),".pdf"),
                    content = function(file) {
                      withProgress(message = "Generating PDF. Please wait...", {
-                       setProgress(0, detail = "Creating temporary files")
+                       setProgress(0, "Creating temporary files")
                        temp_report <- file.path(tempdir(), "report.Rmd")
                        file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_report, overwrite = TRUE)
                        params <- list(new_bn=new_bn(),
                                       old_bn=old_bn(),
                                       new_call_text=new_call_text(),
                                       old_call_text=old_call_text(),
-                                      file_name=file_name())
-                       setProgress(0.5, detail = "Rendering PDF")
+                                      file_name=file_name(),
+                                      session=session)
                        pdf <- rmarkdown::render(temp_report,output_file = file,
                                                 params = params,
                                                 envir = new.env(parent = globalenv()),
                                                 output_format = "pdf_document")
-                       setProgress(0.9, detail = "Writing on your disk")
                        pdf
                      })
                    },contentType="application/octet-stream"
