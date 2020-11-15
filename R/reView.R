@@ -9,6 +9,7 @@ plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
              ...)
 }
 
+#' @importFrom grid grid.draw
 draw_legend<-function(a.gplot){
   tmp <- ggplot_gtable(ggplot_build(a.gplot))
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
@@ -106,9 +107,12 @@ reView_ui_tab1 <- function(id) {
 boxstyle <- "padding: 6px 8px;
              margin-top: 6px;
              margin-bottom: 6px;
-             background-color: #ffffff;
+             background-color: #fdfdfd;
              border: 1px solid #e3e3e3;
              border-radius: 2px;"
+
+lrmargins <- "margin-left: 3px;
+              margin-right: 3px"
 
 reView_ui_tab2 <- function(id) {
   ns <- NS(id)
@@ -143,8 +147,7 @@ reView_ui_tab2 <- function(id) {
         ),
         align="center"
       ),
-      uiOutput(ns("mainOutput"),
-               style = boxstyle)
+      uiOutput(ns("mainOutput"))
     )
   )
 }
@@ -154,8 +157,7 @@ reView_ui_tab3 <- function(id) {
   fluidRow(
     column(12,
            fluidRow(
-             column(width=6,div("Before",class="section"),verbatimTextOutput(ns("oldcall")),
-                    style="border-right:1px dashed #e3e3e3;"),
+             column(width=6,div("Before",class="section"),verbatimTextOutput(ns("oldcall"))),
              column(width=6,div("After",class="section"),div(id=ns("tocopy"),verbatimTextOutput(ns("newcall"))))
            ),
            fluidRow(
@@ -166,8 +168,9 @@ reView_ui_tab3 <- function(id) {
              column(3,downloadButton(ns("Export"),"Export to PDF",style="width:100%;")),
              column(3,actionButton(ns("Copy"), "Copy to clipboard",
                                    width = "100%",class="btn-primary"))
-           )
-    ))
+           ),
+           style = boxstyle
+    ),style=lrmargins)
 }
 
 #' @rdname reView
@@ -324,14 +327,16 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
 reView_server_tab2_switch <- function(new_bn,old_bn,mainout_choice,plotswin,output,ns,compare) {
   if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
     fluidRow(
-      column(width=6,div("Before",class="section"),
+      column(6,fluidRow(column(12,div("Before",class="section"),
              reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
-             style="border-right:1px dashed #e3e3e3;"),
-      column(width=6,div("After",class="section"),
-             reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns))
+             style=boxstyle),style=lrmargins)),
+      column(6,fluidRow(column(12,div("After",class="section"),
+             reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns),
+             style=boxstyle),style="margin-right: 6px"))
     )
   }
-  else fluidRow(column(12,reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"newoutput",ns,old_bn)))
+  else fluidRow(column(12,div(reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"newoutput",ns,old_bn)),
+                       style=boxstyle),style=lrmargins)
 }
 
 reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset,reset) {
