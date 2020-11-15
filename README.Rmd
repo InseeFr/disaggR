@@ -71,8 +71,12 @@ autoplot(in_revisions(new_benchmark,
                       benchmark))
 ```
 
+## Shiny app
+
 You can also use the shiny application __reView__, to easily chose the best parameters for your benchmark.
 
 ```{r, echo = TRUE, eval = FALSE}
 reView(benchmark)
 ```
+
+![drawing](man/figures/shiny-screen.jpg){ width=100% }

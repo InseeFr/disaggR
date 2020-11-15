@@ -72,9 +72,13 @@ autoplot(in_revisions(new_benchmark,
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
+## Shiny app
+
 You can also use the shiny application **reView**, to easily chose the
 best parameters for your benchmark.
 
 ``` r
 reView(benchmark)
 ```
+
+![drawing](man/figures/shiny-screen.jpg)
