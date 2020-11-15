@@ -85,7 +85,7 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   fluidRow(
-    tags$style(type = "text/css", ".presetplot {height: calc(33vh - 62px) !important;}"),
+    tags$style(type = "text/css", ".presetplot {height: calc(33vh - 62px);}"),
     column(6,
            p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
            div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "100%"),class="presetplot"),
@@ -110,8 +110,8 @@ boxstyle <- "padding: 6px 8px;
              background-color: #fdfdfd;
              border: 1px solid #e3e3e3;
              border-radius: 4px;
-             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);"
+             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);
+             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);"
 
 
 lrmargins <- "margin-left: 3px;
@@ -142,8 +142,8 @@ reView_ui_tab2 <- function(id) {
     mainPanel(
       width = 10,
       fluidRow(
-        tags$style(type = "text/css", ".mainouttitle {height: calc(100vh - 158px) !important;}
-                                       .mainoutmono {height: calc(100vh - 138px) !important;"),
+        tags$style(type = "text/css", ".mainouttitle {height: calc(100vh - 158px);}
+                                       .mainoutmono {height: calc(100vh - 138px);}"),
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","In-sample predictions",
