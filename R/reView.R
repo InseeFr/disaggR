@@ -9,6 +9,11 @@ plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
              ...)
 }
 
+draw_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  grid.draw(tmp$grobs[[leg]])
+}
 
 slider_windows <- function(ns,initserie,ui_out,label) {
   renderUI(
@@ -79,7 +84,7 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   fluidRow(
-    tags$style(type = "text/css", ".presetplot {height: calc(33vh - 52px) !important;}"),
+    tags$style(type = "text/css", ".presetplot {height: calc(33vh - 62px) !important;}"),
     column(6,
            p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
            div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "100%"),class="presetplot"),
@@ -93,7 +98,8 @@ reView_ui_tab1 <- function(id) {
             p("Model 4 (",em("autocorrelated levels \u2014 with constant",.noWS = "outside"),")"),
             div(plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "100%"),class="presetplot"),
             p("Model 6 (",em("autocorrelated levels \u2014 without constant",.noWS = "outside"),")"),
-            div(plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "100%"),class="presetplot"))
+            div(plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "100%"),class="presetplot")),
+    column(12,plotOutput(ns("legend"),height="30px"))
   )
 }
 
@@ -138,12 +144,7 @@ reView_ui_tab2 <- function(id) {
         align="center"
       ),
       uiOutput(ns("mainOutput"),
-               style = "padding: 6px 8px;
-                        margin-top: 6px;
-                        margin-bottom: 6px;
-                        background-color: #ffffff;
-                        border: 1px solid #e3e3e3;
-                        border-radius: 2px;")
+               style = boxstyle)
     )
   )
 }
@@ -198,8 +199,14 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
   moduleServer(id,
                function(input,output,session) {
                  
-                 presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie(),show.legend = FALSE))
-                 lapply(1L:6L, function(n) output[[paste0("model",n,"_plot")]] <- renderPlot(presets_ggplot_list()[[n]]))
+                 presets_ggplot_list <- reactive(presets_ggplot(hfserie(),lfserie()))
+                 
+                 output$legend <- renderPlot(draw_legend(presets_ggplot_list()[[1L]]))
+                 
+                 lapply(1L:6L, function(n) {
+                   output[[paste0("model",n,"_plot")]] <- renderPlot(presets_ggplot_list()[[n]] +
+                                                                       theme(legend.position = "none"))
+                 })
                  
                  selected_preset <- reactiveVal(NULL)
                  lapply(1L:6L,function(type) {
@@ -249,7 +256,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
          "Benchmark summary" = {
            output_name <- paste0(old_or_new,"verbat")
            output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
-           verbatimTextOutput(ns(output_name))
+           div(verbatimTextOutput(ns(output_name)),class="oneplot")
          },
          "Comparison with indicator" = {
            fluidRow(
