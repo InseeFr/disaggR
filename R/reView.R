@@ -109,7 +109,10 @@ boxstyle <- "padding: 6px 8px;
              margin-bottom: 6px;
              background-color: #fdfdfd;
              border: 1px solid #e3e3e3;
-             border-radius: 2px;"
+             border-radius: 4px;
+             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);"
+
 
 lrmargins <- "margin-left: 3px;
               margin-right: 3px"
@@ -130,14 +133,17 @@ reView_ui_tab2 <- function(id) {
       div("Windows",class="section"),
       uiOutput(ns("coeffcalcsliderInput")),
       uiOutput(ns("benchmarksliderInput")),
-      uiOutput(ns("plotswinsliderInput"))
+      uiOutput(ns("plotswinsliderInput")),
+      style="padding-top: 5px;
+             padding-bottom: 0px;
+             margin-top: 0px;
+             margin-bottom: 0px;"
     ),
     mainPanel(
       width = 10,
       fluidRow(
-        tags$style(type = "text/css", ".oneplot {height: calc(100vh - 158px) !important;}
-                                       .twoplots {height: calc(50vh - 79px) !important;}
-                                       .threeplots {height: calc(33vh - 44px) !important;}"),
+        tags$style(type = "text/css", ".mainouttitle {height: calc(100vh - 158px) !important;}
+                                       .mainoutmono {height: calc(100vh - 138px) !important;"),
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","In-sample predictions",
@@ -224,46 +230,71 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
 }
 
 reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,output,old_or_new,ns,oldbn=NULL) {
+  
+  switch(old_or_new,
+         old={
+           title <- div("Before",class="section")
+           outputclass <- "mainouttitle"
+         }
+         ,
+         new={
+           title <- div("After",class="section")
+           outputclass <- "mainouttitle"
+         },
+         mono={
+           title <- NULL
+           outputclass <- "mainoutmono"
+         })
+  
   # The oldbn arg is only for revisions
   switch(mainout_choice,
          "Benchmark" = {
-           div(plotOutBrushAndRender(reactive(autoplot(benchmark(),
-                                                       start=plotswin()[1L],
-                                                       end=plotswin()[2L])),
-                                     output,
-                                     paste0(old_or_new,"plot"),
-                                     ns,height="100%"),class="oneplot")
+           fluidRow(
+             column(12,
+                    title,
+                    div(
+                      plotOutBrushAndRender(reactive(autoplot(benchmark(),
+                                                              start=plotswin()[1L],
+                                                              end=plotswin()[2L])),
+                                            output,
+                                            paste0(old_or_new,"plot"),
+                                            ns,height="100%"),class=outputclass)))
          },
          "In-sample predictions" = {
            fluidRow(
              column(12,
-                    div(plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
-                                                                          type="levels"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                              output,
-                                              paste0(old_or_new,"plotlev"),
-                                              ns,
-                                              height="100%"),class="twoplots"),
-                    div(plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
-                                                                          type="changes"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
-                                              output,
-                                              paste0(old_or_new,"plotcha"),
-                                              ns,
-                                              height="100%"),class="twoplots")
+                    title,
+                    div(
+                      plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                        type="levels"),
+                                                              start=plotswin()[1L],
+                                                              end=plotswin()[2L])),
+                                            output,
+                                            paste0(old_or_new,"plotlev"),
+                                            ns,
+                                            height="50%"),
+                      plotOutBrushAndRender(reactive(autoplot(in_sample(benchmark(),
+                                                                        type="changes"),
+                                                              start=plotswin()[1L],
+                                                              end=plotswin()[2L])),
+                                            output,
+                                            paste0(old_or_new,"plotcha"),
+                                            ns,
+                                            height="50%"),class=outputclass)
              )
            )
          },
          "Benchmark summary" = {
            output_name <- paste0(old_or_new,"verbat")
            output[[output_name]] <- renderPrint(print(summary(benchmark()),call=FALSE))
-           div(verbatimTextOutput(ns(output_name)),class="oneplot")
+           fluidRow(column(12,title,
+                           div(verbatimTextOutput(ns(output_name)),
+                               class=outputclass)))
          },
          "Comparison with indicator" = {
            fluidRow(
              column(12,
+                    title,
                     div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
                                                                            type="levels-rebased"),
                                                                 start=plotswin()[1L],
@@ -271,29 +302,30 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               output,
                                               paste0(old_or_new,"plotlev"),
                                               ns,
-                                              height="100%"),class="threeplots"),
-                    div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                              height="33%"),
+                        plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
                                                                            type="changes"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotcha"),
                                               ns,
-                                              height="100%"),class="threeplots"),
-                    div(plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
+                                              height="33%"),
+                        plotOutBrushAndRender(reactive(autoplot(in_dicator(benchmark(),
                                                                            type="contributions"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotctb"),
                                               ns,
-                                              height="100%"),class="threeplots")
+                                              height="33%"),class=outputclass)
              )
            )
          },
          "Revisions" = {
            fluidRow(
              column(12,
+                    title,
                     div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
                                                                              type="levels"),
                                                                 start=plotswin()[1L],
@@ -301,25 +333,24 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               output,
                                               paste0(old_or_new,"plotlev"),
                                               ns,
-                                              height="100%"),class="threeplots"),
-                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                              height="33%"),
+                        plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
                                                                              type="changes"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotcha"),
                                               ns,
-                                              height="100%"),class="threeplots"),
-                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                                              height="33%"),
+                        plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
                                                                              type="contributions"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotctb"),
                                               ns,
-                                              height="100%"),class="threeplots")
-             )
-           )
+                                              height="33%"),class=outputclass)
+             ))
          }
   )
 }
@@ -327,15 +358,14 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
 reView_server_tab2_switch <- function(new_bn,old_bn,mainout_choice,plotswin,output,ns,compare) {
   if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
     fluidRow(
-      column(6,fluidRow(column(12,div("Before",class="section"),
-             reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
-             style=boxstyle),style=lrmargins)),
-      column(6,fluidRow(column(12,div("After",class="section"),
-             reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns),
-             style=boxstyle),style="margin-right: 6px"))
+      column(6,fluidRow(column(12,reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
+                               style=boxstyle),style=lrmargins)),
+      column(6,fluidRow(column(12,
+                               reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns),
+                               style=boxstyle),style="margin-right: 6px"))
     )
   }
-  else fluidRow(column(12,div(reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"newoutput",ns,old_bn)),
+  else fluidRow(column(12,reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"mono",ns,old_bn),
                        style=boxstyle),style=lrmargins)
 }
 
