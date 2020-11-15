@@ -432,20 +432,19 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                    filename = paste0(file_name(),".pdf"),
                    content = function(file) {
                      withProgress(message = "Generating PDF. Please wait...", {
-                       setProgress(0, detail = "Creating temporary files")
+                       setProgress(0, "Creating temporary files")
                        temp_report <- file.path(tempdir(), "report.Rmd")
                        file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_report, overwrite = TRUE)
                        params <- list(new_bn=new_bn(),
                                       old_bn=old_bn(),
                                       new_call_text=new_call_text(),
                                       old_call_text=old_call_text(),
-                                      file_name=file_name())
-                       setProgress(0.5, detail = "Rendering PDF")
+                                      file_name=file_name(),
+                                      session=session)
                        pdf <- rmarkdown::render(temp_report,output_file = file,
                                                 params = params,
                                                 envir = new.env(parent = globalenv()),
                                                 output_format = "pdf_document")
-                       setProgress(0.9, detail = "Writing on your disk")
                        pdf
                      })
                    },contentType="application/octet-stream"
