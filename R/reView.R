@@ -187,7 +187,7 @@ reView_ui_tab3 <- function(id) {
                                    class="btn-warning")),
              column(3,actionButton(ns("Quit"),"Quit",width = "100%",
                                    class="btn-danger")),
-             column(3,downloadButton(ns("Export"),"Export to PDF",style="width:100%;")),
+             column(3,downloadButton(ns("Export"),"Export to HTML",style="width:100%;")),
              column(3,actionButton(ns("Copy"), "Copy to clipboard",
                                    width = "100%",class="btn-primary"))
            ),
@@ -478,9 +478,9 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                  file_name <- reactive(paste("benchmark",hfserie_name(),lfserie_name(),sep="-"))
                  
                  output$Export <- downloadHandler(
-                   filename = paste0(file_name(),".pdf"),
+                   filename = paste0(file_name(),".HTML"),
                    content = function(file) {
-                     withProgress(message = "Generating PDF. Please wait...", {
+                     withProgress(message = "Generating HTML. Please wait...", {
                        setProgress(0, "Creating temporary files")
                        temp_report <- file.path(tempdir(), "report.Rmd")
                        file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_report, overwrite = TRUE)
@@ -490,10 +490,10 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                                       old_call_text=old_call_text(),
                                       file_name=file_name(),
                                       session=session)
-                       pdf_out <- rmarkdown::render(temp_report,output_file = file,
+                       HTML_out <- rmarkdown::render(temp_report,output_file = file,
                                                 params = params,
                                                 envir = new.env(parent = globalenv()))
-                       pdf_out
+                       HTML_out
                      })
                    }
                  )

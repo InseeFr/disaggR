@@ -9,7 +9,8 @@ params:
 title: "Benchmark report `r params$file_name`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  beamer_presentation
+  html_document:
+    theme: NULL
 ---
 
 ```{r include=F}
@@ -89,24 +90,39 @@ setProgress(0.3, "Rendering Rmd","Page 2/6",session=params$session)
 
 **Before**
 
-```{r echo=FALSE}
-autoplot(params$old_bn)
-```
 ```{r echo=FALSE,comment="\t"}
 cat(params$old_call_text)
 ```
 
 :::
 
+
 ::: {.column width="50%"}
 
 **After**
 
-```{r echo=FALSE}
-autoplot(params$new_bn)
-```
 ```{r echo=FALSE,comment="\t"}
 cat(params$new_call_text)
+```
+
+:::
+
+::::
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r echo=FALSE}
+autoplot(params$old_bn)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r echo=FALSE}
+autoplot(params$new_bn)
 ```
 
 :::
