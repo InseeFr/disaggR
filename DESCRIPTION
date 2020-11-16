@@ -25,7 +25,7 @@ Imports:
 	Rcpp,
 	rmarkdown,
 	scales,
-	shiny
+	shiny (>= 1.5.0)
 LinkingTo:
   Rcpp
 License: MIT + file LICENSE
