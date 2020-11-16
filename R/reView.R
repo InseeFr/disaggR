@@ -490,13 +490,12 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                                       old_call_text=old_call_text(),
                                       file_name=file_name(),
                                       session=session)
-                       pdf <- rmarkdown::render(temp_report,output_file = file,
+                       pdf_out <- rmarkdown::render(temp_report,output_file = file,
                                                 params = params,
-                                                envir = new.env(parent = globalenv()),
-                                                output_format = "pdf_document")
-                       pdf
+                                                envir = new.env(parent = globalenv()))
+                       pdf_out
                      })
-                   },contentType="application/octet-stream"
+                   }
                  )
                  
                  session$onSessionEnded(function() {

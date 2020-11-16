@@ -9,15 +9,11 @@ params:
 title: "Benchmark report `r params$file_name`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  pdf_document:
-    number_sections: yes
-papersize: a4
-geometry: left=1cm,right=1cm,top=0.5cm,bottom=0.5cm
-classoption: landscape
+  beamer_presentation
 ---
 
 ```{r include=F}
-knitr::opts_chunk$set(fig.align = "center",fig.width=12, fig.height=4)
+knitr::opts_chunk$set(fig.height = 3.5,dpi=49,out.width = "100%")
 hfserie <- model.list(params$new_bn)$hfserie
 hfserie <- hfserie[,colnames(hfserie) != "constant"]
 presets_ggplot_list <- disaggR:::presets_ggplot(hfserie,model.list(params$new_bn)$lfserie)
@@ -27,9 +23,13 @@ presets_ggplot_list <- disaggR:::presets_ggplot(hfserie,model.list(params$new_bn
 setProgress(0.1, "Rendering Rmd","Page 1/6",session=params$session)
 ```
 
-\twocolumn[\section{Presets}]
+# Presets
 
-\centerline{\textbf{Before}}
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Before**
 
 Model 1 (*differences --- with constant*)
 
@@ -49,9 +49,11 @@ Model 5 (*levels --- without constant*)
 presets_ggplot_list[[5]]
 ```
 
-\newpage
+:::
 
-\centerline{\textbf{After}}
+::: {.column width="50%"}
+
+**After**
 
 Model 2 (*differences --- without constant*)
 
@@ -71,121 +73,162 @@ Model 6 (*autocorrelated levels --- without constant*)
 presets_ggplot_list[[6]]
 ```
 
-\clearpage
+:::
+
+::::
 
 ```{r include=F}
 setProgress(0.3, "Rendering Rmd","Page 2/6",session=params$session)
 ```
 
-\twocolumn[\section{Benchmarks}]
+# Benchmarks
 
-\centerline{\textbf{Before}}
+:::: {.columns}
 
-```{r echo=FALSE, fig.height=6}
+::: {.column width="50%"}
+
+**Before**
+
+```{r echo=FALSE}
 autoplot(params$old_bn)
 ```
 ```{r echo=FALSE,comment="\t"}
 cat(params$old_call_text)
 ```
 
-\newpage
+:::
 
-\centerline{\textbf{After}}
+::: {.column width="50%"}
 
-```{r echo=FALSE, fig.height=6}
+**After**
+
+```{r echo=FALSE}
 autoplot(params$new_bn)
 ```
 ```{r echo=FALSE,comment="\t"}
 cat(params$new_call_text)
 ```
 
-\clearpage
+:::
+
+::::
 
 ```{r include=F}
 setProgress(0.4, "Rendering Rmd","Page 3/6",session=params$session)
 ```
 
-\twocolumn[\section{In-sample predictions}]
+# In-sample predictions
 
-\centerline{\textbf{Before}}
+:::: {.columns}
 
-```{r echo=FALSE, fig.height=7}
+::: {.column width="50%"}
+
+**Before**
+
+```{r echo=FALSE}
 autoplot(in_sample(params$old_bn,type="levels"))
 autoplot(in_sample(params$old_bn,type="changes"))
 ```
 
-\newpage
+:::
 
-\centerline{\textbf{After}}
+::: {.column width="50%"}
 
-```{r echo=FALSE, fig.height=7}
+**After**
+
+```{r echo=FALSE}
 autoplot(in_sample(params$new_bn,type="levels"))
 autoplot(in_sample(params$new_bn,type="changes"))
 ```
 
-\clearpage
+:::
+
+::::
 
 ```{r include=F}
 setProgress(0.5, "Rendering Rmd","Page 4/6",session=params$session)
 ```
 
-\twocolumn[\section{Summary}]
+# Summary
 
-\centerline{\textbf{Before}}
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Before**
 
 ```{r echo=FALSE}
 print(summary(params$old_bn),call=FALSE)
 ```
 
-\newpage
+:::
 
-\centerline{\textbf{After}}
+::: {.column width="50%"}
+
+**After**
 
 ```{r echo=FALSE}
 print(summary(params$new_bn),call=FALSE)
 ```
 
-\clearpage
+:::
+
+::::
 
 ```{r include=F}
 setProgress(0.6, "Rendering Rmd","Page 5/6",session=params$session)
 ```
 
-\twocolumn[\section{Comparison with indicator}]
+# Comparison with indicator
 
-\centerline{\textbf{Before}}
+:::: {.columns}
 
-```{r echo=FALSE, fig.height=4.5}
+::: {.column width="50%"}
+
+**Before**
+
+```{r echo=FALSE}
 autoplot(in_dicator(params$old_bn,type="levels-rebased"))
 autoplot(in_dicator(params$old_bn,type="changes"))
 autoplot(in_dicator(params$old_bn,type="contributions"))
 ```
 
-\newpage
+:::
 
-\centerline{\textbf{After}}
+::: {.column width="50%"}
 
-```{r echo=FALSE, fig.height=4.5}
+**After**
+
+```{r echo=FALSE}
 autoplot(in_dicator(params$new_bn,type="levels-rebased"))
 autoplot(in_dicator(params$new_bn,type="changes"))
 autoplot(in_dicator(params$new_bn,type="contributions"))
 ```
 
-\clearpage
+:::
+
+::::
 
 ```{r include=F}
 setProgress(0.8, "Rendering Rmd","Page 6/6",session=params$session)
 ```
 
-\onecolumn
-\section{Revisions}
+# Revisions
 
-```{r echo=FALSE, fig.height=2.3}
+:::: {.columns}
+
+::: {.column width="100%"}
+
+```{r echo=FALSE,fig.width=14}
 autoplot(in_revisions(params$new_bn,params$old_bn,type="levels"))
 autoplot(in_revisions(params$new_bn,params$old_bn,type="changes"))
 autoplot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
 ```
 
 ```{r include=F}
-setProgress(0.9, "Producing PDF","",session=params$session)
+setProgress(0.9, "Producing HTML","",session=params$session)
 ```
+
+:::
+
+::::
