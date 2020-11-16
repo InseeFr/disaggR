@@ -1,6 +1,3 @@
-copyjs <- function() includeScript(system.file("js/copy.js", package = "disaggR"))
-closewindowjs <- function() includeScript(system.file("js/closewindow.js", package = "disaggR"))
-
 plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
   output[[output_name]] <- renderPlot(object())
   plotOutput(ns(output_name),
@@ -167,6 +164,25 @@ reView_ui_tab3 <- function(id) {
              column(width=6,div("After",class="section"),div(id=ns("tocopy"),verbatimTextOutput(ns("newcall"))))
            ),
            fluidRow(
+             tags$script(
+               paste0(
+                 "Shiny.addCustomMessageHandler('",ns("closewindow"),"' closewindow );\n\n",
+                 "function closewindow(anymessage) {window.close();}"
+                   
+               )
+             ),
+             tags$script(
+               paste0(
+                 "Shiny.addCustomMessageHandler('",ns("copy"),"', copy );\n\n",
+                 "function copy(text) {
+                    var input = document.createElement('textarea');
+                    input.innerHTML = text;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(input);
+                  }")
+             ),
              column(3,actionButton(ns("Reset"),"Reset",width = "100%",
                                    class="btn-warning")),
              column(3,actionButton(ns("Quit"),"Quit",width = "100%",
@@ -185,8 +201,6 @@ reView_ui_tab3 <- function(id) {
 reView_ui_module <- function(id) {
   ns <- NS(id)
   navbarPage(title = "reView",id = ns("menu"),selected = "Presets",
-             tags$head(copyjs(),
-                       closewindowjs()),
              tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
              tabPanel("Presets",
                       reView_ui_tab1(ns("reViewtab1")),
@@ -491,11 +505,11 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                  
                  observeEvent(input$Quit,{
                    if (Sys.getenv('SHINY_PORT') == "") stopApp(new_bn())
-                   else session$sendCustomMessage("closewindow", "anymessage")
+                   else session$sendCustomMessage(session$ns("closewindow"), "anymessage")
                  })
                  
                  observeEvent(input$Copy,{
-                   session$sendCustomMessage("copy", new_call_text())
+                   session$sendCustomMessage(session$ns("copy"), new_call_text())
                    showModal(
                      modalDialog(title = "reView",
                                  "New model copied in the clipboard !",
