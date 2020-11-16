@@ -187,5 +187,5 @@ autoplot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
 ```
 
 ```{r include=F}
-setProgress(0.9, "Producing PDF",NULL,session=params$session)
+setProgress(0.9, "Producing PDF","",session=params$session)
 ```
