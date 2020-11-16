@@ -14,7 +14,7 @@ output:
 ---
 
 ```{r include=F}
-knitr::opts_chunk$set(fig.height = 3.5,dpi=49,out.width = "100%")
+knitr::opts_chunk$set(fig.height = 2.5,dpi=49,out.width = "100%")
 hfserie <- model.list(params$new_bn)$hfserie
 hfserie <- hfserie[,colnames(hfserie) != "constant"]
 presets_ggplot_list <- disaggR:::presets_ggplot(hfserie,model.list(params$new_bn)$lfserie)
@@ -199,23 +199,9 @@ setProgress(0.6, "Rendering Rmd","Page 5/6",session=params$session)
 
 :::: {.columns}
 
-::: {.column width="50%"}
+::: {.column width="100%"}
 
-**Before**
-
-```{r echo=FALSE}
-autoplot(in_dicator(params$old_bn,type="levels-rebased"))
-autoplot(in_dicator(params$old_bn,type="changes"))
-autoplot(in_dicator(params$old_bn,type="contributions"))
-```
-
-:::
-
-::: {.column width="50%"}
-
-**After**
-
-```{r echo=FALSE}
+```{r echo=FALSE,fig.width = 14}
 autoplot(in_dicator(params$new_bn,type="levels-rebased"))
 autoplot(in_dicator(params$new_bn,type="changes"))
 autoplot(in_dicator(params$new_bn,type="contributions"))
