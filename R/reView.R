@@ -85,21 +85,21 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   fluidRow(
-    tags$style(type = "text/css", ".presetplot {height: calc(33vh - 62px);}"),
+    tags$style(type = "text/css", paste0(".",ns("presetplot")," {height: calc(33vh - 62px);}")),
     column(6,
            p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
-           div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "100%"),class="presetplot"),
+           div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "100%"),class=ns("presetplot")),
            p("Model 3 (",em("levels \u2014 with constant",.noWS = "outside"),"):"),
-           div(plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "100%"),class="presetplot"),
+           div(plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "100%"),class=ns("presetplot")),
            p("Model 5 (",em("levels \u2014 without constant",.noWS = "outside"),")"),
-           div(plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "100%"),class="presetplot"))
+           div(plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "100%"),class=ns("presetplot")))
     ,column(6,
             p("Model 2 (",em("differences \u2014 without constant",.noWS = "outside"),")"),
-            div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "100%"),class="presetplot"),
+            div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "100%"),class=ns("presetplot")),
             p("Model 4 (",em("autocorrelated levels \u2014 with constant",.noWS = "outside"),")"),
-            div(plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "100%"),class="presetplot"),
+            div(plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "100%"),class=ns("presetplot")),
             p("Model 6 (",em("autocorrelated levels \u2014 without constant",.noWS = "outside"),")"),
-            div(plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "100%"),class="presetplot")),
+            div(plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "100%"),class=ns("presetplot"))),
     column(12,plotOutput(ns("legend"),height="30px"))
   )
 }
@@ -142,8 +142,8 @@ reView_ui_tab2 <- function(id) {
     mainPanel(
       width = 10,
       fluidRow(
-        tags$style(type = "text/css", ".mainouttitle {height: calc(100vh - 158px);}
-                                       .mainoutmono {height: calc(100vh - 138px);}"),
+        tags$style(type = "text/css", paste0(".",ns("mainouttitle")," {height: calc(100vh - 158px);}\n",
+                                             ".",ns("mainoutmono")," {height: calc(100vh - 138px);}")),
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","In-sample predictions",
@@ -234,16 +234,16 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
   switch(old_or_new,
          old={
            title <- div("Before",class="section")
-           outputclass <- "mainouttitle"
+           outputclass <- ns("mainouttitle")
          }
          ,
          new={
            title <- div("After",class="section")
-           outputclass <- "mainouttitle"
+           outputclass <- ns("mainouttitle")
          },
          mono={
            title <- NULL
-           outputclass <- "mainoutmono"
+           outputclass <- ns("mainoutmono")
          })
   
   # The oldbn arg is only for revisions
