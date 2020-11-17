@@ -1,3 +1,21 @@
+reView_output <- function(benchmark,benchmark_old) structure(list(benchmark=benchmark,
+                                                                  benchmark_old=benchmark_old),
+                                                             class="reViewOutput")
+
+#' @export
+`id_name<-` <- function(benchmark,value) {
+  parent <- parent.frame()
+  if (!inherits(benchmark,"twoStepsBenchmark")) stop("Not a twoStepsBenchmark object", call.=FALSE)
+  if (!(is.null(value)  ||
+        (is.character(value) && length(value) == 1L))) stop("id_name has to be either NULL or a character of length 1)", call. = FALSE)
+  
+  
+  
+  if (!grepl("^[a-zA-Z0-9_-]*$",value)) stop("id_name only accepts alphanumerics, \"_\" or \"-\"", call. = FALSE)
+  
+  assign(deparse(substitute(benchmark)), `attr<-`(benchmark, "id_name", value), parent)
+}
+
 plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
   output[[output_name]] <- renderPlot(object())
   plotOutput(ns(output_name),
@@ -41,6 +59,49 @@ presets_ggplot <- function(hfserie,lfserie,...) {
       ), ...
     )
   })
+}
+
+# The function set_new_bn is made for setting new_bn in shiny
+# while cleaning up its call argument
+
+make_new_bn <- function(hfserie_name,lfserie_name,name,
+                        hfserie,lfserie,
+                        include.differenciation,include.rho,
+                        set.coeff,
+                        set.const,
+                        start.coeff.calc,
+                        end.coeff.calc,
+                        start.benchmark,
+                        end.benchmark) {
+  
+  assign(hfserie_name,hfserie)
+  assign(lfserie_name,lfserie)
+  
+  force(include.differenciation);force(include.rho)
+  force(set.coeff);force(set.const)
+  force(start.coeff.calc);force(end.coeff.calc)
+  force(start.benchmark);force(end.benchmark)
+  
+  bn <- eval(substitute(twoStepsBenchmark(hfserie = hfserie_arg,lfserie = lfserie_arg,
+                                          include.differenciation = include.differenciation_arg,
+                                          include.rho = include.rho_arg,
+                                          set.coeff = set.coeff_arg,
+                                          set.const = set.const_arg,
+                                          start.coeff.calc = start.coeff.calc_arg,
+                                          end.coeff.calc = end.coeff.calc_arg,
+                                          start.benchmark = start.benchmark_arg,
+                                          end.benchmark = end.benchmark_arg),
+                        list(hfserie_arg = parse(text=hfserie_name)[[1L]],lfserie_arg = parse(text=lfserie_name)[[1L]],
+                             include.differenciation_arg = include.differenciation,
+                             include.rho_arg = include.rho,
+                             set.coeff_arg = set.coeff,
+                             set.const_arg = set.const,
+                             start.coeff.calc_arg = start.coeff.calc,
+                             end.coeff.calc_arg = end.coeff.calc,
+                             start.benchmark_arg = start.benchmark,
+                             end.benchmark_arg = end.benchmark)))
+  id_name(bn) <- name
+  bn
 }
 
 display_vector <- function(x) switch(length(x),
@@ -168,7 +229,7 @@ reView_ui_tab3 <- function(id) {
                paste0(
                  "Shiny.addCustomMessageHandler('",ns("closewindow"),"' closewindow );\n\n",
                  "function closewindow(anymessage) {window.close();}"
-                   
+                 
                )
              ),
              tags$script(
@@ -198,9 +259,11 @@ reView_ui_tab3 <- function(id) {
 #' @rdname reView
 #' @export
 #' @keywords internal
-reView_ui_module <- function(id) {
+reView_ui_module <- function(id,name) {
   ns <- NS(id)
-  navbarPage(title = "reView",id = ns("menu"),selected = "Presets",
+  navbarPage(title = paste0("reView: ",name),
+             id = ns("menu"),
+             selected = "Presets",
              tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
              tabPanel("Presets",
                       reView_ui_tab1(ns("reViewtab1")),
@@ -214,7 +277,7 @@ reView_ui_module <- function(id) {
   )
 }
 
-reView_ui <- function(old_bn) reView_ui_module("reView")
+reView_ui <- function(name) reView_ui_module("reView",name)
 
 #### server ####
 
@@ -243,7 +306,7 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
                })
 }
 
-reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,output,old_or_new,ns,oldbn=NULL) {
+reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,output,old_or_new,ns,old_bn = NULL) {
   
   switch(old_or_new,
          old={
@@ -260,7 +323,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
            outputclass <- ns("mainoutmono")
          })
   
-  # The oldbn arg is only for revisions
+  # The old_bn arg is only for revisions
   switch(mainout_choice,
          "Benchmark" = {
            fluidRow(
@@ -340,7 +403,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
            fluidRow(
              column(12,
                     title,
-                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                    div(plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),old_bn,
                                                                              type="levels"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
@@ -348,7 +411,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               paste0(old_or_new,"plotlev"),
                                               ns,
                                               height="33%"),
-                        plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                        plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),old_bn,
                                                                              type="changes"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
@@ -356,7 +419,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               paste0(old_or_new,"plotcha"),
                                               ns,
                                               height="33%"),
-                        plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),oldbn(),
+                        plotOutBrushAndRender(reactive(autoplot(in_revisions(benchmark(),old_bn,
                                                                              type="contributions"),
                                                                 start=plotswin()[1L],
                                                                 end=plotswin()[2L])),
@@ -372,7 +435,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
 reView_server_tab2_switch <- function(new_bn,old_bn,mainout_choice,plotswin,output,ns,compare) {
   if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
     fluidRow(
-      column(6,fluidRow(column(12,reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
+      column(6,fluidRow(column(12,reView_server_tab2_switch_impl(reactive(old_bn),mainout_choice,plotswin,output,"old",ns),
                                style=boxstyle),style=lrmargins)),
       column(6,fluidRow(column(12,
                                reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns),
@@ -383,7 +446,10 @@ reView_server_tab2_switch <- function(new_bn,old_bn,mainout_choice,plotswin,outp
                        style=boxstyle),style=lrmargins)
 }
 
-reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset,reset) {
+reView_server_tab2 <- function(id,lfserie,hfserie,
+                               hfserie_name,lfserie_name,
+                               old_bn,compare,
+                               selected_preset,reset) {
   moduleServer(id,
                function(input,output,session) {
                  
@@ -396,8 +462,8 @@ reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset
                    updateNumericInput(session,"setconst",value = setconst)
                  },ignoreNULL = TRUE)
                  
-                 observeEvent({reset();old_bn()},{
-                   model <- get_model(old_bn())
+                 observeEvent(reset(),{
+                   model <- get_model(old_bn)
                    updateCheckboxInput(session,"dif",value = model$include.differenciation)
                    updateCheckboxInput(session,"rho",value = model$include.rho)
                    if (length(model$set.coeff) != 0) {
@@ -440,54 +506,55 @@ reView_server_tab2 <- function(id,lfserie,hfserie,old_bn,compare,selected_preset
                  },
                  ignoreNULL = TRUE)
                  
-                 new_bn <- reactive({twoStepsBenchmark(hfserie(),lfserie(),
-                                                       include.differenciation = input$dif,
-                                                       include.rho = input$rho,
-                                                       set.coeff = {
-                                                         if (input$setcoeff_button) {
-                                                           if (is.na(input$setcoeff)) 0
-                                                           else input$setcoeff
-                                                         }
-                                                         else NULL
-                                                       },
-                                                       set.const = {
-                                                         if (input$setconst_button) {
-                                                           if (is.na(input$setconst)) 0
-                                                           else input$setconst
-                                                         }
-                                                         else NULL
-                                                       },
-                                                       start.coeff.calc = input$coeffcalc[1],
-                                                       end.coeff.calc = input$coeffcalc[2],
-                                                       start.benchmark = input$benchmark[1],
-                                                       end.benchmark = input$benchmark[2])})
+                 new_bn <- reactive({
+                   make_new_bn(hfserie_name,lfserie_name,id_name(old_bn),
+                               hfserie(),lfserie(),
+                               include.differenciation = input$dif,
+                               include.rho = input$rho,
+                               set.coeff = {
+                                 if (input$setcoeff_button) {
+                                   if (is.na(input$setcoeff)) 0
+                                   else input$setcoeff
+                                 }
+                                 else NULL
+                               },
+                               set.const = {
+                                 if (input$setconst_button) {
+                                   if (is.na(input$setconst)) 0
+                                   else input$setconst
+                                 }
+                                 else NULL
+                               },
+                               start.coeff.calc = input$coeffcalc[1],
+                               end.coeff.calc = input$coeffcalc[2],
+                               start.benchmark = input$benchmark[1],
+                               end.benchmark = input$benchmark[2])})
                  new_bn})
 }
 
 #' @importFrom rmarkdown render
-reView_server_tab3 <- function(id,old_bn,new_bn) {
+reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compare) {
   moduleServer(id,
                function(input,output,session) {
-                 hfserie_name <- reactive(deparse(old_bn()$call$hfserie))
-                 lfserie_name <- reactive(deparse(old_bn()$call$lfserie))
-                 new_call_text <- reactive(benchmarkCall(new_bn(),hfserie_name(),lfserie_name()))
-                 old_call_text <- reactive(benchmarkCall(old_bn(),hfserie_name(),lfserie_name()))
+                 new_call_text <- reactive(benchmarkCall(new_bn(),hfserie_name,lfserie_name))
+                 old_call_text <- reactive(if (compare) benchmarkCall(old_bn,hfserie_name,lfserie_name)
+                                           else "No model to compare.")
                  output$oldcall <- renderText(old_call_text())
                  output$newcall <- renderText(new_call_text())
                  
-                 file_name <- reactive(paste("benchmark",hfserie_name(),lfserie_name(),sep="-"))
+                 file_name <- reactive(paste("benchmark",hfserie_name,lfserie_name,sep="-"))
                  
                  output$Export <- downloadHandler(
-                   filename = paste0(file_name(),".rds"),
-                   content = function(file) saveRDS(new_bn(),file)
+                   filename = paste0(id_name(new_bn()),".rds"),
+                   content = function(file) saveRDS(reView_output(old_bn,new_bn()),file)
                  )
                  
                  session$onSessionEnded(function() {
-                   if (Sys.getenv('SHINY_PORT') == "") stopApp()
+                   if (Sys.getenv('SHINY_PORT') == "") isolate(stopApp(reView_output(old_bn,new_bn())))
                  })
                  
                  observeEvent(input$Quit,{
-                   if (Sys.getenv('SHINY_PORT') == "") stopApp(new_bn())
+                   if (Sys.getenv('SHINY_PORT') == "") stopApp(stopApp(reView_output(old_bn,new_bn())))
                    else session$sendCustomMessage(session$ns("closewindow"), "anymessage")
                  })
                  
@@ -508,12 +575,12 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
 #' @rdname reView
 #' @export
 #' @keywords internal
-reView_server_module <- function(id,old_bn,compare) {
+reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
   moduleServer(id,function(input, output, session) {
     
-    lfserie <- reactive(model.list(old_bn())$lfserie)
+    lfserie <- reactive(model.list(old_bn)$lfserie)
     hfserie <- reactive({
-      res <- model.list(old_bn())$hfserie
+      res <- model.list(old_bn)$hfserie
       res[,colnames(res) != "constant"]
     })
     
@@ -524,26 +591,31 @@ reView_server_module <- function(id,old_bn,compare) {
     
     # tab 2 : Modify
     
-    new_bn <- reView_server_tab2("reViewtab2",lfserie,hfserie,old_bn,compare,selected_preset,reset)
+    new_bn <- reView_server_tab2("reViewtab2",lfserie,hfserie,
+                                 hfserie_name,lfserie_name,
+                                 old_bn,compare,
+                                 selected_preset,reset)
     
     # tab3 : Export
     
-    reset <- reView_server_tab3("reViewtab3",old_bn,new_bn)
+    reset <- reView_server_tab3("reViewtab3",old_bn,new_bn,hfserie_name,lfserie_name,compare)
     observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)    
   })
 }
-reView_server <- function(old_bn,compare) {
+reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
   function(input,output,session) {
-    reView_server_module("reView",reactive(old_bn),compare)
+    reView_server_module("reView",old_bn,hfserie_name,lfserie_name,compare)
   }
 }
 
 #### runner ####
 
-runapp_disaggr <- function(old_bn,compare) {
+runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
   shinyreturn <- shiny::runApp(
-    shiny::shinyApp(ui = reView_ui(old_bn),
-                    server = reView_server(old_bn,compare)
+    shiny::shinyApp(ui = reView_ui(id_name(old_bn)),
+                    server = reView_server(old_bn,
+                                           hfserie_name,lfserie_name,
+                                           compare)
     ),
     quiet = TRUE
   )
@@ -557,8 +629,29 @@ runapp_disaggr <- function(old_bn,compare) {
 #' 
 #' @export
 #' @import shiny
-reView <- function(benchmark) {
+reView <- function(benchmark,
+                   id_name = id_name(benchmark),
+                   compare=TRUE) {
+  if (is.null(id_name)) stop("An name identifying the benchmark has to be chosen.",call. = FALSE)
+  id_name(benchmark) <- id_name
   if (length(coef(benchmark)) > 2) stop("This reviewing application is
                                         only for univariate benchmarks.")
-  runapp_disaggr(benchmark,compare=TRUE)
+  runapp_reView(benchmark,deparse(benchmark$call$hfserie),deparse(benchmark$call$lfserie),compare=compare)
+}
+
+#' @export
+rePort <- function(object,output_file=NULL,compare=TRUE,...) UseMethod("rePort")
+
+#' @export
+rePort.reViewOutput <- function(object,
+                                output_file=NULL,
+                                compare=TRUE,...) {
+  temp_report <- file.path(tempdir(), "report.Rmd")
+  file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_report, overwrite = TRUE)
+  rmarkdown::render(temp_report,output_file = output_file,
+                    params = list(new_bn=object$benchmark,
+                                  old_bn=object$benchmark_old,
+                                  title = id_name(object$new_bn)),
+                    envir = new.env(parent = globalenv()),
+                    ...)
 }

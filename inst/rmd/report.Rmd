@@ -2,19 +2,18 @@
 params:
   new_bn: NA
   old_bn: NA
-  new_call_text: NA
-  old_call_text: NA
-  file_name : NA
-  session : NA
-title: "Benchmark report `r params$file_name`"
+  title : NA
+title: "Benchmark report `r params$title`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  beamer_presentation
+  html_document:
+    theme: NULL
 ---
 
 ```{r include=F}
 knitr::opts_chunk$set(fig.height = 2.5,dpi=49,out.width = "100%")
 knitr::opts_knit$set(global.par = TRUE)
+hfserie_name <- deparse(benchmark$call$hfserie)
 hfserie <- model.list(params$new_bn)$hfserie
 hfserie <- hfserie[,colnames(hfserie) != "constant"]
 
@@ -33,10 +32,6 @@ presets_list <- presets_list_fun(hfserie,model.list(params$new_bn)$lfserie)
 
 ```{r include=FALSE}
 graphpar <- par(mar = c(1,0,0,0))
-```
-
-```{r include=F}
-setProgress(0.1, "Rendering Rmd","Page 1/6",session=params$session)
 ```
 
 # Presets
@@ -93,10 +88,6 @@ plot(presets_list[[6]])
 
 ::::
 
-```{r include=F}
-setProgress(0.3, "Rendering Rmd","Page 2/6",session=params$session)
-```
-
 # Benchmarks
 
 :::: {.columns}
@@ -106,7 +97,7 @@ setProgress(0.3, "Rendering Rmd","Page 2/6",session=params$session)
 **Before**
 
 ```{r echo=FALSE,comment="\t"}
-cat(params$old_call_text)
+cat(disaggR:::benchmarkCall(params$new_bn))
 ```
 
 :::
@@ -117,7 +108,7 @@ cat(params$old_call_text)
 **After**
 
 ```{r echo=FALSE,comment="\t"}
-cat(params$new_call_text)
+cat(disaggR:::benchmarkCall(params$old_bn))
 ```
 
 :::
@@ -143,10 +134,6 @@ plot(params$new_bn)
 :::
 
 ::::
-
-```{r include=F}
-setProgress(0.4, "Rendering Rmd","Page 3/6",session=params$session)
-```
 
 # In-sample predictions
 
@@ -176,10 +163,6 @@ plot(in_sample(params$new_bn,type="changes"))
 
 ::::
 
-```{r include=F}
-setProgress(0.5, "Rendering Rmd","Page 4/6",session=params$session)
-```
-
 # Summary
 
 :::: {.columns}
@@ -206,10 +189,6 @@ print(summary(params$new_bn),call=FALSE)
 
 ::::
 
-```{r include=F}
-setProgress(0.6, "Rendering Rmd","Page 5/6",session=params$session)
-```
-
 # Comparison with indicator
 
 :::: {.columns}
@@ -226,10 +205,6 @@ plot(in_dicator(params$new_bn,type="contributions"))
 
 ::::
 
-```{r include=F}
-setProgress(0.8, "Rendering Rmd","Page 6/6",session=params$session)
-```
-
 # Revisions
 
 :::: {.columns}
@@ -243,7 +218,6 @@ plot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
 ```
 
 ```{r include=F}
-setProgress(0.9, "Producing HTML","",session=params$session)
 par(graphpar)
 ```
 

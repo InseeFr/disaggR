@@ -6,11 +6,11 @@
 \alias{reView}
 \title{reView}
 \usage{
-reView_ui_module(id)
+reView_ui_module(id, name)
 
-reView_server_module(id, old_bn, compare)
+reView_server_module(id, old_bn, hfserie_name, lfserie_name, compare)
 
-reView(benchmark)
+reView(benchmark, name = reVname(benchmark), compare = TRUE)
 }
 \description{
 A shiny app to reView twoStepsBenchmarks.
