@@ -478,7 +478,7 @@ reView_server_tab3 <- function(id,old_bn,new_bn) {
                  file_name <- reactive(paste("benchmark",hfserie_name(),lfserie_name(),sep="-"))
                  
                  output$Export <- downloadHandler(
-                   filename = paste0(file_name(),".HTML"),
+                   filename = paste0(file_name(),".html"),
                    content = function(file) {
                      withProgress(message = "Generating HTML. Please wait...", {
                        setProgress(0, "Creating temporary files")
