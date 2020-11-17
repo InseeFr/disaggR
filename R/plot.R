@@ -32,7 +32,7 @@ default_lty_pal <- function() linetype_pal()
 
 #### Base plots
 
-plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
+plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,mar,...) {
   
   if (is.null(xlab)) xlab <- ""
   if (is.null(ylab)) ylab <- ""
@@ -88,11 +88,12 @@ barplot_mts <- function (height,xlab,ylab,col,space = c(1L, 3L, 1L), ...) {
   invisible()
 }
 
-draw_x_axe <- function(timex) {
-  axis(side = 2L)
+draw_axes <- function(timex) {
+  axis(side = 2L, labels=NA, tick = TRUE)
+  axis(side = 2L, tick = FALSE, line=-0.5, cex.axis=0.75)
   year <- floor(timex)
-  axis(side = 1, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
-  axis(side = 1, at = year + 0.5, labels = year, tick = FALSE, line = -1, cex.axis=0.75)
+  axis(side = 1L, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
+  axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1, cex.axis=0.75)
 }
 
 window_default <- function(x,start,end) {
@@ -169,6 +170,10 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                    show.legend = TRUE,
                                    ...) {
   
+  mar <- par("mar")
+  on.exit(par(mar=mar))
+  par(mar=c(1,1.5,0,0))
+  
   model <- model.list(x)
   x <- as.ts(x)
   
@@ -189,14 +194,14 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                          nfrequency=frequency(model$hfserie)),
                                col = col[2L],
                                lty = lty[2L]),
-    time(model$lfserie)+deltat(model$hfserie),
+    time(model$lfserie)+deltat(model$hfserie)/2,
     model$lfserie
   )
   
   if (show.legend) legend("bottomleft",legend=c("Benchmark", "Low-Frequency serie"),
                           col=col,lty=lty,horiz=TRUE,bty="n",cex=0.8)
   
-  draw_x_axe(time(x))
+  draw_axes(time(x))
   
   invisible()
 }
@@ -207,6 +212,10 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
                               lty=default_lty_pal(),
                               show.legend=TRUE,
                               ...) {
+  
+  mar <- par("mar")
+  on.exit(par(mar=mar))
+  par(mar=c(1,1.5,0,0))
   
   type_label <- type_label(x)
   func <- attr(x,"func")
@@ -232,7 +241,7 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
                 ...)
   }
   
-  draw_x_axe(time(x))
+  draw_axes(time(x))
   
   invisible()
 }

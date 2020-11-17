@@ -17,16 +17,6 @@ knitr::opts_knit$set(global.par = TRUE)
 hfserie <- model.list(params$new_bn)$hfserie
 hfserie <- hfserie[,colnames(hfserie) != "constant"]
 
-presets_list_fun <- function(hfserie,lfserie,...) {
-  lapply(1L:6L,function(type) {
-      in_sample(
-        twoStepsBenchmark(hfserie,lfserie,
-                          include.differenciation = presets$include.differenciation[type],
-                          include.rho = presets$include.rho[type],
-                          set.const = presets$set.const[[type]])
-      )
-  })
-}
 presets_list <- presets_list_fun(hfserie,model.list(params$new_bn)$lfserie)
 ```
 
