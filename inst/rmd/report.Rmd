@@ -2,8 +2,9 @@
 params:
   new_bn: NA
   old_bn: NA
-  title : NA
-title: "Benchmark report `r params$title`"
+  hfserie_name: NA
+  lfserie_name: NA
+title: "Benchmark report `r params$hfserie_name` on `r params$lfserie_name`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   html_document:
@@ -13,7 +14,6 @@ output:
 ```{r include=F}
 knitr::opts_chunk$set(fig.height = 2.5,dpi=49,out.width = "100%")
 knitr::opts_knit$set(global.par = TRUE)
-hfserie_name <- deparse(benchmark$call$hfserie)
 hfserie <- model.list(params$new_bn)$hfserie
 hfserie <- hfserie[,colnames(hfserie) != "constant"]
 
@@ -45,19 +45,19 @@ graphpar <- par(mar = c(1,0,0,0))
 Model 1 (*differences --- with constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[1]])
+autoplot(presets_list[[1]])
 ```
 
 Model 3 (*levels --- with constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[3]])
+autoplot(presets_list[[3]])
 ```
 
 Model 5 (*levels --- without constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[5]])
+autoplot(presets_list[[5]])
 ```
 
 :::
@@ -69,19 +69,19 @@ plot(presets_list[[5]])
 Model 2 (*differences --- without constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[2]])
+autoplot(presets_list[[2]])
 ```
 
 Model 4 (*autocorrelated levels --- with constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[4]])
+autoplot(presets_list[[4]])
 ```
 
 Model 6 (*autocorrelated levels --- without constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[6]])
+autoplot(presets_list[[6]])
 ```
 
 :::
@@ -97,7 +97,7 @@ plot(presets_list[[6]])
 **Before**
 
 ```{r echo=FALSE,comment="\t"}
-cat(disaggR:::benchmarkCall(params$new_bn))
+cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_name))
 ```
 
 :::
@@ -108,7 +108,7 @@ cat(disaggR:::benchmarkCall(params$new_bn))
 **After**
 
 ```{r echo=FALSE,comment="\t"}
-cat(disaggR:::benchmarkCall(params$old_bn))
+cat(disaggR:::benchmarkCall(params$old_bn,params$hfserie_name,params$lfserie_name))
 ```
 
 :::
@@ -120,7 +120,7 @@ cat(disaggR:::benchmarkCall(params$old_bn))
 ::: {.column width="50%"}
 
 ```{r echo=FALSE}
-plot(params$old_bn)
+autoplot(params$old_bn)
 ```
 
 :::
@@ -128,7 +128,7 @@ plot(params$old_bn)
 ::: {.column width="50%"}
 
 ```{r echo=FALSE}
-plot(params$new_bn)
+autoplot(params$new_bn)
 ```
 
 :::
@@ -144,8 +144,8 @@ plot(params$new_bn)
 **Before**
 
 ```{r echo=FALSE}
-plot(in_sample(params$old_bn,type="levels"))
-plot(in_sample(params$old_bn,type="changes"))
+autoplot(in_sample(params$old_bn,type="levels"))
+autoplot(in_sample(params$old_bn,type="changes"))
 ```
 
 :::
@@ -155,8 +155,8 @@ plot(in_sample(params$old_bn,type="changes"))
 **After**
 
 ```{r echo=FALSE}
-plot(in_sample(params$new_bn,type="levels"))
-plot(in_sample(params$new_bn,type="changes"))
+autoplot(in_sample(params$new_bn,type="levels"))
+autoplot(in_sample(params$new_bn,type="changes"))
 ```
 
 :::
@@ -196,9 +196,9 @@ print(summary(params$new_bn),call=FALSE)
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,fig.width = 14}
-plot(in_dicator(params$new_bn,type="levels-rebased"))
-plot(in_dicator(params$new_bn,type="changes"))
-plot(in_dicator(params$new_bn,type="contributions"))
+autoplot(in_dicator(params$new_bn,type="levels-rebased"))
+autoplot(in_dicator(params$new_bn,type="changes"))
+autoplot(in_dicator(params$new_bn,type="contributions"))
 ```
 
 :::
@@ -212,9 +212,9 @@ plot(in_dicator(params$new_bn,type="contributions"))
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,fig.width=14}
-plot(in_revisions(params$new_bn,params$old_bn,type="levels"))
-plot(in_revisions(params$new_bn,params$old_bn,type="changes"))
-plot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
+autoplot(in_revisions(params$new_bn,params$old_bn,type="levels"))
+autoplot(in_revisions(params$new_bn,params$old_bn,type="changes"))
+autoplot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
 ```
 
 ```{r include=F}

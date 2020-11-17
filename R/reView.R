@@ -2,20 +2,6 @@ reView_output <- function(benchmark,benchmark_old) structure(list(benchmark=benc
                                                                   benchmark_old=benchmark_old),
                                                              class="reViewOutput")
 
-#' @export
-`id_name<-` <- function(benchmark,value) {
-  parent <- parent.frame()
-  if (!inherits(benchmark,"twoStepsBenchmark")) stop("Not a twoStepsBenchmark object", call.=FALSE)
-  if (!(is.null(value)  ||
-        (is.character(value) && length(value) == 1L))) stop("id_name has to be either NULL or a character of length 1)", call. = FALSE)
-  
-  
-  
-  if (!grepl("^[a-zA-Z0-9_-]*$",value)) stop("id_name only accepts alphanumerics, \"_\" or \"-\"", call. = FALSE)
-  
-  assign(deparse(substitute(benchmark)), `attr<-`(benchmark, "id_name", value), parent)
-}
-
 plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
   output[[output_name]] <- renderPlot(object())
   plotOutput(ns(output_name),
@@ -64,7 +50,7 @@ presets_ggplot <- function(hfserie,lfserie,...) {
 # The function set_new_bn is made for setting new_bn in shiny
 # while cleaning up its call argument
 
-make_new_bn <- function(hfserie_name,lfserie_name,name,
+make_new_bn <- function(hfserie_name,lfserie_name,
                         hfserie,lfserie,
                         include.differenciation,include.rho,
                         set.coeff,
@@ -100,8 +86,6 @@ make_new_bn <- function(hfserie_name,lfserie_name,name,
                              end.coeff.calc_arg = end.coeff.calc,
                              start.benchmark_arg = start.benchmark,
                              end.benchmark_arg = end.benchmark)))
-  id_name(bn) <- name
-  bn
 }
 
 display_vector <- function(x) switch(length(x),
@@ -259,9 +243,9 @@ reView_ui_tab3 <- function(id) {
 #' @rdname reView
 #' @export
 #' @keywords internal
-reView_ui_module <- function(id,name) {
+reView_ui_module <- function(id,hfserie_name,lfserie_name) {
   ns <- NS(id)
-  navbarPage(title = paste0("reView: ",name),
+  navbarPage(title = paste("reView:",hfserie_name,"on", lfserie_name),
              id = ns("menu"),
              selected = "Presets",
              tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
@@ -277,7 +261,7 @@ reView_ui_module <- function(id,name) {
   )
 }
 
-reView_ui <- function(name) reView_ui_module("reView",name)
+reView_ui <- function(hfserie_name,lfserie_name) reView_ui_module("reView",hfserie_name,lfserie_name)
 
 #### server ####
 
@@ -507,7 +491,7 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                  ignoreNULL = TRUE)
                  
                  new_bn <- reactive({
-                   make_new_bn(hfserie_name,lfserie_name,id_name(old_bn),
+                   make_new_bn(hfserie_name,lfserie_name,
                                hfserie(),lfserie(),
                                include.differenciation = input$dif,
                                include.rho = input$rho,
@@ -545,7 +529,7 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                  file_name <- reactive(paste("benchmark",hfserie_name,lfserie_name,sep="-"))
                  
                  output$Export <- downloadHandler(
-                   filename = paste0(id_name(new_bn()),".rds"),
+                   filename = paste("benchmark",hfserie_name,lfserie_name,".rds",sep="-"),
                    content = function(file) saveRDS(reView_output(old_bn,new_bn()),file)
                  )
                  
@@ -612,7 +596,7 @@ reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
 
 runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
   shinyreturn <- shiny::runApp(
-    shiny::shinyApp(ui = reView_ui(id_name(old_bn)),
+    shiny::shinyApp(ui = reView_ui(hfserie_name,lfserie_name),
                     server = reView_server(old_bn,
                                            hfserie_name,lfserie_name,
                                            compare)
@@ -630,28 +614,35 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 #' @export
 #' @import shiny
 reView <- function(benchmark,
-                   id_name = id_name(benchmark),
+                   hfserie_name=deparse(benchmark$call$hfserie),
+                   lfserie_name=deparse(benchmark$call$lfserie),
                    compare=TRUE) {
-  if (is.null(id_name)) stop("An name identifying the benchmark has to be chosen.",call. = FALSE)
-  id_name(benchmark) <- id_name
   if (length(coef(benchmark)) > 2) stop("This reviewing application is
                                         only for univariate benchmarks.")
-  runapp_reView(benchmark,deparse(benchmark$call$hfserie),deparse(benchmark$call$lfserie),compare=compare)
+  runapp_reView(benchmark,hfserie_name,lfserie_name,compare=compare)
 }
 
 #' @export
-rePort <- function(object,output_file=NULL,compare=TRUE,...) UseMethod("rePort")
+rePort <- function(object,...) UseMethod("rePort")
 
 #' @export
 rePort.reViewOutput <- function(object,
                                 output_file=NULL,
+                                hfserie_name=deparse(object$benchmark$call$hfserie),
+                                lfserie_name=deparse(object$benchmark$call$lfserie),
                                 compare=TRUE,...) {
-  temp_report <- file.path(tempdir(), "report.Rmd")
-  file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_report, overwrite = TRUE)
-  rmarkdown::render(temp_report,output_file = output_file,
+  temp_dir <- tempdir()
+  temp_rmd <- file.path(temp_dir, "report.Rmd")
+  temp_html <- file.path(temp_dir, "report.html")
+  file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_rmd, overwrite = TRUE)
+  rmarkdown::render(temp_rmd,output_file=temp_html,
                     params = list(new_bn=object$benchmark,
                                   old_bn=object$benchmark_old,
-                                  title = id_name(object$new_bn)),
+                                  hfserie_name=hfserie_name,
+                                  lfserie_name=lfserie_name),
                     envir = new.env(parent = globalenv()),
                     ...)
+  if (is.null(output_file))  browseURL(temp_html)
+  else file.copy(temp_html, output_file, overwrite = TRUE)
+  invisible()
 }
