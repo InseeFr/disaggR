@@ -57,9 +57,9 @@ plot_init_x <- function(x, xlab, ylab, ...) {
             xlab = xlab, ylab = ylab, ...)
 }
 
-barplot_mts <- function (height,xlab,ylab,col,space = c(1L, 3L, 1L), ...) {
+barplot_mts <- function (height,xlab,ylab,col,space = c(0, 1L, 0), ...) {
+  
   timeh <- time(height)
-  freq <- frequency(height)
   
   pser <- height * (height > 0)
   nser <- height * (height < 0)
@@ -70,14 +70,13 @@ barplot_mts <- function (height,xlab,ylab,col,space = c(1L, 3L, 1L), ...) {
   
   plot_init_x(cbind(nnser,ppser),xlab = xlab, ylab = ylab, ...)
   
-  xxx <- 1/sum(c(2, freq, freq - 1) * space[1:3])
+  d <- deltat(height)
   
   cc <- cycle(pser)
-  xleft <- floor(round(timeh, 4)) +
-    (space[1] + (cc - 1) * space[2] +(cc - 1) * space[3]) * xxx
-  xright <- xleft + space[2] * xxx
+  xleft <- floor(timeh) + (cc - 1) * d
+  xright <- xleft + d
   
-  for (i in ncol(height):1L) {
+  for (i in 1L:ncol(height)) {
     rect(xleft = xleft, xright = xright,
          ybottom = nnser, ytop = ppser,
          col = col[i],border=FALSE)
