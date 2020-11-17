@@ -243,25 +243,12 @@ reView_ui_tab3 <- function(id) {
 #' @rdname reView
 #' @export
 #' @keywords internal
-reView_ui_module <- function(id,hfserie_name,lfserie_name) {
+reView_ui_module <- function(id) {
   ns <- NS(id)
-  navbarPage(title = paste("reView:",hfserie_name,"on", lfserie_name),
-             id = ns("menu"),
-             selected = "Presets",
-             tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
-             tabPanel("Presets",
-                      reView_ui_tab1(ns("reViewtab1")),
-             ),
-             tabPanel("Modify",
-                      reView_ui_tab2(ns("reViewtab2"))
-             ),
-             tabPanel("Export",
-                      reView_ui_tab3(ns("reViewtab3"))
-             )
-  )
+  uiOutput(ns("navbar"))
 }
 
-reView_ui <- function(hfserie_name,lfserie_name) reView_ui_module("reView",hfserie_name,lfserie_name)
+reView_ui <- reView_ui_module("reView")
 
 #### server ####
 
@@ -562,6 +549,22 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
 reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
   moduleServer(id,function(input, output, session) {
     
+    output$navbar <- renderUI({
+      navbarPage(title = paste("reView:",hfserie_name,"on", lfserie_name),
+                 id = session$ns("menu"),
+                 selected = "Presets",
+                 tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
+                 tabPanel("Presets",
+                          reView_ui_tab1(session$ns("reViewtab1")),
+                 ),
+                 tabPanel("Modify",
+                          reView_ui_tab2(session$ns("reViewtab2"))
+                 ),
+                 tabPanel("Export",
+                          reView_ui_tab3(session$ns("reViewtab3"))
+                 ))
+    })
+    
     lfserie <- reactive(model.list(old_bn)$lfserie)
     hfserie <- reactive({
       res <- model.list(old_bn)$hfserie
@@ -596,7 +599,7 @@ reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
 
 runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
   shinyreturn <- shiny::runApp(
-    shiny::shinyApp(ui = reView_ui(hfserie_name,lfserie_name),
+    shiny::shinyApp(ui = reView_ui,
                     server = reView_server(old_bn,
                                            hfserie_name,lfserie_name,
                                            compare)
