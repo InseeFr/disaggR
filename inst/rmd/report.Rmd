@@ -9,15 +9,30 @@ params:
 title: "Benchmark report `r params$file_name`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  html_document:
-    theme: NULL
+  beamer_presentation
 ---
 
 ```{r include=F}
 knitr::opts_chunk$set(fig.height = 2.5,dpi=49,out.width = "100%")
+knitr::opts_knit$set(global.par = TRUE)
 hfserie <- model.list(params$new_bn)$hfserie
 hfserie <- hfserie[,colnames(hfserie) != "constant"]
-presets_ggplot_list <- disaggR:::presets_ggplot(hfserie,model.list(params$new_bn)$lfserie)
+
+presets_list_fun <- function(hfserie,lfserie,...) {
+  lapply(1L:6L,function(type) {
+      in_sample(
+        twoStepsBenchmark(hfserie,lfserie,
+                          include.differenciation = presets$include.differenciation[type],
+                          include.rho = presets$include.rho[type],
+                          set.const = presets$set.const[[type]])
+      )
+  })
+}
+presets_list <- presets_list_fun(hfserie,model.list(params$new_bn)$lfserie)
+```
+
+```{r include=FALSE}
+graphpar <- par(mar = c(1,0,0,0))
 ```
 
 ```{r include=F}
@@ -35,19 +50,19 @@ setProgress(0.1, "Rendering Rmd","Page 1/6",session=params$session)
 Model 1 (*differences --- with constant*)
 
 ```{r echo=FALSE}
-presets_ggplot_list[[1]]
+plot(presets_list[[1]])
 ```
 
 Model 3 (*levels --- with constant*)
 
 ```{r echo=FALSE}
-presets_ggplot_list[[3]]
+plot(presets_list[[3]])
 ```
 
 Model 5 (*levels --- without constant*)
 
 ```{r echo=FALSE}
-presets_ggplot_list[[5]]
+plot(presets_list[[5]])
 ```
 
 :::
@@ -59,19 +74,19 @@ presets_ggplot_list[[5]]
 Model 2 (*differences --- without constant*)
 
 ```{r echo=FALSE}
-presets_ggplot_list[[2]]
+plot(presets_list[[2]])
 ```
 
 Model 4 (*autocorrelated levels --- with constant*)
 
 ```{r echo=FALSE}
-presets_ggplot_list[[4]]
+plot(presets_list[[4]])
 ```
 
 Model 6 (*autocorrelated levels --- without constant*)
 
 ```{r echo=FALSE}
-presets_ggplot_list[[6]]
+plot(presets_list[[6]])
 ```
 
 :::
@@ -114,7 +129,7 @@ cat(params$new_call_text)
 ::: {.column width="50%"}
 
 ```{r echo=FALSE}
-autoplot(params$old_bn)
+plot(params$old_bn)
 ```
 
 :::
@@ -122,7 +137,7 @@ autoplot(params$old_bn)
 ::: {.column width="50%"}
 
 ```{r echo=FALSE}
-autoplot(params$new_bn)
+plot(params$new_bn)
 ```
 
 :::
@@ -142,8 +157,8 @@ setProgress(0.4, "Rendering Rmd","Page 3/6",session=params$session)
 **Before**
 
 ```{r echo=FALSE}
-autoplot(in_sample(params$old_bn,type="levels"))
-autoplot(in_sample(params$old_bn,type="changes"))
+plot(in_sample(params$old_bn,type="levels"))
+plot(in_sample(params$old_bn,type="changes"))
 ```
 
 :::
@@ -153,8 +168,8 @@ autoplot(in_sample(params$old_bn,type="changes"))
 **After**
 
 ```{r echo=FALSE}
-autoplot(in_sample(params$new_bn,type="levels"))
-autoplot(in_sample(params$new_bn,type="changes"))
+plot(in_sample(params$new_bn,type="levels"))
+plot(in_sample(params$new_bn,type="changes"))
 ```
 
 :::
@@ -202,9 +217,9 @@ setProgress(0.6, "Rendering Rmd","Page 5/6",session=params$session)
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,fig.width = 14}
-autoplot(in_dicator(params$new_bn,type="levels-rebased"))
-autoplot(in_dicator(params$new_bn,type="changes"))
-autoplot(in_dicator(params$new_bn,type="contributions"))
+plot(in_dicator(params$new_bn,type="levels-rebased"))
+plot(in_dicator(params$new_bn,type="changes"))
+plot(in_dicator(params$new_bn,type="contributions"))
 ```
 
 :::
@@ -222,13 +237,14 @@ setProgress(0.8, "Rendering Rmd","Page 6/6",session=params$session)
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,fig.width=14}
-autoplot(in_revisions(params$new_bn,params$old_bn,type="levels"))
-autoplot(in_revisions(params$new_bn,params$old_bn,type="changes"))
-autoplot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
+plot(in_revisions(params$new_bn,params$old_bn,type="levels"))
+plot(in_revisions(params$new_bn,params$old_bn,type="changes"))
+plot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
 ```
 
 ```{r include=F}
 setProgress(0.9, "Producing HTML","",session=params$session)
+par(graphpar)
 ```
 
 :::
