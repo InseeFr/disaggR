@@ -529,7 +529,7 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                  file_name <- reactive(paste("benchmark",hfserie_name,lfserie_name,sep="-"))
                  
                  output$Export <- downloadHandler(
-                   filename = paste("benchmark",hfserie_name,lfserie_name,".rds",sep="-"),
+                   filename = paste0("benchmark-",hfserie_name,"-",lfserie_name,".rds"),
                    content = function(file) saveRDS(reView_output(old_bn,new_bn()),file)
                  )
                  
@@ -624,6 +624,12 @@ reView <- function(benchmark,
 
 #' @export
 rePort <- function(object,...) UseMethod("rePort")
+
+#' @export
+rePort.character <- function(object,...) rePort(readRDS(object),...)
+
+#' @export
+rePort.connection <- function(object,...) rePort(readRDS(object),...)
 
 #' @export
 rePort.reViewOutput <- function(object,
