@@ -47,7 +47,7 @@ informations than in shiny, with the \link{rePort} method.
 
 @seealso rePort
 
-@example
+@examples
 \dontrun{
  reView(twoStepsBenchmark(turnover,construction))
  }
