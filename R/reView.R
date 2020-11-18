@@ -710,7 +710,7 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 #'  
 #'  @seealso rePort
 #'  
-#'  @example
+#'  @examples
 #'  \dontrun{
 #'  reView(twoStepsBenchmark(turnover,construction))
 #'  }
@@ -735,7 +735,6 @@ reView <- function(benchmark,
 #' with the path of its RDS file.
 #' @param output_file The file in which the html should be saved. If `NULL`
 #' the file is temporary, and opened in a tab of the default browser.
-#' @param hfserie_name 
 #' 
 #' @export
 rePort <- function(object, output_file = NULL, ...) UseMethod("rePort")
@@ -761,10 +760,10 @@ rePort.reViewOutput <- function(object, output_file=NULL, ...) {
                                   lfserie_name=object$lfserie_name),
                     envir = new.env(parent = globalenv()),
                     ...)
-  if (is.null(output_file))  browseURL(temp_html)
+  if (is.null(output_file))  utils::browseURL(temp_html)
   else file.copy(temp_html, output_file, overwrite = TRUE)
   invisible()
 }
 
 #' @export
-print.reViewOutput <- function(object, ...) rePort(object, output_file=NULL, ...) 
+print.reViewOutput <- function(x, ...) rePort(object, output_file=NULL, ...) 
