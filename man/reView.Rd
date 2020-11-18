@@ -17,11 +17,30 @@ reView(
   compare = TRUE
 )
 }
+\arguments{
+\item{hfserie_name}{a character of length 1. The name of the hfserie.}
+
+\item{lfserie_name}{a character of length 1. The name of the hfserie.}
+
+\item{compare}{a boolean of length 1, that tells if the outputs of
+the old benchmark should be displayed.}
+
+\item{benchmark}{a twoStepsBenchmark with an univariate hfserie.}
+}
+\value{
+a list, of class reViewOutput, containing the new benchmark,
+the old one, the names of the series and the boolean compare.
+This object can also be saved in RDS format through the app.
+The reViewOutput object can be displayed as a html report with the same
+informations than in shiny, with the \link{rePort} method.
+}
 \description{
 reView allows the user to easily access diverse outputs in order to
 review a benchmark object, made with \link{twoStepsBenchmark}.
 
 The \code{hfserie_name} and \code{lfserie_name} define :
+}
+\details{
 \itemize{
 \item the default file name of the RDS file
 \item the names of the series in the output \code{call} element
@@ -32,24 +51,14 @@ By default, these are set as defined in their \code{call} element.
 The app is made of exported \pkg{shiny} modules in order to allow integration
 in a wider non-local application. In the module part, every input
 are defined as reactive variables.
-
-@param benchmark a twoStepsBenchmark with an univariate hfserie.
-@param hfserie_name a character of length 1. The name of the hfserie.
-@param lfserie_name a character of length 1. The name of the hfserie.
-@param compare a boolean of length 1, that specifies if the outputs of
-the old benchmark should be shown.
-
-@return a list, of class reViewOutput, containing the new benchmark,
-the old one, the names of the series and the boolean compare.
-This object can also be saved in RDS format through the app.
-The reViewOutput object can be displayed as a html report with the same
-informations than in shiny, with the \link{rePort} method.
-
-@seealso rePort
-
-@examples
+}
+\examples{
 \dontrun{
- reView(twoStepsBenchmark(turnover,construction))
- }
+reView(twoStepsBenchmark(turnover,construction))
+}
+
+}
+\seealso{
+rePort
 }
 \keyword{internal}

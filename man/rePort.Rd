@@ -12,6 +12,8 @@ with the path of its RDS file.}
 
 \item{output_file}{The file in which the html should be saved. If \code{NULL}
 the file is temporary, and opened in a tab of the default browser.}
+
+\item{...}{other arguments passed to rmarkdown::render}
 }
 \description{
 This function takes an output of the \link{reView} \pkg{shiny} application
