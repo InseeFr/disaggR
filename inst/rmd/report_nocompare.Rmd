@@ -12,7 +12,7 @@ output:
 ---
 
 ```{r include=F}
-knitr::opts_chunk$set(fig.height = 2.5,dpi=49,out.width = "100%")
+knitr::opts_chunk$set(fig.height = 2.5,out.width = "100%")
 knitr::opts_knit$set(global.par = TRUE)
 hfserie <- model.list(params$new_bn)$hfserie
 hfserie <- hfserie[,colnames(hfserie) != "constant"]

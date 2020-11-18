@@ -1,3 +1,39 @@
+switch_window <- function(start,end,init_tsp) {
+  
+  start <- {
+    if (is.null(start)) init_tsp[1L]
+    else switch(length(start),
+                start,
+                start[1L] + (start[2L] - 1)/init_tsp[3L],
+                stop("bad value for 'start'", call.=FALSE))
+  }
+  end <- {
+    if (is.null(end)) init_tsp[2L]
+    else switch(length(end),
+                end,
+                end[1L] + (end[2L] - 1)/init_tsp[3L],
+                stop("bad value for 'end'", call.=FALSE))
+  }
+  c(start,end)
+}
+
+get_clean_wins <- function(benchmark) {
+  m <- model.list(benchmark)
+  win_benchmark <- switch_window(m$start.benchmark,
+                                 m$end.benchmark,
+                                 tsp(m$lfserie))
+  win_coeffcalc <- switch_window(m$start.coeff.calc,
+                                 m$end.coeff.calc,
+                                 tsp(m$lfserie))
+  win_domain    <- switch_window(m$start.domain,
+                                 m$end.domain,
+                                 tsp(m$hfserie))
+  
+  list(benchmark = win_benchmark,
+       coeff.calc = win_coeffcalc,
+       domain = win_domain)
+}
+
 reView_output <- function(benchmark,benchmark_old,
                           compare) structure(list(benchmark = benchmark,
                                                   benchmark_old = benchmark_old,
@@ -12,18 +48,6 @@ plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
              brush = brushOpts(ns("brush"), direction = "x", resetOnNew = TRUE),
              dblclick = ns("click"),
              ...)
-}
-
-slider_windows <- function(ns,initserie,ui_out,label) {
-  renderUI(
-    sliderInput(ns(ui_out),
-                label,
-                min = tsp(initserie)[1],
-                max = tsp(initserie)[2],
-                value = c(tsp(initserie)[1],tsp(initserie)[2]),
-                step = deltat(initserie),
-                sep = " ")
-  )
 }
 
 presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
@@ -438,9 +462,51 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                    } else updateCheckboxInput(session,"setconst_button",value = FALSE)
                  })
                  
-                 output$coeffcalcsliderInput <- slider_windows(session$ns,lfserie(),"coeffcalc","Coefficients:")
-                 output$benchmarksliderInput <- slider_windows(session$ns,lfserie(),"benchmark","Benchmark:")
-                 output$plotswinsliderInput <- slider_windows(session$ns,lfserie(),"plotswin","Plots:")
+                 tsplf <- reactive(tsp(lfserie()))
+                 
+                 tsphf <- reactive(tsp(hfserie()))
+                 
+                 clean_wins_old_bn <- reactive(get_clean_wins(old_bn()))
+                 
+                 output$coeffcalcsliderInput <- {
+                   renderUI(
+                     sliderInput(session$ns("coeffcalc"),"Coefficients:",
+                                 min = tsplf()[1L],max = tsplf()[2L],
+                                 value = clean_wins_old_bn()$coeff.calc,
+                                 step = 1/tsplf()[3L],sep = " ")
+                   )
+                 }
+                 
+                 output$benchmarksliderInput <- {
+                   renderUI(
+                     sliderInput(session$ns("benchmark"),"Benchmark:",
+                                 min = tsplf()[1L],max = tsplf()[2L],
+                                 value = clean_wins_old_bn()$benchmark,
+                                 step = 1/tsplf()[3L],sep = " ")
+                   )
+                 }
+                 
+                 maxwin <- reactive({
+                   
+                   startmin <- floor(min(tsphf()[1L],tsplf()[1L],
+                                         clean_wins_old_bn()$benchmark[1L],
+                                         clean_wins_old_bn()$coeff.calc[1L]))
+                   
+                   endmax <- floor(max(tsphf()[2L],tsplf()[2L],
+                                       clean_wins_old_bn()$benchmark[2L],
+                                       clean_wins_old_bn()$coeff.calc[2L]))
+                   
+                   c(startmin,endmax)
+                 })
+                 
+                 output$plotswinsliderInput <- {
+                   renderUI(
+                     sliderInput(session$ns("plotswin"),"Plots:",
+                                 min = maxwin()[1L],max = maxwin()[2L],
+                                 value = c(maxwin()[1L],maxwin()[2L]),
+                                 step = 1/tsplf()[3L],sep = " ")
+                   )
+                 }
                  
                  output$mainOutput <- renderUI({
                    reView_server_tab2_switch(new_bn,old_bn,
@@ -464,7 +530,7 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                  observeEvent(input$click,{
                    tsplf <- tsp(lfserie())
                    updateSliderInput(session, "plotswin",
-                                     value = c(tsplf[1L],tsplf[2L]))
+                                     value = maxwin)
                  },
                  ignoreNULL = TRUE)
                  
