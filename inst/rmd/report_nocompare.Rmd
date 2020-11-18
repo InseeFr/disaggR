@@ -78,42 +78,13 @@ plot(presets_list[[6]])
 
 :::: {.columns}
 
-::: {.column width="50%"}
-
-**Before**
-
-```{r echo=FALSE,comment="\t"}
-cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_name))
-```
-
-:::
-
-
-::: {.column width="50%"}
-
-**After**
+::: {.column width="100%"}
 
 ```{r echo=FALSE,comment="\t"}
 cat(disaggR:::benchmarkCall(params$old_bn,params$hfserie_name,params$lfserie_name))
 ```
 
-:::
-
-::::
-
-:::: {.columns}
-
-::: {.column width="50%"}
-
-```{r echo=FALSE}
-plot(params$old_bn)
-```
-
-:::
-
-::: {.column width="50%"}
-
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=14}
 plot(params$new_bn)
 ```
 
@@ -125,22 +96,9 @@ plot(params$new_bn)
 
 :::: {.columns}
 
-::: {.column width="50%"}
+::: {.column width="100%"}
 
-**Before**
-
-```{r echo=FALSE}
-plot(in_sample(params$old_bn,type="levels"))
-plot(in_sample(params$old_bn,type="changes"))
-```
-
-:::
-
-::: {.column width="50%"}
-
-**After**
-
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=14}
 plot(in_sample(params$new_bn,type="levels"))
 plot(in_sample(params$new_bn,type="changes"))
 ```
@@ -153,21 +111,9 @@ plot(in_sample(params$new_bn,type="changes"))
 
 :::: {.columns}
 
-::: {.column width="50%"}
+::: {.column width="100%"}
 
-**Before**
-
-```{r echo=FALSE}
-print(summary(params$old_bn),call=FALSE)
-```
-
-:::
-
-::: {.column width="50%"}
-
-**After**
-
-```{r echo=FALSE}
+```{r echo=FALSE, fig.width=14}
 print(summary(params$new_bn),call=FALSE)
 ```
 

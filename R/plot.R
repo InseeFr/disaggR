@@ -32,7 +32,8 @@ default_lty_pal <- function() linetype_pal()
 
 #### Base plots
 
-plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
+plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,mar,...) {
+  
   if (is.null(xlab)) xlab <- ""
   if (is.null(ylab)) ylab <- ""
   
@@ -56,9 +57,9 @@ plot_init_x <- function(x, xlab, ylab, ...) {
             xlab = xlab, ylab = ylab, ...)
 }
 
-barplot_mts <- function (height,xlab,ylab,col,space = c(1L, 3L, 1L), ...) {
+barplot_mts <- function (height,xlab,ylab,col,space = c(0, 1L, 0), ...) {
+  
   timeh <- time(height)
-  freq <- frequency(height)
   
   pser <- height * (height > 0)
   nser <- height * (height < 0)
@@ -69,14 +70,13 @@ barplot_mts <- function (height,xlab,ylab,col,space = c(1L, 3L, 1L), ...) {
   
   plot_init_x(cbind(nnser,ppser),xlab = xlab, ylab = ylab, ...)
   
-  xxx <- 1/sum(c(2, freq, freq - 1) * space[1:3])
+  d <- deltat(height)
   
   cc <- cycle(pser)
-  xleft <- floor(round(timeh, 4)) +
-    (space[1] + (cc - 1) * space[2] +(cc - 1) * space[3]) * xxx
-  xright <- xleft + space[2] * xxx
+  xleft <- floor(timeh) + (cc - 1) * d
+  xright <- xleft + d
   
-  for (i in ncol(height):1L) {
+  for (i in 1L:ncol(height)) {
     rect(xleft = xleft, xright = xright,
          ybottom = nnser, ytop = ppser,
          col = col[i],border=FALSE)
@@ -87,11 +87,12 @@ barplot_mts <- function (height,xlab,ylab,col,space = c(1L, 3L, 1L), ...) {
   invisible()
 }
 
-draw_x_axe <- function(timex) {
-  axis(side = 2L)
+draw_axes <- function(timex) {
+  axis(side = 2L, labels=NA, tick = TRUE)
+  axis(side = 2L, tick = FALSE, line=-0.5, cex.axis=0.7)
   year <- floor(timex)
-  axis(side = 1, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
-  axis(side = 1, at = year + 0.5, labels = year, tick = FALSE, line = -1)
+  axis(side = 1L, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
+  axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.1, cex.axis=0.7)
 }
 
 window_default <- function(x,start,end) {
@@ -168,6 +169,10 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                    show.legend = TRUE,
                                    ...) {
   
+  mar <- par("mar")
+  on.exit(par(mar=mar))
+  par(mar=c(1,1.5,0,0))
+  
   model <- model.list(x)
   x <- as.ts(x)
   
@@ -188,14 +193,14 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                          nfrequency=frequency(model$hfserie)),
                                col = col[2L],
                                lty = lty[2L]),
-    time(model$lfserie)+deltat(model$hfserie),
+    time(model$lfserie)+deltat(model$hfserie)/2,
     model$lfserie
   )
   
   if (show.legend) legend("bottomleft",legend=c("Benchmark", "Low-Frequency serie"),
                           col=col,lty=lty,horiz=TRUE,bty="n",cex=0.8)
   
-  draw_x_axe(time(x))
+  draw_axes(time(x))
   
   invisible()
 }
@@ -206,6 +211,10 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
                               lty=default_lty_pal(),
                               show.legend=TRUE,
                               ...) {
+  
+  mar <- par("mar")
+  on.exit(par(mar=mar))
+  par(mar=c(1,1.5,0,0))
   
   type_label <- type_label(x)
   func <- attr(x,"func")
@@ -231,7 +240,7 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
                 ...)
   }
   
-  draw_x_axe(time(x))
+  draw_axes(time(x))
   
   invisible()
 }
