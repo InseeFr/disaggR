@@ -1,18 +1,17 @@
 switch_window <- function(start,end,init_tsp) {
-  
   start <- {
     if (is.null(start)) init_tsp[1L]
     else switch(length(start),
                 start,
                 start[1L] + (start[2L] - 1)/init_tsp[3L],
-                stop("bad value for 'start'", call.=FALSE))
+                stop("bad value for 'start'", call. = FALSE))
   }
   end <- {
     if (is.null(end)) init_tsp[2L]
     else switch(length(end),
                 end,
                 end[1L] + (end[2L] - 1)/init_tsp[3L],
-                stop("bad value for 'end'", call.=FALSE))
+                stop("bad value for 'end'", call. = FALSE))
   }
   c(start,end)
 }
@@ -77,7 +76,9 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                         start.coeff.calc,
                         end.coeff.calc,
                         start.benchmark,
-                        end.benchmark) {
+                        end.benchmark,
+                        start.domain,
+                        end.domain) {
   
   assign(hfserie_name,hfserie)
   assign(lfserie_name,lfserie)
@@ -86,6 +87,7 @@ make_new_bn <- function(hfserie_name,lfserie_name,
   force(set.coeff);force(set.const)
   force(start.coeff.calc);force(end.coeff.calc)
   force(start.benchmark);force(end.benchmark)
+  force(start.domain);force(end.domain)
   
   bn <- eval(substitute(twoStepsBenchmark(hfserie = hfserie_arg,lfserie = lfserie_arg,
                                           include.differenciation = include.differenciation_arg,
@@ -95,7 +97,9 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                                           start.coeff.calc = start.coeff.calc_arg,
                                           end.coeff.calc = end.coeff.calc_arg,
                                           start.benchmark = start.benchmark_arg,
-                                          end.benchmark = end.benchmark_arg),
+                                          end.benchmark = end.benchmark_arg,
+                                          start.domain = start.domain_arg,
+                                          end.domain = end.domain_arg),
                         list(hfserie_arg = parse(text=hfserie_name)[[1L]],lfserie_arg = parse(text=lfserie_name)[[1L]],
                              include.differenciation_arg = include.differenciation,
                              include.rho_arg = include.rho,
@@ -104,7 +108,9 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                              start.coeff.calc_arg = start.coeff.calc,
                              end.coeff.calc_arg = end.coeff.calc,
                              start.benchmark_arg = start.benchmark,
-                             end.benchmark_arg = end.benchmark)))
+                             end.benchmark_arg = end.benchmark,
+                             start.domain_arg = start.domain,
+                             end.domain_arg = end.domain)))
 }
 
 display_vector <- function(x) switch(length(x),
@@ -559,7 +565,9 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                                start.coeff.calc = input$coeffcalc[1],
                                end.coeff.calc = input$coeffcalc[2],
                                start.benchmark = input$benchmark[1],
-                               end.benchmark = input$benchmark[2])})
+                               end.benchmark = input$benchmark[2],
+                               start.domain = model.list(old_bn())$start.domain,
+                               end.domain = model.list(old_bn())$end.domain)})
                  new_bn})
 }
 
