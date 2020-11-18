@@ -681,39 +681,40 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 }
 
 #' A shiny app to reView and modify twoStepsBenchmarks
+#'
+#' reView allows the user to easily access diverse outputs in order to
+#' review a benchmark object, made with \link{twoStepsBenchmark}.
+#'  
+#' The `hfserie_name` and `lfserie_name` define :
+#'
+#' * the default file name of the RDS file
+#' * the names of the series in the output `call` element
+#'  
+#' By default, these are set as defined in their `call` element.
+#'  
+#' The app is made of exported \pkg{shiny} modules in order to allow integration
+#' in a wider non-local application. In the module part, every input
+#' are defined as reactive variables.
 #' 
-#'  reView allows the user to easily access diverse outputs in order to
-#'  review a benchmark object, made with \link{twoStepsBenchmark}.
-#'  
-#'  The `hfserie_name` and `lfserie_name` define :
-#'  
-#'  * the default file name of the RDS file
-#'  * the names of the series in the output `call` element
-#'  
-#'  By default, these are set as defined in their `call` element.
-#'  
-#'  The app is made of exported \pkg{shiny} modules in order to allow integration
-#'  in a wider non-local application. In the module part, every input
-#'  are defined as reactive variables.
-#'  
-#'  @param benchmark a twoStepsBenchmark with an univariate hfserie. 
-#'  @param hfserie_name a character of length 1. The name of the hfserie.
-#'  @param lfserie_name a character of length 1. The name of the hfserie.
-#'  @param compare a boolean of length 1, that specifies if the outputs of
-#'  the old benchmark should be shown.
-#'  
-#'  @return a list, of class reViewOutput, containing the new benchmark,
-#'  the old one, the names of the series and the boolean compare.
-#'  This object can also be saved in RDS format through the app.
-#'  The reViewOutput object can be displayed as a html report with the same
-#'  informations than in shiny, with the \link{rePort} method.
-#'  
-#'  @seealso rePort
-#'  
-#'  @examples
-#'  \dontrun{
-#'  reView(twoStepsBenchmark(turnover,construction))
-#'  }
+#'
+#' @param benchmark a twoStepsBenchmark with an univariate hfserie.
+#' @param hfserie_name a character of length 1. The name of the hfserie.
+#' @param lfserie_name a character of length 1. The name of the hfserie.
+#' @param compare a boolean of length 1, that tells if the outputs of
+#' the old benchmark should be displayed.
+#'
+#' @return a list, of class reViewOutput, containing the new benchmark,
+#' the old one, the names of the series and the boolean compare.
+#' This object can also be saved in RDS format through the app.
+#' The reViewOutput object can be displayed as a html report with the same
+#' informations than in shiny, with the \link{rePort} method.
+#'
+#' @seealso rePort
+#'
+#' @examples
+#' \dontrun{
+#' reView(twoStepsBenchmark(turnover,construction))
+#' }
 #' 
 #' @export
 #' @import shiny
@@ -735,6 +736,7 @@ reView <- function(benchmark,
 #' with the path of its RDS file.
 #' @param output_file The file in which the html should be saved. If `NULL`
 #' the file is temporary, and opened in a tab of the default browser.
+#' @param ... other arguments passed to rmarkdown::render
 #' 
 #' @export
 rePort <- function(object, output_file = NULL, ...) UseMethod("rePort")
