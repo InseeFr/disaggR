@@ -89,10 +89,10 @@ barplot_mts <- function (height,xlab,ylab,col,space = c(0, 1L, 0), ...) {
 
 draw_axes <- function(timex) {
   axis(side = 2L, labels=NA, tick = TRUE)
-  axis(side = 2L, tick = FALSE, line=-0.5, cex.axis=0.75)
+  axis(side = 2L, tick = FALSE, line=-0.5, cex.axis=0.7)
   year <- floor(timex)
   axis(side = 1L, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
-  axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1, cex.axis=0.75)
+  axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.1, cex.axis=0.7)
 }
 
 window_default <- function(x,start,end) {

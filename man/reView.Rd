@@ -4,9 +4,9 @@
 \alias{reView_ui_module}
 \alias{reView_server_module}
 \alias{reView}
-\title{reView}
+\title{A shiny app to reView and modify twoStepsBenchmarks}
 \usage{
-reView_ui_module(id, hfserie_name, lfserie_name)
+reView_ui_module(id)
 
 reView_server_module(id, old_bn, hfserie_name, lfserie_name, compare)
 
@@ -18,6 +18,38 @@ reView(
 )
 }
 \description{
-A shiny app to reView twoStepsBenchmarks.
+reView allows the user to easily access diverse outputs in order to
+review a benchmark object, made with \link{twoStepsBenchmark}.
+
+The \code{hfserie_name} and \code{lfserie_name} define :
+\itemize{
+\item the default file name of the RDS file
+\item the names of the series in the output \code{call} element
+}
+
+By default, these are set as defined in their \code{call} element.
+
+The app is made of exported \pkg{shiny} modules in order to allow integration
+in a wider non-local application. In the module part, every input
+are defined as reactive variables.
+
+@param benchmark a twoStepsBenchmark with an univariate hfserie.
+@param hfserie_name a character of length 1. The name of the hfserie.
+@param lfserie_name a character of length 1. The name of the hfserie.
+@param compare a boolean of length 1, that specifies if the outputs of
+the old benchmark should be shown.
+
+@return a list, of class reViewOutput, containing the new benchmark
+and the old one. This object can also be saved in RDS format through
+the app.
+The reViewOutput object can be displayed as a html report with the same
+informations than in shiny, with the \link{rePort} method.
+
+@seealso rePort
+
+@example
+\dontrun{
+ reView(twoStepsBenchmark(turnover,construction))
+ }
 }
 \keyword{internal}

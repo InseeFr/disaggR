@@ -1,6 +1,10 @@
-reView_output <- function(benchmark,benchmark_old) structure(list(benchmark=benchmark,
-                                                                  benchmark_old=benchmark_old),
-                                                             class="reViewOutput")
+reView_output <- function(benchmark,benchmark_old,
+                          compare) structure(list(benchmark = benchmark,
+                                                  benchmark_old = benchmark_old,
+                                                  hfserie_name = deparse(benchmark$call$hfserie),
+                                                  lfserie_name = deparse(benchmark$call$lfserie),
+                                                  compare = compare),
+                                             class="reViewOutput")
 
 plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
   output[[output_name]] <- renderPlot(object())
@@ -289,8 +293,8 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                     title,
                     div(
                       plotOutBrushAndRender(reactive(plot(benchmark(),
-                                                              start=plotswin()[1L],
-                                                              end=plotswin()[2L])),
+                                                          start=plotswin()[1L],
+                                                          end=plotswin()[2L])),
                                             output,
                                             paste0(old_or_new,"plot"),
                                             ns,height="100%"),class=outputclass)))
@@ -301,17 +305,17 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                     title,
                     div(
                       plotOutBrushAndRender(reactive(plot(in_sample(benchmark(),
-                                                                        type="levels"),
-                                                              start=plotswin()[1L],
-                                                              end=plotswin()[2L])),
+                                                                    type="levels"),
+                                                          start=plotswin()[1L],
+                                                          end=plotswin()[2L])),
                                             output,
                                             paste0(old_or_new,"plotlev"),
                                             ns,
                                             height="50%"),
                       plotOutBrushAndRender(reactive(plot(in_sample(benchmark(),
-                                                                        type="changes"),
-                                                              start=plotswin()[1L],
-                                                              end=plotswin()[2L])),
+                                                                    type="changes"),
+                                                          start=plotswin()[1L],
+                                                          end=plotswin()[2L])),
                                             output,
                                             paste0(old_or_new,"plotcha"),
                                             ns,
@@ -331,25 +335,25 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
              column(12,
                     title,
                     div(plotOutBrushAndRender(reactive(plot(in_dicator(benchmark(),
-                                                                           type="levels-rebased"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
+                                                                       type="levels-rebased"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotlev"),
                                               ns,
                                               height="33%"),
                         plotOutBrushAndRender(reactive(plot(in_dicator(benchmark(),
-                                                                           type="changes"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
+                                                                       type="changes"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotcha"),
                                               ns,
                                               height="33%"),
                         plotOutBrushAndRender(reactive(plot(in_dicator(benchmark(),
-                                                                           type="contributions"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
+                                                                       type="contributions"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotctb"),
                                               ns,
@@ -362,25 +366,25 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
              column(12,
                     title,
                     div(plotOutBrushAndRender(reactive(plot(in_revisions(benchmark(),old_bn(),
-                                                                             type="levels"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
+                                                                         type="levels"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotlev"),
                                               ns,
                                               height="33%"),
                         plotOutBrushAndRender(reactive(plot(in_revisions(benchmark(),old_bn(),
-                                                                             type="changes"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
+                                                                         type="changes"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotcha"),
                                               ns,
                                               height="33%"),
                         plotOutBrushAndRender(reactive(plot(in_revisions(benchmark(),old_bn(),
-                                                                             type="contributions"),
-                                                                start=plotswin()[1L],
-                                                                end=plotswin()[2L])),
+                                                                         type="contributions"),
+                                                            start=plotswin()[1L],
+                                                            end=plotswin()[2L])),
                                               output,
                                               paste0(old_or_new,"plotctb"),
                                               ns,
@@ -504,15 +508,15 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                  
                  output$Export <- downloadHandler(
                    filename = paste0("benchmark-",hfserie_name(),"-",lfserie_name(),".rds"),
-                   content = function(file) saveRDS(reView_output(old_bn(),new_bn()),file)
+                   content = function(file) saveRDS(reView_output(old_bn(),new_bn(),compare()),file)
                  )
                  
                  session$onSessionEnded(function() {
-                   if (Sys.getenv('SHINY_PORT') == "") isolate(stopApp(reView_output(old_bn(),new_bn())))
+                   if (Sys.getenv('SHINY_PORT') == "") isolate(stopApp(reView_output(old_bn(),new_bn(),compare())))
                  })
                  
                  observeEvent(input$Quit,{
-                   if (Sys.getenv('SHINY_PORT') == "") stopApp(stopApp(reView_output(old_bn(),new_bn())))
+                   if (Sys.getenv('SHINY_PORT') == "") stopApp(stopApp(reView_output(old_bn(),new_bn(),compare())))
                    else session$sendCustomMessage(session$ns("closewindow"), "anymessage")
                  })
                  
@@ -599,9 +603,40 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
   invisible(shinyreturn)
 }
 
-#' reView
+#' A shiny app to reView and modify twoStepsBenchmarks
 #' 
-#'  A shiny app to reView twoStepsBenchmarks.
+#'  reView allows the user to easily access diverse outputs in order to
+#'  review a benchmark object, made with \link{twoStepsBenchmark}.
+#'  
+#'  The `hfserie_name` and `lfserie_name` define :
+#'  
+#'  * the default file name of the RDS file
+#'  * the names of the series in the output `call` element
+#'  
+#'  By default, these are set as defined in their `call` element.
+#'  
+#'  The app is made of exported \pkg{shiny} modules in order to allow integration
+#'  in a wider non-local application. In the module part, every input
+#'  are defined as reactive variables.
+#'  
+#'  @param benchmark a twoStepsBenchmark with an univariate hfserie. 
+#'  @param hfserie_name a character of length 1. The name of the hfserie.
+#'  @param lfserie_name a character of length 1. The name of the hfserie.
+#'  @param compare a boolean of length 1, that specifies if the outputs of
+#'  the old benchmark should be shown.
+#'  
+#'  @return a list, of class reViewOutput, containing the new benchmark,
+#'  the old one, the names of the series and the boolean compare.
+#'  This object can also be saved in RDS format through the app.
+#'  The reViewOutput object can be displayed as a html report with the same
+#'  informations than in shiny, with the \link{rePort} method.
+#'  
+#'  @seealso rePort
+#'  
+#'  @example
+#'  \dontrun{
+#'  reView(twoStepsBenchmark(turnover,construction))
+#'  }
 #' 
 #' @export
 #' @import shiny
@@ -614,33 +649,45 @@ reView <- function(benchmark,
   runapp_reView(benchmark,hfserie_name,lfserie_name,compare=compare)
 }
 
+#' Reprint an output of reView
+#' 
+#' This function takes an output of the \link{reView} \pkg{shiny} application
+#' and produces an html report with the same outputs than in shiny.
+#' 
+#' @param object either a reViewOutput object, or a character of length 1
+#' with the path of its RDS file.
+#' @param output_file The file in which the html should be saved. If `NULL`
+#' the file is temporary, and opened in a tab of the default browser.
+#' @param hfserie_name 
+#' 
 #' @export
-rePort <- function(object,...) UseMethod("rePort")
+rePort <- function(object, output_file = NULL, ...) UseMethod("rePort")
 
 #' @export
-rePort.character <- function(object,...) rePort(readRDS(object),...)
+rePort.character <- function(object, output_file = NULL, ...) rePort(readRDS(object),...)
 
 #' @export
-rePort.connection <- function(object,...) rePort(readRDS(object),...)
+rePort.connection <- function(object, output_file = NULL,...) rePort(readRDS(object),...)
 
 #' @export
-rePort.reViewOutput <- function(object,
-                                output_file=NULL,
-                                hfserie_name=deparse(object$benchmark$call$hfserie),
-                                lfserie_name=deparse(object$benchmark$call$lfserie),
-                                compare=TRUE,...) {
+rePort.reViewOutput <- function(object, output_file=NULL, ...) {
   temp_dir <- tempdir()
+  
   temp_rmd <- file.path(temp_dir, "report.Rmd")
   temp_html <- file.path(temp_dir, "report.html")
-  file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_rmd, overwrite = TRUE)
+  if (object$compare) file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_rmd, overwrite = TRUE)
+  else file.copy(system.file("rmd/report_nocompare.Rmd", package = "disaggR"), temp_rmd, overwrite = TRUE)
   rmarkdown::render(temp_rmd,output_file=temp_html,
                     params = list(new_bn=object$benchmark,
                                   old_bn=object$benchmark_old,
-                                  hfserie_name=hfserie_name,
-                                  lfserie_name=lfserie_name),
+                                  hfserie_name=object$hfserie_name,
+                                  lfserie_name=object$lfserie_name),
                     envir = new.env(parent = globalenv()),
                     ...)
   if (is.null(output_file))  browseURL(temp_html)
   else file.copy(temp_html, output_file, overwrite = TRUE)
   invisible()
 }
+
+#' @export
+print.reViewOutput <- function(object, ...) rePort(object, output_file=NULL, ...) 
