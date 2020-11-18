@@ -99,7 +99,7 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
                    contributions = {
                      series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],smoothed.part(object))
                      diff(ts(t(t(series_with_smoothed_part) * c(coef(object)[names(coef(object)) != "constant"],1)),
-                             start = start(series),
+                             start = start(series_with_smoothed_part),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
                    },
                    stop("The type argument of in_sample should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
