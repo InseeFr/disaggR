@@ -10,8 +10,8 @@ rePort(object, output_file = NULL, ...)
 \item{object}{either a reViewOutput object, or a character of length 1
 with the path of its RDS file.}
 
-\item{output_file}{The in in which the html should be saved. If \code{NULL}
-the file is temporary, and opened in the browser.}
+\item{output_file}{The file in which the html should be saved. If \code{NULL}
+the file is temporary, and opened in a tab of the default browser.}
 
 \item{hfserie_name}{}
 }

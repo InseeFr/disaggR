@@ -39,9 +39,9 @@ are defined as reactive variables.
 @param compare a boolean of length 1, that specifies if the outputs of
 the old benchmark should be shown.
 
-@return a list, of class reViewOutput, containing the new benchmark
-and the old one. This object can also be saved in RDS format through
-the app.
+@return a list, of class reViewOutput, containing the new benchmark,
+the old one, the names of the series and the boolean compare.
+This object can also be saved in RDS format through the app.
 The reViewOutput object can be displayed as a html report with the same
 informations than in shiny, with the \link{rePort} method.
 
