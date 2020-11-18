@@ -766,4 +766,4 @@ rePort.reViewOutput <- function(object, output_file=NULL, ...) {
 }
 
 #' @export
-print.reViewOutput <- function(x, ...) rePort(object, output_file=NULL, ...) 
+print.reViewOutput <- function(x, ...) rePort(x, output_file=NULL, ...) 
