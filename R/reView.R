@@ -452,6 +452,9 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                    model <- get_model(old_bn())
                    updateCheckboxInput(session,"dif",value = model$include.differenciation)
                    updateCheckboxInput(session,"rho",value = model$include.rho)
+                   updateSliderInput(session,"coeffcalc",value = clean_wins_old_bn()$coeff.calc)
+                   updateSliderInput(session,"benchmark",value = clean_wins_old_bn()$benchmark)
+                   updateSliderInput(session,"plotswin",value = maxwin())
                    if (length(model$set.coeff) != 0) {
                      updateCheckboxInput(session,"setcoeff_button",value = TRUE)
                      updateNumericInput(session,"setcoeff",value = as.numeric(model$set.coeff))
