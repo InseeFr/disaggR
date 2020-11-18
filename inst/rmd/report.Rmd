@@ -20,10 +20,6 @@ hfserie <- hfserie[,colnames(hfserie) != "constant"]
 presets_list <- disaggR:::presets_list_fun(hfserie,model.list(params$new_bn)$lfserie)
 ```
 
-```{r include=FALSE}
-graphpar <- par(mar = c(1,0,0,0))
-```
-
 # Presets
 
 :::: {.columns}
@@ -201,10 +197,6 @@ plot(in_dicator(params$new_bn,type="contributions"))
 plot(in_revisions(params$new_bn,params$old_bn,type="levels"))
 plot(in_revisions(params$new_bn,params$old_bn,type="changes"))
 plot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
-```
-
-```{r include=F}
-par(graphpar)
 ```
 
 :::
