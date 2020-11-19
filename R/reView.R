@@ -774,11 +774,11 @@ reView.twoStepsBenchmark <- function(object,
                                      hfserie_name = NULL,
                                      lfserie_name = NULL,
                                      compare = TRUE) {
-  if (is.null(hfserie_name)) hfserie_name <- deparse(benchmark$call$hfserie)
-  if (is.null(lfserie_name)) lfserie_name <- deparse(benchmark$call$lfserie)
-  if (length(coef(benchmark)) > 2) stop("This reviewing application is
-                                        only for univariate benchmarks.")
-  runapp_reView(benchmark,hfserie_name,lfserie_name,compare=compare)
+  if (is.null(hfserie_name)) hfserie_name <- deparse(object$call$hfserie)
+  if (is.null(lfserie_name)) lfserie_name <- deparse(object$call$lfserie)
+  if (length(coef(object)) > 2) stop("This reviewing application is
+                                      only for univariate benchmarks.")
+  runapp_reView(object,hfserie_name,lfserie_name,compare=compare)
 }
 
 #' Producing a report
