@@ -3,15 +3,13 @@ switch_window <- function(start,end,init_tsp) {
     if (is.null(start)) init_tsp[1L]
     else switch(length(start),
                 start,
-                start[1L] + (start[2L] - 1)/init_tsp[3L],
-                stop("bad value for 'start'", call. = FALSE))
+                start[1L] + (start[2L] - 1)/init_tsp[3L])
   }
   end <- {
     if (is.null(end)) init_tsp[2L]
     else switch(length(end),
                 end,
-                end[1L] + (end[2L] - 1)/init_tsp[3L],
-                stop("bad value for 'end'", call. = FALSE))
+                end[1L] + (end[2L] - 1)/init_tsp[3L])
   }
   c(start,end)
 }
@@ -33,13 +31,14 @@ get_clean_wins <- function(benchmark) {
        domain = win_domain)
 }
 
-reView_output <- function(benchmark,benchmark_old,
-                          compare) structure(list(benchmark = benchmark,
-                                                  benchmark_old = benchmark_old,
-                                                  hfserie_name = deparse(benchmark$call$hfserie),
-                                                  lfserie_name = deparse(benchmark$call$lfserie),
-                                                  compare = compare),
-                                             class="reViewOutput")
+reView_output <- function(benchmark,benchmark_old,compare) {
+  structure(list(benchmark = benchmark,
+                 benchmark_old = benchmark_old,
+                 hfserie_name = deparse(benchmark$call$hfserie),
+                 lfserie_name = deparse(benchmark$call$lfserie),
+                 compare = compare),
+            class="reViewOutput")
+}
 
 plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
   output[[output_name]] <- renderPlot(object())
@@ -52,7 +51,6 @@ plotOutBrushAndRender <- function(object,output,output_name,ns,...) {
 presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 include.rho = c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE),
                 set.const = list(NULL,0,NULL,NULL,0,0))
-
 
 presets_list_fun <- function(hfserie,lfserie,...) {
   lapply(1L:6L,function(type) {

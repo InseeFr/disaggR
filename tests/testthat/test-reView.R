@@ -1,0 +1,56 @@
+test_that("switch window", {
+  tsexample <- ts(1:10,start=2010,freq=12)
+  tspex <- tsp(tsexample)
+  expect_identical(switch_window(2010,2011.4,tspex),
+                   c(2010,2011.4))
+  expect_identical(switch_window(c(2010,4),NULL,tspex),
+                   c(2010.25,tspex[2L]))
+  expect_identical(switch_window(NULL,2011.4,tspex),
+                   c(tspex[1L],2011.4))
+})
+
+test_that("get clean wins",{
+  benchmark <- twoStepsBenchmark(turnover,construction,
+                                 start.coeff.calc = 2000,
+                                 end.coeff.calc = 2018,
+                                 start.benchmark = 2005,
+                                 end.benchmark = 2017,
+                                 start.domain = c(2005,7),
+                                 end.domain = c(2017,7))
+  expect_identical(get_clean_wins(benchmark),
+                   list(benchmark=c(2005,2017),
+                        coeff.calc=c(2000,2018),
+                        domain=c(2005.5,2017.5)))
+})
+
+test_that("reView output class",{
+  benchmark <- twoStepsBenchmark(turnover,construction,
+                                 start.coeff.calc = 2000,
+                                 end.coeff.calc = 2018,
+                                 start.benchmark = 2005,
+                                 end.benchmark = 2017,
+                                 start.domain = c(2005,7),
+                                 end.domain = c(2017,7))
+  produced <- reView_output(benchmark,benchmark,compare=TRUE)
+  expected <-   structure(list(benchmark = benchmark,
+                               benchmark_old = benchmark,
+                               hfserie_name = "turnover",
+                               lfserie_name = "construction",
+                               compare = TRUE),
+                          class="reViewOutput")
+  expect_identical(produced,expected)
+})
+
+test_that("presets list fun",{
+  produced <- presets_list_fun(turnover,construction)
+  
+  presets_list <- list(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE),
+                       twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
+                                         set.const = 0),
+                       twoStepsBenchmark(turnover,construction),
+                       twoStepsBenchmark(turnover,construction,include.rho = TRUE),
+                       twoStepsBenchmark(turnover,construction,set.const = 0),
+                       twoStepsBenchmark(turnover,construction,set.const = 0,include.rho = TRUE))
+  expected <- lapply(presets_list,in_sample)
+  expect_identical(produced,expected)
+})

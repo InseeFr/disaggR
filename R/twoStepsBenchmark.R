@@ -107,9 +107,9 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   
   lfserie_cropped <- window(lfserie,start=start.benchmark,end=end.benchmark,extend=TRUE)
   
-  hfserie_fitted <- coefficients_application(hfserie_cropped,lfserie_cropped,regresults$coefficients)
+  hfserie_fitted  <- coefficients_application(hfserie_cropped,lfserie_cropped,regresults$coefficients)
   
-  smoothed_part  <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
+  smoothed_part   <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
   
   rests <- hfserie_fitted + window(smoothed_part,start=start(hfserie_fitted),end = end(hfserie_fitted),extend=TRUE)
   
