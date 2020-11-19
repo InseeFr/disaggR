@@ -283,7 +283,8 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
                  presets_list <- reactive(presets_list_fun(hfserie(),lfserie()))
                  
                  lapply(1L:6L, function(n) {
-                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(presets_list()[[n]]))
+                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(presets_list()[[n]]),
+                                                                     execOnResize = TRUE)
                  })
                  
                  selected_preset <- reactiveVal(NULL)

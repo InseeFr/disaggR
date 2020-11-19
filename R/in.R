@@ -102,7 +102,7 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
                              start = start(series_with_smoothed_part),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
                    },
-                   stop("The type argument of in_sample should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
+                   stop("The type argument of in_dicator should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
   )
   
   structure(window(series,start=start(benchmark),end=end(benchmark),extend=TRUE),
@@ -143,11 +143,12 @@ in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisio
 #' @export
 in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   if (!inherits(object_old,"twoStepsBenchmark")) stop("old_object must be a twoStepsBenchmark", call. = FALSE)
-  series <- in_dicator(object,type)-in_dicator(object_old,type)
+  series <- tryCatch(in_dicator(object,type)-in_dicator(object_old,type),
+                     error=function(e) stop(gsub("in_dicator","in_revisions",e$message), call.=FALSE))
   class(series) <- c("tscomparison",class(series))
   if (type != "contributions") {
     if (sum(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
-      warning("Warning : The indicators contain revisions!")
+      warning("The indicators contain revisions!")
     }
     series <- structure(series[,"Benchmark",drop = FALSE],
                         type=attr(series,"type"),

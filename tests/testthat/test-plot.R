@@ -1,3 +1,4 @@
+context("plot")
 test_that("plot works", {
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
@@ -97,6 +98,8 @@ test_that("plot works", {
                                               start=c(2008,4),
                                               end=c(2012,7)))
 })
+
+context("ggplot")
 
 test_that("ggplot works", {
   benchmark <- annualBenchmark(hfserie = turnover,
@@ -242,6 +245,8 @@ test_that("show.legend=FALSE works", {
                                        show.legend = FALSE))
 })
 
+context("labs")
+
 test_that("xlab and ylab works", {
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
@@ -259,6 +264,8 @@ test_that("xlab and ylab works", {
   vdiffr::expect_doppelganger("gg-benchmark-lab-bar",
                               autoplot(benchmark,ylab="bar"))
 })
+
+context("plots functions")
 
 test_that("eval_function_if_it_is_one works", {
   expect_identical(eval_function_if_it_is_one(seq_len,2L),c(1L,2L))
