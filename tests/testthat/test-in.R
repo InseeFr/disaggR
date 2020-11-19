@@ -1,0 +1,128 @@
+test_that("in_sample works with include.differenciation=TRUE", {
+  benchmark <- annualBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = TRUE)
+  
+  simul <- lag(aggregate(construction),-1)*(100+in_sample(benchmark,type="changes")[,1])/100
+  obtained <- construction
+  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  expect_equal(simul,obtained)
+  
+  simul <- lag(aggregate(construction),-1)*(na.omit(in_sample(benchmark,type="changes")[,2]))/100
+  obtained <- fitted(prais(benchmark))
+  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  expect_equal(simul,obtained)
+  
+  simul <- na.omit(in_sample(benchmark,type="levels")[,1])
+  obtained <- construction
+  expect_equal(simul,obtained)
+  
+  simul <- na.omit(in_sample(benchmark,type="levels")[,2])
+  attr(simul, "na.action") <- NULL
+  obtained <- fitted(prais(benchmark))+lag(construction,-1)
+  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  expect_equal(simul,obtained)
+})
+
+test_that("in_sample works with include.differenciation=FALSE", {
+  benchmark <- annualBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = FALSE)
+  
+  simul <- lag(aggregate(construction),-1)*(100+in_sample(benchmark,type="changes")[,1])/100
+  obtained <- construction
+  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  expect_equal(simul,obtained)
+  
+  simul <- lag(aggregate(construction),-1)*(na.omit(in_sample(benchmark,type="changes")[,2]))/100
+  obtained <- fitted(prais(benchmark))-lag(aggregate(construction),-1)
+  expect_equal(simul,obtained)
+  
+  simul <- na.omit(in_sample(benchmark,type="levels")[,1])
+  obtained <- construction
+  expect_equal(simul,obtained)
+  
+  simul <- na.omit(in_sample(benchmark,type="levels")[,2])
+  attr(simul, "na.action") <- NULL
+  obtained <- fitted(prais(benchmark))
+  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  expect_equal(simul,obtained)
+})
+
+test_that("print in_sample prints",{
+  benchmark <- annualBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = TRUE)
+  expect_known_output(print(in_sample(benchmark)),"outputs/in_sample.txt",update=FALSE)
+})
+
+
+
+test_that("in_dicator works", {
+  benchmark <- annualBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = FALSE)
+  
+  simul <- in_dicator(benchmark,type = "levels")
+  attributes(simul)
+  obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
+  class(obtained) <- c("tscomparison","mts","ts","matrix")
+  attr(obtained,"type") <- "levels"
+  attr(obtained,"func") <- "in_dicator"
+  colnames(obtained) <- c("Benchmark","High-frequency serie")
+  
+  expect_equal(simul,obtained)
+  
+  
+  simul <- (100+in_dicator(benchmark,type="changes"))/100
+  obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
+  simul <- unname(simul*stats::lag(obtained,-1))
+  obtained <- unname(window(obtained,start= tsp(obtained)[1L]+ deltat(obtained)))
+  expect_equal(simul,obtained,tolerance = 1e-10)
+  
+  simul <- in_dicator(benchmark,type="contributions")
+  simul <- unname(na.omit(ts_from_tsp(rowSums(simul),tsp(simul))))
+  attr(simul,"na.action") <- NULL
+  obtained <- unname(na.omit((as.ts(benchmark)/stats::lag(as.ts(benchmark),-1)-1)*100))
+  attr(obtained,"na.action") <- NULL
+  expect_equal(simul,obtained)
+  
+  simul <- in_dicator(benchmark,type="contributions")/100
+  simul <- unname(simul*stats::lag(as.ts(benchmark),-1))
+  simul <- ts_from_tsp(simul  %*% diag(1/c(coef(benchmark)["hfserie"],1)),tsp(simul))
+  expect_equal(unname(simul),
+               unname(window(diff(cbind(turnover,smoothed.part(benchmark))),end=c(2020,5))))
+})
+
+test_that("in revisions works",{
+  benchmark <- annualBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = FALSE)
+  expected <- ts(matrix(c(NA,rep(0,244L)),dimnames = list(NULL,"Benchmark")),
+                 start=2000,frequency=12)
+  class(expected) <- c("tscomparison","ts")
+  attr(expected,"type") <- "changes"
+  attr(expected,"func") <- "in_revisions"
+  expect_identical(in_revisions(benchmark,benchmark),expected)
+})
+
+test_that("error in",{
+  expect_error(in_dicator(twoStepsBenchmark(turnover,construction),type="aaza"),
+               "The type argument of in_dicator")
+  expect_error(in_revisions(twoStepsBenchmark(turnover,construction),
+                            twoStepsBenchmark(turnover,construction,
+                                              include.differenciation = TRUE),
+                            type="aaza"),
+               "The type argument of in_revisions")
+  
+  expect_error(in_sample(twoStepsBenchmark(turnover,construction),
+                         type="aaza"),
+               "The type argument of in_sample")
+})
+
+test_that("warning revisions",
+          {
+            expect_warning(in_revisions(twoStepsBenchmark(turnover,construction),
+                                        twoStepsBenchmark(turnover+10,construction)),
+                           "The indicators contain revisions")
+          })

@@ -44,7 +44,8 @@ fast_op <- function(e1,e2,FUN) {
     e1 <- window(e1,start=start,end=end,extend=TRUE)
     e2 <- window(e2,start=start,end=end,extend=TRUE)
   }
-  structure(FUN(drop_tsp(e1),drop_tsp(e2)), tsp=tsp(e1), class="ts")
+  
+  ts_from_tsp(FUN(drop_tsp(e1),drop_tsp(e2)),tspx = tsp(e1))
 }
 
 `Ops.ts` <- function(e1,e2) fast_op(e1,e2,match.fun(.Generic))

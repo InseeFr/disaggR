@@ -90,6 +90,17 @@ if (R.version$major>=4) { # before that no support for the fractional ts
   })
 }
 
+test_that("fastop on matrix",{
+  mts1 <- ts(matrix(1:60,ncol=3),start=2009,freq=12)
+  mts2 <-ts(matrix(2:13,ncol = 3),start=2010,freq=12)
+  summts <- fast_op(mts1,mts2,`+`)
+  expect_identical(summts,
+                   ts(matrix(c(15, 17, 19,21,
+                               39, 41, 43, 45,
+                               63, 65, 67, 69),ncol=3),
+                      start=2010,frequency=12))
+})
+
 test_that("fastop errors",{
   expect_error(disaggR:::fast_op(ts(1:10),1:10,`+`),"two time-series")
   expect_error(disaggR:::fast_op(1:10,ts(1:10),`+`),"two time-series")
