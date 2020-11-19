@@ -149,10 +149,12 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 
 #### ui ####
 
+redborder <- "border: 1px solid #8B0000;"
+
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   fluidRow(
-    tags$style(type = "text/css", paste0(".",ns("presetplot")," {height: calc(33vh - 52px);}")),
+    tags$style(type = "text/css", paste0(".",ns("presetplot")," {width: calc(100vh - 19px);height: calc(33vh - 52px);}")),
     column(6,
            p("Model 1 (",em("differences \u2014 with constant",.noWS = "outside"),"): "),
            div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "100%"),class=ns("presetplot")),
@@ -282,12 +284,20 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
                  
                  presets_list <- reactive(presets_list_fun(hfserie(),lfserie()))
                  
+                 selected_preset <- reactiveVal(NULL)
+                 
                  lapply(1L:6L, function(n) {
-                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(presets_list()[[n]]),
-                                                                     execOnResize = TRUE)
+                   output[[paste0("model",n,"_plot")]] <- renderPlot({
+                     plot(presets_list()[[n]])
+                     if (identical(selected_preset(),n)) {
+                       mar <- par("mar")
+                       par(mar=c(0,0,0,0))
+                       box(col="darkred",lwd=3)
+                       par(mar=mar)
+                     }
+                   })
                  })
                  
-                 selected_preset <- reactiveVal(NULL)
                  lapply(1L:6L,function(type) {
                    observeEvent(input[[paste0("model",type,"_click")]],
                                 {
