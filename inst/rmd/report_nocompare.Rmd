@@ -132,19 +132,3 @@ plot(in_dicator(params$new_bn,type="contributions"))
 :::
 
 ::::
-
-# Revisions
-
-:::: {.columns}
-
-::: {.column width="100%"}
-
-```{r echo=FALSE,fig.width=14}
-plot(in_revisions(params$new_bn,params$old_bn,type="levels"))
-plot(in_revisions(params$new_bn,params$old_bn,type="changes"))
-plot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
-```
-
-:::
-
-::::

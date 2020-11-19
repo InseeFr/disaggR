@@ -10,17 +10,12 @@ reView_ui_module(id)
 
 reView_server_module(id, old_bn, hfserie_name, lfserie_name, compare)
 
-reView(
-  benchmark,
-  hfserie_name = deparse(benchmark$call$hfserie),
-  lfserie_name = deparse(benchmark$call$lfserie),
-  compare = TRUE
-)
+reView(object, hfserie_name = NULL, lfserie_name = NULL, compare = TRUE)
 }
 \arguments{
 \item{hfserie_name}{a character of length 1. The name of the hfserie.}
 
-\item{lfserie_name}{a character of length 1. The name of the hfserie.}
+\item{lfserie_name}{a character of length 1. The name of the lfserie.}
 
 \item{compare}{a boolean of length 1, that tells if the outputs of
 the old benchmark should be displayed.}

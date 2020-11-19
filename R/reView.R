@@ -474,6 +474,15 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                    } else updateCheckboxInput(session,"setconst_button",value = FALSE)
                  })
                  
+                 observeEvent(compare(),{
+                   updateRadioButtons(session,"mainout_choice", NULL,
+                                      choices = c("Benchmark","In-sample predictions",
+                                                  "Benchmark summary","Comparison with indicator",
+                                                  if (compare()) "Revisions"),
+                                      selected = "Benchmark",
+                                      inline = TRUE)
+                 })
+                 
                  tsplf <- reactive(tsp(lfserie()))
                  
                  tsphf <- reactive(tsp(hfserie()))
@@ -702,7 +711,7 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 #'
 #' @param benchmark a twoStepsBenchmark with an univariate hfserie.
 #' @param hfserie_name a character of length 1. The name of the hfserie.
-#' @param lfserie_name a character of length 1. The name of the hfserie.
+#' @param lfserie_name a character of length 1. The name of the lfserie.
 #' @param compare a boolean of length 1, that tells if the outputs of
 #' the old benchmark should be displayed.
 #'
@@ -721,10 +730,53 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 #' 
 #' @export
 #' @import shiny
-reView <- function(benchmark,
-                   hfserie_name=deparse(benchmark$call$hfserie),
-                   lfserie_name=deparse(benchmark$call$lfserie),
-                   compare=TRUE) {
+reView <- function(object,
+                   hfserie_name = NULL,
+                   lfserie_name = NULL,
+                   compare = TRUE) {
+  UseMethod("reView")
+}
+
+
+#' @export
+reView.character <- function(object,
+                             hfserie_name = NULL,
+                             lfserie_name = NULL,
+                             compare = TRUE, ...) {
+  reView(readRDS(object),hfserie_name,lfserie_name,compare)
+}
+
+#' @export
+reView.connection <- function(object,
+                              hfserie_name = NULL,
+                              lfserie_name = NULL,
+                              compare = TRUE) {
+  reView(readRDS(object),hfserie_name,lfserie_name,compare)
+}
+
+reView.reViewOutput <- function(object,
+                                hfserie_name = NULL,
+                                lfserie_name = NULL,
+                                compare = TRUE) {
+  reView(object$benchmark,
+         hfserie_name = {
+           if (is.null(hfserie_name)) object$hfserie_name
+           else hfserie_name
+         },
+         lfserie_name = {
+           if (is.null(lfserie_name)) object$lfserie_name
+           else lfserie_name
+         },
+         compare = compare)
+}
+
+#' @export
+reView.twoStepsBenchmark <- function(benchmark,
+                                     hfserie_name = NULL,
+                                     lfserie_name = NULL,
+                                     compare = TRUE) {
+  if (is.null(hfserie_name)) hfserie_name <- deparse(benchmark$call$hfserie)
+  if (is.null(lfserie_name)) lfserie_name <- deparse(benchmark$call$lfserie)
   if (length(coef(benchmark)) > 2) stop("This reviewing application is
                                         only for univariate benchmarks.")
   runapp_reView(benchmark,hfserie_name,lfserie_name,compare=compare)
@@ -745,13 +797,22 @@ reView <- function(benchmark,
 rePort <- function(object, output_file = NULL, ...) UseMethod("rePort")
 
 #' @export
-rePort.character <- function(object, output_file = NULL, ...) rePort(readRDS(object),...)
+rePort.character <- function(object, output_file = NULL, ...)
+  rePort(readRDS(object), output_file, ...)
 
 #' @export
-rePort.connection <- function(object, output_file = NULL,...) rePort(readRDS(object),...)
+rePort.connection <- function(object, output_file = NULL, ...)
+  rePort(readRDS(object), output_file, ...)
 
 #' @export
-rePort.reViewOutput <- function(object, output_file=NULL, ...) {
+rePort.twoStepsBenchmark <- function(object, output_file = NULL, ...) {
+  rePort(reView_output(object,benchmark_old=NULL,compare=FALSE),
+         output_file,
+         ...)
+}
+
+#' @export
+rePort.reViewOutput <- function(object, output_file = NULL, ...) {
   temp_dir <- tempdir()
   
   temp_rmd <- file.path(temp_dir, "report.Rmd")
