@@ -2,13 +2,14 @@
 % Please edit documentation in R/reView.R
 \name{rePort}
 \alias{rePort}
-\title{Reprint an output of reView}
+\title{Producing a report}
 \usage{
 rePort(object, output_file = NULL, ...)
 }
 \arguments{
-\item{object}{either a reViewOutput object, or a character of length 1
-with the path of its RDS file.}
+\item{object}{a twoStepsBenchmark with an univariate hfserie, a reViewOutput,
+or a character of length 1 with the path of their RDS file. If a reViewOutput
+is chosen, the former new benchmark is taken as the old one.}
 
 \item{output_file}{The file in which the html should be saved. If \code{NULL}
 the file is temporary, and opened in a tab of the default browser.}
@@ -18,4 +19,10 @@ the file is temporary, and opened in a tab of the default browser.}
 \description{
 This function takes an output of the \link{reView} \pkg{shiny} application
 and produces an html report with the same outputs than in shiny.
+}
+\details{
+It can also directly take a \link{twoStepsBenchmark} as an input.
+}
+\seealso{
+reView
 }

@@ -20,7 +20,9 @@ reView(object, hfserie_name = NULL, lfserie_name = NULL, compare = TRUE)
 \item{compare}{a boolean of length 1, that tells if the outputs of
 the old benchmark should be displayed.}
 
-\item{benchmark}{a twoStepsBenchmark with an univariate hfserie.}
+\item{object}{a twoStepsBenchmark with an univariate hfserie, a reViewOutput,
+or a character of length 1 with the path of their RDS file. If a reViewOutput
+is chosen, the former new benchmark is taken as the old one.}
 }
 \value{
 a list, of class reViewOutput, containing the new benchmark,

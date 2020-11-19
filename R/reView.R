@@ -100,7 +100,8 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                                           end.benchmark = end.benchmark_arg,
                                           start.domain = start.domain_arg,
                                           end.domain = end.domain_arg),
-                        list(hfserie_arg = parse(text=hfserie_name)[[1L]],lfserie_arg = parse(text=lfserie_name)[[1L]],
+                        list(hfserie_arg = parse(text=hfserie_name)[[1L]],
+                             lfserie_arg = parse(text=lfserie_name)[[1L]],
                              include.differenciation_arg = include.differenciation,
                              include.rho_arg = include.rho,
                              set.coeff_arg = set.coeff,
@@ -148,8 +149,6 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 
 
 #### ui ####
-
-redborder <- "border: 1px solid #8B0000;"
 
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
@@ -605,7 +604,7 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                  })
                  
                  observeEvent(input$Quit,{
-                   if (Sys.getenv('SHINY_PORT') == "") stopApp(stopApp(reView_output(old_bn(),new_bn(),compare())))
+                   if (Sys.getenv('SHINY_PORT') == "") stopApp(reView_output(old_bn(),new_bn(),compare()))
                    else session$sendCustomMessage(session$ns("closewindow"), "anymessage")
                  })
                  
@@ -707,9 +706,10 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 #' The app is made of exported \pkg{shiny} modules in order to allow integration
 #' in a wider non-local application. In the module part, every input
 #' are defined as reactive variables.
-#' 
 #'
-#' @param benchmark a twoStepsBenchmark with an univariate hfserie.
+#' @param object a twoStepsBenchmark with an univariate hfserie, a reViewOutput,
+#' or a character of length 1 with the path of their RDS file. If a reViewOutput
+#' is chosen, the former new benchmark is taken as the old one.
 #' @param hfserie_name a character of length 1. The name of the hfserie.
 #' @param lfserie_name a character of length 1. The name of the lfserie.
 #' @param compare a boolean of length 1, that tells if the outputs of
@@ -754,6 +754,7 @@ reView.connection <- function(object,
   reView(readRDS(object),hfserie_name,lfserie_name,compare)
 }
 
+#' @export
 reView.reViewOutput <- function(object,
                                 hfserie_name = NULL,
                                 lfserie_name = NULL,
@@ -771,7 +772,7 @@ reView.reViewOutput <- function(object,
 }
 
 #' @export
-reView.twoStepsBenchmark <- function(benchmark,
+reView.twoStepsBenchmark <- function(object,
                                      hfserie_name = NULL,
                                      lfserie_name = NULL,
                                      compare = TRUE) {
@@ -782,16 +783,21 @@ reView.twoStepsBenchmark <- function(benchmark,
   runapp_reView(benchmark,hfserie_name,lfserie_name,compare=compare)
 }
 
-#' Reprint an output of reView
+#' Producing a report
 #' 
 #' This function takes an output of the \link{reView} \pkg{shiny} application
 #' and produces an html report with the same outputs than in shiny.
 #' 
-#' @param object either a reViewOutput object, or a character of length 1
-#' with the path of its RDS file.
+#' It can also directly take a \link{twoStepsBenchmark} as an input.
+#' 
+#' @param object a twoStepsBenchmark with an univariate hfserie, a reViewOutput,
+#' or a character of length 1 with the path of their RDS file. If a reViewOutput
+#' is chosen, the former new benchmark is taken as the old one.
 #' @param output_file The file in which the html should be saved. If `NULL`
 #' the file is temporary, and opened in a tab of the default browser.
 #' @param ... other arguments passed to rmarkdown::render
+#' 
+#' @seealso reView
 #' 
 #' @export
 rePort <- function(object, output_file = NULL, ...) UseMethod("rePort")
@@ -814,9 +820,9 @@ rePort.twoStepsBenchmark <- function(object, output_file = NULL, ...) {
 #' @export
 rePort.reViewOutput <- function(object, output_file = NULL, ...) {
   temp_dir <- tempdir()
-  
   temp_rmd <- file.path(temp_dir, "report.Rmd")
   temp_html <- file.path(temp_dir, "report.html")
+  
   if (object$compare) file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_rmd, overwrite = TRUE)
   else file.copy(system.file("rmd/report_nocompare.Rmd", package = "disaggR"), temp_rmd, overwrite = TRUE)
   rmarkdown::render(temp_rmd,output_file=temp_html,
