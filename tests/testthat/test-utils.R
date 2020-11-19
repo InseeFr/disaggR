@@ -92,21 +92,21 @@ if (R.version$major>=4) { # before that no support for the fractional ts
 test_that("window degenerates",{
   verysmall <- getOption("ts.eps")/24
   data <- rnorm(1:13)
-  expect_identical(disaggR::window(ts(data,start=2010,freq=12),end=2010+verysmall),
+  expect_identical(disaggR:::window(ts(data,start=2010,freq=12),end=2010+verysmall),
                    stats::window(ts(data,start=2010,freq=12),end=2010+verysmall))
-  expect_error(disaggR::window(ts(data,start=2010,freq=12),end=2010-verysmall))
-  expect_identical(disaggR::window(ts(data,start=2010,freq=12),start=2011-verysmall),
+  expect_error(disaggR:::window(ts(data,start=2010,freq=12),end=2010-verysmall))
+  expect_identical(disaggR:::window(ts(data,start=2010,freq=12),start=2011-verysmall),
                    stats::window(ts(data,start=2010,freq=12),start=2011-verysmall))
-  expect_error(disaggR::window(ts(data,start=2010,freq=12),start=2011+verysmall))
-  expect_error(disaggR::window(ts(data,start=2010,freq=12),start=2010+verysmall,end=2010-verysmall))
-  expect_identical(disaggR::window(ts(data,start=2010,freq=12),start=2010-verysmall,end=2010+verysmall),
+  expect_error(disaggR:::window(ts(data,start=2010,freq=12),start=2011+verysmall))
+  expect_error(disaggR:::window(ts(data,start=2010,freq=12),start=2010+verysmall,end=2010-verysmall))
+  expect_identical(disaggR:::window(ts(data,start=2010,freq=12),start=2010-verysmall,end=2010+verysmall),
                    stats::window(ts(data,start=2010,freq=12),start=2010-verysmall,end=2010+verysmall))
   
   small <- getOption("ts.eps")/2
   
-  expect_identical(disaggR::window(ts(data,start=2010,freq=12+small),start=2010,end=2010),
+  expect_identical(disaggR:::window(ts(data,start=2010,freq=12+small),start=2010,end=2010),
                    stats::window(ts(data,start=2010,freq=12+small),start=2010,end=2010))
-  expect_identical(disaggR::window(ts(data,start=2010,freq=12-small),start=2010,end=2010),
+  expect_identical(disaggR:::window(ts(data,start=2010,freq=12-small),start=2010,end=2010),
                    stats::window(ts(data,start=2010,freq=12-small),start=2010,end=2010))
   
 })
