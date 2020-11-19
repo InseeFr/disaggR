@@ -260,9 +260,7 @@ default_theme_ggplot <- function(show.legend,xlab,ylab) theme_classic() %+replac
         legend.position = if (show.legend) "bottom" else "none"
   )
 
-dftsforggplot <- function(object,series_names=NULL) {
-  if (is.null(series_names)) series_names <- colnames(object)
-  if (is.null(series_names)) series_names <- paste("Serie",1:NCOL(object))
+dftsforggplot <- function(object,series_names) {
   data.frame(
     Date = as.numeric(time(object)+deltat(object)/2),
     Values = as.numeric(object),

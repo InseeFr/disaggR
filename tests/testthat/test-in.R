@@ -107,7 +107,8 @@ test_that("in revisions works",{
 })
 
 test_that("error in",{
-  expect_error(in_dicator(twoStepsBenchmark(turnover,construction),type="aaza"),
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  expect_error(in_dicator(benchmark,type="aaza"),
                "The type argument of in_dicator")
   expect_error(in_revisions(twoStepsBenchmark(turnover,construction),
                             twoStepsBenchmark(turnover,construction,
@@ -115,9 +116,11 @@ test_that("error in",{
                             type="aaza"),
                "The type argument of in_revisions")
   
-  expect_error(in_sample(twoStepsBenchmark(turnover,construction),
+  expect_error(in_sample(benchmark,
                          type="aaza"),
                "The type argument of in_sample")
+  expect_error(in_revisions(benchmark,"nothing important"),
+               "old_object must be a twoStepsBenchmark")
 })
 
 test_that("warning revisions",
