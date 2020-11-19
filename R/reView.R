@@ -287,15 +287,7 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
                  selected_preset <- reactiveVal(NULL)
                  
                  lapply(1L:6L, function(n) {
-                   output[[paste0("model",n,"_plot")]] <- renderPlot({
-                     plot(presets_list()[[n]])
-                     if (identical(selected_preset(),n)) {
-                       mar <- par("mar")
-                       par(mar=c(0,0,0,0))
-                       box(col="darkred",lwd=3)
-                       par(mar=mar)
-                     }
-                   })
+                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(presets_list()[[n]]))
                  })
                  
                  lapply(1L:6L,function(type) {
