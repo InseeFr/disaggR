@@ -1,3 +1,16 @@
+boxstyle <- "padding: 6px 8px;
+             margin-top: 6px;
+             margin-bottom: 6px;
+             background-color: #fdfdfd;
+             border: 1px solid #e3e3e3;
+             border-radius: 4px;
+             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);
+             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);"
+
+
+lrmargins <- "margin-left: 3px;
+              margin-right: 3px"
+
 switch_window <- function(start,end,init_tsp) {
   start <- {
     if (is.null(start)) init_tsp[1L]
@@ -50,7 +63,14 @@ plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,...) {
 
 presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 include.rho = c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE),
-                set.const = list(NULL,0,NULL,NULL,0,0))
+                set.const = list(NULL,0,NULL,NULL,0,0),
+                label = c("Model 1 (differences - with constant)",
+                          "Model 2 (differences - without constant)",
+                          "Model 3 (levels - with constant)",
+                          "Model 4 (autocorrelated levels - with constant)",
+                          "Model 5 (levels - without constant)",
+                          "Model 6 (autocorrelated levels - without constant)"
+                ))
 
 presets_list_fun <- function(hfserie,lfserie,...) {
   lapply(1L:6L,function(type) {
@@ -150,38 +170,19 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
-  fluidRow(
-    #tags$style(type = "text/css", paste0(".",ns("presetplot")," {height: calc(33vh - 52px);}")),
-    tags$style(type = "text/css", paste0(".",ns("presetplot")," {height: calc(33vh - 52px);}")),
-    div(column(6,
-           p("Model 1 (",em("differences - with constant",.noWS = "outside"),"): "),
-           plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "100%"),
-           p("Model 3 (",em("levels - with constant",.noWS = "outside"),"):"),
-           plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "100%"),
-           p("Model 5 (",em("levels - without constant",.noWS = "outside"),")"),
-           plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "100%"),class=ns("presetplot")),
+  div(fluidRow(
+    tags$style(type = "text/css", paste0(".",ns("presetplot")," {height: calc(100vh - 104px);
+                                                                 width: calc(100vh - 34px);}")),
     column(6,
-            div(p("Model 2 (",em("differences - without constant",.noWS = "outside"),")"),
-            plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "100%"),
-            p("Model 4 (",em("autocorrelated levels - with constant",.noWS = "outside"),")"),
-            plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "100%"),
-            p("Model 6 (",em("autocorrelated levels - without constant",.noWS = "outside"),")"),
-            plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "100%"),class=ns("presetplot"))))
-  )
+           div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "33%"),
+               plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "33%"),
+               plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "33%"),class=ns("presetplot"))),
+    column(6,
+           div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "33%"),
+               plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "33%"),
+               plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "33%"),class=ns("presetplot")))
+  ),style=boxstyle)
 }
-
-boxstyle <- "padding: 6px 8px;
-             margin-top: 6px;
-             margin-bottom: 6px;
-             background-color: #fdfdfd;
-             border: 1px solid #e3e3e3;
-             border-radius: 4px;
-             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);
-             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);"
-
-
-lrmargins <- "margin-left: 3px;
-              margin-right: 3px"
 
 reView_ui_tab2 <- function(id) {
   ns <- NS(id)
@@ -285,7 +286,8 @@ reView_server_tab1 <- function(id,hfserie,lfserie) {
                  selected_preset <- reactiveVal(NULL)
                  
                  lapply(1L:6L, function(n) {
-                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(presets_list()[[n]]))
+                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(presets_list()[[n]],
+                                                                          main = presets$label[n]))
                  })
                  
                  lapply(1L:6L,function(type) {
