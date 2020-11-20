@@ -172,7 +172,7 @@ reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   div(fluidRow(
     tags$style(type = "text/css", paste0(".",ns("presetplot")," {height: calc(100vh - 104px);
-                                                                 width: calc(100vh - 34px);}")),
+                                                                 width: calc(50vw - 39px);}")),
     column(6,
            div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "33%"),
                plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "33%"),
