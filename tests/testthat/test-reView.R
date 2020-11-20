@@ -66,3 +66,6 @@ test_that("rePort produces a report",{
   expect_true(file.exists(temp_html))
   unlink(temp_html)
 })
+
+
+#shinytest::testApp("./tests/testthat/shiny")

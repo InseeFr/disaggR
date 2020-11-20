@@ -1,3 +1,13 @@
+test_that("function_if_it_isnt_one works", {
+  expect_identical(function_if_it_isnt_one(seq_len),seq_len)
+  expect_identical(lapply(1:20,function_if_it_isnt_one(3L)),
+                   lapply(1:20,function(n) rep(3L,n)))
+  expect_identical(lapply(1:20,function_if_it_isnt_one(1L:10L)),
+                   lapply(1:20,function(n) (1L:10L)[1L:n]))
+  expect_identical(lapply(1:20,function_if_it_isnt_one("Hey")),
+                   lapply(1:20,function(n) rep("Hey",n)))
+})
+
 context("plot")
 test_that("plot works", {
   benchmark <- annualBenchmark(hfserie = turnover,
@@ -97,6 +107,17 @@ test_that("plot works", {
                                                            type="contributions"),
                                               start=c(2008,4),
                                               end=c(2012,7)))
+  vdiffr::expect_doppelganger("plot-main-insample",
+                              function() plot(in_sample(benchmark),
+                                              main="title in sample"))
+  vdiffr::expect_doppelganger("plot-main-inrev",
+                              function() plot(in_revisions(benchmark,
+                                                           benchmark2),
+                                              main="title in rev"))
+  vdiffr::expect_doppelganger("plot-main-ctb",
+                              function() plot(in_dicator(benchmark,
+                                                         type = "contributions"),
+                                              main="title ctb"))
 })
 
 context("ggplot")
@@ -198,7 +219,21 @@ test_that("ggplot works", {
                                                     type="contributions"),
                                        start=c(2008,4),
                                        end=c(2012,7)))
+  
+  vdiffr::expect_doppelganger("gg-main-insample",
+                              autoplot(in_sample(benchmark),
+                                       main="title in sample"))
+  vdiffr::expect_doppelganger("gg-plot-main-inrev",
+                              autoplot(in_revisions(benchmark,
+                                                    benchmark2),
+                                       main="title in rev"))
+  vdiffr::expect_doppelganger("gg-plot-main-ctb",
+                              autoplot(in_dicator(benchmark,
+                                                  type = "contributions"),
+                                       main="title ctb"))
 })
+
+context("show legend")
 
 test_that("show.legend=FALSE works", {
   benchmark <- annualBenchmark(hfserie = turnover,
@@ -273,14 +308,3 @@ test_that("eval_function_if_it_is_one works", {
   expect_identical(eval_function_if_it_is_one(1L:10L,2L),1L:10L)
   expect_identical(eval_function_if_it_is_one("Hey",2L),"Hey")
 })
-
-test_that("function_if_it_isnt_one works", {
-  expect_identical(function_if_it_isnt_one(seq_len),seq_len)
-  expect_identical(lapply(1:20,function_if_it_isnt_one(3L)),
-                   lapply(1:20,function(n) rep(3L,n)))
-  expect_identical(lapply(1:20,function_if_it_isnt_one(1L:10L)),
-                   lapply(1:20,function(n) (1L:10L)[1L:n]))
-  expect_identical(lapply(1:20,function_if_it_isnt_one("Hey")),
-                   lapply(1:20,function(n) rep("Hey",n)))
-})
-  
