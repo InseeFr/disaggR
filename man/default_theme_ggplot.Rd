@@ -4,7 +4,7 @@
 \alias{default_theme_ggplot}
 \title{Default ggplot theme}
 \usage{
-default_theme_ggplot(show.legend, xlab, ylab)
+default_theme_ggplot(show.legend, xlab, ylab, mar)
 }
 \description{
 This is the default theme for the ggplot graphics produced with autoplot
