@@ -31,7 +31,7 @@ get_clean_wins <- function(benchmark) {
        domain = win_domain)
 }
 
-reView_output <- function(benchmark,benchmark_old,compare) {
+reViewOutput <- function(benchmark,benchmark_old,compare) {
   structure(list(benchmark = benchmark,
                  benchmark_old = benchmark_old,
                  hfserie_name = deparse(benchmark$call$hfserie),
@@ -594,15 +594,15 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                  
                  output$Export <- downloadHandler(
                    filename = paste0("benchmark-",hfserie_name(),"-",lfserie_name(),".rds"),
-                   content = function(file) saveRDS(reView_output(old_bn(),new_bn(),compare()),file)
+                   content = function(file) saveRDS(reViewOutput(old_bn(),new_bn(),compare()),file)
                  )
                  
                  session$onSessionEnded(function() {
-                   if (Sys.getenv('SHINY_PORT') == "") isolate(stopApp(reView_output(old_bn(),new_bn(),compare())))
+                   if (Sys.getenv('SHINY_PORT') == "") isolate(stopApp(reViewOutput(old_bn(),new_bn(),compare())))
                  })
                  
                  observeEvent(input$Quit,{
-                   if (Sys.getenv('SHINY_PORT') == "") stopApp(reView_output(old_bn(),new_bn(),compare()))
+                   if (Sys.getenv('SHINY_PORT') == "") stopApp(reViewOutput(old_bn(),new_bn(),compare()))
                    else session$sendCustomMessage(session$ns("closewindow"), "anymessage")
                  })
                  
@@ -793,7 +793,7 @@ reView.twoStepsBenchmark <- function(object,
 #' is chosen, the former new benchmark is taken as the old one.
 #' @param output_file The file in which the html should be saved. If `NULL`
 #' the file is temporary, and opened in a tab of the default browser.
-#' @param ... other arguments passed to rmarkdown::render
+#' @param \dots other arguments passed to rmarkdown::render
 #' 
 #' @seealso reView
 #' 
@@ -810,7 +810,7 @@ rePort.connection <- function(object, output_file = NULL, ...)
 
 #' @export
 rePort.twoStepsBenchmark <- function(object, output_file = NULL, ...) {
-  rePort(reView_output(object,benchmark_old=NULL,compare=FALSE),
+  rePort(reViewOutput(object,benchmark_old=NULL,compare=FALSE),
          output_file,
          ...)
 }
@@ -819,7 +819,7 @@ rePort.twoStepsBenchmark <- function(object, output_file = NULL, ...) {
 rePort.reViewOutput <- function(object, output_file = NULL, ...) {
   temp_dir <- tempdir()
   temp_rmd <- file.path(temp_dir, "report.Rmd")
-  temp_html <- file.path(temp_dir, "report.html")
+  temp_html <- tempfile("report",temp_dir,".html")
   
   if (object$compare) file.copy(system.file("rmd/report.Rmd", package = "disaggR"), temp_rmd, overwrite = TRUE)
   else file.copy(system.file("rmd/report_nocompare.Rmd", package = "disaggR"), temp_rmd, overwrite = TRUE)
@@ -829,6 +829,7 @@ rePort.reViewOutput <- function(object, output_file = NULL, ...) {
                                   hfserie_name=object$hfserie_name,
                                   lfserie_name=object$lfserie_name),
                     envir = new.env(parent = globalenv()),
+                    quiet = TRUE,
                     ...)
   if (is.null(output_file))  utils::browseURL(temp_html)
   else file.copy(temp_html, output_file, overwrite = TRUE)

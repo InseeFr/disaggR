@@ -31,7 +31,7 @@ test_that("reView output class",{
                                  end.benchmark = 2017,
                                  start.domain = c(2005,7),
                                  end.domain = c(2017,7))
-  produced <- reView_output(benchmark,benchmark,compare=TRUE)
+  produced <- reViewOutput(benchmark,benchmark,compare=TRUE)
   expected <-   structure(list(benchmark = benchmark,
                                benchmark_old = benchmark,
                                hfserie_name = "turnover",
@@ -53,4 +53,16 @@ test_that("presets list fun",{
                        twoStepsBenchmark(turnover,construction,set.const = 0,include.rho = TRUE))
   expected <- lapply(presets_list,in_sample)
   expect_identical(produced,expected)
+})
+
+test_that("rePort produces a report",{
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  temp_dir <- tempdir()
+  temp_html <- tempfile("test",temp_dir,".html")
+  rePort(benchmark,output_file = temp_html)
+  expect_true(file.exists(temp_html))
+  expect_identical(unlink(temp_html),0L)
+  rePort(reViewOutput(benchmark,benchmark,compare = TRUE),output_file = temp_html)
+  expect_true(file.exists(temp_html))
+  unlink(temp_html)
 })
