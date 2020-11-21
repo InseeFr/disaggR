@@ -15,6 +15,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
       - uses: r-lib/actions/setup-pandoc@master
+      - name: Install dependencies
+        run: |
+          install.packages(c("remotes", "rcmdcheck"))
+          remotes::install_deps(dependencies = TRUE)
+        shell: Rscript {0}
       - name: Install shinytest (so that phantomJS can be installed)
         run: |
           Rscript -e "remotes::install_local('.')"
@@ -33,11 +38,6 @@ jobs:
           Rscript
           -e "options(install.packages.check.source = 'no')"
           -e "if (!shinytest::dependenciesInstalled()) shinytest::installDependencies()"
-      - name: Install dependencies
-        run: |
-          install.packages(c("remotes", "rcmdcheck"))
-          remotes::install_deps(dependencies = TRUE)
-        shell: Rscript {0}
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "warning")
         shell: Rscript {0}
