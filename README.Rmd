@@ -58,9 +58,9 @@ plot(in_sample(benchmark))
 
 ```{r, echo = TRUE, results = 'hide', fig.show="hold", out.width="50%"}
 plot(in_dicator(benchmark,type="changes"),
-         start=c(2010,1),end=c(2019,12))
+         start=c(2015,1),end=c(2020,12))
 plot(in_dicator(benchmark,type="contributions"),
-         start=c(2010,1),end=c(2019,12))
+         start=c(2015,1),end=c(2020,12))
 ```
 
 ```{r, echo = TRUE, results = 'hide', fig.show="hold", fig.width=14, out.width="100%"}

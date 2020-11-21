@@ -55,9 +55,9 @@ plot(in_sample(benchmark))
 
 ``` r
 plot(in_dicator(benchmark,type="changes"),
-         start=c(2010,1),end=c(2019,12))
+         start=c(2015,1),end=c(2020,12))
 plot(in_dicator(benchmark,type="contributions"),
-         start=c(2010,1),end=c(2019,12))
+         start=c(2015,1),end=c(2020,12))
 ```
 
 <img src="man/figures/README-unnamed-chunk-5-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-5-2.png" width="50%" />
