@@ -97,7 +97,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -154,7 +159,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -211,7 +221,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -268,7 +283,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -325,7 +345,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -382,7 +407,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -417,6 +447,10 @@
             "shared/strftime"
           ]
         },
+        "meta": [
+          null,
+          null
+        ],
         "script": [
           "js/ion.rangeSlider.min.js",
           "strftime-min.js"
@@ -429,6 +463,18 @@
           {
 
           }
+        ],
+        "head": [
+          null,
+          null
+        ],
+        "attachment": [
+          null,
+          null
+        ],
+        "package": [
+          null,
+          null
         ],
         "all_files": [
           true,
@@ -455,6 +501,10 @@
             "shared/strftime"
           ]
         },
+        "meta": [
+          null,
+          null
+        ],
         "script": [
           "js/ion.rangeSlider.min.js",
           "strftime-min.js"
@@ -467,6 +517,18 @@
           {
 
           }
+        ],
+        "head": [
+          null,
+          null
+        ],
+        "attachment": [
+          null,
+          null
+        ],
+        "package": [
+          null,
+          null
         ],
         "all_files": [
           true,
@@ -523,7 +585,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -580,7 +647,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -637,7 +709,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -694,7 +771,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -751,7 +833,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -808,7 +895,12 @@
             ]
           },
           "log": {
-
+            "x": [
+              null
+            ],
+            "y": [
+              null
+            ]
           },
           "mapping": {
 
@@ -843,6 +935,10 @@
             "shared/strftime"
           ]
         },
+        "meta": [
+          null,
+          null
+        ],
         "script": [
           "js/ion.rangeSlider.min.js",
           "strftime-min.js"
@@ -855,6 +951,18 @@
           {
 
           }
+        ],
+        "head": [
+          null,
+          null
+        ],
+        "attachment": [
+          null,
+          null
+        ],
+        "package": [
+          null,
+          null
         ],
         "all_files": [
           true,

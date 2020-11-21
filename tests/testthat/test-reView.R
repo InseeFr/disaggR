@@ -68,6 +68,7 @@ test_that("rePort produces a report",{
 })
 
 test_that("reView",{
+  skip_on_cran()
   shinytest::expect_pass(shinytest::testApp(testthat::test_path("./shiny"),compareImages = FALSE,
                                             interactive = FALSE))
 })
