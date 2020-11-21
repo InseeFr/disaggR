@@ -47,16 +47,16 @@ benchmark <- twoStepsBenchmark(hfserie = turnover,
 as.ts(benchmark)
 coef(benchmark)
 summary(benchmark)
-autoplot(benchmark)
-autoplot(in_sample(benchmark))
+plot(benchmark)
+plot(in_sample(benchmark))
 ```
 
 <img src="man/figures/README-unnamed-chunk-4-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-4-2.png" width="50%" />
 
 ``` r
-autoplot(in_dicator(benchmark,type="changes"),
+plot(in_dicator(benchmark,type="changes"),
          start=c(2010,1),end=c(2019,12))
-autoplot(in_dicator(benchmark,type="contributions"),
+plot(in_dicator(benchmark,type="contributions"),
          start=c(2010,1),end=c(2019,12))
 ```
 
@@ -66,7 +66,7 @@ autoplot(in_dicator(benchmark,type="contributions"),
 new_benchmark <- twoStepsBenchmark(hfserie = turnover,
                                    lfserie = construction,
                                    include.differenciation = FALSE)
-autoplot(in_revisions(new_benchmark,
+plot(in_revisions(new_benchmark,
                       benchmark))
 ```
 
