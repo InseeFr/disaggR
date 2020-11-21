@@ -1,0 +1,421 @@
+{
+  "input": {
+    "reView-menu": "Modify",
+    "reView-reViewtab1-click": 2,
+    "reView-reViewtab1-model3_click": 1,
+    "reView-reViewtab2-benchmark": [
+      2004,
+      2015
+    ],
+    "reView-reViewtab2-click": null,
+    "reView-reViewtab2-coeffcalc": [
+      2004,
+      2012
+    ],
+    "reView-reViewtab2-dif": true,
+    "reView-reViewtab2-mainout_choice": "Benchmark",
+    "reView-reViewtab2-plotswin": [
+      2003,
+      2016
+    ],
+    "reView-reViewtab2-rho": true,
+    "reView-reViewtab2-setcoeff": 110,
+    "reView-reViewtab2-setcoeff_button": true,
+    "reView-reViewtab2-setconst": 100,
+    "reView-reViewtab2-setconst_button": true,
+    "reView-reViewtab3-Copy": 0,
+    "reView-reViewtab3-Quit": 0,
+    "reView-reViewtab3-Reset": 0
+  },
+  "output": {
+    "reView-reViewtab1-model1_plot": {
+      "src": "[image data sha1: fba38404a8e87657fa14d3993099874eed523aff]",
+      "width": 761,
+      "height": 164,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.02620732530635,
+              "top": 10.1427409915051
+            },
+            "range": {
+              "left": 21.6000028383705,
+              "right": 761,
+              "bottom": 148.599991219507,
+              "top": 13.4000087804932
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 761,
+          "height": 164
+        }
+      }
+    },
+    "reView-reViewtab1-model2_plot": {
+      "src": "[image data sha1: bbe1801116236ca331218315f62281bc14823e8a]",
+      "width": 761,
+      "height": 164,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.02620732530635,
+              "top": 10.1427409915051
+            },
+            "range": {
+              "left": 21.6000028383705,
+              "right": 761,
+              "bottom": 148.599991219507,
+              "top": 13.4000087804932
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 761,
+          "height": 164
+        }
+      }
+    },
+    "reView-reViewtab1-model3_plot": {
+      "src": "[image data sha1: 063f780631acbd334bcc36a661cacf76310ae74b]",
+      "width": 761,
+      "height": 163,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -8.02322093990624,
+              "top": 10.1622902780659
+            },
+            "range": {
+              "left": 21.6000028383705,
+              "right": 761,
+              "bottom": 147.599991165639,
+              "top": 13.4000088343612
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 761,
+          "height": 163
+        }
+      }
+    },
+    "reView-reViewtab1-model4_plot": {
+      "src": "[image data sha1: c384b4800cd13d9d2ecbfb10f51449bec6d5255e]",
+      "width": 761,
+      "height": 163,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.02620732530635,
+              "top": 10.1427409915051
+            },
+            "range": {
+              "left": 21.6000028383705,
+              "right": 761,
+              "bottom": 147.599991165639,
+              "top": 13.4000088343612
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 761,
+          "height": 163
+        }
+      }
+    },
+    "reView-reViewtab1-model5_plot": {
+      "src": "[image data sha1: 898b25ef9cc5aa011a8d46405c5a2c87b97e4e19]",
+      "width": 761,
+      "height": 164,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.62626811149417,
+              "top": 14.1853441710544
+            },
+            "range": {
+              "left": 21.6000028383705,
+              "right": 761,
+              "bottom": 148.599991219507,
+              "top": 13.4000087804931
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 761,
+          "height": 164
+        }
+      }
+    },
+    "reView-reViewtab1-model6_plot": {
+      "src": "[image data sha1: 318d4d009834c30daf0f4471a284e43c21172f99]",
+      "width": 761,
+      "height": 164,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.02620732530635,
+              "top": 10.1427409915051
+            },
+            "range": {
+              "left": 21.6000028383705,
+              "right": 761,
+              "bottom": 148.599991219507,
+              "top": 13.4000087804932
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 761,
+          "height": 164
+        }
+      }
+    },
+    "reView-reViewtab2-benchmarksliderInput": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <label class=\"control-label\" for=\"reView-reViewtab2-benchmark\">Benchmark:<\/label>\n  <input class=\"js-range-slider\" id=\"reView-reViewtab2-benchmark\" data-type=\"double\" data-min=\"2000\" data-max=\"2019\" data-from=\"2000\" data-to=\"2019\" data-step=\"1\" data-grid=\"true\" data-grid-num=\"9.5\" data-grid-snap=\"false\" data-prettify-separator=\" \" data-prettify-enabled=\"true\" data-keyboard=\"true\" data-drag-interval=\"true\" data-data-type=\"number\"/>\n<\/div>",
+      "deps": [
+        {
+          "name": "ionrangeslider",
+          "version": "2.1.6",
+          "src": {
+            "href": "shared/ionrangeslider"
+          },
+          "meta": null,
+          "script": "js/ion.rangeSlider.min.js",
+          "stylesheet": [
+            "css/ion.rangeSlider.css",
+            "css/ion.rangeSlider.skinShiny.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "strftime",
+          "version": "0.9.2",
+          "src": {
+            "href": "shared/strftime"
+          },
+          "meta": null,
+          "script": "strftime-min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    },
+    "reView-reViewtab2-coeffcalcsliderInput": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <label class=\"control-label\" for=\"reView-reViewtab2-coeffcalc\">Coefficients:<\/label>\n  <input class=\"js-range-slider\" id=\"reView-reViewtab2-coeffcalc\" data-type=\"double\" data-min=\"2000\" data-max=\"2019\" data-from=\"2000\" data-to=\"2019\" data-step=\"1\" data-grid=\"true\" data-grid-num=\"9.5\" data-grid-snap=\"false\" data-prettify-separator=\" \" data-prettify-enabled=\"true\" data-keyboard=\"true\" data-drag-interval=\"true\" data-data-type=\"number\"/>\n<\/div>",
+      "deps": [
+        {
+          "name": "ionrangeslider",
+          "version": "2.1.6",
+          "src": {
+            "href": "shared/ionrangeslider"
+          },
+          "meta": null,
+          "script": "js/ion.rangeSlider.min.js",
+          "stylesheet": [
+            "css/ion.rangeSlider.css",
+            "css/ion.rangeSlider.skinShiny.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "strftime",
+          "version": "0.9.2",
+          "src": {
+            "href": "shared/strftime"
+          },
+          "meta": null,
+          "script": "strftime-min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    },
+    "reView-reViewtab2-mainOutput": {
+      "html": "<div class=\"row\">\n  <div class=\"col-sm-6\">\n    <div class=\"row\" style=\"margin-left: 3px;&#10;              margin-right: 3px\">\n      <div class=\"col-sm-12\" style=\"padding: 6px 8px;&#10;             margin-top: 6px;&#10;             margin-bottom: 6px;&#10;             background-color: #fdfdfd;&#10;             border: 1px solid #e3e3e3;&#10;             border-radius: 4px;&#10;             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);&#10;             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);\">\n        <div class=\"row\">\n          <div class=\"col-sm-12\">\n            <div class=\"section\">Before<\/div>\n            <div class=\"reView-reViewtab2-mainoutwithtitle\">\n              <div id=\"reView-reViewtab2-oldplot\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 100%\" data-dblclick-id=\"reView-reViewtab2-click\" data-dblclick-clip=\"TRUE\" data-brush-id=\"reView-reViewtab2-brush\" data-brush-fill=\"#9cf\" data-brush-stroke=\"#036\" data-brush-opacity=\"0.25\" data-brush-delay=\"300\" data-brush-delay-type=\"debounce\" data-brush-clip=\"TRUE\" data-brush-direction=\"x\" data-brush-reset-on-new=\"TRUE\"><\/div>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n  <div class=\"col-sm-6\">\n    <div class=\"row\" style=\"margin-right: 6px\">\n      <div class=\"col-sm-12\" style=\"padding: 6px 8px;&#10;             margin-top: 6px;&#10;             margin-bottom: 6px;&#10;             background-color: #fdfdfd;&#10;             border: 1px solid #e3e3e3;&#10;             border-radius: 4px;&#10;             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);&#10;             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);\">\n        <div class=\"row\">\n          <div class=\"col-sm-12\">\n            <div class=\"section\">After<\/div>\n            <div class=\"reView-reViewtab2-mainoutwithtitle\">\n              <div id=\"reView-reViewtab2-newplot\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 100%\" data-dblclick-id=\"reView-reViewtab2-click\" data-dblclick-clip=\"TRUE\" data-brush-id=\"reView-reViewtab2-brush\" data-brush-fill=\"#9cf\" data-brush-stroke=\"#036\" data-brush-opacity=\"0.25\" data-brush-delay=\"300\" data-brush-delay-type=\"debounce\" data-brush-clip=\"TRUE\" data-brush-direction=\"x\" data-brush-reset-on-new=\"TRUE\"><\/div>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>",
+      "deps": [
+
+      ]
+    },
+    "reView-reViewtab2-newplot": {
+      "src": "[image data sha1: 5d4a07b4da8acb0f984ac06795f3ffb293e26edd]",
+      "width": 294,
+      "height": 442,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -828.564613244714,
+              "top": 462.393991459926
+            },
+            "range": {
+              "left": 21.6000073469376,
+              "right": 294,
+              "bottom": 426.599996742081,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 294,
+          "height": 442
+        }
+      }
+    },
+    "reView-reViewtab2-oldplot": {
+      "src": "[image data sha1: d1ad8f6b20158ba210a1fd0b5f2cbb4c7a5748a2]",
+      "width": 279,
+      "height": 442,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": 12.4110341734939,
+              "top": 19.5150970087198
+            },
+            "range": {
+              "left": 21.6000077419344,
+              "right": 279,
+              "bottom": 426.599996742081,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 279,
+          "height": 442
+        }
+      }
+    },
+    "reView-reViewtab2-plotswinsliderInput": {
+      "html": "<div class=\"form-group shiny-input-container\">\n  <label class=\"control-label\" for=\"reView-reViewtab2-plotswin\">Plots:<\/label>\n  <input class=\"js-range-slider\" id=\"reView-reViewtab2-plotswin\" data-type=\"double\" data-min=\"2000\" data-max=\"2020\" data-from=\"2000\" data-to=\"2020\" data-step=\"1\" data-grid=\"true\" data-grid-num=\"10\" data-grid-snap=\"false\" data-prettify-separator=\" \" data-prettify-enabled=\"true\" data-keyboard=\"true\" data-drag-interval=\"true\" data-data-type=\"number\"/>\n<\/div>",
+      "deps": [
+        {
+          "name": "ionrangeslider",
+          "version": "2.1.6",
+          "src": {
+            "href": "shared/ionrangeslider"
+          },
+          "meta": null,
+          "script": "js/ion.rangeSlider.min.js",
+          "stylesheet": [
+            "css/ion.rangeSlider.css",
+            "css/ion.rangeSlider.skinShiny.css"
+          ],
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        },
+        {
+          "name": "strftime",
+          "version": "0.9.2",
+          "src": {
+            "href": "shared/strftime"
+          },
+          "meta": null,
+          "script": "strftime-min.js",
+          "stylesheet": null,
+          "head": null,
+          "attachment": null,
+          "package": null,
+          "all_files": true
+        }
+      ]
+    }
+  },
+  "export": {
+
+  }
+}

@@ -1,3 +1,21 @@
+csspresetplot <- function() {
+  if (isTRUE(getOption("shiny.testmode"))) "{height: 496px; width: 761px;}"
+  else "{height: calc(100vh - 104px);width: calc(50vw - 39px);}"
+}
+
+cssmainoutwithtitle <- function() {
+  if (isTRUE(getOption("shiny.testmode"))) "{height: 442px;}"
+  else "{height: calc(100vh - 158px);}"
+}
+
+cssmainoutwithouttitle <- function() {
+  if (isTRUE(getOption("shiny.testmode"))) "{height: 462px;}"
+  else "{height: calc(100vh - 138px);}"
+}
+
+# viewport seems to bug with shinytests so for the tests I manually calculate
+# them for a 800*600 window
+
 boxstyle <- "padding: 6px 8px;
              margin-top: 6px;
              margin-bottom: 6px;
@@ -6,7 +24,6 @@ boxstyle <- "padding: 6px 8px;
              border-radius: 4px;
              -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);
              box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);"
-
 
 lrmargins <- "margin-left: 3px;
               margin-right: 3px"
@@ -101,12 +118,6 @@ make_new_bn <- function(hfserie_name,lfserie_name,
   assign(hfserie_name,hfserie)
   assign(lfserie_name,lfserie)
   
-  force(include.differenciation);force(include.rho)
-  force(set.coeff);force(set.const)
-  force(start.coeff.calc);force(end.coeff.calc)
-  force(start.benchmark);force(end.benchmark)
-  force(start.domain);force(end.domain)
-  
   bn <- eval(substitute(twoStepsBenchmark(hfserie = hfserie_arg,lfserie = lfserie_arg,
                                           include.differenciation = include.differenciation_arg,
                                           include.rho = include.rho_arg,
@@ -171,8 +182,7 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   div(fluidRow(
-    tags$style(type = "text/css", paste0(".",ns("presetplot")," {height: calc(100vh - 104px);
-                                                                 width: calc(50vw - 39px);}")),
+    tags$style(type = "text/css", paste0(".",ns("presetplot"),csspresetplot())),
     column(6,
            div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "33%"),
                plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "33%"),
@@ -209,8 +219,8 @@ reView_ui_tab2 <- function(id) {
     mainPanel(
       width = 10,
       fluidRow(
-        tags$style(type = "text/css", paste0(".",ns("mainouttitle")," {height: calc(100vh - 158px);}\n",
-                                             ".",ns("mainoutmono")," {height: calc(100vh - 138px);}")),
+        tags$style(type = "text/css", paste0(".",ns("mainoutwithtitle"),cssmainoutwithtitle(),"\n",
+                                             ".",ns("mainoutwithouttitle"),cssmainoutwithouttitle())),
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","In-sample predictions",
@@ -270,10 +280,22 @@ reView_ui_tab3 <- function(id) {
 #' @keywords internal
 reView_ui_module <- function(id) {
   ns <- NS(id)
-  uiOutput(ns("navbar"))
+  navbarPage(title = "reView",
+             id = ns("menu"),
+             selected = "Presets",
+             tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
+             tabPanel("Presets",
+                      reView_ui_tab1(ns("reViewtab1")),
+             ),
+             tabPanel("Modify",
+                      reView_ui_tab2(ns("reViewtab2"))
+             ),
+             tabPanel("Export",
+                      reView_ui_tab3(ns("reViewtab3"))
+             ))
 }
 
-reView_ui <- reView_ui_module("reView")
+reView_ui <- function() reView_ui_module("reView")
 
 #### server ####
 
@@ -306,16 +328,16 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
   switch(old_or_new,
          old={
            title <- div("Before",class="section")
-           outputclass <- ns("mainouttitle")
+           outputclass <- ns("mainoutwithtitle")
          }
          ,
          new={
            title <- div("After",class="section")
-           outputclass <- ns("mainouttitle")
+           outputclass <- ns("mainoutwithtitle")
          },
          mono={
            title <- NULL
-           outputclass <- ns("mainoutmono")
+           outputclass <- ns("mainoutwithouttitle")
          })
   
   # The old_bn arg is only for revisions
@@ -545,30 +567,31 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                  ignoreNULL = TRUE)
                  
                  new_bn <- reactive({
-                   make_new_bn(hfserie_name(),lfserie_name(),
-                               hfserie(),lfserie(),
-                               include.differenciation = input$dif,
-                               include.rho = input$rho,
-                               set.coeff = {
-                                 if (input$setcoeff_button) {
-                                   if (is.na(input$setcoeff)) 0
-                                   else input$setcoeff
-                                 }
-                                 else NULL
-                               },
-                               set.const = {
-                                 if (input$setconst_button) {
-                                   if (is.na(input$setconst)) 0
-                                   else input$setconst
-                                 }
-                                 else NULL
-                               },
-                               start.coeff.calc = input$coeffcalc[1],
-                               end.coeff.calc = input$coeffcalc[2],
-                               start.benchmark = input$benchmark[1],
-                               end.benchmark = input$benchmark[2],
-                               start.domain = model.list(old_bn())$start.domain,
-                               end.domain = model.list(old_bn())$end.domain)})
+                   new_bn <- make_new_bn(hfserie_name(),lfserie_name(),
+                                         hfserie(),lfserie(),
+                                         include.differenciation = input$dif,
+                                         include.rho = input$rho,
+                                         set.coeff = {
+                                           if (input$setcoeff_button) {
+                                             if (is.na(input$setcoeff)) 0
+                                             else input$setcoeff
+                                           }
+                                           else NULL
+                                         },
+                                         set.const = {
+                                           if (input$setconst_button) {
+                                             if (is.na(input$setconst)) 0
+                                             else input$setconst
+                                           }
+                                           else NULL
+                                         },
+                                         start.coeff.calc = input$coeffcalc[1],
+                                         end.coeff.calc = input$coeffcalc[2],
+                                         start.benchmark = input$benchmark[1],
+                                         end.benchmark = input$benchmark[2],
+                                         start.domain = model.list(old_bn())$start.domain,
+                                         end.domain = model.list(old_bn())$end.domain)})
+                 #exportTestValues(new_bn_values=round(new_bn(),1),new_bn_tsp=tsp(new_bn()))
                  new_bn})
 }
 
@@ -618,22 +641,6 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
 reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
   moduleServer(id,function(input, output, session) {
     
-    output$navbar <- renderUI({
-      navbarPage(title = paste("reView:",hfserie_name(),"on", lfserie_name()),
-                 id = session$ns("menu"),
-                 selected = "Presets",
-                 tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
-                 tabPanel("Presets",
-                          reView_ui_tab1(session$ns("reViewtab1")),
-                 ),
-                 tabPanel("Modify",
-                          reView_ui_tab2(session$ns("reViewtab2"))
-                 ),
-                 tabPanel("Export",
-                          reView_ui_tab3(session$ns("reViewtab3"))
-                 ))
-    })
-    
     lfserie <- reactive(model.list(old_bn())$lfserie)
     hfserie <- reactive({
       res <- model.list(old_bn())$hfserie
@@ -670,7 +677,7 @@ reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
 
 runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
   shinyreturn <- shiny::runApp(
-    shiny::shinyApp(ui = reView_ui,
+    shiny::shinyApp(ui = reView_ui(),
                     server = reView_server(old_bn,
                                            hfserie_name,lfserie_name,
                                            compare)

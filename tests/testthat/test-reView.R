@@ -67,5 +67,7 @@ test_that("rePort produces a report",{
   unlink(temp_html)
 })
 
+test_that("reView",{
+  shinytest::expect_pass(shinytest::testApp("./shiny",compareImages = FALSE))
+})
 
-#shinytest::testApp("./tests/testthat/shiny")
