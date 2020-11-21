@@ -113,3 +113,7 @@ app$waitForValue("reView-reViewtab2-setconst",iotype="input")
 app$waitForValue("reView-reViewtab2-newplot",iotype="output")
 app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
 app$snapshot()
+
+p <- app$.__enclos_env__$private$shinyProcess
+p$interrupt()
+p$wait()
