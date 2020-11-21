@@ -69,6 +69,7 @@ test_that("rePort produces a report",{
 
 test_that("reView",{
   skip_on_cran()
+  skip_on_os(c("mac"))
   shinytest::expect_pass(shinytest::testApp(testthat::test_path("./shiny"),compareImages = FALSE,
                                             interactive = FALSE))
 })

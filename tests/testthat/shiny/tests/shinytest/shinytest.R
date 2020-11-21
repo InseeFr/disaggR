@@ -123,7 +123,7 @@ rec_replacechar <- function(x,char,target) {
 cleanjson <- function(x) {
   writeChar(
   prettify(
-    toJSON(rec_replacechar(fromJSON(x),"[‘|’]",""),
+    toJSON(rec_replacechar(fromJSON(x),"[‘|’|']",""),
            digits=2),
     indent=2),x, eos = NULL)
 }

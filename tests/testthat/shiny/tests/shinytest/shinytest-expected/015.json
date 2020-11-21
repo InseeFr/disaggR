@@ -917,7 +917,7 @@
       }
     },
     "reView-reViewtab2-newverbat": [
-      "The model includes a differenciation. \n\nAutocorrelation parameter (rho):  0.2177 \n\nResiduals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-2.8190 -1.9240 -0.6175  1.4220  4.0190 \n\n         Estimate   StdErr t.value  p.value    \nconstant -2.31736  1.36263  -1.701     0.14    \nhfserie   0.18567  0.01693  10.969 3.41e-05 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 2.612 on 6 degrees of freedom\nMultiple R-squared: 0.9621,\tAdjusted R-squared: 0.9494\n\nPortmanteau:\n        statistic p.value                                \nu          0.2846  0.5937    Where Y=X*C+u             \nepsilon   0.04837  0.8259    Where u=rho*lag(u)+epsilon"
+      "The model includes a differenciation. \n\nAutocorrelation parameter (rho):  0.2177 \n\nResiduals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-2.8190 -1.9240 -0.6175  1.4220  4.0190 \n\n         Estimate   StdErr t.value  p.value    \nconstant -2.31736  1.36263  -1.701     0.14    \nhfserie   0.18567  0.01693  10.969 3.41e-05 ***\n---\nSignif. codes:  0 *** 0.001 ** 0.01 * 0.05 . 0.1   1\n\nResidual standard error: 2.612 on 6 degrees of freedom\nMultiple R-squared: 0.9621,\tAdjusted R-squared: 0.9494\n\nPortmanteau:\n        statistic p.value                                \nu          0.2846  0.5937    Where Y=X*C+u             \nepsilon   0.04837  0.8259    Where u=rho*lag(u)+epsilon"
     ],
     "reView-reViewtab2-oldplot": {
       "src": [
@@ -1106,7 +1106,7 @@
       }
     },
     "reView-reViewtab2-oldverbat": [
-      "Residuals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-6.1510 -4.5530 -0.8968  2.3060 10.4500 \n\n          Estimate    StdErr t.value  p.value    \nconstant 44.281630  6.119325   7.236 9.92e-07 ***\nhfserie   0.141018  0.005448  25.882 1.08e-15 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error:   5.3 on 18 degrees of freedom\nMultiple R-squared: 0.9994,\tAdjusted R-squared: 0.9993\n\nPortmanteau:\n  statistic   p.value                     \nu     15.04 0.0001052 ***  Where Y=X*C+u"
+      "Residuals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-6.1510 -4.5530 -0.8968  2.3060 10.4500 \n\n          Estimate    StdErr t.value  p.value    \nconstant 44.281630  6.119325   7.236 9.92e-07 ***\nhfserie   0.141018  0.005448  25.882 1.08e-15 ***\n---\nSignif. codes:  0 *** 0.001 ** 0.01 * 0.05 . 0.1   1\n\nResidual standard error:   5.3 on 18 degrees of freedom\nMultiple R-squared: 0.9994,\tAdjusted R-squared: 0.9993\n\nPortmanteau:\n  statistic   p.value                     \nu     15.04 0.0001052 ***  Where Y=X*C+u"
     ],
     "reView-reViewtab2-plotswinsliderInput": {
       "html": [
