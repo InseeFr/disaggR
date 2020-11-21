@@ -13,10 +13,10 @@
       2012
     ],
     "reView-reViewtab2-dif": true,
-    "reView-reViewtab2-mainout_choice": "Benchmark summary",
+    "reView-reViewtab2-mainout_choice": "Comparison with indicator",
     "reView-reViewtab2-plotswin": [
-      2003,
-      2016
+      2000,
+      2019
     ],
     "reView-reViewtab2-rho": true,
     "reView-reViewtab2-setcoeff": 110,
@@ -305,10 +305,112 @@
       ]
     },
     "reView-reViewtab2-mainOutput": {
-      "html": "<div class=\"row\">\n  <div class=\"col-sm-6\">\n    <div class=\"row\" style=\"margin-left: 3px;&#10;              margin-right: 3px\">\n      <div class=\"col-sm-12\" style=\"padding: 6px 8px;&#10;             margin-top: 6px;&#10;             margin-bottom: 6px;&#10;             background-color: #fdfdfd;&#10;             border: 1px solid #e3e3e3;&#10;             border-radius: 4px;&#10;             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);&#10;             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);\">\n        <div class=\"row\">\n          <div class=\"col-sm-12\">\n            <div class=\"section\">Before<\/div>\n            <div class=\"reView-reViewtab2-mainoutwithtitle\">\n              <pre id=\"reView-reViewtab2-oldverbat\" class=\"shiny-text-output noplaceholder\"><\/pre>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n  <div class=\"col-sm-6\">\n    <div class=\"row\" style=\"margin-right: 6px\">\n      <div class=\"col-sm-12\" style=\"padding: 6px 8px;&#10;             margin-top: 6px;&#10;             margin-bottom: 6px;&#10;             background-color: #fdfdfd;&#10;             border: 1px solid #e3e3e3;&#10;             border-radius: 4px;&#10;             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);&#10;             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);\">\n        <div class=\"row\">\n          <div class=\"col-sm-12\">\n            <div class=\"section\">After<\/div>\n            <div class=\"reView-reViewtab2-mainoutwithtitle\">\n              <pre id=\"reView-reViewtab2-newverbat\" class=\"shiny-text-output noplaceholder\"><\/pre>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>",
+      "html": "<div class=\"row\" style=\"margin-left: 3px;&#10;              margin-right: 3px\">\n  <div class=\"col-sm-12\" style=\"padding: 6px 8px;&#10;             margin-top: 6px;&#10;             margin-bottom: 6px;&#10;             background-color: #fdfdfd;&#10;             border: 1px solid #e3e3e3;&#10;             border-radius: 4px;&#10;             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);&#10;             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);\">\n    <div class=\"row\">\n      <div class=\"col-sm-12\">\n        <div class=\"reView-reViewtab2-mainoutwithouttitle\">\n          <div id=\"reView-reViewtab2-monoplotlev\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 33%\" data-dblclick-id=\"reView-reViewtab2-click\" data-dblclick-clip=\"TRUE\" data-brush-id=\"reView-reViewtab2-brush\" data-brush-fill=\"#9cf\" data-brush-stroke=\"#036\" data-brush-opacity=\"0.25\" data-brush-delay=\"300\" data-brush-delay-type=\"debounce\" data-brush-clip=\"TRUE\" data-brush-direction=\"x\" data-brush-reset-on-new=\"TRUE\"><\/div>\n          <div id=\"reView-reViewtab2-monoplotcha\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 33%\" data-dblclick-id=\"reView-reViewtab2-click\" data-dblclick-clip=\"TRUE\" data-brush-id=\"reView-reViewtab2-brush\" data-brush-fill=\"#9cf\" data-brush-stroke=\"#036\" data-brush-opacity=\"0.25\" data-brush-delay=\"300\" data-brush-delay-type=\"debounce\" data-brush-clip=\"TRUE\" data-brush-direction=\"x\" data-brush-reset-on-new=\"TRUE\"><\/div>\n          <div id=\"reView-reViewtab2-monoplotctb\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 33%\" data-dblclick-id=\"reView-reViewtab2-click\" data-dblclick-clip=\"TRUE\" data-brush-id=\"reView-reViewtab2-brush\" data-brush-fill=\"#9cf\" data-brush-stroke=\"#036\" data-brush-opacity=\"0.25\" data-brush-delay=\"300\" data-brush-delay-type=\"debounce\" data-brush-clip=\"TRUE\" data-brush-direction=\"x\" data-brush-reset-on-new=\"TRUE\"><\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>",
       "deps": [
 
       ]
+    },
+    "reView-reViewtab2-monoplotcha": {
+      "src": "[image data sha1: 95cc2153956a5ed94518ccfda744c555222aeee6]",
+      "width": 613,
+      "height": 153,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2000,
+              "right": 2020,
+              "bottom": -278.552991120994,
+              "top": 90.701696413744
+            },
+            "range": {
+              "left": 21.6000035236571,
+              "right": 613.000000000009,
+              "bottom": 137.599990588229,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 613,
+          "height": 153
+        }
+      }
+    },
+    "reView-reViewtab2-monoplotctb": {
+      "src": "[image data sha1: 4345cdda440520391e240087442063d505cc1297]",
+      "width": 613,
+      "height": 152,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2000,
+              "right": 2020,
+              "bottom": -279.598528773432,
+              "top": 92.7723684385586
+            },
+            "range": {
+              "left": 21.6000035236571,
+              "right": 613,
+              "bottom": 136.59999052631,
+              "top": -0.999999999999966
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 613,
+          "height": 152
+        }
+      }
+    },
+    "reView-reViewtab2-monoplotlev": {
+      "src": "[image data sha1: 413f9196ba7c14a71412f1f64ed43db2d016211f]",
+      "width": 613,
+      "height": 152,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2000,
+              "right": 2020,
+              "bottom": -14.9778782894008,
+              "top": 245.055870397271
+            },
+            "range": {
+              "left": 21.6000035236571,
+              "right": 613.000000000009,
+              "bottom": 136.59999052631,
+              "top": -0.999999999999966
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 613,
+          "height": 152
+        }
+      }
     },
     "reView-reViewtab2-newplot": {
       "src": "[image data sha1: 5d4a07b4da8acb0f984ac06795f3ffb293e26edd]",

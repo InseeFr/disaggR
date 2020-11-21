@@ -68,6 +68,6 @@ test_that("rePort produces a report",{
 })
 
 test_that("reView",{
-  shinytest::expect_pass(shinytest::testApp("./shiny",compareImages = FALSE))
+  shinytest::expect_pass(shinytest::testApp(testthat::test_path("./shiny"),compareImages = FALSE))
 })
 

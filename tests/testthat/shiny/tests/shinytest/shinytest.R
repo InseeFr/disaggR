@@ -76,9 +76,7 @@ app$snapshot()
 app$setInputs(`reView-reViewtab2-mainout_choice` = "Benchmark summary")
 app$waitForValue("reView-reViewtab2-oldverbat",iotype="output")
 app$waitForValue("reView-reViewtab2-newverbat",iotype="output")
-app$snapshot()
 app$setInputs(`reView-reViewtab2-setconst_button` = FALSE)
-app$snapshot()
 
 # Indicator
 app$setInputs(`reView-reViewtab2-mainout_choice` = "Comparison with indicator")

@@ -7,16 +7,17 @@
       2004,
       2015
     ],
+    "reView-reViewtab2-brush": null,
     "reView-reViewtab2-click": null,
     "reView-reViewtab2-coeffcalc": [
       2004,
       2012
     ],
     "reView-reViewtab2-dif": true,
-    "reView-reViewtab2-mainout_choice": "Comparison with indicator",
+    "reView-reViewtab2-mainout_choice": "Revisions",
     "reView-reViewtab2-plotswin": [
-      2000,
-      2019
+      2005,
+      2010
     ],
     "reView-reViewtab2-rho": true,
     "reView-reViewtab2-setcoeff": 110,
@@ -311,21 +312,21 @@
       ]
     },
     "reView-reViewtab2-monoplotcha": {
-      "src": "[image data sha1: 95cc2153956a5ed94518ccfda744c555222aeee6]",
+      "src": "[image data sha1: 30523a932e892ecff9b3d58e4eb5661bf25d4987]",
       "width": 613,
       "height": 153,
       "coordmap": {
         "panels": [
           {
             "domain": {
-              "left": 2000,
-              "right": 2020,
-              "bottom": -278.552991120994,
-              "top": 90.701696413744
+              "left": 2005,
+              "right": 2011,
+              "bottom": -0.76341049857471,
+              "top": 0.593792467730978
             },
             "range": {
-              "left": 21.6000035236571,
-              "right": 613.000000000009,
+              "left": 21.6000035236658,
+              "right": 613.000000000035,
               "bottom": 137.599990588229,
               "top": -1
             },
@@ -345,23 +346,23 @@
       }
     },
     "reView-reViewtab2-monoplotctb": {
-      "src": "[image data sha1: 4345cdda440520391e240087442063d505cc1297]",
+      "src": "[image data sha1: 15522190b25722c63227d473b1fbadaa591541b4]",
       "width": 613,
       "height": 152,
       "coordmap": {
         "panels": [
           {
             "domain": {
-              "left": 2000,
-              "right": 2020,
-              "bottom": -279.598528773432,
-              "top": 92.7723684385586
+              "left": 2005,
+              "right": 2011,
+              "bottom": -0.816951403116548,
+              "top": 0.816283402080362
             },
             "range": {
-              "left": 21.6000035236571,
+              "left": 21.6000035236658,
               "right": 613,
               "bottom": 136.59999052631,
-              "top": -0.999999999999966
+              "top": -1
             },
             "log": {
               "x": null,
@@ -379,23 +380,23 @@
       }
     },
     "reView-reViewtab2-monoplotlev": {
-      "src": "[image data sha1: 413f9196ba7c14a71412f1f64ed43db2d016211f]",
+      "src": "[image data sha1: 4fb285ba1f5fdb7627a66943bc7a76d4426ce8db]",
       "width": 613,
       "height": 152,
       "coordmap": {
         "panels": [
           {
             "domain": {
-              "left": 2000,
-              "right": 2020,
-              "bottom": -14.9778782894008,
-              "top": 245.055870397271
+              "left": 2005,
+              "right": 2011,
+              "bottom": -0.145994986978728,
+              "top": 0.118197932200214
             },
             "range": {
-              "left": 21.6000035236571,
-              "right": 613.000000000009,
+              "left": 21.6000035236658,
+              "right": 613.000000000035,
               "bottom": 136.59999052631,
-              "top": -0.999999999999966
+              "top": -1
             },
             "log": {
               "x": null,

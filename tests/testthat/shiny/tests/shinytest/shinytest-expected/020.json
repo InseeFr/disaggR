@@ -4,29 +4,29 @@
     "reView-reViewtab1-click": 2,
     "reView-reViewtab1-model3_click": 1,
     "reView-reViewtab2-benchmark": [
-      2004,
-      2015
+      2000,
+      2019
     ],
     "reView-reViewtab2-brush": null,
     "reView-reViewtab2-click": null,
     "reView-reViewtab2-coeffcalc": [
-      2004,
-      2012
+      2000,
+      2019
     ],
-    "reView-reViewtab2-dif": true,
+    "reView-reViewtab2-dif": false,
     "reView-reViewtab2-mainout_choice": "Revisions",
     "reView-reViewtab2-plotswin": [
-      2005,
-      2010
+      2000,
+      2020
     ],
-    "reView-reViewtab2-rho": true,
+    "reView-reViewtab2-rho": false,
     "reView-reViewtab2-setcoeff": 110,
     "reView-reViewtab2-setcoeff_button": false,
     "reView-reViewtab2-setconst": 100,
     "reView-reViewtab2-setconst_button": false,
     "reView-reViewtab3-Copy": 0,
     "reView-reViewtab3-Quit": 0,
-    "reView-reViewtab3-Reset": 0
+    "reView-reViewtab3-Reset": 1
   },
   "output": {
     "reView-reViewtab1-model1_plot": {
@@ -312,21 +312,21 @@
       ]
     },
     "reView-reViewtab2-monoplotcha": {
-      "src": "[image data sha1: 30523a932e892ecff9b3d58e4eb5661bf25d4987]",
+      "src": "[image data sha1: 3a37845bca4fdcb80b8b407482288559a5d6363e]",
       "width": 613,
       "height": 153,
       "coordmap": {
         "panels": [
           {
             "domain": {
-              "left": 2005,
-              "right": 2011,
-              "bottom": -0.76341049857471,
-              "top": 0.593792467730978
+              "left": 2000,
+              "right": 2021,
+              "bottom": -1,
+              "top": 1
             },
             "range": {
-              "left": 21.6000035236658,
-              "right": 613.000000000035,
+              "left": 21.6000035236571,
+              "right": 613,
               "bottom": 137.599990588229,
               "top": -1
             },
@@ -346,20 +346,20 @@
       }
     },
     "reView-reViewtab2-monoplotctb": {
-      "src": "[image data sha1: 15522190b25722c63227d473b1fbadaa591541b4]",
+      "src": "[image data sha1: 84a5c2a4996d5730d625dcf775ef18d48d6a027b]",
       "width": 613,
       "height": 152,
       "coordmap": {
         "panels": [
           {
             "domain": {
-              "left": 2005,
-              "right": 2011,
-              "bottom": -0.816951403116548,
-              "top": 0.816283402080362
+              "left": 2000,
+              "right": 2021,
+              "bottom": -1,
+              "top": 1
             },
             "range": {
-              "left": 21.6000035236658,
+              "left": 21.6000035236571,
               "right": 613,
               "bottom": 136.59999052631,
               "top": -1
@@ -380,21 +380,21 @@
       }
     },
     "reView-reViewtab2-monoplotlev": {
-      "src": "[image data sha1: 4fb285ba1f5fdb7627a66943bc7a76d4426ce8db]",
+      "src": "[image data sha1: 6b23244c72fabdd0d0e3bb05b9a43295f605b5e4]",
       "width": 613,
       "height": 152,
       "coordmap": {
         "panels": [
           {
             "domain": {
-              "left": 2005,
-              "right": 2011,
-              "bottom": -0.145994986978728,
-              "top": 0.118197932200214
+              "left": 2000,
+              "right": 2021,
+              "bottom": -1,
+              "top": 1
             },
             "range": {
-              "left": 21.6000035236658,
-              "right": 613.000000000035,
+              "left": 21.6000035236571,
+              "right": 613,
               "bottom": 136.59999052631,
               "top": -1
             },
@@ -654,7 +654,9 @@
           "all_files": true
         }
       ]
-    }
+    },
+    "reView-reViewtab3-newcall": "twoStepsBenchmark(\n\thfserie = turnover,\n\tlfserie = construction,\n\tinclude.differenciation = FALSE,\n\tinclude.rho = FALSE,\n\tstart.coeff.calc = 2000,\n\tend.coeff.calc = 2019,\n\tstart.benchmark = 2000,\n\tend.benchmark = 2019\n)",
+    "reView-reViewtab3-oldcall": "twoStepsBenchmark(\n\thfserie = turnover,\n\tlfserie = construction,\n\tinclude.differenciation = FALSE,\n\tinclude.rho = FALSE\n)"
   },
   "export": {
 

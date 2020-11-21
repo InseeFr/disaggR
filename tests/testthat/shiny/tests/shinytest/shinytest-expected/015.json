@@ -13,7 +13,7 @@
       2012
     ],
     "reView-reViewtab2-dif": true,
-    "reView-reViewtab2-mainout_choice": "Benchmark summary",
+    "reView-reViewtab2-mainout_choice": "Comparison with indicator",
     "reView-reViewtab2-plotswin": [
       2003,
       2016
@@ -22,7 +22,7 @@
     "reView-reViewtab2-setcoeff": 110,
     "reView-reViewtab2-setcoeff_button": false,
     "reView-reViewtab2-setconst": 100,
-    "reView-reViewtab2-setconst_button": true,
+    "reView-reViewtab2-setconst_button": false,
     "reView-reViewtab3-Copy": 0,
     "reView-reViewtab3-Quit": 0,
     "reView-reViewtab3-Reset": 0
@@ -305,10 +305,112 @@
       ]
     },
     "reView-reViewtab2-mainOutput": {
-      "html": "<div class=\"row\">\n  <div class=\"col-sm-6\">\n    <div class=\"row\" style=\"margin-left: 3px;&#10;              margin-right: 3px\">\n      <div class=\"col-sm-12\" style=\"padding: 6px 8px;&#10;             margin-top: 6px;&#10;             margin-bottom: 6px;&#10;             background-color: #fdfdfd;&#10;             border: 1px solid #e3e3e3;&#10;             border-radius: 4px;&#10;             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);&#10;             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);\">\n        <div class=\"row\">\n          <div class=\"col-sm-12\">\n            <div class=\"section\">Before<\/div>\n            <div class=\"reView-reViewtab2-mainoutwithtitle\">\n              <pre id=\"reView-reViewtab2-oldverbat\" class=\"shiny-text-output noplaceholder\"><\/pre>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n  <div class=\"col-sm-6\">\n    <div class=\"row\" style=\"margin-right: 6px\">\n      <div class=\"col-sm-12\" style=\"padding: 6px 8px;&#10;             margin-top: 6px;&#10;             margin-bottom: 6px;&#10;             background-color: #fdfdfd;&#10;             border: 1px solid #e3e3e3;&#10;             border-radius: 4px;&#10;             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);&#10;             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);\">\n        <div class=\"row\">\n          <div class=\"col-sm-12\">\n            <div class=\"section\">After<\/div>\n            <div class=\"reView-reViewtab2-mainoutwithtitle\">\n              <pre id=\"reView-reViewtab2-newverbat\" class=\"shiny-text-output noplaceholder\"><\/pre>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>",
+      "html": "<div class=\"row\" style=\"margin-left: 3px;&#10;              margin-right: 3px\">\n  <div class=\"col-sm-12\" style=\"padding: 6px 8px;&#10;             margin-top: 6px;&#10;             margin-bottom: 6px;&#10;             background-color: #fdfdfd;&#10;             border: 1px solid #e3e3e3;&#10;             border-radius: 4px;&#10;             -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);&#10;             box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);\">\n    <div class=\"row\">\n      <div class=\"col-sm-12\">\n        <div class=\"reView-reViewtab2-mainoutwithouttitle\">\n          <div id=\"reView-reViewtab2-monoplotlev\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 33%\" data-dblclick-id=\"reView-reViewtab2-click\" data-dblclick-clip=\"TRUE\" data-brush-id=\"reView-reViewtab2-brush\" data-brush-fill=\"#9cf\" data-brush-stroke=\"#036\" data-brush-opacity=\"0.25\" data-brush-delay=\"300\" data-brush-delay-type=\"debounce\" data-brush-clip=\"TRUE\" data-brush-direction=\"x\" data-brush-reset-on-new=\"TRUE\"><\/div>\n          <div id=\"reView-reViewtab2-monoplotcha\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 33%\" data-dblclick-id=\"reView-reViewtab2-click\" data-dblclick-clip=\"TRUE\" data-brush-id=\"reView-reViewtab2-brush\" data-brush-fill=\"#9cf\" data-brush-stroke=\"#036\" data-brush-opacity=\"0.25\" data-brush-delay=\"300\" data-brush-delay-type=\"debounce\" data-brush-clip=\"TRUE\" data-brush-direction=\"x\" data-brush-reset-on-new=\"TRUE\"><\/div>\n          <div id=\"reView-reViewtab2-monoplotctb\" class=\"shiny-plot-output\" style=\"width: 100% ; height: 33%\" data-dblclick-id=\"reView-reViewtab2-click\" data-dblclick-clip=\"TRUE\" data-brush-id=\"reView-reViewtab2-brush\" data-brush-fill=\"#9cf\" data-brush-stroke=\"#036\" data-brush-opacity=\"0.25\" data-brush-delay=\"300\" data-brush-delay-type=\"debounce\" data-brush-clip=\"TRUE\" data-brush-direction=\"x\" data-brush-reset-on-new=\"TRUE\"><\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>",
       "deps": [
 
       ]
+    },
+    "reView-reViewtab2-monoplotcha": {
+      "src": "[image data sha1: 8704e24b85f6977c73b8c33484db31a7b3e0a161]",
+      "width": 613,
+      "height": 153,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -6.35305319436728,
+              "top": 19.1299611152542
+            },
+            "range": {
+              "left": 21.6000035236484,
+              "right": 613,
+              "bottom": 137.599990588229,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 613,
+          "height": 153
+        }
+      }
+    },
+    "reView-reViewtab2-monoplotctb": {
+      "src": "[image data sha1: 2b0b3452816e98095d5c53bc724cd669820215a1]",
+      "width": 613,
+      "height": 152,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -6.52110717863447,
+              "top": 19.3839613717928
+            },
+            "range": {
+              "left": 21.6000035236484,
+              "right": 612.999999999983,
+              "bottom": 136.59999052631,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 613,
+          "height": 152
+        }
+      }
+    },
+    "reView-reViewtab2-monoplotlev": {
+      "src": "[image data sha1: abf8ce475e5900cd1962e98bdc991b3da92922e1]",
+      "width": 613,
+      "height": 152,
+      "coordmap": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -13.2528840344612,
+              "top": 207.605119096592
+            },
+            "range": {
+              "left": 21.6000035236484,
+              "right": 613,
+              "bottom": 136.59999052631,
+              "top": -1
+            },
+            "log": {
+              "x": null,
+              "y": null
+            },
+            "mapping": {
+
+            }
+          }
+        ],
+        "dims": {
+          "width": 613,
+          "height": 152
+        }
+      }
     },
     "reView-reViewtab2-newplot": {
       "src": "[image data sha1: 5d4a07b4da8acb0f984ac06795f3ffb293e26edd]",
@@ -412,7 +514,7 @@
         }
       }
     },
-    "reView-reViewtab2-newverbat": "The model includes a differenciation. \n\nAutocorrelation parameter (rho):  0.2925 \n\nResiduals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-143.00  -94.66  -59.48  -46.75  -30.04 \n\n         Estimate   StdErr t.value p.value\nconstant 100.0000       NA      NA      NA\nhfserie   -0.4666   0.3821  -1.221   0.262\n\nResidual standard error:    86 on 7 degrees of freedom\nMultiple R-squared: 0.4958,\tAdjusted R-squared: 0.4238\n\nPortmanteau:\n        statistic p.value                                \nu          0.9357  0.3334   || Where Y=X*C+u             \nepsilon   0.03697  0.8475   || Where u=rho*lag(u)+epsilon",
+    "reView-reViewtab2-newverbat": "The model includes a differenciation. \n\nAutocorrelation parameter (rho):  0.2177 \n\nResiduals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-2.8190 -1.9240 -0.6175  1.4220  4.0190 \n\n         Estimate   StdErr t.value  p.value    \nconstant -2.31736  1.36263  -1.701     0.14    \nhfserie   0.18567  0.01693  10.969 3.41e-05 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 2.612 on 6 degrees of freedom\nMultiple R-squared: 0.9621,\tAdjusted R-squared: 0.9494\n\nPortmanteau:\n        statistic p.value                                \nu          0.2846  0.5937   || Where Y=X*C+u             \nepsilon   0.04837  0.8259   || Where u=rho*lag(u)+epsilon",
     "reView-reViewtab2-oldplot": {
       "src": "[image data sha1: d1ad8f6b20158ba210a1fd0b5f2cbb4c7a5748a2]",
       "width": 279,
