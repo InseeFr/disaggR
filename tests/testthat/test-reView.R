@@ -69,8 +69,10 @@ test_that("rePort produces a report",{
 
 test_that("reView",{
   skip_on_cran()
-  skip_on_os(c("mac"))
-  shinytest::expect_pass(shinytest::testApp(testthat::test_path("./shiny"),compareImages = FALSE,
+  skip_on_os(c("mac","linux","solaris"))
+    # Only check on windows (otherwise the plots SHA1 differ)
+  shinytest::expect_pass(shinytest::testApp(testthat::test_path("./shiny"),
+                                            compareImages = FALSE,
                                             interactive = FALSE))
 })
 

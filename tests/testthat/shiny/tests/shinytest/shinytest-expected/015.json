@@ -67,47 +67,28 @@
         164
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2001
-            ],
-            "right": [
-              2020
-            ],
-            "bottom": [
-              -7.03
-            ],
-            "top": [
-              10.14
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              761
-            ],
-            "bottom": [
-              148.6
-            ],
-            "top": [
-              13.4
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.03,
+              "top": 10.14
+            },
+            "range": {
+              "left": 21.6,
+              "right": 761,
+              "bottom": 148.6,
+              "top": 13.4
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             761
@@ -129,47 +110,28 @@
         164
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2001
-            ],
-            "right": [
-              2020
-            ],
-            "bottom": [
-              -7.03
-            ],
-            "top": [
-              10.14
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              761
-            ],
-            "bottom": [
-              148.6
-            ],
-            "top": [
-              13.4
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.03,
+              "top": 10.14
+            },
+            "range": {
+              "left": 21.6,
+              "right": 761,
+              "bottom": 148.6,
+              "top": 13.4
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             761
@@ -191,47 +153,28 @@
         163
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2001
-            ],
-            "right": [
-              2020
-            ],
-            "bottom": [
-              -8.02
-            ],
-            "top": [
-              10.16
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              761
-            ],
-            "bottom": [
-              147.6
-            ],
-            "top": [
-              13.4
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -8.02,
+              "top": 10.16
+            },
+            "range": {
+              "left": 21.6,
+              "right": 761,
+              "bottom": 147.6,
+              "top": 13.4
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             761
@@ -253,47 +196,28 @@
         163
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2001
-            ],
-            "right": [
-              2020
-            ],
-            "bottom": [
-              -7.03
-            ],
-            "top": [
-              10.14
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              761
-            ],
-            "bottom": [
-              147.6
-            ],
-            "top": [
-              13.4
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.03,
+              "top": 10.14
+            },
+            "range": {
+              "left": 21.6,
+              "right": 761,
+              "bottom": 147.6,
+              "top": 13.4
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             761
@@ -315,47 +239,28 @@
         164
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2001
-            ],
-            "right": [
-              2020
-            ],
-            "bottom": [
-              -7.63
-            ],
-            "top": [
-              14.19
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              761
-            ],
-            "bottom": [
-              148.6
-            ],
-            "top": [
-              13.4
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.63,
+              "top": 14.19
+            },
+            "range": {
+              "left": 21.6,
+              "right": 761,
+              "bottom": 148.6,
+              "top": 13.4
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             761
@@ -377,47 +282,28 @@
         164
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2001
-            ],
-            "right": [
-              2020
-            ],
-            "bottom": [
-              -7.03
-            ],
-            "top": [
-              10.14
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              761
-            ],
-            "bottom": [
-              148.6
-            ],
-            "top": [
-              13.4
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2001,
+              "right": 2020,
+              "bottom": -7.03,
+              "top": 10.14
+            },
+            "range": {
+              "left": 21.6,
+              "right": 761,
+              "bottom": 148.6,
+              "top": 13.4
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             761
@@ -432,109 +318,65 @@
       "html": [
         "<div class=\"form-group shiny-input-container\">\n  <label class=\"control-label\" for=\"reView-reViewtab2-benchmark\">Benchmark:<\/label>\n  <input class=\"js-range-slider\" id=\"reView-reViewtab2-benchmark\" data-type=\"double\" data-min=\"2000\" data-max=\"2019\" data-from=\"2000\" data-to=\"2019\" data-step=\"1\" data-grid=\"true\" data-grid-num=\"9.5\" data-grid-snap=\"false\" data-prettify-separator=\" \" data-prettify-enabled=\"true\" data-keyboard=\"true\" data-drag-interval=\"true\" data-data-type=\"number\"/>\n<\/div>"
       ],
-      "deps": {
-        "name": [
-          "ionrangeslider",
-          "strftime"
-        ],
-        "version": [
-          "2.1.6",
-          "0.9.2"
-        ],
-        "src": {
-          "href": [
-            "shared/ionrangeslider",
-            "shared/strftime"
-          ]
-        },
-        "meta": [
-          null,
-          null
-        ],
-        "script": [
-          "js/ion.rangeSlider.min.js",
-          "strftime-min.js"
-        ],
-        "stylesheet": [
-          [
+      "deps": [
+        {
+          "name": "ionrangeslider",
+          "version": "2.1.6",
+          "src": {
+            "href": "shared/ionrangeslider"
+          },
+          "script": "js/ion.rangeSlider.min.js",
+          "stylesheet": [
             "css/ion.rangeSlider.css",
             "css/ion.rangeSlider.skinShiny.css"
           ],
-          {
+          "all_files": true
+        },
+        {
+          "name": "strftime",
+          "version": "0.9.2",
+          "src": {
+            "href": "shared/strftime"
+          },
+          "script": "strftime-min.js",
+          "stylesheet": {
 
-          }
-        ],
-        "head": [
-          null,
-          null
-        ],
-        "attachment": [
-          null,
-          null
-        ],
-        "package": [
-          null,
-          null
-        ],
-        "all_files": [
-          true,
-          true
-        ]
-      }
+          },
+          "all_files": true
+        }
+      ]
     },
     "reView-reViewtab2-coeffcalcsliderInput": {
       "html": [
         "<div class=\"form-group shiny-input-container\">\n  <label class=\"control-label\" for=\"reView-reViewtab2-coeffcalc\">Coefficients:<\/label>\n  <input class=\"js-range-slider\" id=\"reView-reViewtab2-coeffcalc\" data-type=\"double\" data-min=\"2000\" data-max=\"2019\" data-from=\"2000\" data-to=\"2019\" data-step=\"1\" data-grid=\"true\" data-grid-num=\"9.5\" data-grid-snap=\"false\" data-prettify-separator=\" \" data-prettify-enabled=\"true\" data-keyboard=\"true\" data-drag-interval=\"true\" data-data-type=\"number\"/>\n<\/div>"
       ],
-      "deps": {
-        "name": [
-          "ionrangeslider",
-          "strftime"
-        ],
-        "version": [
-          "2.1.6",
-          "0.9.2"
-        ],
-        "src": {
-          "href": [
-            "shared/ionrangeslider",
-            "shared/strftime"
-          ]
-        },
-        "meta": [
-          null,
-          null
-        ],
-        "script": [
-          "js/ion.rangeSlider.min.js",
-          "strftime-min.js"
-        ],
-        "stylesheet": [
-          [
+      "deps": [
+        {
+          "name": "ionrangeslider",
+          "version": "2.1.6",
+          "src": {
+            "href": "shared/ionrangeslider"
+          },
+          "script": "js/ion.rangeSlider.min.js",
+          "stylesheet": [
             "css/ion.rangeSlider.css",
             "css/ion.rangeSlider.skinShiny.css"
           ],
-          {
+          "all_files": true
+        },
+        {
+          "name": "strftime",
+          "version": "0.9.2",
+          "src": {
+            "href": "shared/strftime"
+          },
+          "script": "strftime-min.js",
+          "stylesheet": {
 
-          }
-        ],
-        "head": [
-          null,
-          null
-        ],
-        "attachment": [
-          null,
-          null
-        ],
-        "package": [
-          null,
-          null
-        ],
-        "all_files": [
-          true,
-          true
-        ]
-      }
+          },
+          "all_files": true
+        }
+      ]
     },
     "reView-reViewtab2-mainOutput": {
       "html": [
@@ -555,47 +397,28 @@
         153
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              -6.35
-            ],
-            "top": [
-              19.13
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              613
-            ],
-            "bottom": [
-              137.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -6.35,
+              "top": 19.13
+            },
+            "range": {
+              "left": 21.6,
+              "right": 613,
+              "bottom": 137.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             613
@@ -617,47 +440,28 @@
         152
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              -6.52
-            ],
-            "top": [
-              19.38
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              613
-            ],
-            "bottom": [
-              136.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -6.52,
+              "top": 19.38
+            },
+            "range": {
+              "left": 21.6,
+              "right": 613,
+              "bottom": 136.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             613
@@ -679,47 +483,28 @@
         152
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              -13.25
-            ],
-            "top": [
-              207.61
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              613
-            ],
-            "bottom": [
-              136.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -13.25,
+              "top": 207.61
+            },
+            "range": {
+              "left": 21.6,
+              "right": 613,
+              "bottom": 136.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             613
@@ -741,47 +526,28 @@
         442
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              -828.56
-            ],
-            "top": [
-              462.39
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              294
-            ],
-            "bottom": [
-              426.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -828.56,
+              "top": 462.39
+            },
+            "range": {
+              "left": 21.6,
+              "right": 294,
+              "bottom": 426.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             294
@@ -803,47 +569,28 @@
         221
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              -7.82
-            ],
-            "top": [
-              50.86
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              294
-            ],
-            "bottom": [
-              205.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -7.82,
+              "top": 50.86
+            },
+            "range": {
+              "left": 21.6,
+              "right": 294,
+              "bottom": 205.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             294
@@ -865,47 +612,28 @@
         221
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              165.89
-            ],
-            "top": [
-              343.31
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              294
-            ],
-            "bottom": [
-              205.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": 165.89,
+              "top": 343.31
+            },
+            "range": {
+              "left": 21.6,
+              "right": 294,
+              "bottom": 205.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             294
@@ -917,7 +645,7 @@
       }
     },
     "reView-reViewtab2-newverbat": [
-      "The model includes a differenciation. \n\nAutocorrelation parameter (rho):  0.2177 \n\nResiduals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-2.8190 -1.9240 -0.6175  1.4220  4.0190 \n\n         Estimate   StdErr t.value  p.value    \nconstant -2.31736  1.36263  -1.701     0.14    \nhfserie   0.18567  0.01693  10.969 3.41e-05 ***\n---\nSignif. codes:  0 *** 0.001 ** 0.01 * 0.05 . 0.1   1\n\nResidual standard error: 2.612 on 6 degrees of freedom\nMultiple R-squared: 0.9621,\tAdjusted R-squared: 0.9494\n\nPortmanteau:\n        statistic p.value                                \nu          0.2846  0.5937    Where Y=X*C+u             \nepsilon   0.04837  0.8259    Where u=rho*lag(u)+epsilon"
+      "The model includes a differenciation. \n\nAutocorrelation parameter (rho):  0.2177 \n\nResiduals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-2.8190 -1.9240 -0.6175  1.4220  4.0190 \n\n         Estimate   StdErr t.value  p.value    \nconstant -2.31736  1.36263  -1.701     0.14    \nhfserie   0.18567  0.01693  10.969 3.41e-05 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error: 2.612 on 6 degrees of freedom\nMultiple R-squared: 0.9621,\tAdjusted R-squared: 0.9494\n\nPortmanteau:\n        statistic p.value                                \nu          0.2846  0.5937   || Where Y=X*C+u             \nepsilon   0.04837  0.8259   || Where u=rho*lag(u)+epsilon"
     ],
     "reView-reViewtab2-oldplot": {
       "src": [
@@ -930,47 +658,28 @@
         442
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              12.41
-            ],
-            "top": [
-              19.52
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              279
-            ],
-            "bottom": [
-              426.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": 12.41,
+              "top": 19.52
+            },
+            "range": {
+              "left": 21.6,
+              "right": 279,
+              "bottom": 426.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             279
@@ -992,47 +701,28 @@
         221
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              -8.02
-            ],
-            "top": [
-              10.16
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              279
-            ],
-            "bottom": [
-              205.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": -8.02,
+              "top": 10.16
+            },
+            "range": {
+              "left": 21.6,
+              "right": 279,
+              "bottom": 205.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             279
@@ -1054,47 +744,28 @@
         221
       ],
       "coordmap": {
-        "panels": {
-          "domain": {
-            "left": [
-              2003
-            ],
-            "right": [
-              2017
-            ],
-            "bottom": [
-              154.48
-            ],
-            "top": [
-              228.42
-            ]
-          },
-          "range": {
-            "left": [
-              21.6
-            ],
-            "right": [
-              279
-            ],
-            "bottom": [
-              205.6
-            ],
-            "top": [
-              -1
-            ]
-          },
-          "log": {
-            "x": [
-              null
-            ],
-            "y": [
-              null
-            ]
-          },
-          "mapping": {
+        "panels": [
+          {
+            "domain": {
+              "left": 2003,
+              "right": 2017,
+              "bottom": 154.48,
+              "top": 228.42
+            },
+            "range": {
+              "left": 21.6,
+              "right": 279,
+              "bottom": 205.6,
+              "top": -1
+            },
+            "log": {
 
+            },
+            "mapping": {
+
+            }
           }
-        },
+        ],
         "dims": {
           "width": [
             279
@@ -1106,61 +777,39 @@
       }
     },
     "reView-reViewtab2-oldverbat": [
-      "Residuals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-6.1510 -4.5530 -0.8968  2.3060 10.4500 \n\n          Estimate    StdErr t.value  p.value    \nconstant 44.281630  6.119325   7.236 9.92e-07 ***\nhfserie   0.141018  0.005448  25.882 1.08e-15 ***\n---\nSignif. codes:  0 *** 0.001 ** 0.01 * 0.05 . 0.1   1\n\nResidual standard error:   5.3 on 18 degrees of freedom\nMultiple R-squared: 0.9994,\tAdjusted R-squared: 0.9993\n\nPortmanteau:\n  statistic   p.value                     \nu     15.04 0.0001052 ***  Where Y=X*C+u"
+      "Residuals:\n   Min. 1st Qu.  Median 3rd Qu.    Max. \n-6.1510 -4.5530 -0.8968  2.3060 10.4500 \n\n          Estimate    StdErr t.value  p.value    \nconstant 44.281630  6.119325   7.236 9.92e-07 ***\nhfserie   0.141018  0.005448  25.882 1.08e-15 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\nResidual standard error:   5.3 on 18 degrees of freedom\nMultiple R-squared: 0.9994,\tAdjusted R-squared: 0.9993\n\nPortmanteau:\n  statistic   p.value                     \nu     15.04 0.0001052 *** || Where Y=X*C+u"
     ],
     "reView-reViewtab2-plotswinsliderInput": {
       "html": [
         "<div class=\"form-group shiny-input-container\">\n  <label class=\"control-label\" for=\"reView-reViewtab2-plotswin\">Plots:<\/label>\n  <input class=\"js-range-slider\" id=\"reView-reViewtab2-plotswin\" data-type=\"double\" data-min=\"2000\" data-max=\"2020\" data-from=\"2000\" data-to=\"2020\" data-step=\"1\" data-grid=\"true\" data-grid-num=\"10\" data-grid-snap=\"false\" data-prettify-separator=\" \" data-prettify-enabled=\"true\" data-keyboard=\"true\" data-drag-interval=\"true\" data-data-type=\"number\"/>\n<\/div>"
       ],
-      "deps": {
-        "name": [
-          "ionrangeslider",
-          "strftime"
-        ],
-        "version": [
-          "2.1.6",
-          "0.9.2"
-        ],
-        "src": {
-          "href": [
-            "shared/ionrangeslider",
-            "shared/strftime"
-          ]
-        },
-        "meta": [
-          null,
-          null
-        ],
-        "script": [
-          "js/ion.rangeSlider.min.js",
-          "strftime-min.js"
-        ],
-        "stylesheet": [
-          [
+      "deps": [
+        {
+          "name": "ionrangeslider",
+          "version": "2.1.6",
+          "src": {
+            "href": "shared/ionrangeslider"
+          },
+          "script": "js/ion.rangeSlider.min.js",
+          "stylesheet": [
             "css/ion.rangeSlider.css",
             "css/ion.rangeSlider.skinShiny.css"
           ],
-          {
+          "all_files": true
+        },
+        {
+          "name": "strftime",
+          "version": "0.9.2",
+          "src": {
+            "href": "shared/strftime"
+          },
+          "script": "strftime-min.js",
+          "stylesheet": {
 
-          }
-        ],
-        "head": [
-          null,
-          null
-        ],
-        "attachment": [
-          null,
-          null
-        ],
-        "package": [
-          null,
-          null
-        ],
-        "all_files": [
-          true,
-          true
-        ]
-      }
+          },
+          "all_files": true
+        }
+      ]
     }
   },
   "export": {

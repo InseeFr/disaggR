@@ -114,16 +114,10 @@ app$waitForValue("reView-reViewtab2-newplot",iotype="output")
 app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
 app$snapshot()
 
-rec_replacechar <- function(x,char,target) {
-  if (is.list(x)) lapply(x,rec_replacechar,char,target)
-  else if (is.character(x)) gsub(char,target,x)
-  else x
-}
-
 cleanjson <- function(x) {
   writeChar(
   prettify(
-    toJSON(rec_replacechar(fromJSON(x),"[‘|’|']",""),
+    toJSON(fromJSON(x),
            digits=2),
     indent=2),x, eos = NULL)
 }
