@@ -1,219 +1,379 @@
 {
   "input": {
-    "reView-menu": "Presets",
-    "reView-reViewtab2-dif": false,
-    "reView-reViewtab2-mainout_choice": "Benchmark",
-    "reView-reViewtab2-rho": false,
-    "reView-reViewtab2-setcoeff": 1,
-    "reView-reViewtab2-setcoeff_button": false,
-    "reView-reViewtab2-setconst": 0,
-    "reView-reViewtab2-setconst_button": false,
-    "reView-reViewtab3-Copy": 0,
-    "reView-reViewtab3-Quit": 0,
-    "reView-reViewtab3-Reset": 0
+    "reView-menu": [
+      "Presets"
+    ],
+    "reView-reViewtab2-dif": [
+      false
+    ],
+    "reView-reViewtab2-mainout_choice": [
+      "Benchmark"
+    ],
+    "reView-reViewtab2-rho": [
+      false
+    ],
+    "reView-reViewtab2-setcoeff": [
+      1
+    ],
+    "reView-reViewtab2-setcoeff_button": [
+      false
+    ],
+    "reView-reViewtab2-setconst": [
+      0
+    ],
+    "reView-reViewtab2-setconst_button": [
+      false
+    ],
+    "reView-reViewtab3-Copy": [
+      0
+    ],
+    "reView-reViewtab3-Quit": [
+      0
+    ],
+    "reView-reViewtab3-Reset": [
+      0
+    ]
   },
   "output": {
     "reView-reViewtab1-model1_plot": {
-      "src": "[image data sha1: fba38404a8e87657fa14d3993099874eed523aff]",
-      "width": 761,
-      "height": 164,
+      "src": [
+        "[image data sha1: fba38404a8e87657fa14d3993099874eed523aff]"
+      ],
+      "width": [
+        761
+      ],
+      "height": [
+        164
+      ],
       "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": 2001,
-              "right": 2020,
-              "bottom": -7.02620732530635,
-              "top": 10.1427409915051
-            },
-            "range": {
-              "left": 21.6000028383705,
-              "right": 761,
-              "bottom": 148.599991219507,
-              "top": 13.4000087804932
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+        "panels": {
+          "domain": {
+            "left": [
+              2001
+            ],
+            "right": [
+              2020
+            ],
+            "bottom": [
+              -7.03
+            ],
+            "top": [
+              10.14
+            ]
+          },
+          "range": {
+            "left": [
+              21.6
+            ],
+            "right": [
+              761
+            ],
+            "bottom": [
+              148.6
+            ],
+            "top": [
+              13.4
+            ]
+          },
+          "log": {
 
-            }
+          },
+          "mapping": {
+
           }
-        ],
+        },
         "dims": {
-          "width": 761,
-          "height": 164
+          "width": [
+            761
+          ],
+          "height": [
+            164
+          ]
         }
       }
     },
     "reView-reViewtab1-model2_plot": {
-      "src": "[image data sha1: bbe1801116236ca331218315f62281bc14823e8a]",
-      "width": 761,
-      "height": 164,
+      "src": [
+        "[image data sha1: bbe1801116236ca331218315f62281bc14823e8a]"
+      ],
+      "width": [
+        761
+      ],
+      "height": [
+        164
+      ],
       "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": 2001,
-              "right": 2020,
-              "bottom": -7.02620732530635,
-              "top": 10.1427409915051
-            },
-            "range": {
-              "left": 21.6000028383705,
-              "right": 761,
-              "bottom": 148.599991219507,
-              "top": 13.4000087804932
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+        "panels": {
+          "domain": {
+            "left": [
+              2001
+            ],
+            "right": [
+              2020
+            ],
+            "bottom": [
+              -7.03
+            ],
+            "top": [
+              10.14
+            ]
+          },
+          "range": {
+            "left": [
+              21.6
+            ],
+            "right": [
+              761
+            ],
+            "bottom": [
+              148.6
+            ],
+            "top": [
+              13.4
+            ]
+          },
+          "log": {
 
-            }
+          },
+          "mapping": {
+
           }
-        ],
+        },
         "dims": {
-          "width": 761,
-          "height": 164
+          "width": [
+            761
+          ],
+          "height": [
+            164
+          ]
         }
       }
     },
     "reView-reViewtab1-model3_plot": {
-      "src": "[image data sha1: 063f780631acbd334bcc36a661cacf76310ae74b]",
-      "width": 761,
-      "height": 163,
+      "src": [
+        "[image data sha1: 063f780631acbd334bcc36a661cacf76310ae74b]"
+      ],
+      "width": [
+        761
+      ],
+      "height": [
+        163
+      ],
       "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": 2001,
-              "right": 2020,
-              "bottom": -8.02322093990624,
-              "top": 10.1622902780659
-            },
-            "range": {
-              "left": 21.6000028383705,
-              "right": 761,
-              "bottom": 147.599991165639,
-              "top": 13.4000088343612
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+        "panels": {
+          "domain": {
+            "left": [
+              2001
+            ],
+            "right": [
+              2020
+            ],
+            "bottom": [
+              -8.02
+            ],
+            "top": [
+              10.16
+            ]
+          },
+          "range": {
+            "left": [
+              21.6
+            ],
+            "right": [
+              761
+            ],
+            "bottom": [
+              147.6
+            ],
+            "top": [
+              13.4
+            ]
+          },
+          "log": {
 
-            }
+          },
+          "mapping": {
+
           }
-        ],
+        },
         "dims": {
-          "width": 761,
-          "height": 163
+          "width": [
+            761
+          ],
+          "height": [
+            163
+          ]
         }
       }
     },
     "reView-reViewtab1-model4_plot": {
-      "src": "[image data sha1: c384b4800cd13d9d2ecbfb10f51449bec6d5255e]",
-      "width": 761,
-      "height": 163,
+      "src": [
+        "[image data sha1: c384b4800cd13d9d2ecbfb10f51449bec6d5255e]"
+      ],
+      "width": [
+        761
+      ],
+      "height": [
+        163
+      ],
       "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": 2001,
-              "right": 2020,
-              "bottom": -7.02620732530635,
-              "top": 10.1427409915051
-            },
-            "range": {
-              "left": 21.6000028383705,
-              "right": 761,
-              "bottom": 147.599991165639,
-              "top": 13.4000088343612
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+        "panels": {
+          "domain": {
+            "left": [
+              2001
+            ],
+            "right": [
+              2020
+            ],
+            "bottom": [
+              -7.03
+            ],
+            "top": [
+              10.14
+            ]
+          },
+          "range": {
+            "left": [
+              21.6
+            ],
+            "right": [
+              761
+            ],
+            "bottom": [
+              147.6
+            ],
+            "top": [
+              13.4
+            ]
+          },
+          "log": {
 
-            }
+          },
+          "mapping": {
+
           }
-        ],
+        },
         "dims": {
-          "width": 761,
-          "height": 163
+          "width": [
+            761
+          ],
+          "height": [
+            163
+          ]
         }
       }
     },
     "reView-reViewtab1-model5_plot": {
-      "src": "[image data sha1: 898b25ef9cc5aa011a8d46405c5a2c87b97e4e19]",
-      "width": 761,
-      "height": 164,
+      "src": [
+        "[image data sha1: 898b25ef9cc5aa011a8d46405c5a2c87b97e4e19]"
+      ],
+      "width": [
+        761
+      ],
+      "height": [
+        164
+      ],
       "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": 2001,
-              "right": 2020,
-              "bottom": -7.62626811149417,
-              "top": 14.1853441710544
-            },
-            "range": {
-              "left": 21.6000028383705,
-              "right": 761,
-              "bottom": 148.599991219507,
-              "top": 13.4000087804931
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+        "panels": {
+          "domain": {
+            "left": [
+              2001
+            ],
+            "right": [
+              2020
+            ],
+            "bottom": [
+              -7.63
+            ],
+            "top": [
+              14.19
+            ]
+          },
+          "range": {
+            "left": [
+              21.6
+            ],
+            "right": [
+              761
+            ],
+            "bottom": [
+              148.6
+            ],
+            "top": [
+              13.4
+            ]
+          },
+          "log": {
 
-            }
+          },
+          "mapping": {
+
           }
-        ],
+        },
         "dims": {
-          "width": 761,
-          "height": 164
+          "width": [
+            761
+          ],
+          "height": [
+            164
+          ]
         }
       }
     },
     "reView-reViewtab1-model6_plot": {
-      "src": "[image data sha1: 318d4d009834c30daf0f4471a284e43c21172f99]",
-      "width": 761,
-      "height": 164,
+      "src": [
+        "[image data sha1: 318d4d009834c30daf0f4471a284e43c21172f99]"
+      ],
+      "width": [
+        761
+      ],
+      "height": [
+        164
+      ],
       "coordmap": {
-        "panels": [
-          {
-            "domain": {
-              "left": 2001,
-              "right": 2020,
-              "bottom": -7.02620732530635,
-              "top": 10.1427409915051
-            },
-            "range": {
-              "left": 21.6000028383705,
-              "right": 761,
-              "bottom": 148.599991219507,
-              "top": 13.4000087804932
-            },
-            "log": {
-              "x": null,
-              "y": null
-            },
-            "mapping": {
+        "panels": {
+          "domain": {
+            "left": [
+              2001
+            ],
+            "right": [
+              2020
+            ],
+            "bottom": [
+              -7.03
+            ],
+            "top": [
+              10.14
+            ]
+          },
+          "range": {
+            "left": [
+              21.6
+            ],
+            "right": [
+              761
+            ],
+            "bottom": [
+              148.6
+            ],
+            "top": [
+              13.4
+            ]
+          },
+          "log": {
 
-            }
+          },
+          "mapping": {
+
           }
-        ],
+        },
         "dims": {
-          "width": 761,
-          "height": 164
+          "width": [
+            761
+          ],
+          "height": [
+            164
+          ]
         }
       }
     }

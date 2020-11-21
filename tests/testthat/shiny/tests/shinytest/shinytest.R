@@ -114,6 +114,26 @@ app$waitForValue("reView-reViewtab2-newplot",iotype="output")
 app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
 app$snapshot()
 
+rec_replacechar <- function(x,char,target) {
+  if (is.list(x)) lapply(x,rec_replacechar,char,target)
+  else if (is.character(x)) gsub(char,target,x)
+  else x
+}
+
+cleanjson <- function(x) {
+  writeChar(
+  prettify(
+    toJSON(rec_replacechar(fromJSON(x),"[‘|’]",""),
+           digits=2),
+    indent=2),x, eos = NULL)
+}
+library(jsonlite)
+lapply(list.files("./shinytest-expected", pattern = "json", full.names = TRUE),
+       cleanjson)
+
+lapply(list.files("./shinytest-current", pattern = "json", full.names = TRUE),
+       cleanjson)
+
 p <- app$.__enclos_env__$private$shinyProcess
 p$interrupt()
 p$wait()
