@@ -1,4 +1,6 @@
 app <- ShinyDriver$new("../../")
+# To launch outside
+# app <- ShinyDriver$new(testthat::test_path("shiny"))
 
 app$snapshotInit("shinytest")
 
@@ -20,7 +22,6 @@ app$waitForValue("reView-reViewtab2-benchmark",iotype="input")
 app$waitForValue("reView-reViewtab2-plotswin",iotype="input")
 app$waitForValue("reView-reViewtab2-newplot",iotype="output")
 app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
-app$wi
 app$snapshot()
 
 # Differenciation
@@ -44,6 +45,7 @@ app$setInputs(`reView-reViewtab2-setconst_button` = TRUE)
 app$snapshot()
 app$setInputs(`reView-reViewtab2-setconst` = 100)
 app$snapshot()
+app$setInputs(`reView-reViewtab2-setconst` = NA)
 
 # coeffcalc
 app$setInputs(`reView-reViewtab2-coeffcalc` = c(2004, 2012))
@@ -54,7 +56,8 @@ app$setInputs(`reView-reViewtab2-benchmark` = c(2004, 2015))
 app$snapshot()
 
 # Plots
-app$setInputs(`reView-reViewtab2-plotswin` = c(2003, 2016))
+app$setInputs(`reView-reViewtab2-plotswin` = as.numeric(c(2003, 2014)),
+              allowInputNoBinding_ = TRUE)
 app$snapshot()
 
 # Double click
@@ -93,10 +96,15 @@ app$waitForValue("reView-reViewtab2-monoplotlev",iotype="output")
 app$waitForValue("reView-reViewtab2-monoplotcha",iotype="output")
 app$waitForValue("reView-reViewtab2-monoplotctb",iotype="output")
 app$snapshot()
-app$setInputs(`reView-reViewtab2-plotswin` = c(2005, 2010))
-app$snapshot()
+app$setInputs(`reView-reViewtab2-plotswin` = c(2005, 2010),
+              allowInputNoBinding_ = TRUE)
+app$setInputs(`reView-reViewtab2-click` = 1,allowInputNoBinding_ = TRUE)
 
 # Tab 3
+app$setInputs(`reView-reViewtab2-setcoeff_button` = TRUE)
+app$setInputs(`reView-reViewtab2-setconst_button` = TRUE)
+app$setInputs(`reView-reViewtab2-setcoeff` = 1)
+app$setInputs(`reView-reViewtab2-setconst` = 1)
 app$setInputs(`reView-menu` = "Export")
 app$snapshot()
 app$setInputs(`reView-reViewtab3-Reset` = "click",
@@ -114,12 +122,20 @@ app$waitForValue("reView-reViewtab2-newplot",iotype="output")
 app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
 app$snapshot()
 
+app$setInputs(`reView-menu` = "Export")
+
+tryCatch(app$setInputs("reView-reViewtab3-Quit" = "click"),error=function(e) NULL)
+
+p <- app$.__enclos_env__$private$shinyProcess
+
+testthat::expect_false(p$is_alive())
+
 cleanjson <- function(x) {
   writeChar(
-  prettify(
-    toJSON(fromJSON(x),
-           digits=2),
-    indent=2),x, eos = NULL)
+    prettify(
+      toJSON(fromJSON(x),
+             digits=2),
+      indent=2),x, eos = NULL)
 }
 library(jsonlite)
 lapply(list.files("./shinytest-expected", pattern = "json", full.names = TRUE),
@@ -128,6 +144,4 @@ lapply(list.files("./shinytest-expected", pattern = "json", full.names = TRUE),
 lapply(list.files("./shinytest-current", pattern = "json", full.names = TRUE),
        cleanjson)
 
-p <- app$.__enclos_env__$private$shinyProcess
-p$interrupt()
 p$wait()

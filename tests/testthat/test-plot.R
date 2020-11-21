@@ -10,6 +10,7 @@ test_that("function_if_it_isnt_one works", {
 
 context("plot")
 test_that("plot works", {
+  skip_on_os(c("mac","linux","solaris"))
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -123,6 +124,7 @@ test_that("plot works", {
 context("ggplot")
 
 test_that("ggplot works", {
+  skip_on_os(c("mac","linux","solaris"))
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -236,6 +238,7 @@ test_that("ggplot works", {
 context("show legend")
 
 test_that("show.legend=FALSE works", {
+  skip_on_os(c("mac","linux","solaris"))
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -283,6 +286,7 @@ test_that("show.legend=FALSE works", {
 context("labs")
 
 test_that("xlab and ylab works", {
+  skip_on_os(c("mac","linux","solaris"))
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)

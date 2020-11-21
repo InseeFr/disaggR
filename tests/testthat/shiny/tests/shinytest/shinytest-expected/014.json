@@ -28,7 +28,7 @@
     ],
     "reView-reViewtab2-plotswin": [
       2003,
-      2016
+      2014
     ],
     "reView-reViewtab2-rho": [
       true
@@ -40,7 +40,7 @@
       false
     ],
     "reView-reViewtab2-setconst": [
-      100
+      0
     ],
     "reView-reViewtab2-setconst_button": [
       true
@@ -388,7 +388,7 @@
     },
     "reView-reViewtab2-newplot": {
       "src": [
-        "[image data sha1: 5d4a07b4da8acb0f984ac06795f3ffb293e26edd]"
+        "[image data sha1: 21f8bc7d380c9bc84ecc6dba7ca4537853f3b998]"
       ],
       "width": [
         294
@@ -401,9 +401,9 @@
           {
             "domain": {
               "left": 2003,
-              "right": 2017,
-              "bottom": -828.56,
-              "top": 462.39
+              "right": 2015,
+              "bottom": -815.9,
+              "top": 461.94
             },
             "range": {
               "left": 21.6,
@@ -431,7 +431,7 @@
     },
     "reView-reViewtab2-newplotcha": {
       "src": [
-        "[image data sha1: 0f90002323021026abe68bee554f0b16c91de30e]"
+        "[image data sha1: af8e59fa0aef56ee29442dd18ef800ec6b87c1fa]"
       ],
       "width": [
         294
@@ -444,9 +444,9 @@
           {
             "domain": {
               "left": 2003,
-              "right": 2017,
-              "bottom": -7.82,
-              "top": 50.86
+              "right": 2015,
+              "bottom": -7.03,
+              "top": 10.38
             },
             "range": {
               "left": 21.6,
@@ -474,7 +474,7 @@
     },
     "reView-reViewtab2-newplotlev": {
       "src": [
-        "[image data sha1: cacd479a11caa6e93ba1160d861647f8c034ab8e]"
+        "[image data sha1: c7a6396398c0d873ba14403b41ec93849f5821c7]"
       ],
       "width": [
         294
@@ -487,9 +487,9 @@
           {
             "domain": {
               "left": 2003,
-              "right": 2017,
-              "bottom": 165.89,
-              "top": 343.31
+              "right": 2015,
+              "bottom": 168.08,
+              "top": 231.63
             },
             "range": {
               "left": 21.6,
@@ -517,7 +517,7 @@
     },
     "reView-reViewtab2-oldplot": {
       "src": [
-        "[image data sha1: d1ad8f6b20158ba210a1fd0b5f2cbb4c7a5748a2]"
+        "[image data sha1: 04458511839c208ca817529e85b524463097a44d]"
       ],
       "width": [
         279
@@ -530,7 +530,7 @@
           {
             "domain": {
               "left": 2003,
-              "right": 2017,
+              "right": 2015,
               "bottom": 12.41,
               "top": 19.52
             },
@@ -560,7 +560,7 @@
     },
     "reView-reViewtab2-oldplotcha": {
       "src": [
-        "[image data sha1: 578d26e40cf6458624f18eb6d77d5998b52ce21f]"
+        "[image data sha1: 2e57ed2bd899d01314e93b9256f62817cc8e50f7]"
       ],
       "width": [
         279
@@ -573,7 +573,7 @@
           {
             "domain": {
               "left": 2003,
-              "right": 2017,
+              "right": 2015,
               "bottom": -8.02,
               "top": 10.16
             },
@@ -603,7 +603,7 @@
     },
     "reView-reViewtab2-oldplotlev": {
       "src": [
-        "[image data sha1: 74d68454ac5a18b8747672fc9ecaf4476cd3e44c]"
+        "[image data sha1: 85bcae0ba7134b4cde45ac7fb8e256df80483a00]"
       ],
       "width": [
         279
@@ -616,7 +616,7 @@
           {
             "domain": {
               "left": 2003,
-              "right": 2017,
+              "right": 2015,
               "bottom": 154.48,
               "top": 228.42
             },

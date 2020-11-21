@@ -1,3 +1,9 @@
+test_that("params for other things than shiny test",{
+  expect_identical(csspresetplot(),"{height: calc(100vh - 104px);width: calc(50vw - 39px);}")
+  expect_identical(cssmainoutwithtitle(),"{height: calc(100vh - 158px);}")
+  expect_identical(cssmainoutwithouttitle (),"{height: calc(100vh - 138px);}")
+})
+
 test_that("switch window", {
   tsexample <- ts(1:10,start=2010,freq=12)
   tspex <- tsp(tsexample)
@@ -74,5 +80,9 @@ test_that("reView",{
   shinytest::expect_pass(shinytest::testApp(testthat::test_path("./shiny"),
                                             compareImages = FALSE,
                                             interactive = FALSE))
+  # To edit shinytest, go in the shiny/tests/shinytest.R
+  # And launch
+  # shinytest::testApp(testthat::test_path("./shiny"), compareImages = FALSE)
+  # to update
 })
 

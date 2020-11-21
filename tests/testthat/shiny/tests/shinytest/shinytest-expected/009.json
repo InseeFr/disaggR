@@ -37,7 +37,7 @@
       true
     ],
     "reView-reViewtab2-setconst": [
-      100
+      0
     ],
     "reView-reViewtab2-setconst_button": [
       true
@@ -385,7 +385,7 @@
     },
     "reView-reViewtab2-newplot": {
       "src": [
-        "[image data sha1: 769a7a6e61be9901a555cb9813a16c68f8bb1434]"
+        "[image data sha1: b958d6bc1b58aa1832c24d4d718fbc1e8010f299]"
       ],
       "width": [
         294
@@ -399,8 +399,8 @@
             "domain": {
               "left": 2000,
               "right": 2021,
-              "bottom": -3591.79,
-              "top": 521.79
+              "bottom": -3599.14,
+              "top": 521.93
             },
             "range": {
               "left": 21.6,
