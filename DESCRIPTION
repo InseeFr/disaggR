@@ -34,7 +34,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
   shinytest,
-    testthat (>= 2.1.0),
+  testthat (>= 2.1.0),
 	vdiffr
 Depends: 
   R (>= 2.10)

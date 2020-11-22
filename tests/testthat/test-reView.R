@@ -219,8 +219,8 @@ test_that("reView",{
   oldsum <- app$waitForValue("reView-reViewtab2-oldverbat",iotype="output")
   newsum <- app$waitForValue("reView-reViewtab2-newverbat",iotype="output")
   
-  expect_equal(newsum,
-               gsub("‘|’","'",paste(capture.output(print(
+  expect_equal(gsub("‘|’|'","",newsum),
+               gsub("‘|’|'","",paste(capture.output(print(
                  summary(twoStepsBenchmark(turnover,construction)),
                  call = FALSE
                )),collapse="\n")))

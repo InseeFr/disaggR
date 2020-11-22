@@ -4,14 +4,16 @@ on:
   push:
     branches:
       - master
+      - citest
   pull_request:
     branches:
       - master
+      - citest
 
 name: test-coverage
 
 jobs:
-  R-CMD-check:
+  test-coverage:
     runs-on: windows-latest
 
     env:

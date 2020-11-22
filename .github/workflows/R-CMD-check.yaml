@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - master
+      - citest
   pull_request:
     branches:
       - master
+      - citest
 
 name: R-CMD-check
 
