@@ -119,6 +119,29 @@ test_that("plot works", {
                               function() plot(in_dicator(benchmark,
                                                          type = "contributions"),
                                               main="title ctb"))
+  set.seed(1)
+  series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
+  mts <- ts(series,start=c(2000,1),freq=12) %>%
+    `colnames<-`(c("a","b","c")) %>%
+    twoStepsBenchmark(construction)
+  
+  vdiffr::expect_doppelganger("plot-mts-ctb",
+                              function() plot(in_dicator(mts,
+                                                         type = "contributions")))
+  vdiffr::expect_doppelganger("plot-mts-ins",
+                              function() plot(in_sample(mts,type="levels")))
+  
+  vdiffr::expect_doppelganger("plot-mts-ind",
+                              function() plot(in_dicator(mts,
+                                                         type="levels-rebased")))
+  series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
+  mts2 <- ts(series,start=c(2000,1),freq=12) %>%
+    `colnames<-`(c("a","b","c")) %>%
+    twoStepsBenchmark(construction)
+  vdiffr::expect_doppelganger("plot-mts-rev",
+                              function() suppressWarnings(plot(in_revisions(mts,
+                                                                            mts2,
+                                                                            type="levels"))))
 })
 
 test_that("ggplot works", {
@@ -275,6 +298,30 @@ test_that("show.legend=FALSE works", {
                                                     benchmark2,
                                                     type="changes"),
                                        show.legend = FALSE))
+  
+  set.seed(1)
+  series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
+  mts <- ts(series,start=c(2000,1),freq=12) %>%
+    `colnames<-`(c("a","b","c")) %>%
+    twoStepsBenchmark(construction)
+  
+  vdiffr::expect_doppelganger("gg-mts-ctb",
+                              autoplot(in_dicator(mts,
+                                                  type = "contributions")))
+  vdiffr::expect_doppelganger("gg-mts-ins",
+                              autoplot(in_sample(mts,type="levels")))
+  
+  vdiffr::expect_doppelganger("gg-mts-indic",
+                              autoplot(in_dicator(mts,
+                                                  type="levels-rebased")))
+  series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
+  mts2 <- ts(series,start=c(2000,1),freq=12) %>%
+    `colnames<-`(c("a","b","c")) %>%
+    twoStepsBenchmark(construction)
+  vdiffr::expect_doppelganger("gg-mts-rev",
+                              autoplot(suppressWarnings(in_revisions(mts,
+                                                                     mts2,
+                                                                     type="levels"))))
 })
 
 test_that("xlab and ylab works", {
