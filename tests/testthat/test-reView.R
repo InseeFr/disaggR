@@ -83,6 +83,8 @@ test_that("reView",{
   # To edit shinytest, go in the shiny/tests/shinytest.R
   # And launch
   # shinytest::testApp(testthat::test_path("./shiny"), compareImages = FALSE)
-  # to update
+  # to update with a browser
+  # important : the package should have been rebuilt (ie with install and restart
+  # in R Studio)
 })
 

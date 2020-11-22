@@ -142,7 +142,6 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                              start.domain_arg = start.domain,
                              end.domain_arg = end.domain)))
 }
-
 display_vector <- function(x) switch(length(x),
                                      as.character(x),
                                      paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")"))
@@ -280,7 +279,7 @@ reView_ui_tab3 <- function(id) {
 #' @keywords internal
 reView_ui_module <- function(id) {
   ns <- NS(id)
-  navbarPage(title = "reView",
+  navbarPage(title = textOutput(ns("titlenavbar")),
              id = ns("menu"),
              selected = "Presets",
              tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
@@ -646,6 +645,8 @@ reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
       res <- model.list(old_bn())$hfserie
       res[,colnames(res) != "constant"]
     })
+    
+    output$titlenavbar <- renderText(paste("reView:", hfserie_name(),"on", lfserie_name()))
     
     # tab 1 : Presets
     

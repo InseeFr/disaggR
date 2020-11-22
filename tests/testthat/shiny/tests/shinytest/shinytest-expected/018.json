@@ -819,6 +819,9 @@
     ],
     "reView-reViewtab3-oldcall": [
       "twoStepsBenchmark(\n\thfserie = turnover,\n\tlfserie = construction,\n\tinclude.differenciation = FALSE,\n\tinclude.rho = FALSE\n)"
+    ],
+    "reView-titlenavbar": [
+      "reView: turnover on construction"
     ]
   },
   "export": {

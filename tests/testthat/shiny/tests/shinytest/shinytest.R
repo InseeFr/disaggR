@@ -1,5 +1,5 @@
 app <- ShinyDriver$new("../../")
-# To launch outside
+# To launch and try outside the tests
 # app <- ShinyDriver$new(testthat::test_path("shiny"))
 
 app$snapshotInit("shinytest")
