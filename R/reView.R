@@ -275,6 +275,7 @@ reView_ui_tab3 <- function(id) {
 reView_ui_module <- function(id) {
   ns <- NS(id)
   navbarPage(title = textOutput(ns("titlenavbar")),
+             windowTitle = "reView",
              id = ns("menu"),
              selected = "Presets",
              tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
