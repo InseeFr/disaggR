@@ -78,6 +78,8 @@ test_that("reView",{
   # important : the package should have been rebuilt for these tests
   # (ie with installed and restart in R Studio not loaded with devtools)
   
+  skip_on_os("mac") # phantomjs bugs with macos
+  
   app <- shinytest::ShinyDriver$new(test_path("shiny"))
   
   get_bn <- function() app$getAllValues()$export$`reView-reViewtab2-new_bn`
@@ -271,11 +273,21 @@ test_that("reView",{
   
   # Quit
   
-  setTimeLimit(cpu=5, elapsed = 5, transient=FALSE)
-  tryCatch(app$setInputs("reView-reViewtab3-Quit" = "click"),
-           error=function(e) NULL)
+  tryCatch({
+    setTimeLimit(cpu=5, elapsed = 5, transient=TRUE)
+    app$setInputs("reView-reViewtab3-Quit" = "click")
+  },
+  error=function(e) NULL)
   setTimeLimit(cpu=Inf, elapsed=Inf, transient=FALSE)
   expect_error(app$setInputs(`reView-menu` = "Export"))
+  
+  # package coverage
+  # if someone suppresses the quit test, one has to put something that exits the
+  # shiny process by example
+  # p <- app$.__enclos_env__$private$shinyProcess
+  # p$interrupt()
+  # p$wait()
+  # otherwise codecov won't update
   
 })
 
