@@ -8,9 +8,9 @@ test_that("function_if_it_isnt_one works", {
                    lapply(1:20,function(n) rep("Hey",n)))
 })
 
-context("plot")
+context(if (R.version$major>=4 &&R.version$minor>=1.0) "plots-R-4-1" else "plots-R-4-0")
+
 test_that("plot works", {
-  skip_on_os(c("mac","linux","solaris"))
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -121,10 +121,7 @@ test_that("plot works", {
                                               main="title ctb"))
 })
 
-context("ggplot")
-
 test_that("ggplot works", {
-  skip_on_os(c("mac","linux","solaris"))
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -235,10 +232,7 @@ test_that("ggplot works", {
                                        main="title ctb"))
 })
 
-context("show legend")
-
 test_that("show.legend=FALSE works", {
-  skip_on_os(c("mac","linux","solaris"))
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -282,8 +276,6 @@ test_that("show.legend=FALSE works", {
                                                     type="changes"),
                                        show.legend = FALSE))
 })
-
-context("labs")
 
 test_that("xlab and ylab works", {
   skip_on_os(c("mac","linux","solaris"))

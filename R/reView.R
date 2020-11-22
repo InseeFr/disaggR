@@ -245,13 +245,8 @@ reView_ui_tab3 <- function(id) {
            fluidRow(
              tags$script(
                paste0(
-                 "Shiny.addCustomMessageHandler('",ns("closewindow"),"' closewindow );\n\n",
-                 "function closewindow(anymessage) {window.close();}"
-                 
-               )
-             ),
-             tags$script(
-               paste0(
+                 "Shiny.addCustomMessageHandler('",ns("closewindow"),"', closewindow );\n\n",
+                 "function closewindow(anymessage) {window.close();}\n\n",
                  "Shiny.addCustomMessageHandler('",ns("copy"),"', copy );\n\n",
                  "function copy(text) {
                     var input = document.createElement('textarea');
@@ -280,6 +275,7 @@ reView_ui_tab3 <- function(id) {
 reView_ui_module <- function(id) {
   ns <- NS(id)
   navbarPage(title = textOutput(ns("titlenavbar")),
+             windowTitle = "reView",
              id = ns("menu"),
              selected = "Presets",
              tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
@@ -616,8 +612,8 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                  })
                  
                  observeEvent(input$Quit,{
+                   session$sendCustomMessage(session$ns("closewindow"), "anymessage")
                    if (Sys.getenv('SHINY_PORT') == "") stopApp(reViewOutput(old_bn(),new_bn(),compare()))
-                   else session$sendCustomMessage(session$ns("closewindow"), "anymessage")
                  })
                  
                  observeEvent(input$Copy,{
