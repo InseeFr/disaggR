@@ -273,21 +273,18 @@ test_that("reView",{
   
   # Quit
   
-  tryCatch({
-    setTimeLimit(cpu=5, elapsed = 5, transient=TRUE)
-    app$setInputs("reView-reViewtab3-Quit" = "click")
-  },
-  error=function(e) NULL)
-  setTimeLimit(cpu=Inf, elapsed=Inf, transient=FALSE)
-  expect_error(app$setInputs(`reView-menu` = "Export"))
+  # tryCatch({
+  #   setTimeLimit(cpu=5, elapsed = 5, transient=TRUE)
+  #   app$setInputs("reView-reViewtab3-Quit" = "click")
+  # },
+  # error=function(e) 1)
+  # setTimeLimit(cpu=Inf, elapsed=Inf, transient=FALSE)
+  # Produces an output
   
-  # package coverage
-  # if someone suppresses the quit test, one has to put something that exits the
-  # shiny process by example
-  # p <- app$.__enclos_env__$private$shinyProcess
-  # p$interrupt()
-  # p$wait()
-  # otherwise codecov won't update
+  p <- app$.__enclos_env__$private$shinyProcess
+  p$interrupt()
+  p$wait()
+  # the previous code is for codecov to update
   
 })
 
