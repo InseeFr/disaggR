@@ -74,17 +74,210 @@ test_that("rePort produces a report",{
 })
 
 test_that("reView",{
-  skip_on_cran()
-  skip_on_os(c("mac","linux","solaris"))
-    # Only check on windows (otherwise the plots SHA1 differ)
-  shinytest::expect_pass(shinytest::testApp(testthat::test_path("./shiny"),
-                                            compareImages = FALSE,
-                                            interactive = FALSE))
-  # To edit shinytest, go in the shiny/tests/shinytest.R
-  # And launch
-  # shinytest::testApp(testthat::test_path("./shiny"), compareImages = FALSE)
-  # to update with a browser
-  # important : the package should have been rebuilt (ie with install and restart
+  
+  app <- shinytest::ShinyDriver$new(test_path("shiny"))
+  
+  get_bn <- function() app$getAllValues()$export$`reView-reViewtab2-new_bn`
+  
+  # First tab
+  app$setWindowSize(800,600)
+  model1 <- app$waitForValue("reView-reViewtab1-model1_plot",iotype="output")
+  model2 <- app$waitForValue("reView-reViewtab1-model2_plot",iotype="output")
+  model3 <- app$waitForValue("reView-reViewtab1-model3_plot",iotype="output")
+  model4 <- app$waitForValue("reView-reViewtab1-model4_plot",iotype="output")
+  model5 <- app$waitForValue("reView-reViewtab1-model5_plot",iotype="output")
+  model6 <- app$waitForValue("reView-reViewtab1-model6_plot",iotype="output")
+  
+  models <- list(model1,model2,model3,
+                 model4,model5,model6)
+  
+  expect_true(all(vapply(models,`[[`,0,"height") >= 153))
+  expect_true(all(vapply(models,`[[`,0,"height") <= 164))
+  expect_true(all(vapply(models,`[[`,0,"width") <= 771))
+  expect_true(all(vapply(models,`[[`,0,"width") >= 751))
+  
+  expect_equal(as.ts(get_bn()),as.ts(twoStepsBenchmark(turnover,construction)))
+  
+  # Click on a model changes navbar
+  app$setInputs(`reView-reViewtab1-model1_click` = 10L,
+                allowInputNoBinding_ = TRUE)
+  expect_equal(app$waitForValue("reView-menu",iotype="input"),"Modify")
+  slidercoeffcalc <- app$waitForValue("reView-reViewtab2-coeffcalc",iotype="input",
+                                      timeout=5000)
+  sliderbenchmark <- app$waitForValue("reView-reViewtab2-benchmark",iotype="input")
+  sliderplots <- app$waitForValue("reView-reViewtab2-plotswin",iotype="input")
+  newplot <- app$waitForValue("reView-reViewtab2-newplot",iotype="output")
+  oldplot <-app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
+  expect_equal(slidercoeffcalc,c(2000,2019))
+  expect_equal(sliderbenchmark,c(2000,2019))
+  expect_equal(sliderplots,c(2000,2020))
+  
+  plots <- list(newplot,oldplot)
+  
+  expect_true(all(vapply(plots,`[[`,0,"height") >= 432))
+  expect_true(all(vapply(plots,`[[`,0,"height") <= 452))
+  expect_true(all(vapply(plots,`[[`,0,"width") >= 269))
+  
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       include.differenciation = TRUE)))
+  
+  # Differenciation
+  
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-dif` = TRUE)
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       include.differenciation = TRUE)))
+  # Rho
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-rho` = TRUE)
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       include.rho = TRUE)))
+  
+  # Setcoeff
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-setcoeff_button` = TRUE)
+  app$setInputs(`reView-reViewtab2-setcoeff` = 100)
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       set.coeff = 100)))
+  
+  # Setconst
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-setconst_button` = TRUE)
+  app$setInputs(`reView-reViewtab2-setconst` = 100)
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       set.const = 100)))
+  
+  # NA in setcoeff or setconst +  no button pressed the values of are useless
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-setconst` = NA)
+  app$setInputs(`reView-reViewtab2-setcoeff` = NA)
+  expect_equal(app$waitForValue("reView-reViewtab2-setconst"),0)
+  expect_equal(app$waitForValue("reView-reViewtab2-setcoeff"),1)
+  
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction)))
+  
+  # coeffcalc
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-coeffcalc` = c(2004, 2012))
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       start.coeff.calc = 2004,
+                                       end.coeff.calc = 2012)))
+  
+  # Benchmark
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-benchmark` = c(2004, 2015))
+  
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       start.benchmark = 2004,
+                                       end.benchmark = 2015)))
+  
+  # Plots
+  app$setInputs(`reView-reViewtab2-plotswin` = as.numeric(c(2003, 2014)),
+                allowInputNoBinding_ = TRUE)
+  expect_equal(app$getValue("reView-reViewtab2-plotswin"),
+               c(2003,2014))
+  app$setInputs(`reView-reViewtab2-click` = 1L,allowInputNoBinding_ = TRUE)
+  expect_equal(app$getValue("reView-reViewtab2-plotswin"),
+               c(2000,2020))
+  
+  # Change output to in sample
+  expect_equal(app$waitForValue("reView-reViewtab2-mainout_choice",iotype="input"),
+               "Benchmark")
+  app$setInputs(`reView-reViewtab2-mainout_choice` = "In-sample predictions")
+  
+  newplotlev <- app$waitForValue("reView-reViewtab2-newplotlev",iotype="output")
+  oldplotlev <- app$waitForValue("reView-reViewtab2-oldplotlev",iotype="output")
+  newplotcha <- app$waitForValue("reView-reViewtab2-newplotcha",iotype="output")
+  oldplotcha <- app$waitForValue("reView-reViewtab2-oldplotcha",iotype="output")
+  
+  plots <- list(newplotlev,oldplotlev,
+                newplotcha,oldplotcha)
+  
+  expect_true(all(vapply(plots,`[[`,0,"height") >= 211))
+  expect_true(all(vapply(plots,`[[`,0,"height") <= 231))
+  expect_true(all(vapply(plots,`[[`,0,"width") >= 269))
+  
+  # Summary
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-mainout_choice` = "Benchmark summary")
+  oldsum <- app$waitForValue("reView-reViewtab2-oldverbat",iotype="output")
+  newsum <- app$waitForValue("reView-reViewtab2-newverbat",iotype="output")
+  
+  expect_equal(newsum,
+               gsub("‘|’","'",paste(capture.output(print(
+                 summary(twoStepsBenchmark(turnover,construction)),
+                 call = FALSE
+               )),collapse="\n")))
+  
+  # Indicator
+  app$setInputs(`reView-reViewtab2-mainout_choice` = "Comparison with indicator")
+  plotlev <- app$waitForValue("reView-reViewtab2-monoplotlev",iotype="output")
+  plotcha <- app$waitForValue("reView-reViewtab2-monoplotcha",iotype="output")
+  plotctb <- app$waitForValue("reView-reViewtab2-monoplotctb",iotype="output")
+  
+  plots <- list(plotlev,
+                plotcha,
+                plotctb)
+  
+  expect_true(all(vapply(plots,`[[`,0,"height") >= 142))
+  expect_true(all(vapply(plots,`[[`,0,"height") <= 163))
+  expect_true(all(vapply(plots,`[[`,0,"width") >= 603))
+  expect_true(all(vapply(plots,`[[`,0,"width") <= 623))
+  
+  # Revisions
+  app$setInputs(`reView-reViewtab2-mainout_choice` = "Revisions")
+  plotlev <- app$waitForValue("reView-reViewtab2-monoplotlev",iotype="output")
+  plotcha <- app$waitForValue("reView-reViewtab2-monoplotcha",iotype="output")
+  plotctb <- app$waitForValue("reView-reViewtab2-monoplotctb",iotype="output")
+  
+  expect_true(all(vapply(plots,`[[`,0,"height") >= 142))
+  expect_true(all(vapply(plots,`[[`,0,"height") <= 163))
+  expect_true(all(vapply(plots,`[[`,0,"width") >= 603))
+  expect_true(all(vapply(plots,`[[`,0,"width") <= 623))
+  
+  # Reset change menu
+  app$setInputs(`reView-menu` = "Export")
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  expect_equal(app$waitForValue("reView-menu",iotype="input"),"Modify")
+  
+  # Copy
+  app$setInputs(`reView-reViewtab3-Reset` = "click",
+                allowInputNoBinding_ = TRUE)
+  app$setInputs("reView-reViewtab3-Copy" = "click")
+  # i'd like to test something like
+  #expect_equal(readClipboard(),
+  # benchmarkCall(twoStepsBenchmark(turnover,construction),"turnover","construction")
+  # right now the test doesn't work even if copy works
+  
+  # Quit
+  tryCatch(app$setInputs("reView-reViewtab3-Quit" = "click"),error=function(e) NULL)
+  
+  p <- app$.__enclos_env__$private$shinyProcess
+  
+  testthat::expect_false(p$is_alive())
+  
+  p$wait()
+  
+  # important : the package should have been rebuilt for these tests
+  # (ie with installed and restart
   # in R Studio)
 })
 
+###### Review tests

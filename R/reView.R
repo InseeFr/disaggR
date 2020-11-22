@@ -590,7 +590,7 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                                          end.benchmark = input$benchmark[2],
                                          start.domain = model.list(old_bn())$start.domain,
                                          end.domain = model.list(old_bn())$end.domain)})
-                 #exportTestValues(new_bn_values=round(new_bn(),1),new_bn_tsp=tsp(new_bn()))
+                 exportTestValues(new_bn = new_bn())
                  new_bn})
 }
 
