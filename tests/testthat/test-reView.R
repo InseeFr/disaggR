@@ -82,6 +82,8 @@ test_that("reView",{
   
   app <- shinytest::ShinyDriver$new(test_path("shiny"))
   
+  expect_identical(app$getTitle(),"reView")
+  
   get_bn <- function() app$getAllValues()$export$`reView-reViewtab2-new_bn`
   
   # First tab
@@ -161,16 +163,20 @@ test_that("reView",{
                as.ts(twoStepsBenchmark(turnover,construction,
                                        set.const = 100)))
   
-  # NA in setcoeff or setconst +  no button pressed the values of are useless
+  # empty numerics -> 0 and and active only if pressed
   app$setInputs(`reView-reViewtab3-Reset` = "click",
                 allowInputNoBinding_ = TRUE)
-  app$setInputs(`reView-reViewtab2-setconst` = NA)
-  app$setInputs(`reView-reViewtab2-setcoeff` = NA)
-  expect_equal(app$waitForValue("reView-reViewtab2-setconst"),0)
-  expect_equal(app$waitForValue("reView-reViewtab2-setcoeff"),1)
-  
+  app$setInputs(`reView-reViewtab2-setconst` = NULL)
+  app$setInputs(`reView-reViewtab2-setcoeff` = NULL)
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction)))
+  app$setInputs(`reView-reViewtab2-setconst_button` = TRUE)
+  app$setInputs(`reView-reViewtab2-setcoeff_button` = TRUE)
+  
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       set.coeff = 0,
+                                       set.const = 0)))
   
   # coeffcalc
   app$setInputs(`reView-reViewtab3-Reset` = "click",
@@ -192,8 +198,7 @@ test_that("reView",{
                                        end.benchmark = 2015)))
   
   # Plots
-  app$setInputs(`reView-reViewtab2-plotswin` = as.numeric(c(2003, 2014)),
-                allowInputNoBinding_ = TRUE)
+  app$setInputs(`reView-reViewtab2-plotswin` = as.numeric(c(2003, 2014)))
   expect_equal(app$getValue("reView-reViewtab2-plotswin"),
                c(2003,2014))
   app$setInputs(`reView-reViewtab2-click` = 1L,allowInputNoBinding_ = TRUE)
