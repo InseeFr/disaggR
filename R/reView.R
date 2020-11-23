@@ -828,9 +828,14 @@ rePort.reViewOutput <- function(object, output_file = NULL, ...) {
                     envir = new.env(parent = globalenv()),
                     quiet = TRUE,
                     ...)
-  if (is.null(output_file))  utils::browseURL(temp_html)
-  else file.copy(temp_html, output_file, overwrite = TRUE)
-  invisible()
+  if (is.null(output_file))  {
+    utils::browseURL(temp_html)
+    invisible(temp_html)
+  }
+  else {
+    file.copy(temp_html, output_file, overwrite = TRUE)
+    invisible(output_file)
+  }
 }
 
 #' @export

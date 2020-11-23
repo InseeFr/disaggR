@@ -71,6 +71,15 @@ test_that("rePort produces a report",{
   rePort(reViewOutput(benchmark,benchmark,compare = TRUE),output_file = temp_html)
   expect_true(file.exists(temp_html))
   unlink(temp_html)
+  
+  temp_dir <- tempdir()
+  temp_rds <- tempfile("test",temp_dir,".rds")
+  saveRDS(twoStepsBenchmark(turnover,construction),temp_rds)
+  
+  browser <- options(browser=function(url) message(url))
+  on.exit(options(browser))
+  expect_message(url <- rePort(temp_rds))
+  expect_true(file.exists(url))
 })
 
 test_that("reView",{
