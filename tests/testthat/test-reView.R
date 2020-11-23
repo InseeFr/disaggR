@@ -270,10 +270,11 @@ test_that("reView",{
   # Copy
   app$setInputs(`reView-reViewtab3-Reset` = "click",
                 allowInputNoBinding_ = TRUE)
-  app$setInputs("reView-reViewtab3-Copy" = "click")
+  app$setInputs(`reView-menu` = "Export")
+  app$setInputs(`reView-reViewtab3-Copy` = "click")
   # i'd like to test something like
-  #expect_equal(readClipboard(),
-  # benchmarkCall(twoStepsBenchmark(turnover,construction),"turnover","construction")
+  # expect_equal(readClipboard(),
+  # benchmarkCall(twoStepsBenchmark(turnover,construction),"turnover","construction"))
   # right now the test doesn't work even if copy works
   
   # Quit
