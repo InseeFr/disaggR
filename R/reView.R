@@ -249,12 +249,11 @@ reView_ui_tab3 <- function(id) {
                  "function closewindow(anymessage) {window.close();}\n\n",
                  "Shiny.addCustomMessageHandler('",ns("copy"),"', copy );\n\n",
                  "function copy(text) {
-                    var input = document.createElement('textarea');
-                    input.innerHTML = text;
-                    document.body.appendChild(input);
-                    input.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(input);
+                    navigator.clipboard.writeText(text).then(function() {
+                      Shiny.onInputChange('",ns("Copymade"),"', 'TRUE');
+                    }, function() {
+                      Shiny.onInputChange('",ns("Copymade"),"', 'FALSE');
+                    });
                   }")
              ),
              column(3,actionButton(ns("Reset"),"Reset",width = "100%",
@@ -618,12 +617,15 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                  
                  observeEvent(input$Copy,{
                    session$sendCustomMessage(session$ns("copy"), new_call_text())
+                 })
+                 
+                 observeEvent(input$Copymade,{
                    showModal(
                      modalDialog(title = "reView",
-                                 "New model copied in the clipboard !",
+                                 if (input$Copymade) "New model copied in the clipboard !"
+                                 else "Sorry but the browser blocked the keyboard !",
                                  easyClose = TRUE,
-                                 footer = NULL)
-                   )
+                                 footer = NULL))
                  })
                  
                  reactive(input$Reset)
@@ -772,8 +774,7 @@ reView.twoStepsBenchmark <- function(object,
                                      compare = TRUE) {
   if (is.null(hfserie_name)) hfserie_name <- deparse(object$call$hfserie)
   if (is.null(lfserie_name)) lfserie_name <- deparse(object$call$lfserie)
-  if (length(coef(object)) > 2) stop("This reviewing application is
-                                      only for univariate benchmarks.")
+  if (length(coef(object)) > 2) stop("This reviewing application is only for univariate benchmarks.", call. = FALSE)
   runapp_reView(object,hfserie_name,lfserie_name,compare=compare)
 }
 
@@ -827,9 +828,14 @@ rePort.reViewOutput <- function(object, output_file = NULL, ...) {
                     envir = new.env(parent = globalenv()),
                     quiet = TRUE,
                     ...)
-  if (is.null(output_file))  utils::browseURL(temp_html)
-  else file.copy(temp_html, output_file, overwrite = TRUE)
-  invisible()
+  if (is.null(output_file))  {
+    utils::browseURL(temp_html)
+    invisible(temp_html)
+  }
+  else {
+    file.copy(temp_html, output_file, overwrite = TRUE)
+    invisible(output_file)
+  }
 }
 
 #' @export
