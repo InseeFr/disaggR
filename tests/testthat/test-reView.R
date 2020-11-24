@@ -86,6 +86,7 @@ test_that("reView",{
   
   # important : the package should have been rebuilt for these tests
   # (ie with installed and restart in R Studio not loaded with devtools)
+  # One has also have PhantomJS work with the firewall
   
   skip_on_os("mac") # phantomjs bugs with macos
   
@@ -285,16 +286,14 @@ test_that("reView",{
   # expect_equal(readClipboard(),
   # benchmarkCall(twoStepsBenchmark(turnover,construction),"turnover","construction"))
   # right now the test doesn't work even if copy works
-  
-  # Quit
-  
+  # 
+  # # Quit
+  # 
   # tryCatch({
-  #   setTimeLimit(cpu=5, elapsed = 5, transient=TRUE)
+  #   later::later(stop,delay = 3)
   #   app$setInputs("reView-reViewtab3-Quit" = "click")
   # },
   # error=function(e) 1)
-  # setTimeLimit(cpu=Inf, elapsed=Inf, transient=FALSE)
-  # Produces an output
   
   p <- app$.__enclos_env__$private$shinyProcess
   p$interrupt()
