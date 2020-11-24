@@ -32,7 +32,7 @@ default_lty_pal <- function() linetype_pal()
 
 #### Base plots
 
-plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,mar,...) {
+plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
   
   if (is.null(xlab)) xlab <- ""
   if (is.null(ylab)) ylab <- ""
