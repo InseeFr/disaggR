@@ -261,8 +261,8 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
 default_theme_ggplot <- function(show.legend,xlab,ylab,mar) {
   classic <- theme_classic()
   classic %+replace%
-    theme(axis.title.x = if (is.null(xlab)) element_blank(),
-          axis.title.y = if (is.null(ylab)) element_blank(),
+    theme(axis.title.x = if (is.null(xlab)) element_blank() else classic$axis.title.x,
+          axis.title.y = if (is.null(ylab)) element_blank() else classic$axis.title.y,
           plot.margin =  if (is.null(mar)) classic$plot.margin else margin(mar[3L],mar[4L],
                                                                            mar[1L],mar[2L],
                                                                            unit="pt"),
