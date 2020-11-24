@@ -277,28 +277,10 @@ test_that("reView",{
                 allowInputNoBinding_ = TRUE)
   expect_equal(app$waitForValue("reView-menu",iotype="input"),"Modify")
   
-  # Copy
-  app$setInputs(`reView-reViewtab3-Reset` = "click",
-                allowInputNoBinding_ = TRUE)
-  app$setInputs(`reView-menu` = "Export")
-  app$setInputs(`reView-reViewtab3-Copy` = "click")
-  # i'd like to test something like
-  # expect_equal(readClipboard(),
-  # benchmarkCall(twoStepsBenchmark(turnover,construction),"turnover","construction"))
-  # right now the test doesn't work even if copy works
-  # 
-  # # Quit
-  # 
-  # tryCatch({
-  #   later::later(stop,delay = 3)
-  #   app$setInputs("reView-reViewtab3-Quit" = "click")
-  # },
-  # error=function(e) 1)
-  
   p <- app$.__enclos_env__$private$shinyProcess
   p$interrupt()
   p$wait()
-  # the previous code is for codecov to update
+  # the previous code is to quit the shinyprocess for codecov to update
   
 })
 
