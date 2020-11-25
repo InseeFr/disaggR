@@ -138,6 +138,17 @@ arrows_heads <- function(x0,y0,x1,y1,col) {
   invisible()
 }
 
+break_arrows <- function(arrows_time) {
+  res <- pretty(arrows_time,n=4,eps.correct = 2)
+  res <- res[-c(1L,length(res))]
+  
+  res <- c(if (arrows_time[1L] != res[1L]) arrows_time[1L],
+           res,
+           if (arrows_time[length(arrows_time)] != res[length(res)]) arrows_time[length(arrows_time)])
+  
+  res
+}
+
 scatterplot_ts <- function(x,col) {
   n <- nrow(x)
   x0 <- x[-n,2L]
@@ -242,11 +253,8 @@ plotts <-function(x,show.legend,col,lty,
            if (show.legend) {
              arrows_time <- (timex_win + deltat(x)/2)
              arrows_time <- arrows_time[-length(arrows_time)]
-             selected_time <- pretty(arrows_time,n=4,eps.correct = 2)
-             selected_time <- c(arrows_time[1L],
-                                selected_time[-c(1L,length(selected_time))],
-                                arrows_time[length(arrows_time)])
-             selected_time <- unique(selected_time)
+             
+             selected_time <- break_arrows(arrows_time)
              
              i <- round((selected_time-arrows_time[1L])*frequency(x))+1
              
@@ -418,21 +426,31 @@ ggplotts <- function(object,show.legend, series_names,theme,type,
 }
 
 ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab, col, ...) {
+  coefficients <- attr(object,"coefficients")
+  
+  object <- window_default(object,start = start, end = end)
+  
   lims <- gglims(object)
   
-  df <- data.frame(Date=as.numeric(time(object)),
+  df <- data.frame(Time=as.numeric(time(object)),
                    object,check.names = FALSE)
   ggplot(df,aes(x=`High-frequency serie`,y=`Low-frequency serie`),
          show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab) +
-    geom_path(aes(colour=Date,group=1),arrow=arrow(angle = 15,
+    geom_abline(intercept = coefficients["constant"],
+                slope = coefficients[names(coefficients) != "constant"],
+                linetype = "solid", colour = "red",size = 1) +
+    geom_path(aes(colour=Time,group=1),arrow=arrow(angle = 15,
                                                    ends = "last",
                                                    type = "closed",
-                                                   length = unit(0.1,"inches"))) +
-    stat_smooth(method = "lm", col = "red",se=FALSE,formula = y~x) +
+                                                   length = unit(0.1,"inches")),
+              na.rm = TRUE) +
     continuous_scale("colour","gradient",function(x) col(length(x)),
                      limits = lims,
+                     breaks = break_arrows(df$Time[-1]),
+                     minor_breaks = numeric(),
                      expand=c(0,0)) +
-    theme
+    theme +
+    guides(colour=guide_legend(override.aes = list(arrow = NULL))) 
 }
 
 function_if_it_isnt_one <- function(f) {
@@ -520,7 +538,6 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                           theme = theme, start = start, end = end,
                           xlab = xlab, ylab = ylab,
                           col = col,...) +
-                  labs(colour="Time") +
                   ggtitle(main)
               },
               ggplotts(object = object, show.legend = show.legend,
