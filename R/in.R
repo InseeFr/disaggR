@@ -159,14 +159,44 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
 }
 
 #' @export
+in_scatter <- function(object) UseMethod("in_scatter")
+
+#' @export
+in_scatter.praislm <- function(object) {
+  m <- model.list(object)
+  
+  X <- m$X[,colnames(m$X) != "constant",drop = FALSE]
+  
+  if (ncol(X) != 1L) stop("This in_scatter method is only for univariate benchmarks.", call. = FALSE)
+  
+  series <- cbind(m$y,m$X[,colnames(m$X) != "constant",drop = FALSE])
+  
+  structure(series,
+            type=if (m$include.differenciation) "difference" else "levels",
+            func="in_scatter",
+            class=c("tscomparison",class(series)),
+            dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie")),
+            coefficients=coefficients(object))
+}
+
+#' @export
+in_scatter.twoStepsBenchmark <- function(object) {
+  in_scatter(prais(object))
+}
+
+#' @export
 print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
   label <- switch(attr(x,"func")[1L],
-                  in_dicator="Comparison with indicators",
+                  in_dicator="Comparison with indicator",
                   in_sample="In-sample predictions",
-                  in_revisions="Comparison between two benchmarks")
+                  in_revisions="Comparison between two benchmarks",
+                  in_scatter="Inputs of the regression")
   cat(label, " (", attr(x,"type"),"):\n", sep = "")
-  attr(x,"type") <- NULL
-  attr(x,"func") <- NULL
+  
+  attr(x,"type")         <- NULL
+  attr(x,"func")         <- NULL
+  attr(x,"coefficients") <- NULL
+  
   print(.preformat.ts(x, any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
         quote = FALSE, right = TRUE,digits = digits,
         ...)

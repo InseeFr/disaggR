@@ -17,6 +17,7 @@ type_label <- function(object) {
 #' @importFrom scales brewer_pal hue_pal
 default_col_pal <- function(object) {
   if (identical(attr(object,"type"),"contributions")) brewer_pal(type = "qual",palette = 7L)
+  else if (identical(attr(object,"func"),"in_scatter")) function(n) div_gradient_pal()(seq(0, 1, length.out = n))
   else brewer_pal(type = "qual",palette = 6L)
 }
 
@@ -30,22 +31,41 @@ default_col_pal <- function(object) {
 #' @importFrom scales linetype_pal
 default_lty_pal <- function() linetype_pal()
 
+default_margins <- function(main, xlab, ylab) {
+  c(
+    if (is.null(xlab)) 1 else 2,
+    if (is.null(ylab)) 1.3 else 2.3,
+    if (is.null(main)) 0 else 1,
+    0
+  )
+}
+
 #### Base plots
 
-plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,...) {
+plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
+                      extend.x,extend.y,abline.x, ...) {
   
   if (is.null(xlab)) xlab <- ""
   if (is.null(ylab)) ylab <- ""
   
   sizey <- ymax-ymin
-  plot(x= c(xmin,xmax), y = c(ymin,ymax),
-       xlim = c(xmin,xmax),ylim= c(ymin-0.02*sizey,ymax+0.02*sizey),
+  plot(x = c(xmin,xmax), y = c(ymin,ymax),
+       xlim = c(xmin,xmax) + if (extend.x) 0.02 * (xmax-xmin) * c(-1,1) else c(0,0),
+       ylim = c(ymin,ymax) + if (extend.y) 0.02 * (ymax-ymin) * c(-1,1) else c(0,0),
        type = "n",
        xaxs = "i", xaxt = "n",
        yaxs = "i", yaxt = "n",
-       xlab = xlab, ylab = ylab,...)
-  grid(nx = NA,ny=NULL,col = "grey")
-  abline(v = (floor(xmin)+1L):(ceiling(xmax)-1L),lty="dotted",lwd=1,col="grey")
+       cex.main = 0.8, ...)
+  
+  title(xlab = xlab, line= 0.8, cex.lab=0.8)
+  
+  title(ylab = ylab, line= 1.3, cex.lab=0.8)
+  
+  if (abline.x) {
+    grid(nx = NA,ny=NULL,col = "grey")
+    abline(v = (floor(xmin)+1L):(ceiling(xmax)-1L),lty="dotted",lwd=1,col="grey")   
+  }
+  else grid(nx = NULL,ny=NULL,col = "grey")
 }
 
 plot_init_x <- function(x, xlab, ylab, main, ...) {
@@ -54,7 +74,9 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
             # That x window is set to be able to translate x values
             # of deltat(x)/2 on the right
             ymin = min(x,na.rm = TRUE), ymax = max(x,na.rm = TRUE),
-            xlab = xlab, ylab = ylab, main = main, cex.main = 0.8, ...)
+            xlab = xlab, ylab = ylab,
+            extend.x = FALSE, extend.y = TRUE, abline.x = TRUE,
+            main = main, ...)
 }
 
 barplot_mts <- function (height,xlab,ylab,col,main, ...) {
@@ -87,12 +109,55 @@ barplot_mts <- function (height,xlab,ylab,col,main, ...) {
   invisible()
 }
 
+arrows_heads <- function(x0,y0,x1,y1,col) {
+  x0i <- grconvertX(x0, from = "user", to = "inches")
+  y0i <- grconvertY(y0, from = "user", to = "inches")
+  x1i <- grconvertX(x1, from = "user", to = "inches")
+  y1i <- grconvertY(y1, from = "user", to = "inches")
+  
+  ratios <- 0.1/sqrt((x1i-x0i)^2+(y1i-y0i)^2)
+  proportions <- tan(15/180*pi)
+  
+  xlefts   <- grconvertX(x1i + ratios *((x0i-x1i)-(y0i-y1i) * proportions), from = "inches", to = "user")
+  xrights  <- grconvertX(x1i + ratios *((x0i-x1i)+(y0i-y1i) * proportions), from = "inches", to = "user")
+  
+  ylefts   <- grconvertY(y1i + ratios * ((y0i-y1i)+(x0i-x1i) * proportions), from = "inches", to = "user")
+  yrights  <- grconvertY(y1i + ratios * ((y0i-y1i)-(x0i-x1i) * proportions), from = "inches", to = "user")
+  
+  Map(polygon,
+      x=Map(c,x1,xlefts,xrights),
+      y=Map(c,y1,ylefts,yrights),
+      col=col,
+      border=col)
+  
+  invisible()
+}
+
+scatterplot_ts <- function(x,col) {
+  n <- nrow(x)
+  x0 <- x[-n,2L]
+  y0 <- x[-n,1L]
+  x1 <- x[-1L,2L]
+  y1 <- x[-1L,1L]
+  arrows(x0,y0,x1,y1,length = 0.1,angle=15,col = col)
+  arrows_heads(x0,y0,x1,y1,col = col)
+}
+
 draw_axes <- function(timex) {
+  
   axis(side = 2L, labels=NA, tick = TRUE)
   axis(side = 2L, tick = FALSE, line=-0.5, cex.axis=0.7)
-  year <- floor(timex)
-  axis(side = 1L, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
-  axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.1, cex.axis=0.7)
+  
+  if (is.null(timex)) {
+    axis(side = 1L, labels=NA, tick = TRUE, tck=-0.011)
+    axis(side = 1L, tick = FALSE, line=-1.1, cex.axis=0.7)
+  }
+  else {
+    year <- floor(timex)
+    axis(side = 1L, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
+    axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.1, cex.axis=0.7)
+    
+  }
 }
 
 window_default <- function(x,start,end) {
@@ -117,7 +182,7 @@ plotts <-function(x,show.legend,col,lty,
                   xlab,ylab, main,
                   ...) {
   
-  col <- eval_function_if_it_is_one(col,NCOL(x))
+  col <- eval_function_if_it_is_one(col,if (type == "scatter") nrow(x)-1L else NCOL(x))
   lty <- eval_function_if_it_is_one(lty,NCOL(x))
   
   x <- window_default(x,start,end)
@@ -144,6 +209,8 @@ plotts <-function(x,show.legend,col,lty,
          },
          bar = {
            barplot_mts(x, col=col, xlab = xlab, ylab = ylab, main = main, ...)
+           # barplot are initialized in the subfunction because their height
+           # is unknown before having separated the positive and negative part
            lines(x = timex_win, y = as.vector(rowSums(x)), lty = lty)
            
            if (show.legend) legend("bottomleft",legend=series_names,
@@ -157,6 +224,16 @@ plotts <-function(x,show.legend,col,lty,
            
            if (show.legend) legend("bottomleft",legend=series_names,
                                    col=col,lty="solid",horiz=TRUE,bty="n",cex=0.8)
+         },
+         scatter = {
+           plot_init(xmin = min(x[,2L], na.rm = TRUE),
+                     xmax = max(x[,2L], na.rm = TRUE),
+                     ymin = min(x[,1L],na.rm = TRUE),
+                     ymax = max(x[,1L],na.rm = TRUE),
+                     xlab = xlab, ylab = ylab,
+                     extend.x = TRUE, extend.y = TRUE,
+                     abline.x=FALSE, ...)
+           scatterplot_ts(x, col=col)
          }
   )
   invisible()
@@ -169,7 +246,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                    lty = default_lty_pal(),
                                    show.legend = TRUE,
                                    main=NULL,
-                                   mar=if (is.null(main)) c(1,1.5,0,0) else c(1,1.5,1,0),
+                                   mar = default_margins(main, xlab, ylab),
                                    ...) {
   
   mar_save <- par("mar")
@@ -209,12 +286,12 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 }
 
 #' @export
-plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
-                              col=default_col_pal(x),
-                              lty=default_lty_pal(),
-                              show.legend=TRUE,
-                              main=NULL,
-                              mar=if (is.null(main)) c(1,1.5,0,0) else c(1,1.5,1,0),
+plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = NULL,
+                              col = default_col_pal(x),
+                              lty = default_lty_pal(),
+                              show.legend = TRUE,
+                              main = NULL,
+                              mar = default_margins(main, xlab, ylab),
                               ...) {
   
   mar_save <- par("mar")
@@ -222,7 +299,6 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
   par(mar=mar)
   
   type_label <- type_label(x)
-  func <- attr(x,"func")
   
   if (type_label == "Contributions") plotts(x = x, show.legend = show.legend,
                                             col = col, lty = lty,
@@ -231,21 +307,29 @@ plot.tscomparison <- function(x, xlab="", ylab="", start = NULL, end = NULL,
                                             xlab = xlab, ylab = ylab, main = main,
                                             ...)
   else {
-    if (func == "in_revisions") plotts(x = x, show.legend = show.legend,
-                                       col = col, lty = lty,
-                                       series_names = "Benchmark",type = "segment",
-                                       start = start, end = end,
-                                       xlab = xlab, ylab = ylab, main = main,
-                                       ...)
-    else plotts(x = x, show.legend = show.legend,
-                col = col, lty = lty,
-                series_names = colnames(x), type = "line",
-                start = start, end = end, 
-                xlab = xlab, ylab = ylab, main = main,
-                ...)
+    switch(attr(x,"func"),
+           in_revisions = plotts(x = x, show.legend = show.legend,
+                                 col = col, lty = lty,
+                                 series_names = colnames(x),type = "segment",
+                                 start = start, end = end,
+                                 xlab = xlab, ylab = ylab, main = main,
+                                 ...),
+           in_scatter = plotts(x = x, show.legend = show.legend,
+                               col = col, lty = lty,
+                               series_names = colnames(x),type = "scatter",
+                               start = start, end = end,
+                               xlab = xlab, ylab = ylab, main = main,
+                               ...),
+           plotts(x = x, show.legend = show.legend,
+                  col = col, lty = lty,
+                  series_names = colnames(x), type = "line",
+                  start = start, end = end, 
+                  xlab = xlab, ylab = ylab, main = main,
+                  ...)
+    )
   }
   
-  draw_axes(time(x))
+  draw_axes(timex = if (!identical(attr(x,"func"),"in_scatter")) time(x) else NULL)
   
   invisible()
 }
