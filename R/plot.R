@@ -43,7 +43,8 @@ default_margins <- function(main, xlab, ylab) {
 #### Base plots
 
 plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
-                      extend.x,extend.y,abline.x, ...) {
+                      extend.x,extend.y,abline.x,
+                      main, ...) {
   
   if (is.null(xlab)) xlab <- ""
   if (is.null(ylab)) ylab <- ""
@@ -55,7 +56,8 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
        type = "n",
        xaxs = "i", xaxt = "n",
        yaxs = "i", yaxt = "n",
-       cex.main = 0.8, ...)
+       cex.main = 0.8,
+       main = main, ...)
   
   title(xlab = xlab, line= 0.8, cex.lab=0.8)
   
@@ -118,11 +120,14 @@ arrows_heads <- function(x0,y0,x1,y1,col) {
   ratios <- 0.1/sqrt((x1i-x0i)^2+(y1i-y0i)^2)
   proportions <- tan(15/180*pi)
   
-  xlefts   <- grconvertX(x1i + ratios *((x0i-x1i)-(y0i-y1i) * proportions), from = "inches", to = "user")
-  xrights  <- grconvertX(x1i + ratios *((x0i-x1i)+(y0i-y1i) * proportions), from = "inches", to = "user")
+  xlefts   <- grconvertX(x1i + ratios * ((x0i-x1i)-(y0i-y1i) * proportions), from = "inches", to = "user")
+  xrights  <- grconvertX(x1i + ratios * ((x0i-x1i)+(y0i-y1i) * proportions), from = "inches", to = "user")
   
   ylefts   <- grconvertY(y1i + ratios * ((y0i-y1i)+(x0i-x1i) * proportions), from = "inches", to = "user")
   yrights  <- grconvertY(y1i + ratios * ((y0i-y1i)-(x0i-x1i) * proportions), from = "inches", to = "user")
+  
+    # It's okay if the distance is zero because then these points are NaN
+    # And 2 NaN in a triangle doesn't draw anything
   
   Map(polygon,
       x=Map(c,x1,xlefts,xrights),
@@ -139,7 +144,7 @@ scatterplot_ts <- function(x,col) {
   y0 <- x[-n,1L]
   x1 <- x[-1L,2L]
   y1 <- x[-1L,1L]
-  arrows(x0,y0,x1,y1,length = 0.1,angle=15,col = col)
+  segments(x0,y0,x1,y1,col = col)
   arrows_heads(x0,y0,x1,y1,col = col)
 }
 
@@ -182,12 +187,12 @@ plotts <-function(x,show.legend,col,lty,
                   xlab,ylab, main,
                   ...) {
   
-  col <- eval_function_if_it_is_one(col,if (type == "scatter") nrow(x)-1L else NCOL(x))
-  lty <- eval_function_if_it_is_one(lty,NCOL(x))
-  
   x <- window_default(x,start,end)
   
   timex_win <- as.vector(time(x)) + deltat(x)/2
+  
+  col <- eval_function_if_it_is_one(col,if (type == "scatter") nrow(x)-1L else NCOL(x))
+  lty <- eval_function_if_it_is_one(lty,NCOL(x))
   
   switch(type,
          line = {
@@ -222,7 +227,7 @@ plotts <-function(x,show.legend,col,lty,
            lines.default(x = timex_win, y = x,
                          col = col,type = "h")
            
-           if (show.legend) legend("bottomleft",legend=series_names,
+           if (show.legend) legend("bottomleft", legend = series_names,
                                    col=col,lty="solid",horiz=TRUE,bty="n",cex=0.8)
          },
          scatter = {
@@ -232,8 +237,22 @@ plotts <-function(x,show.legend,col,lty,
                      ymax = max(x[,1L],na.rm = TRUE),
                      xlab = xlab, ylab = ylab,
                      extend.x = TRUE, extend.y = TRUE,
-                     abline.x=FALSE, ...)
+                     abline.x=FALSE, main = main, ...)
            scatterplot_ts(x, col=col)
+           if (show.legend) {
+             arrows_time <- (timex_win + deltat(x)/2)
+             arrows_time <- arrows_time[-length(arrows_time)]
+             selected_time <- pretty(arrows_time,n=4,eps.correct = 2)
+             selected_time <- c(arrows_time[1L],
+                                selected_time[-c(1L,length(selected_time))],
+                                arrows_time[length(arrows_time)])
+             selected_time <- unique(selected_time)
+             
+             i <- round((selected_time-arrows_time[1L])*frequency(x))+1
+             
+             legend("bottom", legend = round(selected_time,2),
+                    fill = col[i], horiz=TRUE,bty="n",cex=0.8)
+           } 
          }
   )
   invisible()
