@@ -14,7 +14,7 @@ type_label <- function(object) {
 #' 
 #' @keywords internal
 #' @export
-#' @importFrom scales brewer_pal hue_pal
+#' @importFrom scales brewer_pal div_gradient_pal
 default_col_pal <- function(object) {
   if (identical(attr(object,"type"),"contributions")) brewer_pal(type = "qual",palette = 7L)
   else if (identical(attr(object,"func"),"in_scatter")) function(n) div_gradient_pal()(seq(0, 1, length.out = n))
@@ -198,6 +198,8 @@ plotts <-function(x,show.legend,col,lty,
                   xlab,ylab, main,
                   ...) {
   
+  coefficients <- attr(x,"coefficients") # Only for the scatter plot
+  
   x <- window_default(x,start,end)
   
   timex_win <- as.vector(time(x)) + deltat(x)/2
@@ -249,7 +251,14 @@ plotts <-function(x,show.legend,col,lty,
                      xlab = xlab, ylab = ylab,
                      extend.x = TRUE, extend.y = TRUE,
                      abline.x=FALSE, main = main, ...)
+           
+           abline(a = coefficients["constant"],
+                  b = coefficients[names(coefficients) != "constant"],
+                  col = "red",
+                  lwd = 2)
+           
            scatterplot_ts(x, col=col)
+           
            if (show.legend) {
              arrows_time <- (timex_win + deltat(x)/2)
              arrows_time <- arrows_time[-length(arrows_time)]
