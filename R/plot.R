@@ -3,7 +3,8 @@ type_label <- function(object) {
          levels="Levels",
          `levels-rebased`="Rebased levels",
          changes="Changes",
-         contributions="Contributions"
+         contributions="Contributions",
+         differences="Differences"
   )
 }
 
@@ -126,8 +127,8 @@ arrows_heads <- function(x0,y0,x1,y1,col) {
   ylefts   <- grconvertY(y1i + ratios * ((y0i-y1i)+(x0i-x1i) * proportions), from = "inches", to = "user")
   yrights  <- grconvertY(y1i + ratios * ((y0i-y1i)-(x0i-x1i) * proportions), from = "inches", to = "user")
   
-  # It's okay if the distance is zero because then these points are NaN
-  # And 2 NaN in a triangle doesn't draw anything
+  # It's okay if the distance is zero because then left and right are NaN
+  # And 2 NaN points in a triangle doesn't draw anything
   
   Map(polygon,
       x=Map(c,x1,xlefts,xrights),

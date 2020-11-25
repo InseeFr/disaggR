@@ -171,8 +171,10 @@ in_scatter.praislm <- function(object) {
   
   series <- cbind(m$y,m$X[,colnames(m$X) != "constant",drop = FALSE])
   
+  if  (m$include.differenciation) series <- diff(series)
+  
   structure(series,
-            type=if (m$include.differenciation) "difference" else "levels",
+            type=if (m$include.differenciation) "differences" else "levels",
             func="in_scatter",
             class=c("tscomparison",class(series)),
             dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie")),
