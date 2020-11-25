@@ -126,8 +126,8 @@ arrows_heads <- function(x0,y0,x1,y1,col) {
   ylefts   <- grconvertY(y1i + ratios * ((y0i-y1i)+(x0i-x1i) * proportions), from = "inches", to = "user")
   yrights  <- grconvertY(y1i + ratios * ((y0i-y1i)-(x0i-x1i) * proportions), from = "inches", to = "user")
   
-    # It's okay if the distance is zero because then these points are NaN
-    # And 2 NaN in a triangle doesn't draw anything
+  # It's okay if the distance is zero because then these points are NaN
+  # And 2 NaN in a triangle doesn't draw anything
   
   Map(polygon,
       x=Map(c,x1,xlefts,xrights),
@@ -348,7 +348,7 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
     )
   }
   
-  draw_axes(timex = if (!identical(attr(x,"func"),"in_scatter")) time(x) else NULL)
+  draw_axes(if (identical(attr(x,"func"),"in_scatter")) NULL else time(x))
   
   invisible()
 }
@@ -374,6 +374,8 @@ default_theme_ggplot <- function(show.legend,xlab,ylab,mar) {
     )
 }
 
+gglims <- function(object) c(tsp(object)[1L],tsp(object)[2L] + deltat(object))
+
 dftsforggplot <- function(object,series_names) {
   data.frame(
     Date = as.numeric(time(object)+deltat(object)/2),
@@ -383,31 +385,27 @@ dftsforggplot <- function(object,series_names) {
   )
 }
 
-ggplotts <- function(object,show.legend,variable_aes,
-                     series_names,theme,type,
-                     start, end,
-                     xlab,ylab,...) {
+ggplotts <- function(object,show.legend, series_names,theme,type,
+                     start, end, xlab,ylab,...) {
   
   object <- window_default(object,start = start, end = end)
-  
-  exprs <- structure(lapply(variable_aes, function(x) quote(Variables)),
-                     names=variable_aes)
   
   df <- dftsforggplot(object,series_names)
   
   df <- df[!is.na(df$Values),]
   
-  lims <- c(tsp(object)[1L],tsp(object)[2L] + deltat(object))
+  lims <- gglims(object)
+  
   # That x window is set to be able to translate x values
   # of deltat(x)/2 on the right like for base plot init
   g <- ggplot(df,aes(x=Date,y=Values),show.legend = show.legend,...) +
     xlab(xlab) + ylab(ylab)
   switch(type,
-         line = g + geom_line(aes(,,!!!exprs,group=Variables)),
-         bar = g + geom_bar(aes(,,!!!exprs,group=Variables),stat="identity") +
+         line = g + geom_line(aes(colour=Variables,linetype=Variables,group=Variables)),
+         bar = g + geom_bar(aes(fill=Variables,group=Variables),stat="identity") +
            stat_summary(fun = sum, geom="line", colour = "black",
                         size = 0.5, alpha=1,na.rm = TRUE),
-         segment = g + geom_segment(aes(xend=Date,,,!!!exprs,group=Variables),
+         segment = g + geom_segment(aes(xend=Date,colour=Variables,group=Variables),
                                     yend=0)
   ) +
     scale_x_continuous(
@@ -416,6 +414,24 @@ ggplotts <- function(object,show.legend,variable_aes,
       minor_breaks = numeric(),
       expand=c(0,0)
     ) + 
+    theme
+}
+
+ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab, col, ...) {
+  lims <- gglims(object)
+  
+  df <- data.frame(Date=as.numeric(time(object)),
+                   object,check.names = FALSE)
+  ggplot(df,aes(x=`High-frequency serie`,y=`Low-frequency serie`),
+         show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab) +
+    geom_path(aes(colour=Date,group=1),arrow=arrow(angle = 15,
+                                                   ends = "last",
+                                                   type = "closed",
+                                                   length = unit(0.1,"inches"))) +
+    stat_smooth(method = "lm", col = "red",se=FALSE,formula = y~x) +
+    continuous_scale("colour","gradient",function(x) col(length(x)),
+                     limits = lims,
+                     expand=c(0,0)) +
     theme
 }
 
@@ -452,8 +468,7 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                         each=frequency(model$hfserie)/frequency(model$lfserie))
   
   ggplotts(object = as.ts(object),show.legend = show.legend,
-           variable_aes = c("colour","linetype"),series_names = "Benchmark",
-           theme = theme, type = "line",
+           series_names = "Benchmark", theme = theme, type = "line",
            start = start, end = end,
            xlab = xlab, ylab = ylab, ...) +
     geom_line(aes(x=Date,y=Values,colour=Variables,linetype=Variables,
@@ -480,36 +495,42 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
   lty <- function_if_it_isnt_one(lty)
   
   type_label <- type_label(object)
-  func <- attr(object,"func")
   
   if (type_label == "Contributions") {
     ggplotts(object, show.legend = show.legend,
-             variable_aes = "fill", type = "bar",
-             series_names = colnames(object), theme = theme,
+             type = "bar", series_names = colnames(object), theme = theme,
              start = start, end = end,
              xlab = xlab, ylab = ylab, ...) +
       labs(fill=type_label) +
       discrete_scale("fill","hue",col,na.translate = FALSE) +
       ggtitle(main)
   }
-  else if (func == "in_revisions") {
-    ggplotts(object = object, show.legend = show.legend,
-             variable_aes = "colour",type="segment",
-             series_names = "Benchmark",theme = theme,
-             start = start, end = end,
-             xlab = xlab, ylab = ylab, ...) +
-      labs(colour=type_label) +
-      discrete_scale("colour","hue",col,na.translate = FALSE) +
-      ggtitle(main)
-  }
-  else ggplotts(object = object, show.legend = show.legend,
-                variable_aes = c("colour","linetype"),type="line",
-                series_names = colnames(object), theme = theme,
-                start = start, end = end,
-                xlab = xlab, ylab = ylab, ...) +
-    labs(linetype=type_label) +
-    labs(colour=type_label) +
-    discrete_scale("colour","hue",col,na.translate = FALSE) +
-    discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
-    ggtitle(main)
+  else switch(attr(object,"func"),
+              in_revisions = {
+                ggplotts(object = object, show.legend = show.legend,
+                         type="segment", series_names = colnames(object),theme = theme,
+                         start = start, end = end,
+                         xlab = xlab, ylab = ylab, ...) +
+                  labs(colour=type_label) +
+                  discrete_scale("colour","hue",col,na.translate = FALSE) +
+                  ggtitle(main)
+              },
+              in_scatter = {
+                ggscatter(object = object, show.legend = show.legend,
+                          theme = theme, start = start, end = end,
+                          xlab = xlab, ylab = ylab,
+                          col = col,...) +
+                  labs(colour="Time") +
+                  ggtitle(main)
+              },
+              ggplotts(object = object, show.legend = show.legend,
+                       type="line",series_names = colnames(object), theme = theme,
+                       start = start, end = end,
+                       xlab = xlab, ylab = ylab, ...) +
+                labs(linetype=type_label) +
+                labs(colour=type_label) +
+                discrete_scale("colour","hue",col,na.translate = FALSE) +
+                discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
+                ggtitle(main)
+  )
 }
