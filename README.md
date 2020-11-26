@@ -1,6 +1,5 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!-- badges: start -->
 
 [![CRAN
@@ -55,9 +54,9 @@ plot(in_sample(benchmark))
 
 ``` r
 plot(in_dicator(benchmark,type="changes"),
-         start=c(2015,1),end=c(2020,12))
+     start=c(2015,1),end=c(2020,12))
 plot(in_dicator(benchmark,type="contributions"),
-         start=c(2015,1),end=c(2020,12))
+     start=c(2015,1),end=c(2020,12))
 ```
 
 <img src="man/figures/README-unnamed-chunk-5-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-5-2.png" width="50%" />
@@ -67,7 +66,7 @@ new_benchmark <- twoStepsBenchmark(hfserie = turnover,
                                    lfserie = construction,
                                    include.differenciation = FALSE)
 plot(in_revisions(new_benchmark,
-                      benchmark))
+                  benchmark))
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
@@ -81,4 +80,6 @@ best parameters for your benchmark.
 reView(benchmark)
 ```
 
-![drawing](man/figures/shiny-screen.jpg)
+<figure>
+<img src="man/figures/shiny-screen.jpg" style="width:100.0%" alt="drawing" /><figcaption aria-hidden="true">drawing</figcaption>
+</figure>

@@ -215,9 +215,23 @@ test_that("reView",{
   expect_equal(app$getValue("reView-reViewtab2-plotswin"),
                c(2000,2020))
   
-  # Change output to in sample
+  # Change output to in scatter
   expect_equal(app$waitForValue("reView-reViewtab2-mainout_choice",iotype="input"),
                "Benchmark")
+  app$setInputs(`reView-reViewtab2-mainout_choice` = "Scatter plot")
+  
+  newplot <- app$waitForValue("reView-reViewtab2-newplot",iotype="output")
+  oldplot <- app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
+  
+  plots <- list(newplot,oldplot)
+  
+  expect_true(all(vapply(plots,`[[`,0,"height") >= 432))
+  expect_true(all(vapply(plots,`[[`,0,"height") <= 452))
+  expect_true(all(vapply(plots,`[[`,0,"width") >= 269))
+  
+  # Change output to in sample
+  expect_equal(app$waitForValue("reView-reViewtab2-mainout_choice",iotype="input"),
+               "Scatter plot")
   app$setInputs(`reView-reViewtab2-mainout_choice` = "In-sample predictions")
   
   newplotlev <- app$waitForValue("reView-reViewtab2-newplotlev",iotype="output")
