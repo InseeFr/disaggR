@@ -108,6 +108,10 @@ test_that("plot works", {
                                                            type="contributions"),
                                               start=c(2008,4),
                                               end=c(2012,7)))
+  vdiffr::expect_doppelganger("plot-scatter-2008-2012",
+                              function() plot(in_scatter(benchmark),
+                                              start=2008,
+                                              end=2012))
   vdiffr::expect_doppelganger("plot-main-insample",
                               function() plot(in_sample(benchmark),
                                               main="title in sample"))
@@ -119,6 +123,9 @@ test_that("plot works", {
                               function() plot(in_dicator(benchmark,
                                                          type = "contributions"),
                                               main="title ctb"))
+  vdiffr::expect_doppelganger("plot-main-scatter",
+                              function() plot(in_scatter(benchmark),
+                                              main="title scatter"))
   set.seed(1)
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
   mts <- ts(series,start=c(2000,1),freq=12) %>%
@@ -241,6 +248,10 @@ test_that("ggplot works", {
                                                     type="contributions"),
                                        start=c(2008,4),
                                        end=c(2012,7)))
+  vdiffr::expect_doppelganger("gg-plot-scatter-2008-2012",
+                              autoplot(in_scatter(benchmark),
+                                       start=2008,
+                                       end=2012))
   
   vdiffr::expect_doppelganger("gg-main-insample",
                               autoplot(in_sample(benchmark),
@@ -253,6 +264,9 @@ test_that("ggplot works", {
                               autoplot(in_dicator(benchmark,
                                                   type = "contributions"),
                                        main="title ctb"))
+  vdiffr::expect_doppelganger("gg-plot-main-scatter",
+                              autoplot(in_scatter(benchmark),
+                                       main="title scatter"))
 })
 
 test_that("show.legend=FALSE works", {
@@ -281,6 +295,9 @@ test_that("show.legend=FALSE works", {
                                                            benchmark2,
                                                            type="changes"),
                                               show.legend = FALSE))
+  vdiffr::expect_doppelganger("plot-scatter-showlegendF",
+                              function() plot(in_scatter(benchmark),
+                                              show.legend = FALSE))
   
   vdiffr::expect_doppelganger("gg-benchmark-showlegendF",
                               autoplot(benchmark,show.legend = FALSE))
@@ -297,6 +314,9 @@ test_that("show.legend=FALSE works", {
                               autoplot(in_revisions(benchmark,
                                                     benchmark2,
                                                     type="changes"),
+                                       show.legend = FALSE))
+  vdiffr::expect_doppelganger("gg-scatter-showlegendF",
+                              autoplot(in_scatter(benchmark),
                                        show.legend = FALSE))
   
   set.seed(1)
