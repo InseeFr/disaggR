@@ -88,9 +88,9 @@ reViewOutput <- function(benchmark,benchmark_old,compare) {
             class="reViewOutput")
 }
 
-lfserie <- function(old_bn) model.list(old_bn)$lfserie
-hfserie <- function(old_bn) {
-  res <- model.list(old_bn)$hfserie
+lfserie <- function(benchmark) model.list(benchmark)$lfserie
+hfserie <- function(benchmark) {
+  res <- model.list(benchmark)$hfserie
   res[,colnames(res) != "constant"]
 }
 
@@ -126,7 +126,7 @@ presets_list_fun <- function(hfserie,lfserie,...) {
   })
 }
 
-# The function set_new_bn is made for setting new_bn in shiny
+# The function make_new_bn is made for setting new_bn in shiny
 # while cleaning up its call argument
 
 make_new_bn <- function(hfserie_name,lfserie_name,
@@ -169,7 +169,7 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                              end.domain_arg = end.domain)))
 }
 
-set_new_bn <- function(input,hfserie_name,lfserie_name,old_bn) {
+get_new_bn <- function(input,hfserie_name,lfserie_name,old_bn) {
   make_new_bn(hfserie_name(),lfserie_name(),
               hfserie(old_bn()),lfserie(old_bn()),
               include.differenciation = input$dif,
@@ -196,7 +196,7 @@ set_new_bn <- function(input,hfserie_name,lfserie_name,old_bn) {
               end.domain = model.list(old_bn())$end.domain)
 }
 
-reset_inputs_to_default <- function(session,old_bn) {
+set_inputs_to_default <- function(session,old_bn) {
   tsplf <- tsp(lfserie(old_bn()))
   model <- get_model(old_bn())
   maxwin <- get_maxwin(old_bn())
@@ -273,8 +273,6 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
          if (!is.null(model$end.domain)) paste0(",\n\tend.domain = ", display_vector(model$end.domain)),
          "\n)")
 }
-
-
 
 #### ui ####
 
@@ -572,14 +570,14 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
   moduleServer(id,
                function(input,output,session) {
                  
-                 new_bn <- reactive(set_new_bn(input,hfserie_name,lfserie_name,old_bn))
+                 new_bn <- reactive(get_new_bn(input,hfserie_name,lfserie_name,old_bn))
                  
                  exportTestValues(new_bn = new_bn())
                  
                  # Inputs initializers
                  
                  observeEvent({reset();old_bn()},
-                              reset_inputs_to_default(session,old_bn),
+                              set_inputs_to_default(session,old_bn),
                               priority = 2L)
                  
                  observeEvent(selected_preset(),set_preset(session,selected_preset),
@@ -591,8 +589,8 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                               set_plots_window_with_brush(session,input,old_bn),
                               ignoreNULL = TRUE, priority = 1L)
                  
-                 observeEvent(input$click,updateSliderInput(session, "plotswin",
-                                                            value = get_maxwin(old_bn())),
+                 observeEvent(input$click,
+                              updateSliderInput(session, "plotswin",value = get_maxwin(old_bn())),
                               ignoreNULL = TRUE,priority = 1L)
                  
                  observeEvent(compare(),{
@@ -680,7 +678,10 @@ reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
     
     # tab3 : Export
     
-    reset <- reView_server_tab3("reViewtab3",old_bn,new_bn,hfserie_name,lfserie_name,compare)
+    reset <- reView_server_tab3("reViewtab3",old_bn,new_bn,
+                                hfserie_name,lfserie_name,
+                                compare)
+    
     observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)    
   })
 }
