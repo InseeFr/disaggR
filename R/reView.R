@@ -61,6 +61,21 @@ get_clean_wins <- function(benchmark) {
        domain = win_domain)
 }
 
+get_maxwin <- function(tsphf,tsplf,old_bn) {
+  
+  clean_wins_old_bn <- get_clean_wins(old_bn)
+  
+  startmin <- floor(min(tsphf[1L],tsplf[1L],
+                        clean_wins_old_bn$benchmark[1L],
+                        clean_wins_old_bn$coeff.calc[1L]))
+  
+  endmax <- floor(max(tsphf[2L],tsplf[2L],
+                      clean_wins_old_bn$benchmark[2L],
+                      clean_wins_old_bn$coeff.calc[2L]))
+  
+  c(startmin,endmax)
+}
+
 reViewOutput <- function(benchmark,benchmark_old,compare) {
   structure(list(benchmark = benchmark,
                  benchmark_old = benchmark_old,
@@ -144,6 +159,79 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                              start.domain_arg = start.domain,
                              end.domain_arg = end.domain)))
 }
+
+set_new_bn <- function(input,hfserie_name,lfserie_name,
+                       hfserie,lfserie,old_bn) {
+  make_new_bn(hfserie_name(),lfserie_name(),
+              hfserie(),lfserie(),
+              include.differenciation = input$dif,
+              include.rho = input$rho,
+              set.coeff = {
+                if (input$setcoeff_button) {
+                  if (is.na(input$setcoeff)) 0
+                  else input$setcoeff
+                }
+                else NULL
+              },
+              set.const = {
+                if (input$setconst_button) {
+                  if (is.na(input$setconst)) 0
+                  else input$setconst
+                }
+                else NULL
+              },
+              start.coeff.calc = input$coeffcalc[1],
+              end.coeff.calc = input$coeffcalc[2],
+              start.benchmark = input$benchmark[1],
+              end.benchmark = input$benchmark[2],
+              start.domain = model.list(old_bn())$start.domain,
+              end.domain = model.list(old_bn())$end.domain)
+}
+
+reset_inputs_to_default <- function(session,old_bn,tsphf,tsplf) {
+  model <- get_model(old_bn())
+  maxwin <- get_maxwin(tsphf(),tsplf(),old_bn())
+  clean_wins_old_bn <- get_clean_wins(old_bn())
+  updateCheckboxInput(session,"dif",value = model$include.differenciation)
+  updateCheckboxInput(session,"rho",value = model$include.rho)
+  updateSliderInput(session,"coeffcalc",
+                    min = tsplf()[1L],max = tsplf()[2L],
+                    value = clean_wins_old_bn$coeff.calc,
+                    step = 1/tsplf()[3L])
+  updateSliderInput(session,"benchmark",
+                    min = tsplf()[1L],max = tsplf()[2L],
+                    value = clean_wins_old_bn$benchmark,
+                    step = 1/tsplf()[3L])
+  updateSliderInput(session,"plotswin",
+                    min = maxwin[1L],max = maxwin[2L],
+                    value = c(maxwin[1L],maxwin[2L]),
+                    step = 1/tsplf()[3L])
+  if (length(model$set.coeff) != 0) {
+    updateCheckboxInput(session,"setcoeff_button",value = TRUE)
+    updateNumericInput(session,"setcoeff",value = as.numeric(model$set.coeff))
+  } else updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+  if (length(model$set.const) != 0) {
+    updateCheckboxInput(session,"setconst_button",value = TRUE)
+    updateNumericInput(session,"setconst",value = as.numeric(model$set.const))
+  } else updateCheckboxInput(session,"setconst_button",value = FALSE)
+}
+
+set_plots_window_with_brush <- function(session,input,tsplf) {
+  updateSliderInput(session, "plotswin",
+                    value = c(round(tsplf()[3L]*(input$brush$xmin-tsplf()[1L])) + tsplf()[1L],
+                              round(tsplf()[3L]*(input$brush$xmax-tsplf()[2L])) + tsplf()[2L]))
+  session$resetBrush("brush")
+}
+
+set_preset <- function(session,selected_preset) {
+  updateCheckboxInput(session,"dif",value = presets$include.differenciation[selected_preset()])
+  updateCheckboxInput(session,"rho",value = presets$include.rho[selected_preset()])
+  updateCheckboxInput(session,"setcoeff_button",value = FALSE)
+  setconst <- presets$set.const[[selected_preset()]]
+  updateCheckboxInput(session,"setconst_button",value = !is.null(setconst))
+  updateNumericInput(session,"setconst",value = setconst)
+}
+
 display_vector <- function(x) switch(length(x),
                                      as.character(x),
                                      paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")"))
@@ -209,9 +297,9 @@ reView_ui_tab2 <- function(id) {
       checkboxInput(ns("setconst_button"),"Constant"),
       conditionalPanel("input.setconst_button",numericInput(ns("setconst"),NULL,0),ns = ns),
       div("Windows",class="section"),
-      uiOutput(ns("coeffcalcsliderInput")),
-      uiOutput(ns("benchmarksliderInput")),
-      uiOutput(ns("plotswinsliderInput")),
+      sliderInput(ns("coeffcalc"),"Coefficients:",0,1,c(0,1),ticks = FALSE),
+      sliderInput(ns("benchmark"),"Benchmark:",0,1,c(0,1),ticks = FALSE),
+      sliderInput(ns("plotswin"),"Plots:",0,1,c(0,1),ticks = FALSE),
       style="padding-top: 5px;
              padding-bottom: 0px;
              margin-top: 0px;
@@ -466,31 +554,34 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
   moduleServer(id,
                function(input,output,session) {
                  
-                 observeEvent(selected_preset(),{
-                   updateCheckboxInput(session,"dif",value = presets$include.differenciation[selected_preset()])
-                   updateCheckboxInput(session,"rho",value = presets$include.rho[selected_preset()])
-                   updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-                   setconst <- presets$set.const[[selected_preset()]]
-                   updateCheckboxInput(session,"setconst_button",value = !is.null(setconst))
-                   updateNumericInput(session,"setconst",value = setconst)
-                 },ignoreNULL = TRUE)
+                 tsplf <- reactive(tsp(lfserie()))
+                 tsphf <- reactive(tsp(hfserie()))
                  
-                 observeEvent({reset();old_bn()},{
-                   model <- get_model(old_bn())
-                   updateCheckboxInput(session,"dif",value = model$include.differenciation)
-                   updateCheckboxInput(session,"rho",value = model$include.rho)
-                   updateSliderInput(session,"coeffcalc",value = clean_wins_old_bn()$coeff.calc)
-                   updateSliderInput(session,"benchmark",value = clean_wins_old_bn()$benchmark)
-                   updateSliderInput(session,"plotswin",value = maxwin())
-                   if (length(model$set.coeff) != 0) {
-                     updateCheckboxInput(session,"setcoeff_button",value = TRUE)
-                     updateNumericInput(session,"setcoeff",value = as.numeric(model$set.coeff))
-                   } else updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-                   if (length(model$set.const) != 0) {
-                     updateCheckboxInput(session,"setconst_button",value = TRUE)
-                     updateNumericInput(session,"setconst",value = as.numeric(model$set.const))
-                   } else updateCheckboxInput(session,"setconst_button",value = FALSE)
-                 })
+                 new_bn <- reactive(set_new_bn(input,hfserie_name,lfserie_name,
+                                               hfserie,lfserie,old_bn))
+                 
+                 exportTestValues(new_bn = new_bn())
+                 
+                 # Inputs initializers
+                 
+                 observeEvent({reset();old_bn()},
+                              reset_inputs_to_default(session,old_bn,tsphf,tsplf),
+                              priority = 2L)
+                 
+                 observeEvent(selected_preset(),set_preset(session,selected_preset),
+                              ignoreNULL = TRUE, priority = 2L)
+                 
+                 # Input modifiers
+                 
+                 observeEvent(input$brush,
+                              set_plots_window_with_brush(session,input,tsplf),
+                              ignoreNULL = TRUE, priority = 1L)
+                 
+                 observeEvent(input$click,updateSliderInput(session, "plotswin",
+                                                            value = get_maxwin(tsphf(),
+                                                                               tsplf(),
+                                                                               old_bn())),
+                              ignoreNULL = TRUE,priority = 1L)
                  
                  observeEvent(compare(),{
                    updateRadioButtons(session,"mainout_choice", NULL,
@@ -499,53 +590,9 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                                                   if (compare()) "Revisions"),
                                       selected = "Benchmark",
                                       inline = TRUE)
-                 })
+                 },priority = 1L)
                  
-                 tsplf <- reactive(tsp(lfserie()))
-                 
-                 tsphf <- reactive(tsp(hfserie()))
-                 
-                 clean_wins_old_bn <- reactive(get_clean_wins(old_bn()))
-                 
-                 output$coeffcalcsliderInput <- {
-                   renderUI(
-                     sliderInput(session$ns("coeffcalc"),"Coefficients:",
-                                 min = tsplf()[1L],max = tsplf()[2L],
-                                 value = clean_wins_old_bn()$coeff.calc,
-                                 step = 1/tsplf()[3L],sep = " ")
-                   )
-                 }
-                 
-                 output$benchmarksliderInput <- {
-                   renderUI(
-                     sliderInput(session$ns("benchmark"),"Benchmark:",
-                                 min = tsplf()[1L],max = tsplf()[2L],
-                                 value = clean_wins_old_bn()$benchmark,
-                                 step = 1/tsplf()[3L],sep = " ")
-                   )
-                 }
-                 
-                 maxwin <- reactive({
-                   
-                   startmin <- floor(min(tsphf()[1L],tsplf()[1L],
-                                         clean_wins_old_bn()$benchmark[1L],
-                                         clean_wins_old_bn()$coeff.calc[1L]))
-                   
-                   endmax <- floor(max(tsphf()[2L],tsplf()[2L],
-                                       clean_wins_old_bn()$benchmark[2L],
-                                       clean_wins_old_bn()$coeff.calc[2L]))
-                   
-                   c(startmin,endmax)
-                 })
-                 
-                 output$plotswinsliderInput <- {
-                   renderUI(
-                     sliderInput(session$ns("plotswin"),"Plots:",
-                                 min = maxwin()[1L],max = maxwin()[2L],
-                                 value = c(maxwin()[1L],maxwin()[2L]),
-                                 step = 1/tsplf()[3L],sep = " ")
-                   )
-                 }
+                 # Outputs
                  
                  output$mainOutput <- renderUI({
                    reView_server_tab2_switch(new_bn,old_bn,
@@ -557,48 +604,6 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                                              output,session$ns,compare())
                  })
                  
-                 observeEvent(input$brush,{
-                   tsplf <- tsp(lfserie())
-                   updateSliderInput(session, "plotswin",
-                                     value = c(round(tsplf[3L]*(input$brush$xmin-tsplf[1L])) + tsplf[1L],
-                                               round(tsplf[3L]*(input$brush$xmax-tsplf[2L])) + tsplf[2L]))
-                   session$resetBrush("brush")
-                 },
-                 ignoreNULL = TRUE)
-                 
-                 observeEvent(input$click,{
-                   tsplf <- tsp(lfserie())
-                   updateSliderInput(session, "plotswin",
-                                     value = maxwin)
-                 },
-                 ignoreNULL = TRUE)
-                 
-                 new_bn <- reactive({
-                   new_bn <- make_new_bn(hfserie_name(),lfserie_name(),
-                                         hfserie(),lfserie(),
-                                         include.differenciation = input$dif,
-                                         include.rho = input$rho,
-                                         set.coeff = {
-                                           if (input$setcoeff_button) {
-                                             if (is.na(input$setcoeff)) 0
-                                             else input$setcoeff
-                                           }
-                                           else NULL
-                                         },
-                                         set.const = {
-                                           if (input$setconst_button) {
-                                             if (is.na(input$setconst)) 0
-                                             else input$setconst
-                                           }
-                                           else NULL
-                                         },
-                                         start.coeff.calc = input$coeffcalc[1],
-                                         end.coeff.calc = input$coeffcalc[2],
-                                         start.benchmark = input$benchmark[1],
-                                         end.benchmark = input$benchmark[2],
-                                         start.domain = model.list(old_bn())$start.domain,
-                                         end.domain = model.list(old_bn())$end.domain)})
-                 exportTestValues(new_bn = new_bn())
                  new_bn})
 }
 
