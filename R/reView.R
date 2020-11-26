@@ -811,6 +811,8 @@ reView.twoStepsBenchmark <- function(object,
 #' is chosen, the former new benchmark is taken as the old one.
 #' @param output_file The file in which the html should be saved. If `NULL`
 #' the file is temporary, and opened in a tab of the default browser.
+#' @param launch.browser `TRUE` or `FALSE`. If TRUE, the output is opened in the
+#' browser. Defaults to TRUE if output_file is NULL.
 #' @param \dots other arguments passed to rmarkdown::render
 #' 
 #' @seealso reView

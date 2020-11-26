@@ -19,6 +19,9 @@ is chosen, the former new benchmark is taken as the old one.}
 \item{output_file}{The file in which the html should be saved. If \code{NULL}
 the file is temporary, and opened in a tab of the default browser.}
 
+\item{launch.browser}{\code{TRUE} or \code{FALSE}. If TRUE, the output is opened in the
+browser. Defaults to TRUE if output_file is NULL.}
+
 \item{\dots}{other arguments passed to rmarkdown::render}
 }
 \description{
