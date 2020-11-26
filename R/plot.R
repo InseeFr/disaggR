@@ -277,6 +277,7 @@ plotts <-function(x,show.legend,col,lty,
 }
 
 #' @export
+#' @rdname plots
 plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                    start = NULL, end = NULL,
                                    col = default_col_pal(x),
@@ -322,7 +323,46 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
   invisible()
 }
 
+#' @title Plotting twoStepsBenchmarks
+#' 
+#' @description 
+#' Plot methods for objects of class `"tscomparison"` and \link{twoStepsBenchmark}. :
+#' 
+#' * \code{plot} draws a plot with base graphics
+#' * \code{autoplot} produces a ggplot object
+#' 
+#' The objects of class `tscomparison` can be produced with the functions
+#' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_dicator}.
+#' 
+#' @param x (or object for the plot method) a tscomparison or twoStepsBenchmark
+#' @param xlab the title for the x axis
+#' @param ylab the title for the y axis
+#' @param start a numeric of length 1 or 2. The start of the plot.
+#' @param end a numeric of length 1 or 2. The end of the plot.
+#' @param col the color scale applied on the plot. Could be a vector of colors,
+#' or a function from n to colors.
+#' @param lty the linetype scales applied on the plot. Could be a vector of linetypes,
+#' or a function from n to linetypes.
+#' @param show.legend `TRUE` or `FALSE`. Should an automatic legend be added to
+#' the plot.
+#' @param main a character of length 1, the title of the plot
+#' @param mar a numeric of length 4, the margins of the plot specified in the form
+#' `c(bottom, left, top, right)`.
+#' @param theme a ggplot theme object to replace the default one (only for
+#' autoplot methods)
+#' @param ... other arguments passed either to ggplot or plot
+#' @return `NULL` for the plot methods, the ggplot object for the autoplot methods
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' plot(benchmark)
+#' plot(in_sample(benchmark))
+#' autoplot(in_dicator(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
+#' plot(in_scatter(benchmark),xlab="title x",ylab="title y")
+#' @name plots
+NULL
+
 #' @export
+#' @rdname plots
 plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = NULL,
                               col = default_col_pal(x),
                               lty = default_lty_pal(),
@@ -473,7 +513,8 @@ function_if_it_isnt_one <- function(f) {
 #' @export
 ggplot2::autoplot
 
-#' @export 
+#' @export
+#' @rdname plots
 autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                        start=NULL,end=NULL,
                                        col = default_col_pal(object),
@@ -507,7 +548,8 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
     ggtitle(main)
 }
 
-#' @export 
+#' @export
+#' @rdname plots
 autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                                   start=NULL,end=NULL,
                                   col = default_col_pal(object),
