@@ -136,7 +136,8 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
 #' @seealso in_sample in_dicator
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-#' in_dicator(benchmark)
+#' benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)
+#' in_revisions(benchmark,benchmark2)
 #' @export
 in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisions")
 
@@ -158,15 +159,65 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   series
 }
 
+#' Comparing the inputs of a praislm regression
+#' 
+#' The function `in_scatter` returns comparison of the inputs from
+#' a \link{praislm} or the inner regression of a \link{twoStepsBenchmark} object.
+#' 
+#' The functions `plot` and `autoplot` can be used on this object to produce
+#' graphics.
+#' @param object an object of class `praislm` or `twoStepsBenchmark`
+#' @return
+#' a named matrix time-serie of two columns, one for the low-frequency serie
+#' and the other for the high-frequency-serie (eventually differencied if
+#' `include.differenciation` is `TRUE`).
+#' A `tscomparison` class is added to the object.
+#' @seealso in_sample in_dicator
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' in_scatter(benchmark)
+#' @export
+#' @export
+in_scatter <- function(object) UseMethod("in_scatter")
+
+#' @export
+in_scatter.praislm <- function(object) {
+  m <- model.list(object)
+  
+  X <- m$X[,colnames(m$X) != "constant",drop = FALSE]
+  
+  if (ncol(X) != 1L) stop("This in_scatter method is only for univariate benchmarks.", call. = FALSE)
+  
+  series <- cbind(m$y,m$X[,colnames(m$X) != "constant",drop = FALSE])
+  
+  if  (m$include.differenciation) series <- diff(series)
+  
+  structure(series,
+            type=if (m$include.differenciation) "differences" else "levels",
+            func="in_scatter",
+            class=c("tscomparison",class(series)),
+            dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie")),
+            coefficients=coefficients(object))
+}
+
+#' @export
+in_scatter.twoStepsBenchmark <- function(object) {
+  in_scatter(prais(object))
+}
+
 #' @export
 print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
   label <- switch(attr(x,"func")[1L],
-                  in_dicator="Comparison with indicators",
+                  in_dicator="Comparison with indicator",
                   in_sample="In-sample predictions",
-                  in_revisions="Comparison between two benchmarks")
+                  in_revisions="Comparison between two benchmarks",
+                  in_scatter="Inputs of the regression")
   cat(label, " (", attr(x,"type"),"):\n", sep = "")
-  attr(x,"type") <- NULL
-  attr(x,"func") <- NULL
+  
+  attr(x,"type")         <- NULL
+  attr(x,"func")         <- NULL
+  attr(x,"coefficients") <- NULL
+  
   print(.preformat.ts(x, any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
         quote = FALSE, right = TRUE,digits = digits,
         ...)

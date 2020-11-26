@@ -29,7 +29,8 @@ graphics.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-in_dicator(benchmark)
+benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)
+in_revisions(benchmark,benchmark2)
 }
 \seealso{
 in_sample in_dicator
