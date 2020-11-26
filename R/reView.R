@@ -816,25 +816,34 @@ reView.twoStepsBenchmark <- function(object,
 #' @seealso reView
 #' 
 #' @export
-rePort <- function(object, output_file = NULL, ...) UseMethod("rePort")
+rePort <- function(object, output_file = NULL,
+                   launch.browser = if (is.null(output_file)) TRUE else FALSE, ...) UseMethod("rePort")
 
 #' @export
-rePort.character <- function(object, output_file = NULL, ...)
-  rePort(readRDS(object), output_file, ...)
+rePort.character <- function(object, output_file = NULL,
+                             launch.browser = if (is.null(output_file)) TRUE else FALSE,
+                             ...)
+  rePort(readRDS(object), output_file, launch.browser, ...)
 
 #' @export
-rePort.connection <- function(object, output_file = NULL, ...)
-  rePort(readRDS(object), output_file, ...)
+rePort.connection <- function(object, output_file = NULL,
+                              launch.browser = if (is.null(output_file)) TRUE else FALSE,
+                              ...)
+  rePort(readRDS(object), output_file, launch.browser, ...)
 
 #' @export
-rePort.twoStepsBenchmark <- function(object, output_file = NULL, ...) {
+rePort.twoStepsBenchmark <- function(object, output_file = NULL,
+                                     launch.browser = if (is.null(output_file)) TRUE else FALSE,
+                                     ...) {
   rePort(reViewOutput(object,benchmark_old=NULL,compare=FALSE),
-         output_file,
+         output_file,launch.browser,
          ...)
 }
 
 #' @export
-rePort.reViewOutput <- function(object, output_file = NULL, ...) {
+rePort.reViewOutput <- function(object, output_file = NULL,
+                                launch.browser = if (is.null(output_file)) TRUE else FALSE,
+                                ...) {
   temp_dir <- tempdir()
   temp_rmd <- file.path(temp_dir, "report.Rmd")
   temp_html <- tempfile("report",temp_dir,".html")
@@ -850,11 +859,12 @@ rePort.reViewOutput <- function(object, output_file = NULL, ...) {
                     quiet = TRUE,
                     ...)
   if (is.null(output_file))  {
-    utils::browseURL(temp_html)
+    if (launch.browser) utils::browseURL(temp_html)
     invisible(temp_html)
   }
   else {
     file.copy(temp_html, output_file, overwrite = TRUE)
+    if (launch.browser) utils::browseURL(output_file)
     invisible(output_file)
   }
 }
