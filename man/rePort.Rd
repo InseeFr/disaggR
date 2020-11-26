@@ -4,7 +4,12 @@
 \alias{rePort}
 \title{Producing a report}
 \usage{
-rePort(object, output_file = NULL, ...)
+rePort(
+  object,
+  output_file = NULL,
+  launch.browser = if (is.null(output_file)) TRUE else FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{a twoStepsBenchmark with an univariate hfserie, a reViewOutput,
