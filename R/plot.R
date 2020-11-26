@@ -314,7 +314,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
     model$lfserie
   )
   
-  if (show.legend) legend("bottomleft",legend=c("Benchmark", "Low-Frequency serie"),
+  if (show.legend) legend("bottomleft",legend=c("Benchmark", "Low-frequency serie"),
                           col=col,lty=lty,horiz=TRUE,bty="n",cex=0.8)
   
   draw_axes(time(x))
@@ -491,8 +491,8 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
   lty <- function_if_it_isnt_one(lty)
   
   lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
-                        series_names = "Low-Frequency serie")
-  lfdf[,"Low-Frequency Periods"] <- rep(time(model$lfserie) + deltat(model$hfserie),
+                        series_names = "Low-frequency serie")
+  lfdf[,"Low-frequency periods"] <- rep(time(model$lfserie) + deltat(model$hfserie),
                                         each=frequency(model$hfserie)/frequency(model$lfserie))
   
   ggplotts(object = as.ts(object),show.legend = show.legend,
@@ -500,7 +500,7 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
            start = start, end = end,
            xlab = xlab, ylab = ylab, ...) +
     geom_line(aes(x=Date,y=Values,colour=Variables,linetype=Variables,
-                  group=`Low-Frequency Periods`),lfdf,
+                  group=`Low-frequency periods`),lfdf,
               na.rm = TRUE) +
     discrete_scale("colour","hue",col,na.translate = FALSE) +
     discrete_scale("linetype","hue",lty,na.translate = FALSE) +

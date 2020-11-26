@@ -70,10 +70,12 @@ reViewOutput <- function(benchmark,benchmark_old,compare) {
             class="reViewOutput")
 }
 
-plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,...) {
+plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,is.brush=TRUE,...) {
   output[[output_name]] <- renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L]))
   plotOutput(ns(output_name),
-             brush = brushOpts(ns("brush"), direction = "x", resetOnNew = TRUE),
+             brush = if (is.brush) brushOpts(ns("brush"),
+                                             direction = "x",
+                                             resetOnNew = TRUE),
              dblclick = ns("click"),
              ...)
 }
@@ -222,7 +224,7 @@ reView_ui_tab2 <- function(id) {
                                              ".",ns("mainoutwithouttitle"),cssmainoutwithouttitle())),
         column(12,
                radioButtons(ns("mainout_choice"),NULL,
-                            choices = c("Benchmark","In-sample predictions",
+                            choices = c("Benchmark","Scatter plot","In-sample predictions",
                                         "Benchmark summary","Comparison with indicator",
                                         "Revisions"),
                             selected = "Benchmark",inline=TRUE)
@@ -346,6 +348,17 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                             output,
                                             paste0(old_or_new,"plot"),
                                             ns,height="100%"),class=outputclass)))
+         },
+         "Scatter plot" = {
+           fluidRow(
+             column(12,
+                    title,
+                    div(
+                      plotOutBrushAndRender(reactive(in_scatter(benchmark())),
+                                            plotswin,
+                                            output,
+                                            paste0(old_or_new,"plot"),
+                                            ns,is.brush=FALSE,height="100%"),class=outputclass)))
          },
          "In-sample predictions" = {
            fluidRow(
@@ -481,7 +494,7 @@ reView_server_tab2 <- function(id,lfserie,hfserie,
                  
                  observeEvent(compare(),{
                    updateRadioButtons(session,"mainout_choice", NULL,
-                                      choices = c("Benchmark","In-sample predictions",
+                                      choices = c("Benchmark","Scatter plot","In-sample predictions",
                                                   "Benchmark summary","Comparison with indicator",
                                                   if (compare()) "Revisions"),
                                       selected = "Benchmark",

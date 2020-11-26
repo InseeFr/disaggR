@@ -13,4 +13,6 @@
 #' @importFrom Rcpp sourceCpp
 "_PACKAGE"
 
-globalVariables(c("Date","Values","Variables","Low-Frequency Periods"))
+globalVariables(c("Date","Values","Low-Frequency Periods","Variables",
+                  "High-frequency serie","Low-frequency serie",
+                  "Low-frequency periods","Time"))

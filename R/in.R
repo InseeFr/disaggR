@@ -136,7 +136,8 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
 #' @seealso in_sample in_dicator
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-#' in_dicator(benchmark)
+#' benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)
+#' in_revisions(benchmark,benchmark2)
 #' @export
 in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisions")
 
@@ -158,6 +159,24 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   series
 }
 
+#' Comparing the inputs of a praislm regression
+#' 
+#' The function `in_scatter` returns comparison of the inputs from
+#' a \link{praislm} or the inner regression of a \link{twoStepsBenchmark} object.
+#' 
+#' The functions `plot` and `autoplot` can be used on this object to produce
+#' graphics.
+#' @param object an object of class `praislm` or `twoStepsBenchmark`
+#' @return
+#' a named matrix time-serie of two columns, one for the low-frequency serie
+#' and the other for the high-frequency-serie (eventually differencied if
+#' `include.differenciation` is `TRUE`).
+#' A `tscomparison` class is added to the object.
+#' @seealso in_sample in_dicator
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' in_scatter(benchmark)
+#' @export
 #' @export
 in_scatter <- function(object) UseMethod("in_scatter")
 

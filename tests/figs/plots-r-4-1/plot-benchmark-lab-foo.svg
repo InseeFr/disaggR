@@ -68,9 +68,9 @@
 <polyline points='621.21,111.08 623.99,111.08 626.77,111.08 629.56,111.08 632.34,111.08 635.12,111.08 637.91,111.08 640.69,111.08 643.47,111.08 646.25,111.08 649.04,111.08 651.82,111.08 ' style='stroke-width: 0.75; stroke: #377EB8; stroke-dasharray: 2.00,2.00;' clip-path='url(#cpMTguNzJ8NzIwLjAwfDU0Ny4yMHwwLjAw)' />
 <polyline points='654.60,51.63 657.39,51.63 660.17,51.63 662.95,51.63 665.73,51.63 668.52,51.63 671.30,51.63 674.08,51.63 676.87,51.63 679.65,51.63 682.43,51.63 685.21,51.63 ' style='stroke-width: 0.75; stroke: #377EB8; stroke-dasharray: 2.00,2.00;' clip-path='url(#cpMTguNzJ8NzIwLjAwfDU0Ny4yMHwwLjAw)' />
 <line x1='27.36' y1='535.68' x2='44.64' y2='535.68' style='stroke-width: 0.75; stroke: #E41A1C;' clip-path='url(#cpMTguNzJ8NzIwLjAwfDU0Ny4yMHwwLjAw)' />
-<line x1='151.40' y1='535.68' x2='168.68' y2='535.68' style='stroke-width: 0.75; stroke: #377EB8; stroke-dasharray: 2.00,2.00;' clip-path='url(#cpMTguNzJ8NzIwLjAwfDU0Ny4yMHwwLjAw)' />
+<line x1='148.22' y1='535.68' x2='165.50' y2='535.68' style='stroke-width: 0.75; stroke: #377EB8; stroke-dasharray: 2.00,2.00;' clip-path='url(#cpMTguNzJ8NzIwLjAwfDU0Ny4yMHwwLjAw)' />
 <g clip-path='url(#cpMTguNzJ8NzIwLjAwfDU0Ny4yMHwwLjAw)'><text x='53.28' y='538.98' style='font-size: 9.60px; font-family: Liberation Sans;' textLength='48.48px' lengthAdjust='spacingAndGlyphs'>Benchmark</text></g>
-<g clip-path='url(#cpMTguNzJ8NzIwLjAwfDU0Ny4yMHwwLjAw)'><text x='177.32' y='538.98' style='font-size: 9.60px; font-family: Liberation Sans;' textLength='89.48px' lengthAdjust='spacingAndGlyphs'>Low-Frequency serie</text></g>
+<g clip-path='url(#cpMTguNzJ8NzIwLjAwfDU0Ny4yMHwwLjAw)'><text x='174.14' y='538.98' style='font-size: 9.60px; font-family: Liberation Sans;' textLength='86.30px' lengthAdjust='spacingAndGlyphs'>Low-frequency serie</text></g>
 <defs>
   <clipPath id='cpMC4wMHw3MjAuMDB8NTc2LjAwfDAuMDA='>
     <rect x='0.00' y='0.00' width='720.00' height='576.00' />
