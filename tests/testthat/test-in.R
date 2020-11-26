@@ -106,6 +106,24 @@ test_that("in revisions works",{
   expect_identical(in_revisions(benchmark,benchmark),expected)
 })
 
+
+test_that("in scatter works",{
+  benchmark <- annualBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = FALSE)
+  expected <- ts(matrix(c(construction,
+                          window(aggregate(turnover),end=2019)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie"))),
+                 start=2000,frequency=1)
+  
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"coefficients") <- coefficients(benchmark)
+  expect_identical(in_scatter(benchmark),expected)
+})
+
 test_that("error in",{
   benchmark <- twoStepsBenchmark(turnover,construction)
   expect_error(in_dicator(benchmark,type="aaza"),
