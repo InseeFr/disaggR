@@ -2,7 +2,6 @@
 % Please edit documentation in R/plot.R
 \name{plot.twoStepsBenchmark}
 \alias{plot.twoStepsBenchmark}
-\alias{plots}
 \alias{plot.tscomparison}
 \alias{autoplot.twoStepsBenchmark}
 \alias{autoplot.tscomparison}
@@ -67,7 +66,7 @@
 )
 }
 \arguments{
-\item{x}{(or object for the plot method) a tscomparison or twoStepsBenchmark}
+\item{x}{(for the plot method) a tscomparison or twoStepsBenchmark.}
 
 \item{xlab}{the title for the x axis}
 
@@ -92,6 +91,8 @@ the plot.}
 \code{c(bottom, left, top, right)}.}
 
 \item{...}{other arguments passed either to ggplot or plot}
+
+\item{object}{(for the autoplot method) a tscomparison or twoStepsBenchmark.}
 
 \item{theme}{a ggplot theme object to replace the default one (only for
 autoplot methods)}

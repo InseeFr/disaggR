@@ -277,7 +277,7 @@ plotts <-function(x,show.legend,col,lty,
 }
 
 #' @export
-#' @rdname plots
+#' @rdname plot.tscomparison
 plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                    start = NULL, end = NULL,
                                    col = default_col_pal(x),
@@ -334,7 +334,8 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' The objects of class `tscomparison` can be produced with the functions
 #' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_dicator}.
 #' 
-#' @param x (or object for the plot method) a tscomparison or twoStepsBenchmark
+#' @param x (for the plot method) a tscomparison or twoStepsBenchmark.
+#' @param object (for the autoplot method) a tscomparison or twoStepsBenchmark.
 #' @param xlab the title for the x axis
 #' @param ylab the title for the y axis
 #' @param start a numeric of length 1 or 2. The start of the plot.
@@ -358,11 +359,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' plot(in_sample(benchmark))
 #' autoplot(in_dicator(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
 #' plot(in_scatter(benchmark),xlab="title x",ylab="title y")
-#' @name plots
-NULL
-
 #' @export
-#' @rdname plots
 plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = NULL,
                               col = default_col_pal(x),
                               lty = default_lty_pal(),
@@ -514,7 +511,7 @@ function_if_it_isnt_one <- function(f) {
 ggplot2::autoplot
 
 #' @export
-#' @rdname plots
+#' @rdname plot.tscomparison
 autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                        start=NULL,end=NULL,
                                        col = default_col_pal(object),
@@ -549,7 +546,7 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
 }
 
 #' @export
-#' @rdname plots
+#' @rdname plot.tscomparison
 autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                                   start=NULL,end=NULL,
                                   col = default_col_pal(object),
