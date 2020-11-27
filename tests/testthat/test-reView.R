@@ -62,24 +62,33 @@ test_that("presets list fun",{
 })
 
 test_that("rePort produces a report",{
+  browser <- options(browser=function(url) message(url))
+  on.exit(options(browser))
+  
   benchmark <- twoStepsBenchmark(turnover,construction)
+  
   temp_dir <- tempdir()
   temp_html <- tempfile("test",temp_dir,".html")
-  rePort(benchmark,output_file = temp_html)
+  expect_message(rePort(benchmark,output_file = temp_html, launch.browser = TRUE))
   expect_true(file.exists(temp_html))
-  expect_identical(unlink(temp_html),0L)
+  unlink(temp_html)
+  
   rePort(reViewOutput(benchmark,benchmark,compare = TRUE),output_file = temp_html)
   expect_true(file.exists(temp_html))
   unlink(temp_html)
   
-  temp_dir <- tempdir()
   temp_rds <- tempfile("test",temp_dir,".rds")
   saveRDS(twoStepsBenchmark(turnover,construction),temp_rds)
-  
-  browser <- options(browser=function(url) message(url))
-  on.exit(options(browser))
   expect_message(url <- rePort(temp_rds))
+  unlink(url)
+  
+  con <- gzcon(gzfile(temp_rds))
+  expect_message(url <- rePort(con))
   expect_true(file.exists(url))
+  unlink(url)
+  
+  expect_message(url <- print(reViewOutput(benchmark,benchmark,FALSE)))
+  unlink(url)
 })
 
 test_that("reView",{

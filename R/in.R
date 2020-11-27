@@ -21,10 +21,10 @@
 #' a named matrix time-serie of two columns, one for the
 #' response and the other for the predicted value.
 #' A `tscomparison` class is added to the object.
-#' @seealso in_dicator in_revisions
+#' @seealso in_dicator in_revisions in_scatter plot.tscomparison
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-#' in_sample(benchmark)
+#' plot(in_sample(benchmark))
 #' @export
 in_sample <- function(object,type="changes") UseMethod("in_sample")
 
@@ -76,10 +76,10 @@ in_sample.twoStepsBenchmark <- function(object,type="changes") {
 #' a named matrix time-serie of two columns, one for the
 #' response and the other for the predicted value.
 #' A `tscomparison` class is added to the object.
-#' @seealso in_sample in_revisions
+#' @seealso in_sample in_revisions in_scatter plot.tscomparison
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-#' in_dicator(benchmark)
+#' plot(in_dicator(benchmark))
 #' @export
 in_dicator <- function(object,type="changes") UseMethod("in_dicator")
 
@@ -133,11 +133,11 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
 #' a named matrix time-serie of two columns, one for the
 #' response and the other for the predicted value.
 #' A `tscomparison` class is added to the object.
-#' @seealso in_sample in_dicator
+#' @seealso in_sample in_dicator in_scatter plot.tscomparison
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)
-#' in_revisions(benchmark,benchmark2)
+#' plot(in_revisions(benchmark,benchmark2))
 #' @export
 in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisions")
 
@@ -172,10 +172,10 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
 #' and the other for the high-frequency-serie (eventually differencied if
 #' `include.differenciation` is `TRUE`).
 #' A `tscomparison` class is added to the object.
-#' @seealso in_sample in_dicator
+#' @seealso in_sample in_dicator in_revisions plot.tscomparison
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-#' in_scatter(benchmark)
+#' plot(in_scatter(benchmark))
 #' @export
 #' @export
 in_scatter <- function(object) UseMethod("in_scatter")

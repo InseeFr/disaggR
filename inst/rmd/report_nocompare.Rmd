@@ -70,6 +70,19 @@ plot(presets_list[[6]])
 
 ::::
 
+# Scatter plots
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+```{r echo=FALSE,fig.height=5}
+plot(in_scatter(params$new_bn))
+```
+
+:::
+
+::::
 # Benchmarks
 
 :::: {.columns}
@@ -77,7 +90,7 @@ plot(presets_list[[6]])
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,comment="\t"}
-cat(disaggR:::benchmarkCall(params$old_bn,params$hfserie_name,params$lfserie_name))
+cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_name))
 ```
 
 ```{r echo=FALSE, fig.width=14}

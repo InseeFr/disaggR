@@ -123,14 +123,16 @@ hfserie <- function(benchmark) {
   res[,colnames(res) != "constant"]
 }
 
-plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,is.brush=TRUE,...) {
-  output[[output_name]] <- renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L]))
+plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,
+                                  is.brush=TRUE,height,...) {
+  output[[output_name]] <- renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L],
+                                           ...))
   plotOutput(ns(output_name),
              brush = if (is.brush) brushOpts(ns("brush"),
                                              direction = "x",
                                              resetOnNew = TRUE),
              dblclick = ns("click"),
-             ...)
+             height = height)
 }
 
 presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
@@ -487,7 +489,9 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                             plotswin,
                                             output,
                                             paste0(old_or_new,"plot"),
-                                            ns,is.brush=FALSE,height="100%"),class=outputclass)))
+                                            ns,is.brush=FALSE,height="100%",
+                                            xlab = "High-frequency serie",
+                                            ylab = "Low-frequency serie"),class=outputclass)))
          },
          "In-sample predictions" = {
            fluidRow(
@@ -499,13 +503,15 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                             output,
                                             paste0(old_or_new,"plotlev"),
                                             ns,
-                                            height="50%"),
+                                            height="50%",
+                                            ylab = "Levels"),
                       plotOutBrushAndRender(reactive(in_sample(benchmark(),type="changes")),
                                             plotswin,
                                             output,
                                             paste0(old_or_new,"plotcha"),
                                             ns,
-                                            height="50%"),class=outputclass)
+                                            height="50%",
+                                            ylab = "Changes"),class=outputclass)
              )
            )
          },
@@ -526,21 +532,24 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               output,
                                               paste0(old_or_new,"plotlev"),
                                               ns,
-                                              height="33%"),
+                                              height="33%",
+                                              ylab = "Rebased levels"),
                         plotOutBrushAndRender(reactive(in_dicator(benchmark(),
                                                                   type="changes")),
                                               plotswin,
                                               output,
                                               paste0(old_or_new,"plotcha"),
                                               ns,
-                                              height="33%"),
+                                              height="33%",
+                                              ylab = "Changes"),
                         plotOutBrushAndRender(reactive(in_dicator(benchmark(),
                                                                   type="contributions")),
                                               plotswin,
                                               output,
                                               paste0(old_or_new,"plotctb"),
                                               ns,
-                                              height="33%"),class=outputclass)
+                                              height="33%",
+                                              ylab = "Contributions"),class=outputclass)
              )
            )
          },
@@ -554,21 +563,24 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               output,
                                               paste0(old_or_new,"plotlev"),
                                               ns,
-                                              height="33%"),
+                                              height= "33%",
+                                              ylab = "Levels"),
                         plotOutBrushAndRender(reactive(in_revisions(benchmark(),old_bn(),
                                                                     type="changes")),
                                               plotswin,
                                               output,
                                               paste0(old_or_new,"plotcha"),
                                               ns,
-                                              height="33%"),
+                                              height="33%",
+                                              ylab = "Changes"),
                         plotOutBrushAndRender(reactive(in_revisions(benchmark(),old_bn(),
                                                                     type="contributions")),
                                               plotswin,
                                               output,
                                               paste0(old_or_new,"plotctb"),
                                               ns,
-                                              height="33%"),class=outputclass)
+                                              height="33%",
+                                              ylab = "Contributions"),class=outputclass)
              ))
          }
   )
@@ -846,30 +858,41 @@ reView.twoStepsBenchmark <- function(object,
 #' is chosen, the former new benchmark is taken as the old one.
 #' @param output_file The file in which the html should be saved. If `NULL`
 #' the file is temporary, and opened in a tab of the default browser.
+#' @param launch.browser `TRUE` or `FALSE`. If TRUE, the output is opened in the
+#' browser. Defaults to TRUE if output_file is NULL.
 #' @param \dots other arguments passed to rmarkdown::render
 #' 
 #' @seealso reView
 #' 
 #' @export
-rePort <- function(object, output_file = NULL, ...) UseMethod("rePort")
+rePort <- function(object, output_file = NULL,
+                   launch.browser = if (is.null(output_file)) TRUE else FALSE, ...) UseMethod("rePort")
 
 #' @export
-rePort.character <- function(object, output_file = NULL, ...)
-  rePort(readRDS(object), output_file, ...)
+rePort.character <- function(object, output_file = NULL,
+                             launch.browser = if (is.null(output_file)) TRUE else FALSE,
+                             ...)
+  rePort(readRDS(object), output_file, launch.browser, ...)
 
 #' @export
-rePort.connection <- function(object, output_file = NULL, ...)
-  rePort(readRDS(object), output_file, ...)
+rePort.connection <- function(object, output_file = NULL,
+                              launch.browser = if (is.null(output_file)) TRUE else FALSE,
+                              ...)
+  rePort(readRDS(object), output_file, launch.browser, ...)
 
 #' @export
-rePort.twoStepsBenchmark <- function(object, output_file = NULL, ...) {
+rePort.twoStepsBenchmark <- function(object, output_file = NULL,
+                                     launch.browser = if (is.null(output_file)) TRUE else FALSE,
+                                     ...) {
   rePort(reViewOutput(object,benchmark_old=NULL,compare=FALSE),
-         output_file,
+         output_file,launch.browser,
          ...)
 }
 
 #' @export
-rePort.reViewOutput <- function(object, output_file = NULL, ...) {
+rePort.reViewOutput <- function(object, output_file = NULL,
+                                launch.browser = if (is.null(output_file)) TRUE else FALSE,
+                                ...) {
   temp_dir <- tempdir()
   temp_rmd <- file.path(temp_dir, "report.Rmd")
   temp_html <- tempfile("report",temp_dir,".html")
@@ -885,11 +908,12 @@ rePort.reViewOutput <- function(object, output_file = NULL, ...) {
                     quiet = TRUE,
                     ...)
   if (is.null(output_file))  {
-    utils::browseURL(temp_html)
+    if (launch.browser) utils::browseURL(temp_html)
     invisible(temp_html)
   }
   else {
     file.copy(temp_html, output_file, overwrite = TRUE)
+    if (launch.browser) utils::browseURL(output_file)
     invisible(output_file)
   }
 }

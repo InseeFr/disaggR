@@ -36,8 +36,8 @@ not the latest predicted value.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-in_sample(benchmark)
+plot(in_sample(benchmark))
 }
 \seealso{
-in_dicator in_revisions
+in_dicator in_revisions in_scatter plot.tscomparison
 }

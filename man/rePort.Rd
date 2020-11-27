@@ -4,7 +4,12 @@
 \alias{rePort}
 \title{Producing a report}
 \usage{
-rePort(object, output_file = NULL, ...)
+rePort(
+  object,
+  output_file = NULL,
+  launch.browser = if (is.null(output_file)) TRUE else FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{a twoStepsBenchmark with an univariate hfserie, a reViewOutput,
@@ -13,6 +18,9 @@ is chosen, the former new benchmark is taken as the old one.}
 
 \item{output_file}{The file in which the html should be saved. If \code{NULL}
 the file is temporary, and opened in a tab of the default browser.}
+
+\item{launch.browser}{\code{TRUE} or \code{FALSE}. If TRUE, the output is opened in the
+browser. Defaults to TRUE if output_file is NULL.}
 
 \item{\dots}{other arguments passed to rmarkdown::render}
 }
