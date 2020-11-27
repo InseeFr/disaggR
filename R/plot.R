@@ -141,11 +141,12 @@ arrows_heads <- function(x0,y0,x1,y1,col) {
 
 break_arrows <- function(arrows_time) {
   res <- pretty(arrows_time,n=4,eps.correct = 2)
-  res <- res[-c(1L,length(res))]
+  res <- c(arrows_time[1L],
+           res[-c(1L,length(res))],
+           arrows_time[length(arrows_time)])
   
-  res <- c(if (arrows_time[1L] != res[1L]) arrows_time[1L],
-           res,
-           if (arrows_time[length(arrows_time)] != res[length(res)]) arrows_time[length(arrows_time)])
+  freq <- 1/(arrows_time[2L]-arrows_time[1L])
+  res <- unique(round(res*freq)/freq)
   
   res
 }
