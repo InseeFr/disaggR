@@ -79,7 +79,7 @@ plot(presets_list[[6]])
 **Before**
 
 ```{r echo=FALSE,comment="\t"}
-cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_name))
+cat(disaggR:::benchmarkCall(params$old_bn,params$hfserie_name,params$lfserie_name))
 ```
 
 :::
@@ -90,7 +90,7 @@ cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_nam
 **After**
 
 ```{r echo=FALSE,comment="\t"}
-cat(disaggR:::benchmarkCall(params$old_bn,params$hfserie_name,params$lfserie_name))
+cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_name))
 ```
 
 :::
@@ -111,6 +111,32 @@ plot(params$old_bn)
 
 ```{r echo=FALSE}
 plot(params$new_bn)
+```
+
+:::
+
+::::
+
+# Scatter plot
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Before**
+
+```{r echo=FALSE,fig.height=5}
+plot(in_scatter(params$old_bn))
+```
+
+:::
+
+::: {.column width="50%"}
+
+**After**
+
+```{r echo=FALSE,fig.height=5}
+plot(in_scatter(params$new_bn))
 ```
 
 :::
