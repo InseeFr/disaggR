@@ -8,8 +8,8 @@
 #' 
 #' The predicted values are different from the fitted values :
 #' 
-#' * they are eventually reintegrated
-#' * the autocorrelated part of the residuals is added.
+#' * they are eventually reintegrated.
+#' * they contain the autocorrelated part of the residuals.
 #' 
 #' Besides, changes are relative to the latest benchmark value,
 #' not the latest predicted value.

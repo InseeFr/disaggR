@@ -28,31 +28,62 @@ boxstyle <- "padding: 6px 8px;
 lrmargins <- "margin-left: 3px;
               margin-right: 3px"
 
+info_switch <- function(mainout_choice)
+  switch(mainout_choice,
+         Benchmark = {
+           HTML("Two-steps benchmarks bend a time-serie with a time-serie of",
+                "lower frequency. The procedure involved is a Prais-Winsten",
+                "regression, then an additive Denton benchmark.<br><br>",
+                "Therefore, it minimizes the sum of squares of the differences",
+                "while being strictly equal to the low-frequency serie afterthe",
+                "aggregation and the regression.<br><br>This plot displays both",
+                "the bending serie, disaggregated with an evenly distribution,",
+                "and the resulting time-serie of the benchmark.")
+         },
+         "Scatter plot" = {
+           HTML("These scatter plots display the relationship between both series",
+                "after aggregation and, eventually, differenciation.<br><br>",
+                "The regression line is computed with the coefficients of the benchmark.")
+         },
+         "In-sample predictions" = {
+           HTML("These plots display in-sample predictions produced with the",
+                "prais-winsten regression of the benchmark.<br><br>",
+                "The predicted values are different from the fitted values:",
+                "<ul><li>they are eventually reintegrated</li>",
+                "<li>they contain the autocorrelated part of the residuals</li></ul>",
+                "Besides, changes are relative to the latest benchmark value,",
+                "not the latest predicted value.")
+         },
+         "Benchmark summary" = {
+           HTML("The portmanteau test here is of lag 1. If the test is positive,",
+                "either <i>include.differenciation</i> or <i>include.rho</i> should",
+                "be set to TRUE.")
+         },
+         "Comparison with indicator" = {
+           HTML("These plots compare the input high-frequency serie with the resulting",
+                "time-serie of the benchmark. These are intended to check that the",
+                "information of the input is preserved.<br><br>",
+                "If the indicator is a wrong one, its coefficients tends to zero,",
+                "then the benchmark tends to a smoothing. Then, the resulting time-serie",
+                "is smooth and the contributions of the smoothed part are high.")
+         },
+         Revisions = {
+           HTML("These plots display the differences between the former benchmark",
+                "And the newer one.")
+         })
+
 info_dialog <- function(mainout_choice) {
   showModal(
     modalDialog(title = mainout_choice,
-                switch(mainout_choice,
-                       Benchmark = HTML("Two-steps benchmarks bend a time-serie",
-                                        "with a time-serie of lower frequency.",
-                                        "The procedure involved is a Prais-Winsten",
-                                        "regression, then an additive Denton",
-                                        "benchmark.<br><br>Therefore, it minimizes the",
-                                        "sum of squares of the differences while",
-                                        "being strictly equal to the low-frequency",
-                                        "serie after the aggregation and the regression.",
-                                        "<br><br>This plot displays both",
-                                        "the bending serie, disaggregated with an",
-                                        "evenly distribution, and the resulting",
-                                        "high-frequency time-serie."),
-                       "Scatter plot" = HTML("These scatter plots display the relationship",
-                                             "between both series after aggregation and, ",
-                                             "eventually, differenciation. <br><br>"),
-                       "In-sample predictions" = "c",
-                       "Benchmark summary" = "d",
-                       "Comparison with indicator" = "e",
-                       Revisions = "f"),
+                info_switch(mainout_choice),
                 easyClose = TRUE,
-                footer = NULL,
+                footer = {
+                  if (mainout_choice == "Scatter plot") HTML("<center><b>Double-click</b> to reset plot window</center>")
+                  else HTML("<div style=\"display:flex;justify-content: space-evenly\">",
+                            "<div><b>Brush</b> to change plot window</div>",
+                            "<div><b>Double-click</b> to reset it</div>",
+                            "</div>")
+                },
                 fade = FALSE))
   
 }
