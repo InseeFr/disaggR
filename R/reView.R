@@ -28,6 +28,35 @@ boxstyle <- "padding: 6px 8px;
 lrmargins <- "margin-left: 3px;
               margin-right: 3px"
 
+info_dialog <- function(mainout_choice) {
+  showModal(
+    modalDialog(title = mainout_choice,
+                switch(mainout_choice,
+                       Benchmark = HTML("Two-steps benchmarks bend a time-serie",
+                                        "with a time-serie of lower frequency.",
+                                        "The procedure involved is a Prais-Winsten",
+                                        "regression, then an additive Denton",
+                                        "benchmark.<br><br>Therefore, it minimizes the",
+                                        "sum of squares of the differences while",
+                                        "being strictly equal to the low-frequency",
+                                        "serie after the aggregation and the regression.",
+                                        "<br><br>This plot displays both",
+                                        "the bending serie, disaggregated with an",
+                                        "evenly distribution, and the resulting",
+                                        "high-frequency time-serie."),
+                       "Scatter plot" = HTML("These scatter plots display the relationship",
+                                             "between both series after aggregation and, ",
+                                             "eventually, differenciation. <br><br>"),
+                       "In-sample predictions" = "c",
+                       "Benchmark summary" = "d",
+                       "Comparison with indicator" = "e",
+                       Revisions = "f"),
+                easyClose = TRUE,
+                footer = NULL,
+                fade = FALSE))
+  
+}
+
 switch_window <- function(start,end,init_tsp) {
   start <- {
     if (is.null(start)) init_tsp[1L]
@@ -318,13 +347,16 @@ reView_ui_tab2 <- function(id) {
       fluidRow(
         tags$style(type = "text/css", paste0(".",ns("mainoutwithtitle"),cssmainoutwithtitle(),"\n",
                                              ".",ns("mainoutwithouttitle"),cssmainoutwithouttitle())),
-        column(12,
+        column(11,
                radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","Scatter plot","In-sample predictions",
                                         "Benchmark summary","Comparison with indicator",
                                         "Revisions"),
                             selected = "Benchmark",inline=TRUE)
         ),
+        column(1,
+               actionButton(ns("infobtn"),label = NULL, icon = icon("info-circle"),
+                            class = "btn-success")),
         align="center"
       ),
       uiOutput(ns("mainOutput"))
@@ -603,6 +635,9 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  },priority = 1L)
                  
                  # Outputs
+                 
+                 observeEvent(input$infobtn,
+                              info_dialog(input$mainout_choice))
                  
                  output$mainOutput <- renderUI({
                    reView_server_tab2_switch(input,output,
