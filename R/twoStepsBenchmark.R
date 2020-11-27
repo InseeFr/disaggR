@@ -193,7 +193,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' twoStepsBenchark returns an object of class "`twoStepsBenchmark`".
 #' 
 #' The function `summary` can be used to obtain and print a summary of the regression used by the benchmark.
-#' The functions `plot` and `autoplot` (the latter requires to load \pkg{ggplot2}) produces graphics of the benchmarked
+#' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 #' serie and the bending serie.
 #' The function \link{in_sample} produces in-sample predictions with the inner regression.
 #' The generic accessor functions `as.ts`, `prais`, `coefficients`, `residuals`, `fitted.values`, `model.list`, `se`, `rho`

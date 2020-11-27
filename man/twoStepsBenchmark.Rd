@@ -68,7 +68,7 @@ of the returned call. This feature allows to build wrappers.}
 twoStepsBenchark returns an object of class "\code{twoStepsBenchmark}".
 
 The function \code{summary} can be used to obtain and print a summary of the regression used by the benchmark.
-The functions \code{plot} and \code{autoplot} (the latter requires to load \pkg{ggplot2}) produces graphics of the benchmarked
+The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 serie and the bending serie.
 The function \link{in_sample} produces in-sample predictions with the inner regression.
 The generic accessor functions \code{as.ts}, \code{prais}, \code{coefficients}, \code{residuals}, \code{fitted.values}, \code{model.list}, \code{se}, \code{rho}

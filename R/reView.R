@@ -94,14 +94,16 @@ hfserie <- function(benchmark) {
   res[,colnames(res) != "constant"]
 }
 
-plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,is.brush=TRUE,...) {
-  output[[output_name]] <- renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L]))
+plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,
+                                  is.brush=TRUE,height,...) {
+  output[[output_name]] <- renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L],
+                                           ...))
   plotOutput(ns(output_name),
              brush = if (is.brush) brushOpts(ns("brush"),
                                              direction = "x",
                                              resetOnNew = TRUE),
              dblclick = ns("click"),
-             ...)
+             height = height)
 }
 
 presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
@@ -455,7 +457,9 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                             plotswin,
                                             output,
                                             paste0(old_or_new,"plot"),
-                                            ns,is.brush=FALSE,height="100%"),class=outputclass)))
+                                            ns,is.brush=FALSE,height="100%",
+                                            xlab = "High-frequency serie",
+                                            ylab = "Low-frequency serie"),class=outputclass)))
          },
          "In-sample predictions" = {
            fluidRow(
@@ -467,13 +471,15 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                             output,
                                             paste0(old_or_new,"plotlev"),
                                             ns,
-                                            height="50%"),
+                                            height="50%",
+                                            ylab = "Levels"),
                       plotOutBrushAndRender(reactive(in_sample(benchmark(),type="changes")),
                                             plotswin,
                                             output,
                                             paste0(old_or_new,"plotcha"),
                                             ns,
-                                            height="50%"),class=outputclass)
+                                            height="50%",
+                                            ylab = "Changes"),class=outputclass)
              )
            )
          },
@@ -494,21 +500,24 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               output,
                                               paste0(old_or_new,"plotlev"),
                                               ns,
-                                              height="33%"),
+                                              height="33%",
+                                              ylab = "Rebased levels"),
                         plotOutBrushAndRender(reactive(in_dicator(benchmark(),
                                                                   type="changes")),
                                               plotswin,
                                               output,
                                               paste0(old_or_new,"plotcha"),
                                               ns,
-                                              height="33%"),
+                                              height="33%",
+                                              ylab = "Changes"),
                         plotOutBrushAndRender(reactive(in_dicator(benchmark(),
                                                                   type="contributions")),
                                               plotswin,
                                               output,
                                               paste0(old_or_new,"plotctb"),
                                               ns,
-                                              height="33%"),class=outputclass)
+                                              height="33%",
+                                              ylab = "Contributions"),class=outputclass)
              )
            )
          },
@@ -522,21 +531,24 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               output,
                                               paste0(old_or_new,"plotlev"),
                                               ns,
-                                              height="33%"),
+                                              height= "33%",
+                                              ylab = "Levels"),
                         plotOutBrushAndRender(reactive(in_revisions(benchmark(),old_bn(),
                                                                     type="changes")),
                                               plotswin,
                                               output,
                                               paste0(old_or_new,"plotcha"),
                                               ns,
-                                              height="33%"),
+                                              height="33%",
+                                              ylab = "Changes"),
                         plotOutBrushAndRender(reactive(in_revisions(benchmark(),old_bn(),
                                                                     type="contributions")),
                                               plotswin,
                                               output,
                                               paste0(old_or_new,"plotctb"),
                                               ns,
-                                              height="33%"),class=outputclass)
+                                              height="33%",
+                                              ylab = "Contributions"),class=outputclass)
              ))
          }
   )
