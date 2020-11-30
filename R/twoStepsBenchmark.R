@@ -133,9 +133,9 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   res
 }
 
-#' Bends a time-serie with a lower frequency one
+#' @title Bends a time-serie with a lower frequency one
 #' 
-#' twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
+#' @description twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
 #' The procedure involved is a Prais-Winsten regression, then an additive
 #' Denton benchmark.
 #' 
@@ -143,7 +143,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' differences on the constraint that it is equal to the low-frequency serie after
 #' the aggregation and the regression. 
 #' 
-#' annualBenchmark is a wrapper of the main function, that applies more specifically
+#' @details annualBenchmark is a wrapper of the main function, that applies more specifically
 #' to annual series, and changes the default window parameters to the ones
 #' that are commonly used by quarterly national accounts.
 #' 
@@ -291,7 +291,7 @@ annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,includ
                     start.domain,end.domain,cl=match.call())
 }
 
-#' Using the same estimated benchmark model on another time-serie
+#' Using an estimated benchmark model on another time-serie
 #' 
 #' This function reapplies the coefficients and parameters of a benchmark
 #' on new time-serie.

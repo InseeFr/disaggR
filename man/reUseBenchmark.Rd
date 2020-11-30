@@ -2,7 +2,7 @@
 % Please edit documentation in R/twoStepsBenchmark.R
 \name{reUseBenchmark}
 \alias{reUseBenchmark}
-\title{Using the same estimated benchmark model on another time-serie}
+\title{Using an estimated benchmark model on another time-serie}
 \usage{
 reUseBenchmark(hfserie,benchmark,reeval.smoothed.part=FALSE)
 }

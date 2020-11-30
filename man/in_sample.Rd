@@ -27,8 +27,8 @@ graphics.
 
 The predicted values are different from the fitted values :
 \itemize{
-\item they are eventually reintegrated
-\item the autocorrelated part of the residuals is added.
+\item they are eventually reintegrated.
+\item they contain the autocorrelated part of the residuals.
 }
 
 Besides, changes are relative to the latest benchmark value,

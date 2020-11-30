@@ -28,6 +28,69 @@ boxstyle <- "padding: 6px 8px;
 lrmargins <- "margin-left: 3px;
               margin-right: 3px"
 
+info_switch <- function(mainout_choice)
+  switch(mainout_choice,
+         Benchmark = {
+           HTML("Two-steps benchmarks bend a time-serie with a time-serie of",
+                "lower frequency. The procedure involved is a Prais-Winsten",
+                "regression, then an additive Denton benchmark.<br><br>",
+                "Therefore, it minimizes the sum of squares of the differences",
+                "while being strictly equal to the low-frequency serie afterthe",
+                "aggregation and the regression.<br><br>This plot displays both",
+                "the bending serie, disaggregated with an evenly distribution,",
+                "and the resulting time-serie of the benchmark.")
+         },
+         "Scatter plot" = {
+           HTML("These scatter plots display the relationship between both series",
+                "after aggregation and, eventually, differenciation.<br><br>",
+                "The regression line is computed with the coefficients of the benchmark.")
+         },
+         "In-sample predictions" = {
+           HTML("These plots display in-sample predictions produced with the",
+                "prais-winsten regression of the benchmark.<br><br>",
+                "The predicted values are different from the fitted values:",
+                "<ul><li>they are eventually reintegrated</li>",
+                "<li>they contain the autocorrelated part of the residuals</li></ul>",
+                "Besides, changes are relative to the latest benchmark value,",
+                "not the latest predicted value.")
+         },
+         "Benchmark summary" = {
+           HTML("The portmanteau test here is of lag 1. If the test is positive,",
+                "either <i>include.differenciation</i> or <i>include.rho</i> should",
+                "be set to TRUE.")
+         },
+         "Comparison with indicator" = {
+           HTML("These plots compare the input high-frequency serie with the resulting",
+                "time-serie of the benchmark. These are intended to check that the",
+                "information of the input is preserved.<br><br>",
+                "If the indicator is a wrong one, its coefficients tends to zero,",
+                "then the benchmark tends to a simple smooth. If so, the contributions",
+                "of the smoothed part are high.<br><br>",
+                "Denton benchmarks don't change with the level of their high-frequency",
+                "input series. <i>The level of the smoothed part is arbitrary</i>.",
+                "Hence it is omitted in these plots.")
+         },
+         Revisions = {
+           HTML("These plots display the differences between the former benchmark",
+                "and the newer one.")
+         })
+
+info_dialog <- function(session,mainout_choice) {
+  showModal(session = session,
+    modalDialog(title = mainout_choice,
+                info_switch(mainout_choice),
+                easyClose = TRUE,
+                footer = {
+                  if (mainout_choice == "Scatter plot") HTML("<center><b>Double-click</b> to reset plot window</center>")
+                  else HTML("<div style=\"display:flex;justify-content: space-evenly\">",
+                            "<div><b>Brush</b> to change plot window</div>",
+                            "<div><b>Double-click</b> to reset it</div>",
+                            "</div>")
+                },
+                fade = FALSE))
+  
+}
+
 switch_window <- function(start,end,init_tsp) {
   start <- {
     if (is.null(start)) init_tsp[1L]
@@ -320,13 +383,16 @@ reView_ui_tab2 <- function(id) {
       fluidRow(
         tags$style(type = "text/css", paste0(".",ns("mainoutwithtitle"),cssmainoutwithtitle(),"\n",
                                              ".",ns("mainoutwithouttitle"),cssmainoutwithouttitle())),
-        column(12,
+        column(11,
                radioButtons(ns("mainout_choice"),NULL,
                             choices = c("Benchmark","Scatter plot","In-sample predictions",
                                         "Benchmark summary","Comparison with indicator",
                                         "Revisions"),
                             selected = "Benchmark",inline=TRUE)
         ),
+        column(1,
+               actionButton(ns("infobtn"),label = NULL, icon = icon("info-circle"),
+                            class = "btn-success")),
         align="center"
       ),
       uiOutput(ns("mainOutput"))
@@ -615,6 +681,9 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  },priority = 1L)
                  
                  # Outputs
+                 
+                 observeEvent(input$infobtn,
+                              info_dialog(session,input$mainout_choice))
                  
                  output$mainOutput <- renderUI({
                    reView_server_tab2_switch(input,output,
