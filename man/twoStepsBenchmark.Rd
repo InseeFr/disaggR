@@ -90,6 +90,12 @@ benchmark. It can be extracted with the function \link{prais}}
 twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
 The procedure involved is a Prais-Winsten regression, then an additive
 Denton benchmark.
+
+Therefore, the resulting time-serie minimizes the sum of squares of the
+differences on the constraint that it is equal to the low-frequency serie after
+the aggregation and the regression.
+}
+\details{
 annualBenchmark is a wrapper of the main function, that applies more specifically
 to annual series, and changes the default window parameters to the ones
 that are commonly used by quarterly national accounts.
