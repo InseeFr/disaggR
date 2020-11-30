@@ -15,6 +15,15 @@ test_that("switch window", {
                    c(tspex[1L],2011.4))
 })
 
+test_that("info switch",{
+  expect_s3_class(info_switch("Benchmark"),"html")
+  expect_s3_class(info_switch("Scatter plot"),"html")
+  expect_s3_class(info_switch("In-sample predictions"),"html")
+  expect_s3_class(info_switch("Benchmark summary"),"html")
+  expect_s3_class(info_switch("Comparison with indicator"),"html")
+  expect_s3_class(info_switch("Revisions"),"html")
+})
+
 test_that("get clean wins",{
   benchmark <- twoStepsBenchmark(turnover,construction,
                                  start.coeff.calc = 2000,

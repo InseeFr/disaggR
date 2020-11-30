@@ -72,8 +72,8 @@ info_switch <- function(mainout_choice)
                 "And the newer one.")
          })
 
-info_dialog <- function(mainout_choice) {
-  showModal(
+info_dialog <- function(session,mainout_choice) {
+  showModal(session = session,
     modalDialog(title = mainout_choice,
                 info_switch(mainout_choice),
                 easyClose = TRUE,
@@ -680,7 +680,7 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  # Outputs
                  
                  observeEvent(input$infobtn,
-                              info_dialog(input$mainout_choice))
+                              info_dialog(session,input$mainout_choice))
                  
                  output$mainOutput <- renderUI({
                    reView_server_tab2_switch(input,output,
