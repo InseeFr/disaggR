@@ -307,6 +307,7 @@ test_that("reView",{
   app$setInputs(`reView-menu` = "Export")
   app$setInputs(`reView-reViewtab3-Reset` = "click",
                 allowInputNoBinding_ = TRUE)
+  app$waitForValue("reView-reViewtab2-monoplotlev",iotype="output")
   expect_equal(app$waitForValue("reView-menu",iotype="input"),"Modify")
   
   p <- app$.__enclos_env__$private$shinyProcess

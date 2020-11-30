@@ -748,7 +748,8 @@ reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
     # tab 1 : Presets
     
     selected_preset <- reView_server_tab1("reViewtab1",old_bn)
-    observeEvent(selected_preset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)
+    observeEvent(selected_preset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
+                 priority = 3L)
     
     # tab 2 : Modify
     
@@ -763,7 +764,8 @@ reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
                                 hfserie_name,lfserie_name,
                                 compare)
     
-    observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE)    
+    observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
+                 priority = 3L)    
   })
 }
 reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
