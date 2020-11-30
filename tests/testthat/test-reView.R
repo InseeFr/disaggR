@@ -136,13 +136,13 @@ test_that("reView",{
   # Click on a model changes navbar
   app$setInputs(`reView-reViewtab1-model1_click` = 10L,
                 allowInputNoBinding_ = TRUE)
-  expect_equal(app$waitForValue("reView-menu",iotype="input"),"Modify")
   slidercoeffcalc <- app$waitForValue("reView-reViewtab2-coeffcalc",iotype="input",
                                       timeout=5000)
   sliderbenchmark <- app$waitForValue("reView-reViewtab2-benchmark",iotype="input")
   sliderplots <- app$waitForValue("reView-reViewtab2-plotswin",iotype="input")
   newplot <- app$waitForValue("reView-reViewtab2-newplot",iotype="output")
   oldplot <-app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
+  expect_equal(app$waitForValue("reView-menu",iotype="input"),"Modify")
   expect_equal(slidercoeffcalc,c(2000,2019))
   expect_equal(sliderbenchmark,c(2000,2019))
   expect_equal(sliderplots,c(2000,2020))
