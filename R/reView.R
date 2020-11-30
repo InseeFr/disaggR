@@ -64,12 +64,15 @@ info_switch <- function(mainout_choice)
                 "time-serie of the benchmark. These are intended to check that the",
                 "information of the input is preserved.<br><br>",
                 "If the indicator is a wrong one, its coefficients tends to zero,",
-                "then the benchmark tends to a smoothing. Then, the resulting time-serie",
-                "is smooth and the contributions of the smoothed part are high.")
+                "then the benchmark tends to a simple smooth. If so, the contributions",
+                "of the smoothed part are high.<br><br>",
+                "Denton benchmarks don't change with the level of their high-frequency",
+                "input series. <i>The level of the smoothed part is arbitrary</i>.",
+                "Hence it is omitted in these plots.")
          },
          Revisions = {
            HTML("These plots display the differences between the former benchmark",
-                "And the newer one.")
+                "and the newer one.")
          })
 
 info_dialog <- function(mainout_choice) {
