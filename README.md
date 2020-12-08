@@ -39,7 +39,6 @@ install_github("InseeFr/disaggR")
 
 ``` r
 library(disaggR)
-library(ggplot2)
 
 benchmark <- twoStepsBenchmark(hfserie = turnover,
                                lfserie = construction,
@@ -47,8 +46,40 @@ benchmark <- twoStepsBenchmark(hfserie = turnover,
 as.ts(benchmark)
 coef(benchmark)
 summary(benchmark)
-autoplot(benchmark)
-autoplot(in_sample(benchmark))
+plot(benchmark)
+plot(in_sample(benchmark))
 ```
 
 <img src="man/figures/README-unnamed-chunk-4-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-4-2.png" width="50%" />
+
+``` r
+plot(in_dicator(benchmark,type="changes"),
+     start=c(2015,1),end=c(2020,12))
+plot(in_dicator(benchmark,type="contributions"),
+     start=c(2015,1),end=c(2020,12))
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-5-2.png" width="50%" />
+
+``` r
+new_benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                   lfserie = construction,
+                                   include.differenciation = FALSE)
+plot(in_revisions(new_benchmark,
+                  benchmark))
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+## Shiny app
+
+You can also use the shiny application **reView**, to easily chose the
+best parameters for your benchmark.
+
+``` r
+reView(benchmark)
+```
+
+<figure>
+<img src="man/figures/shiny-screen.jpg" style="width:100.0%" alt="drawing" /><figcaption aria-hidden="true">drawing</figcaption>
+</figure>

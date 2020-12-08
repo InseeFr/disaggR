@@ -26,3 +26,4 @@ aggregated regression, with some differences :
 benchmark <- twoStepsBenchmark(turnover,construction); smoothed.part(benchmark)
 
 }
+\keyword{internal}

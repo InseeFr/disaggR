@@ -21,3 +21,4 @@ If \code{include.rho} is \code{FALSE}, \code{rho} returns zero.
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE); rho(benchmark)
 
 }
+\keyword{internal}

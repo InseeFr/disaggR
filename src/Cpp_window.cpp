@@ -59,10 +59,7 @@ void winparam(VectorOrMatrix x,double const& tseps,NumericVector const& start,Nu
       lengthy=max1+max2+i1minusi0+1;
       casenumber=2;
     }
-    else {
-      lengthy=max1+max2;
-      casenumber=3;
-    }
+    else stop("Unexpected window error.");
   }
 }
 
@@ -84,9 +81,6 @@ NumericVector window_impl(NumericVector const& x,double const& tseps,NumericVect
       for (R_len_t j=0;j<max2;j++) y[max1+i1minusi0+1+j]=NA_REAL;
       break;      
     }
-  case 3:
-    y=NumericVector(lengthy,NA_REAL);
-    break;
   }
   y.attr("tsp")= NumericVector::create(ystart,yend,xfreq);
   y.attr("class")= StringVector::create("ts");
@@ -111,16 +105,12 @@ NumericMatrix window_impl(NumericMatrix const& x,double const& tseps,NumericVect
     break;
   }
   case 2: {
-      NumericVector v(ny,NA_REAL);
-      for (R_len_t j=0;j<max1;j++) y(j,_)=v;
-      for (R_len_t j=0;j<=i1minusi0;j++) y(max1+j,_)=x(i0+j-1,_);
-      for (R_len_t j=0;j<max2;j++) y(max1+i1minusi0+1+j,_)=v;
-      break;      
+    NumericVector v(ny,NA_REAL);
+    for (R_len_t j=0;j<max1;j++) y(j,_)=v;
+    for (R_len_t j=0;j<=i1minusi0;j++) y(max1+j,_)=x(i0+j-1,_);
+    for (R_len_t j=0;j<max2;j++) y(max1+i1minusi0+1+j,_)=v;
+    break;      
   }
-  case 3:
-    NumericVector v(lengthy*ny,NA_REAL);
-    y=NumericMatrix(lengthy,ny,v.begin());
-    break;
   }
   y.attr("tsp")= NumericVector::create(ystart,yend,xfreq);
   y.attr("class")= StringVector::create("mts","ts","matrix");

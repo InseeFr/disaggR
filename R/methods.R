@@ -19,6 +19,7 @@ residuals.praislm <- function(object, ...) object$residuals
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE); rho(benchmark)
 #'
+#' @keywords internal
 #' @export
 rho <- function(object) UseMethod("rho")
 #' @export
@@ -38,6 +39,7 @@ model.list.praislm <- function(object) object$model.list
 #' a double, that is named the same way that the coefficients are.
 #' If some coefficients are set by the user, they return `NA` as for
 #' their standard error.
+#' @keywords internal
 #' @export
 se <- function(object) UseMethod("se")
 #' @export
@@ -164,7 +166,6 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
 #' prais is a function which extracts the regression, a praislm object,
 #' of a twoStepsBenchmark.
 #' 
-#' @aliases praislm
 #' @param x a twoStepsBenchmark
 #' @return
 #' prais returns an object of class "`praislm`".
@@ -230,7 +231,8 @@ fitted.twoStepsBenchmark <- function(object, ...) object$fitted.values
 #' a list containing every evaluated arguments
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction); model.list(benchmark)
-#'
+#' 
+#' @keywords internal
 #' @export
 model.list <- function(object) UseMethod("model.list")
 #' @export
@@ -253,6 +255,7 @@ model.list.twoStepsBenchmark <- function(object) object$model.list
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction); smoothed.part(benchmark)
 #'
+#' @keywords internal
 #' @export
 smoothed.part <- function(object) UseMethod("smoothed.part")
 #' @export
