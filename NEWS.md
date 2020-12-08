@@ -1,3 +1,6 @@
+# disaggR 0.1.10
+* vdiffr tests skipped if the package is not installed
+
 # disaggR 0.1.9
 * fixed the R check for old-release (3.6.3).
 
