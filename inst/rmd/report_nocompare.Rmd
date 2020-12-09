@@ -1,0 +1,147 @@
+---
+params:
+  new_bn: NA
+  old_bn: NA
+  hfserie_name: NA
+  lfserie_name: NA
+title: "Benchmark report `r params$hfserie_name` on `r params$lfserie_name`"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  html_document:
+    theme: NULL
+---
+
+```{r include=F}
+knitr::opts_chunk$set(fig.height = 2.5,out.width = "100%")
+knitr::opts_knit$set(global.par = TRUE)
+hfserie <- model.list(params$new_bn)$hfserie
+hfserie <- hfserie[,colnames(hfserie) != "constant"]
+
+presets_list <- disaggR:::presets_list_fun(hfserie,model.list(params$new_bn)$lfserie)
+```
+
+# Presets
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+Model 1 (*differences --- with constant*)
+
+```{r echo=FALSE}
+plot(presets_list[[1]])
+```
+
+Model 3 (*levels --- with constant*)
+
+```{r echo=FALSE}
+plot(presets_list[[3]])
+```
+
+Model 5 (*levels --- without constant*)
+
+```{r echo=FALSE}
+plot(presets_list[[5]])
+```
+
+:::
+
+::: {.column width="50%"}
+
+Model 2 (*differences --- without constant*)
+
+```{r echo=FALSE}
+plot(presets_list[[2]])
+```
+
+Model 4 (*autocorrelated levels --- with constant*)
+
+```{r echo=FALSE}
+plot(presets_list[[4]])
+```
+
+Model 6 (*autocorrelated levels --- without constant*)
+
+```{r echo=FALSE}
+plot(presets_list[[6]])
+```
+
+:::
+
+::::
+
+# Scatter plots
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+```{r echo=FALSE,fig.height=5}
+plot(in_scatter(params$new_bn))
+```
+
+:::
+
+::::
+# Benchmarks
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+```{r echo=FALSE,comment="\t"}
+cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_name))
+```
+
+```{r echo=FALSE, fig.width=14}
+plot(params$new_bn)
+```
+
+:::
+
+::::
+
+# In-sample predictions
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+```{r echo=FALSE, fig.width=14}
+plot(in_sample(params$new_bn,type="levels"))
+plot(in_sample(params$new_bn,type="changes"))
+```
+
+:::
+
+::::
+
+# Summary
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+```{r echo=FALSE, fig.width=14}
+print(summary(params$new_bn),call=FALSE)
+```
+
+:::
+
+::::
+
+# Comparison with indicator
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+```{r echo=FALSE,fig.width = 14}
+plot(in_dicator(params$new_bn,type="levels-rebased"))
+plot(in_dicator(params$new_bn,type="changes"))
+plot(in_dicator(params$new_bn,type="contributions"))
+```
+
+:::
+
+::::

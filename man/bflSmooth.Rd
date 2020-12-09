@@ -27,10 +27,8 @@ minimizes the squares of the variations.
 If \code{weights} isn't \code{NULL} the results depends of \code{lfserie.is.rate} :
 \itemize{
 \item if \code{FALSE} the rate output/weights is smoothed with the constraint that the aggregated output
-is equal to lfserie.
-\item if \code{TRUE} the output is the rate to be smoothed, and the output is the aggregated rate.
+is equal to the input lfserie.
+\item if \code{TRUE} the input lfserie is the rate to be smoothed, with the constraint that it respects
+the products lfserie*weights through aggregation.
 }
-}
-\author{
-Arnaud Feldmann
 }

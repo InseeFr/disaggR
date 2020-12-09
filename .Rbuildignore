@@ -3,5 +3,3 @@
 ^\.travis\.yml$
 ^\.github$
 ^README\.Rmd$
-^cran-comments\.md$
-^LICENSE\.md$

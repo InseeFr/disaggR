@@ -1,13 +1,17 @@
 Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks for Time Series Disaggregation
-Version: 0.1.11
-Date: 2020-12-09
+Version: 0.2.0.9000
+Date: 2020-10-09
 Authors@R: 
     c(person(given = "Arnaud",
-             family = "Feldmann",
+             family = "FELDMANN",
              role = c("aut", "cre"),
              email = "arnaud.feldmann@insee.fr"),
+      person(given = "Franck",
+             family = "ARNAUD",
+             role = "ctb",
+             comment = "barplot base graphics method for the mts class"),
       person(given = "Institut national de la statistique et des études économiques",
              role = "cph",
              email = "comptes-trimestriels@insee.fr",
@@ -18,14 +22,18 @@ Description: The twoStepsBenchmark() function and its wrappers allow you to disa
 	See "Methodology of quarterly national accounts", Insee Méthodes N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 Imports:
   ggplot2,
-	Rcpp
+	Rcpp,
+	rmarkdown,
+	scales,
+	shiny (>= 1.5.0)
 LinkingTo:
   Rcpp
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Suggests:
+Suggests: 
+  shinytest,
   testthat (>= 2.1.0),
 	vdiffr
 Depends: 

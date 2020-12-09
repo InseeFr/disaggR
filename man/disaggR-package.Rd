@@ -23,6 +23,7 @@ Useful links:
 
 Other contributors:
 \itemize{
+  \item Franck ARNAUD (barplot base graphics method for the mts class) [contributor]
   \item Institut national de la statistique et des études économiques \email{comptes-trimestriels@insee.fr} (https://www.insee.fr/) [copyright holder]
 }
 
