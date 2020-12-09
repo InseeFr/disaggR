@@ -5,11 +5,11 @@ Version: 0.2.0.9000
 Date: 2020-10-09
 Authors@R: 
     c(person(given = "Arnaud",
-             family = "FELDMANN",
+             family = "Feldmann",
              role = c("aut", "cre"),
              email = "arnaud.feldmann@insee.fr"),
       person(given = "Franck",
-             family = "ARNAUD",
+             family = "Arnaud",
              role = "ctb",
              comment = "barplot base graphics method for the mts class"),
       person(given = "Institut national de la statistique et des études économiques",

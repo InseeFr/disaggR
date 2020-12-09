@@ -80,6 +80,4 @@ best parameters for your benchmark.
 reView(benchmark)
 ```
 
-<figure>
-<img src="man/figures/shiny-screen.jpg" style="width:100.0%" alt="drawing" /><figcaption aria-hidden="true">drawing</figcaption>
-</figure>
+<img src="man/figures/shiny-screen.jpg" style="width:100.0%" alt="shinyscreen" />  

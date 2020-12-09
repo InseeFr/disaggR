@@ -11,6 +11,7 @@ test_that("function_if_it_isnt_one works", {
 context(if (R.version$major>=4 &&R.version$minor>=1.0) "plots-R-4-1" else "plots-R-4-0")
 
 test_that("plot works", {
+  testthat::skip_if_not_installed("vdiffr")
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -152,6 +153,7 @@ test_that("plot works", {
 })
 
 test_that("ggplot works", {
+  testthat::skip_if_not_installed("vdiffr")
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -270,6 +272,7 @@ test_that("ggplot works", {
 })
 
 test_that("show.legend=FALSE works", {
+  testthat::skip_if_not_installed("vdiffr")
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
@@ -345,6 +348,7 @@ test_that("show.legend=FALSE works", {
 })
 
 test_that("xlab and ylab works", {
+  testthat::skip_if_not_installed("vdiffr")
   skip_on_os(c("mac","linux","solaris"))
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,

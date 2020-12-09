@@ -79,4 +79,4 @@ You can also use the shiny application __reView__, to easily chose the best para
 reView(benchmark)
 ```
 
-![drawing](man/figures/shiny-screen.jpg){ width=100% }
+![shinyscreen](man/figures/shiny-screen.jpg){ width=100% }\

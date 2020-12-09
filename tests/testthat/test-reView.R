@@ -107,6 +107,7 @@ test_that("reView",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_os("mac") # phantomjs bugs with macos
+  testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny"))
   
