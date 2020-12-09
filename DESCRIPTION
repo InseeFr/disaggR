@@ -1,11 +1,11 @@
 Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks for Time Series Disaggregation
-Version: 0.1.10
-Date: 2020-10-09
+Version: 0.1.11
+Date: 2020-12-09
 Authors@R: 
     c(person(given = "Arnaud",
-             family = "FELDMANN",
+             family = "Feldmann",
              role = c("aut", "cre"),
              email = "arnaud.feldmann@insee.fr"),
       person(given = "Institut national de la statistique et des études économiques",
