@@ -43,7 +43,11 @@ info_switch <- function(mainout_choice)
          "Scatter plot" = {
            HTML("These scatter plots display the relationship between both series",
                 "after aggregation and, eventually, differenciation.<br><br>",
-                "The regression line is computed with the coefficients of the benchmark.")
+                "The regression line is computed with the coefficients of the benchmark.",
+                "The main arrows represent the values inside the coefficients",
+                "calculation window, when the secondary ones, dashed by default",
+                "stand for the points external to the regression, added through",
+                "the benchmark window.")
          },
          "In-sample predictions" = {
            HTML("These plots display in-sample predictions produced with the",
