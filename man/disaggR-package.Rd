@@ -19,11 +19,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Arnaud FELDMANN \email{arnaud.feldmann@insee.fr}
+\strong{Maintainer}: Arnaud Feldmann \email{arnaud.feldmann@insee.fr}
 
 Other contributors:
 \itemize{
-  \item Franck ARNAUD (barplot base graphics method for the mts class) [contributor]
+  \item Franck Arnaud (barplot base graphics method for the mts class) [contributor]
   \item Institut national de la statistique et des études économiques \email{comptes-trimestriels@insee.fr} (https://www.insee.fr/) [copyright holder]
 }
 

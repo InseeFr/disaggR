@@ -24,13 +24,16 @@ default_col_pal <- function(object) {
 
 #' Default color palette
 #' 
-#' The default palette for the graphics, imported from the package
-#' \pkg{scales}.
+#' The default palette for the graphics. l`linetype_pal` is imported from the
+#' package \pkg{scales}.
 #' 
 #' @keywords internal
 #' @export
 #' @importFrom scales linetype_pal
-default_lty_pal <- function() linetype_pal()
+default_lty_pal <- function(object) {
+  if (identical(attr(object,"func"),"in_scatter")) seq_len
+  else linetype_pal()
+}
 
 default_margins <- function(main, xlab, ylab) {
   c(
@@ -298,7 +301,7 @@ plotts <-function(x,show.legend,col,lty,
 plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
                                    start = NULL, end = NULL,
                                    col = default_col_pal(x),
-                                   lty = default_lty_pal(),
+                                   lty = default_lty_pal(x),
                                    show.legend = TRUE,
                                    main=NULL,
                                    mar = default_margins(main, xlab, ylab),
@@ -379,7 +382,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' @export
 plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = NULL,
                               col = default_col_pal(x),
-                              lty = default_lty_pal(),
+                              lty = default_lty_pal(x),
                               show.legend = TRUE,
                               main = NULL,
                               mar = default_margins(main, xlab, ylab),
@@ -570,7 +573,7 @@ ggplot2::autoplot
 autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                        start=NULL,end=NULL,
                                        col = default_col_pal(object),
-                                       lty = default_lty_pal(),
+                                       lty = default_lty_pal(object),
                                        show.legend = TRUE,
                                        main = NULL,
                                        mar = NULL,
@@ -605,7 +608,7 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
 autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                                   start=NULL,end=NULL,
                                   col = default_col_pal(object),
-                                  lty = default_lty_pal(),
+                                  lty = default_lty_pal(object),
                                   show.legend = TRUE,
                                   main = NULL,
                                   mar = NULL,

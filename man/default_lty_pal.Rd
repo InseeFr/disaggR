@@ -4,10 +4,10 @@
 \alias{default_lty_pal}
 \title{Default color palette}
 \usage{
-default_lty_pal()
+default_lty_pal(object)
 }
 \description{
-The default palette for the graphics, imported from the package
-\pkg{scales}.
+The default palette for the graphics. l\code{linetype_pal} is imported from the
+package \pkg{scales}.
 }
 \keyword{internal}
