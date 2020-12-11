@@ -53,11 +53,9 @@ regression_estimation <- function(hfserie,lfserie,
                                   start.coeff.calc,end.coeff.calc,
                                   set_coefficients,cl) {
   y <- window(lfserie,start=start.coeff.calc,end=end.coeff.calc,extend = TRUE)
-  tspy <- tsp(y)
-  x <- aggregate.ts(
-    window(hfserie,tspy[1L],tspy[2L]+1/tspy[3L]-1/frequency(hfserie),extend = TRUE),
-    nfrequency = tspy[3L]
-  )
+  
+  x <- aggregate_and_crop_hf_to_lf(hfserie,y)
+
   praislm(x,y,include.rho,include.differenciation,set_coefficients,cl)
 }
 

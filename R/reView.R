@@ -43,7 +43,11 @@ info_switch <- function(mainout_choice)
          "Scatter plot" = {
            HTML("These scatter plots display the relationship between both series",
                 "after aggregation and, eventually, differenciation.<br><br>",
-                "The regression line is computed with the coefficients of the benchmark.")
+                "The regression line is computed with the coefficients of the benchmark.",
+                "The main arrows represent the values inside the coefficients",
+                "calculation window, when the secondary ones, dashed by default",
+                "stand for the points external to the regression, added through",
+                "the benchmark window.")
          },
          "In-sample predictions" = {
            HTML("These plots display in-sample predictions produced with the",
@@ -89,22 +93,6 @@ info_dialog <- function(session,mainout_choice) {
                 },
                 fade = FALSE))
   
-}
-
-switch_window <- function(start,end,init_tsp) {
-  start <- {
-    if (is.null(start)) init_tsp[1L]
-    else switch(length(start),
-                start,
-                start[1L] + (start[2L] - 1)/init_tsp[3L])
-  }
-  end <- {
-    if (is.null(end)) init_tsp[2L]
-    else switch(length(end),
-                end,
-                end[1L] + (end[2L] - 1)/init_tsp[3L])
-  }
-  c(start,end)
 }
 
 get_clean_wins <- function(benchmark) {

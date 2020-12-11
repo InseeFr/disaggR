@@ -47,7 +47,7 @@ in_sample.praislm <- function(object,type="changes") {
                      cbind(y_changes,predicted_changes)
                    },
                    stop("The type argument of in_sample should be either \"levels\" or  \"changes\".",call. = FALSE))
-
+  
   structure(series,
             type=type,
             func="in_sample",
@@ -188,7 +188,7 @@ in_scatter.praislm <- function(object) {
   
   if (ncol(X) != 1L) stop("This in_scatter method is only for univariate benchmarks.", call. = FALSE)
   
-  series <- cbind(m$y,m$X[,colnames(m$X) != "constant",drop = FALSE])
+  series <- cbind(m$y,X)
   
   if  (m$include.differenciation) series <- diff(series)
   
@@ -201,8 +201,46 @@ in_scatter.praislm <- function(object) {
 }
 
 #' @export
-in_scatter.twoStepsBenchmark <- function(object) {
-  in_scatter(prais(object))
+in_scatter.twoStepsBenchmark<- function(object) {
+  m <- model.list(object)
+  
+  coeff_clean_win <- switch_window(m$start.coeff.calc,
+                                   m$end.coeff.calc,
+                                   tsp(m$lfserie))
+  
+  benchmark_clean_win <- switch_window(m$start.benchmark,
+                                       m$end.benchmark,
+                                       tsp(m$lfserie))
+  
+  y <- window(m$lfserie,
+              min(coeff_clean_win[1L],benchmark_clean_win[1L]),
+              max(coeff_clean_win[2L],benchmark_clean_win[2L]))
+  
+  X <- m$hfserie[,colnames(m$hfserie) != "constant",drop = FALSE]
+  
+  series <- cbind(y,
+                  window(
+                    aggregate_and_crop_hf_to_lf(X,
+                                                y),
+                    coeff_clean_win[1L],
+                    coeff_clean_win[2L]),
+                  window(
+                    aggregate_and_crop_hf_to_lf(X,
+                                                y),
+                    benchmark_clean_win[1L],
+                    benchmark_clean_win[2L])
+  )
+  
+  if  (m$include.differenciation) series <- diff(series)
+  
+  structure(series,
+            type=if (m$include.differenciation) "differences" else "levels",
+            func="in_scatter",
+            class=c("tscomparison",class(series)),
+            dimnames=list(NULL,c("Low-frequency serie",
+                                 "High-frequency serie (regression)",
+                                 "High-frequency serie (benchmark)")),
+            coefficients=coefficients(object))
 }
 
 #' @export
@@ -211,7 +249,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
                   in_dicator="Comparison with indicator",
                   in_sample="In-sample predictions",
                   in_revisions="Comparison between two benchmarks",
-                  in_scatter="Inputs of the regression")
+                  in_scatter="Comparison between the inputs")
   cat(label, " (", attr(x,"type"),"):\n", sep = "")
   
   attr(x,"type")         <- NULL

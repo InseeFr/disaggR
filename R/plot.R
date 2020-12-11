@@ -151,13 +151,13 @@ break_arrows <- function(arrows_time) {
   res
 }
 
-scatterplot_ts <- function(x,col) {
+scatterplot_ts <- function(x,col,lty) {
   n <- nrow(x)
   x0 <- x[-n,2L]
   y0 <- x[-n,1L]
   x1 <- x[-1L,2L]
   y1 <- x[-1L,1L]
-  segments(x0,y0,x1,y1,col = col)
+  segments(x0,y0,x1,y1,col = col, lty = lty)
   arrows_heads(x0,y0,x1,y1,col = col)
 }
 
@@ -246,8 +246,8 @@ plotts <-function(x,show.legend,col,lty,
                                    col=col,lty="solid",horiz=TRUE,bty="n",cex=0.8)
          },
          scatter = {
-           plot_init(xmin = min(x[,2L], na.rm = TRUE),
-                     xmax = max(x[,2L], na.rm = TRUE),
+           plot_init(xmin = min(x[,-1L], na.rm = TRUE),
+                     xmax = max(x[,-1L], na.rm = TRUE),
                      ymin = min(x[,1L],na.rm = TRUE),
                      ymax = max(x[,1L],na.rm = TRUE),
                      xlab = xlab, ylab = ylab,
@@ -259,7 +259,23 @@ plotts <-function(x,show.legend,col,lty,
                   col = "red",
                   lwd = 2)
            
-           scatterplot_ts(x, col=col)
+           scatterplot_ts(x[,c(1L,2L)], col=col, lty = lty[1L])
+           
+           if (ncol(x) == 3L) {
+             is_value_reg <- which(!is.na(x[,2L]))
+             
+             x_temp <- x[,c(1L,3L)]
+             x_temp[(is_value_reg[1L] + 1L):nrow(x),2L] <- NA
+             scatterplot_ts(x_temp,col = col, lty = lty[2L])
+             
+             x_temp <- x[,c(1L,3L)]
+             x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
+             scatterplot_ts(x_temp,col = col, lty = lty[2L])
+             
+             # These are the parts before and after the coefficients calc window
+             
+             rm(x_temp)
+           }
            
            if (show.legend) {
              arrows_time <- (timex_win + deltat(x)/2)
@@ -473,32 +489,70 @@ ggplotts <- function(object,show.legend, series_names,theme,type,
     theme
 }
 
-ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab, col, ...) {
+geom_path_scatter <- function(object,i,lty) {
+  
+  n <- nrow(object)
+  
+  df <- data.frame(Time=as.numeric(time(object))[-1L],
+                   `High-frequency serie` = object[-n,2L],
+                   `Low-frequency serie` = object[-n,1L],
+                   xend = object[-1L,2L],
+                   yend = object[-1L,1L], check.names = FALSE)
+  
+  geom_segment(data=df,
+               aes(x = `High-frequency serie`, y = `Low-frequency serie`,
+                   xend = xend, yend = yend,
+                   colour = Time, group = i),
+               linetype = lty,
+               arrow=arrow(angle = 15,
+                           ends = "last",
+                           type = "closed",
+                           length = unit(0.1,"inches")),
+               na.rm = TRUE)
+}
+
+ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
+                      col, lty,...) {
   coefficients <- attr(object,"coefficients")
   
   object <- window_default(object,start = start, end = end)
   
   lims <- gglims(object)
   
-  df <- data.frame(Time=as.numeric(time(object)),
-                   object,check.names = FALSE)
-  ggplot(df,aes(x=`High-frequency serie`,y=`Low-frequency serie`),
-         show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab) +
+  lty <- lty(ncol(object)-1L)
+  
+  g <- ggplot(show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab) +
     geom_abline(intercept = coefficients["constant"],
                 slope = coefficients[names(coefficients) != "constant"],
-                linetype = "solid", colour = "red",size = 1) +
-    geom_path(aes(colour=Time,group=1),arrow=arrow(angle = 15,
-                                                   ends = "last",
-                                                   type = "closed",
-                                                   length = unit(0.1,"inches")),
-              na.rm = TRUE) +
-    continuous_scale("colour","gradient",function(x) col(length(x)),
-                     limits = lims,
-                     breaks = break_arrows(df$Time[-1]),
-                     minor_breaks = numeric(),
-                     expand=c(0,0)) +
+                lty = "solid", colour = "red", size = 1)
+  
+  g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L])
+  
+  if (ncol(object) == 3L) {
+    is_value_reg <- which(!is.na(object[,2L]))
+    
+    if (is_value_reg[1L] != 1L) {
+      object_temp <- object[,c(1L,3L)]
+      object_temp[(is_value_reg[1L] + 1L):nrow(object),2L] <- NA
+      g <- g + geom_path_scatter(object_temp,2L,lty[2L])
+    }
+    
+    if (is_value_reg[length(is_value_reg)] != nrow(object)) {
+      object_temp <- object[,c(1L,3L)]
+      object_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
+      g <- g + geom_path_scatter(object_temp,3L,lty[2L]) 
+    }
+    
+    # These are the parts before and after the coefficients calc window
+  }
+  g <- g + continuous_scale("colour","gradient",function(x) col(length(x)),
+                            limits = lims,
+                            breaks = break_arrows(as.numeric(time(object)[-1])),
+                            minor_breaks = numeric(),
+                            expand=c(0,0)) +
     theme +
-    guides(colour=guide_legend(override.aes = list(arrow = NULL))) 
+    guides(colour=guide_legend(override.aes = list(arrow = NULL)))
+  g
 }
 
 function_if_it_isnt_one <- function(f) {
@@ -587,7 +641,7 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                 ggscatter(object = object, show.legend = show.legend,
                           theme = theme, start = start, end = end,
                           xlab = xlab, ylab = ylab,
-                          col = col,...) +
+                          col = col, lty = lty,...) +
                   ggtitle(main)
               },
               ggplotts(object = object, show.legend = show.legend,

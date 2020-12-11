@@ -15,4 +15,4 @@
 
 globalVariables(c("Date","Values","Low-Frequency Periods","Variables",
                   "High-frequency serie","Low-frequency serie",
-                  "Low-frequency periods","Time"))
+                  "Low-frequency periods","Time","xend","yend"))

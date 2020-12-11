@@ -110,11 +110,17 @@ test_that("in revisions works",{
 test_that("in scatter works",{
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
-                               include.differenciation = FALSE)
+                               include.differenciation = FALSE,
+                               start.coeff.calc = 2005,
+                               end.coeff.calc = 2017,
+                               end.benchmark = 2019)
   expected <- ts(matrix(c(construction,
+                          window(window(aggregate(turnover),start=2005,end=2017),
+                                 start=2000,end=2019),
                           window(aggregate(turnover),end=2019)),
-                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
-                                                      "High-frequency serie"))),
+                        ncol=3,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)",
+                                                      "High-frequency serie (benchmark)"))),
                  start=2000,frequency=1)
   
   class(expected) <- c("tscomparison","mts","ts","matrix")

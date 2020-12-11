@@ -8,7 +8,11 @@ test_that("function_if_it_isnt_one works", {
                    lapply(1:20,function(n) rep("Hey",n)))
 })
 
-context(if (R.version$major>=4 &&R.version$minor>=1.0) "plots-R-4-1" else "plots-R-4-0")
+expect_doppelganger <- function(title, fig) {
+  vdiffr::expect_doppelganger(title,
+                              fig,
+                              path = if (R.version$major>=4 && R.version$minor>=1.0) "/plots-R-4-1/" else "/plots-R-4-0/")
+}
 
 test_that("plot works", {
   testthat::skip_if_not_installed("vdiffr")
@@ -20,136 +24,136 @@ test_that("plot works", {
                                 include.differenciation = FALSE,
                                 set.const = TRUE)
   
-  vdiffr::expect_doppelganger("plot-benchmark-nowin",
-                              function() plot(benchmark))
+  expect_doppelganger("plot-benchmark-nowin",
+                      function() plot(benchmark))
   
-  vdiffr::expect_doppelganger("plot-insample-levels-nowin",
-                              function() plot(in_sample(benchmark,type="levels")))
-  vdiffr::expect_doppelganger("plot-insample-changes-nowin",
-                              function() plot(in_sample(benchmark,type="changes")))
+  expect_doppelganger("plot-insample-levels-nowin",
+                      function() plot(in_sample(benchmark,type="levels")))
+  expect_doppelganger("plot-insample-changes-nowin",
+                      function() plot(in_sample(benchmark,type="changes")))
   
-  vdiffr::expect_doppelganger("plot-indicator-levels-nowin",
-                              function() plot(in_dicator(benchmark,type="levels")))
-  vdiffr::expect_doppelganger("plot-indicator-levels-rebased-nowin",
-                              function() plot(in_dicator(benchmark,type="levels-rebased")))
-  vdiffr::expect_doppelganger("plot-indicator-changes-nowin",
-                              function() plot(in_dicator(benchmark,type="changes")))
-  vdiffr::expect_doppelganger("plot-indicator-contributions-nowin",
-                              function() plot(in_dicator(benchmark,type="contributions")))
+  expect_doppelganger("plot-indicator-levels-nowin",
+                      function() plot(in_dicator(benchmark,type="levels")))
+  expect_doppelganger("plot-indicator-levels-rebased-nowin",
+                      function() plot(in_dicator(benchmark,type="levels-rebased")))
+  expect_doppelganger("plot-indicator-changes-nowin",
+                      function() plot(in_dicator(benchmark,type="changes")))
+  expect_doppelganger("plot-indicator-contributions-nowin",
+                      function() plot(in_dicator(benchmark,type="contributions")))
   
-  vdiffr::expect_doppelganger("plot-inrevisions-levels-nowin",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="levels")))
-  vdiffr::expect_doppelganger("plot-inrevisions-levels-rebased-nowin",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="levels")))
-  vdiffr::expect_doppelganger("plot-inrevisions-changes-nowin",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="changes")))
-  vdiffr::expect_doppelganger("plot-inrevisions-contributions-nowin",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="contributions")))
+  expect_doppelganger("plot-inrevisions-levels-nowin",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="levels")))
+  expect_doppelganger("plot-inrevisions-levels-rebased-nowin",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="levels")))
+  expect_doppelganger("plot-inrevisions-changes-nowin",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="changes")))
+  expect_doppelganger("plot-inrevisions-contributions-nowin",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="contributions")))
   
-  vdiffr::expect_doppelganger("plot-benchmark-2008-4-2012-7",
-                              function() plot(benchmark,
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
+  expect_doppelganger("plot-benchmark-2008-4-2012-7",
+                      function() plot(benchmark,
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
   
-  vdiffr::expect_doppelganger("plot-insample-levels-2008-2012",
-                              function() plot(in_sample(benchmark,type="levels"),
-                                              start=2008,
-                                              end=2012))
-  vdiffr::expect_doppelganger("plot-insample-changes-2008-2012",
-                              function() plot(in_sample(benchmark,type="changes"),
-                                              start=2008,
-                                              end=2012))
+  expect_doppelganger("plot-insample-levels-2008-2012",
+                      function() plot(in_sample(benchmark,type="levels"),
+                                      start=2008,
+                                      end=2012))
+  expect_doppelganger("plot-insample-changes-2008-2012",
+                      function() plot(in_sample(benchmark,type="changes"),
+                                      start=2008,
+                                      end=2012))
   
-  vdiffr::expect_doppelganger("plot-indicator-levels-2008-4-2012-7",
-                              function() plot(in_dicator(benchmark,type="levels"),
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
-  vdiffr::expect_doppelganger("plot-indicator-levels-rebased-2008-4-2012-7",
-                              function() plot(in_dicator(benchmark,type="levels-rebased"),
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
-  vdiffr::expect_doppelganger("plot-indicator-changes-2008-4-2012-7",
-                              function() plot(in_dicator(benchmark,type="changes"),
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
-  vdiffr::expect_doppelganger("plot-indicator-contributions-2008-4-2012-7",
-                              function() plot(in_dicator(benchmark,type="contributions"),
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
+  expect_doppelganger("plot-indicator-levels-2008-4-2012-7",
+                      function() plot(in_dicator(benchmark,type="levels"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-indicator-levels-rebased-2008-4-2012-7",
+                      function() plot(in_dicator(benchmark,type="levels-rebased"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-indicator-changes-2008-4-2012-7",
+                      function() plot(in_dicator(benchmark,type="changes"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-indicator-contributions-2008-4-2012-7",
+                      function() plot(in_dicator(benchmark,type="contributions"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
   
-  vdiffr::expect_doppelganger("plot-inrevisions-levels-2008-4-2012-7",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="levels"),
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
-  vdiffr::expect_doppelganger("plot-inrevisions-levels-rebased-2008-4-2012-7",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="levels"),
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
-  vdiffr::expect_doppelganger("plot-inrevisions-changes-2008-4-2012-7",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="changes"),
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
-  vdiffr::expect_doppelganger("plot-inrevisions-contributions-2008-4-2012-7",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="contributions"),
-                                              start=c(2008,4),
-                                              end=c(2012,7)))
-  vdiffr::expect_doppelganger("plot-scatter-2008-2012",
-                              function() plot(in_scatter(benchmark),
-                                              start=2008,
-                                              end=2012))
-  vdiffr::expect_doppelganger("plot-main-insample",
-                              function() plot(in_sample(benchmark),
-                                              main="title in sample"))
-  vdiffr::expect_doppelganger("plot-main-inrev",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2),
-                                              main="title in rev"))
-  vdiffr::expect_doppelganger("plot-main-ctb",
-                              function() plot(in_dicator(benchmark,
-                                                         type = "contributions"),
-                                              main="title ctb"))
-  vdiffr::expect_doppelganger("plot-main-scatter",
-                              function() plot(in_scatter(benchmark),
-                                              main="title scatter"))
+  expect_doppelganger("plot-inrevisions-levels-2008-4-2012-7",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="levels"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-inrevisions-levels-rebased-2008-4-2012-7",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="levels"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-inrevisions-changes-2008-4-2012-7",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="changes"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-inrevisions-contributions-2008-4-2012-7",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="contributions"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-scatter-2008-2012",
+                      function() plot(in_scatter(benchmark),
+                                      start=2008,
+                                      end=2012))
+  expect_doppelganger("plot-main-insample",
+                      function() plot(in_sample(benchmark),
+                                      main="title in sample"))
+  expect_doppelganger("plot-main-inrev",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2),
+                                      main="title in rev"))
+  expect_doppelganger("plot-main-ctb",
+                      function() plot(in_dicator(benchmark,
+                                                 type = "contributions"),
+                                      main="title ctb"))
+  expect_doppelganger("plot-main-scatter",
+                      function() plot(in_scatter(benchmark),
+                                      main="title scatter"))
   set.seed(1)
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
   mts <- ts(series,start=c(2000,1),freq=12) %>%
     `colnames<-`(c("a","b","c")) %>%
     twoStepsBenchmark(construction)
   
-  vdiffr::expect_doppelganger("plot-mts-ctb",
-                              function() plot(in_dicator(mts,
-                                                         type = "contributions")))
-  vdiffr::expect_doppelganger("plot-mts-ins",
-                              function() plot(in_sample(mts,type="levels")))
+  expect_doppelganger("plot-mts-ctb",
+                      function() plot(in_dicator(mts,
+                                                 type = "contributions")))
+  expect_doppelganger("plot-mts-ins",
+                      function() plot(in_sample(mts,type="levels")))
   
-  vdiffr::expect_doppelganger("plot-mts-ind",
-                              function() plot(in_dicator(mts,
-                                                         type="levels-rebased")))
+  expect_doppelganger("plot-mts-ind",
+                      function() plot(in_dicator(mts,
+                                                 type="levels-rebased")))
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
   mts2 <- ts(series,start=c(2000,1),freq=12) %>%
     `colnames<-`(c("a","b","c")) %>%
     twoStepsBenchmark(construction)
-  vdiffr::expect_doppelganger("plot-mts-rev",
-                              function() suppressWarnings(plot(in_revisions(mts,
-                                                                            mts2,
-                                                                            type="levels"))))
+  expect_doppelganger("plot-mts-rev",
+                      function() suppressWarnings(plot(in_revisions(mts,
+                                                                    mts2,
+                                                                    type="levels"))))
 })
 
 test_that("ggplot works", {
@@ -162,113 +166,113 @@ test_that("ggplot works", {
                                 include.differenciation = FALSE,
                                 set.const = TRUE)
   
-  vdiffr::expect_doppelganger("gg-benchmark-nowin",autoplot(benchmark))
+  expect_doppelganger("gg-benchmark-nowin",autoplot(benchmark))
   
-  vdiffr::expect_doppelganger("gg-insample-levels-nowin",
-                              autoplot(in_sample(benchmark,type="levels")))
-  vdiffr::expect_doppelganger("gg-insample-changes-nowin",
-                              autoplot(in_sample(benchmark,type="changes")))
+  expect_doppelganger("gg-insample-levels-nowin",
+                      autoplot(in_sample(benchmark,type="levels")))
+  expect_doppelganger("gg-insample-changes-nowin",
+                      autoplot(in_sample(benchmark,type="changes")))
   
-  vdiffr::expect_doppelganger("gg-indicator-levels-nowin",
-                              autoplot(in_dicator(benchmark,type="levels")))
-  vdiffr::expect_doppelganger("gg-indicator-levels-rebased-nowin",
-                              autoplot(in_dicator(benchmark,type="levels-rebased")))
-  vdiffr::expect_doppelganger("gg-indicator-changes-nowin",
-                              autoplot(in_dicator(benchmark,type="changes")))
-  vdiffr::expect_doppelganger("gg-indicator-contributions-nowin",
-                              autoplot(in_dicator(benchmark,type="contributions")))
+  expect_doppelganger("gg-indicator-levels-nowin",
+                      autoplot(in_dicator(benchmark,type="levels")))
+  expect_doppelganger("gg-indicator-levels-rebased-nowin",
+                      autoplot(in_dicator(benchmark,type="levels-rebased")))
+  expect_doppelganger("gg-indicator-changes-nowin",
+                      autoplot(in_dicator(benchmark,type="changes")))
+  expect_doppelganger("gg-indicator-contributions-nowin",
+                      autoplot(in_dicator(benchmark,type="contributions")))
   
-  vdiffr::expect_doppelganger("gg-inrevisions-levels-nowin",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="levels")))
-  vdiffr::expect_doppelganger("gg-inrevisions-levels-rebased-nowin",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="levels")))
-  vdiffr::expect_doppelganger("gg-inrevisions-changes-nowin",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="changes")))
-  vdiffr::expect_doppelganger("gg-inrevisions-contributions-nowin",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="contributions")))
+  expect_doppelganger("gg-inrevisions-levels-nowin",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="levels")))
+  expect_doppelganger("gg-inrevisions-levels-rebased-nowin",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="levels")))
+  expect_doppelganger("gg-inrevisions-changes-nowin",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="changes")))
+  expect_doppelganger("gg-inrevisions-contributions-nowin",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="contributions")))
   
-  vdiffr::expect_doppelganger("gg-benchmark-2008-4-2012-7",
-                              autoplot(benchmark,
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
+  expect_doppelganger("gg-benchmark-2008-4-2012-7",
+                      autoplot(benchmark,
+                               start=c(2008,4),
+                               end=c(2012,7)))
   
-  vdiffr::expect_doppelganger("gg-insample-levels-2008-2012",
-                              autoplot(in_sample(benchmark,type="levels"),
-                                       start=2008,
-                                       end=2012))
-  vdiffr::expect_doppelganger("gg-insample-changes-2008-2012",
-                              autoplot(in_sample(benchmark,type="changes"),
-                                       start=2008,
-                                       end=2012))
+  expect_doppelganger("gg-insample-levels-2008-2012",
+                      autoplot(in_sample(benchmark,type="levels"),
+                               start=2008,
+                               end=2012))
+  expect_doppelganger("gg-insample-changes-2008-2012",
+                      autoplot(in_sample(benchmark,type="changes"),
+                               start=2008,
+                               end=2012))
   
-  vdiffr::expect_doppelganger("gg-indicator-levels-2008-4-2012-7",
-                              autoplot(in_dicator(benchmark,type="levels"),
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
-  vdiffr::expect_doppelganger("gg-indicator-levels-rebased-2008-4-2012-7",
-                              autoplot(in_dicator(benchmark,type="levels-rebased"),
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
-  vdiffr::expect_doppelganger("gg-indicator-changes-2008-4-2012-7",
-                              autoplot(in_dicator(benchmark,type="changes"),
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
-  vdiffr::expect_doppelganger("gg-indicator-contributions-2008-4-2012-7",
-                              autoplot(in_dicator(benchmark,type="contributions"),
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
+  expect_doppelganger("gg-indicator-levels-2008-4-2012-7",
+                      autoplot(in_dicator(benchmark,type="levels"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-indicator-levels-rebased-2008-4-2012-7",
+                      autoplot(in_dicator(benchmark,type="levels-rebased"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-indicator-changes-2008-4-2012-7",
+                      autoplot(in_dicator(benchmark,type="changes"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-indicator-contributions-2008-4-2012-7",
+                      autoplot(in_dicator(benchmark,type="contributions"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
   
-  vdiffr::expect_doppelganger("gg-inrevisions-levels-2008-4-2012-7",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="levels"),
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
-  vdiffr::expect_doppelganger("gg-inrevisions-levels-rebased-2008-4-2012-7",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="levels"),
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
-  vdiffr::expect_doppelganger("gg-inrevisions-changes-2008-4-2012-7",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="changes"),
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
-  vdiffr::expect_doppelganger("gg-inrevisions-contributions-2008-4-2012-7",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="contributions"),
-                                       start=c(2008,4),
-                                       end=c(2012,7)))
-  vdiffr::expect_doppelganger("gg-plot-scatter-2008-2012",
-                              autoplot(in_scatter(benchmark),
-                                       start=2008,
-                                       end=2012))
+  expect_doppelganger("gg-inrevisions-levels-2008-4-2012-7",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="levels"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-inrevisions-levels-rebased-2008-4-2012-7",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="levels"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-inrevisions-changes-2008-4-2012-7",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="changes"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-inrevisions-contributions-2008-4-2012-7",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="contributions"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-plot-scatter-2008-2012",
+                      autoplot(in_scatter(benchmark),
+                               start=2008,
+                               end=2012))
   
-  vdiffr::expect_doppelganger("gg-main-insample",
-                              autoplot(in_sample(benchmark),
-                                       main="title in sample"))
-  vdiffr::expect_doppelganger("gg-plot-main-inrev",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2),
-                                       main="title in rev"))
-  vdiffr::expect_doppelganger("gg-plot-main-ctb",
-                              autoplot(in_dicator(benchmark,
-                                                  type = "contributions"),
-                                       main="title ctb"))
-  vdiffr::expect_doppelganger("gg-plot-main-scatter",
-                              autoplot(in_scatter(benchmark),
-                                       main="title scatter"))
+  expect_doppelganger("gg-main-insample",
+                      autoplot(in_sample(benchmark),
+                               main="title in sample"))
+  expect_doppelganger("gg-plot-main-inrev",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2),
+                               main="title in rev"))
+  expect_doppelganger("gg-plot-main-ctb",
+                      autoplot(in_dicator(benchmark,
+                                          type = "contributions"),
+                               main="title ctb"))
+  expect_doppelganger("gg-plot-main-scatter",
+                      autoplot(in_scatter(benchmark),
+                               main="title scatter"))
 })
 
 test_that("show.legend=FALSE works", {
@@ -282,45 +286,45 @@ test_that("show.legend=FALSE works", {
                                 include.differenciation = FALSE,
                                 set.const = TRUE)
   
-  vdiffr::expect_doppelganger("plot-benchmark-showlegendF",
-                              function() plot(benchmark,show.legend = FALSE))
-  vdiffr::expect_doppelganger("plot-insample-showlegendF",
-                              function() plot(in_sample(benchmark,type="levels"),
-                                              show.legend = FALSE))
-  vdiffr::expect_doppelganger("plot-indicator-showlegendF",
-                              function() plot(in_dicator(benchmark,type="levels-rebased"),
-                                              show.legend = FALSE))
-  vdiffr::expect_doppelganger("plot-ctb-showlegendF",
-                              function() plot(in_dicator(benchmark,type="contributions"),
-                                              show.legend = FALSE))
-  vdiffr::expect_doppelganger("plot-inrevisions-showlegendF",
-                              function() plot(in_revisions(benchmark,
-                                                           benchmark2,
-                                                           type="changes"),
-                                              show.legend = FALSE))
-  vdiffr::expect_doppelganger("plot-scatter-showlegendF",
-                              function() plot(in_scatter(benchmark),
-                                              show.legend = FALSE))
+  expect_doppelganger("plot-benchmark-showlegendF",
+                      function() plot(benchmark,show.legend = FALSE))
+  expect_doppelganger("plot-insample-showlegendF",
+                      function() plot(in_sample(benchmark,type="levels"),
+                                      show.legend = FALSE))
+  expect_doppelganger("plot-indicator-showlegendF",
+                      function() plot(in_dicator(benchmark,type="levels-rebased"),
+                                      show.legend = FALSE))
+  expect_doppelganger("plot-ctb-showlegendF",
+                      function() plot(in_dicator(benchmark,type="contributions"),
+                                      show.legend = FALSE))
+  expect_doppelganger("plot-inrevisions-showlegendF",
+                      function() plot(in_revisions(benchmark,
+                                                   benchmark2,
+                                                   type="changes"),
+                                      show.legend = FALSE))
+  expect_doppelganger("plot-scatter-showlegendF",
+                      function() plot(in_scatter(benchmark),
+                                      show.legend = FALSE))
   
-  vdiffr::expect_doppelganger("gg-benchmark-showlegendF",
-                              autoplot(benchmark,show.legend = FALSE))
-  vdiffr::expect_doppelganger("gg-insample-showlegendF",
-                              autoplot(in_sample(benchmark,type="levels"),
-                                       show.legend = FALSE))
-  vdiffr::expect_doppelganger("gg-indicator-showlegendF",
-                              autoplot(in_dicator(benchmark,type="levels-rebased"),
-                                       show.legend = FALSE))
-  vdiffr::expect_doppelganger("gg-ctb-showlegendF",
-                              autoplot(in_dicator(benchmark,type="contributions"),
-                                       show.legend = FALSE))
-  vdiffr::expect_doppelganger("gg-inrevisions-showlegendF",
-                              autoplot(in_revisions(benchmark,
-                                                    benchmark2,
-                                                    type="changes"),
-                                       show.legend = FALSE))
-  vdiffr::expect_doppelganger("gg-scatter-showlegendF",
-                              autoplot(in_scatter(benchmark),
-                                       show.legend = FALSE))
+  expect_doppelganger("gg-benchmark-showlegendF",
+                      autoplot(benchmark,show.legend = FALSE))
+  expect_doppelganger("gg-insample-showlegendF",
+                      autoplot(in_sample(benchmark,type="levels"),
+                               show.legend = FALSE))
+  expect_doppelganger("gg-indicator-showlegendF",
+                      autoplot(in_dicator(benchmark,type="levels-rebased"),
+                               show.legend = FALSE))
+  expect_doppelganger("gg-ctb-showlegendF",
+                      autoplot(in_dicator(benchmark,type="contributions"),
+                               show.legend = FALSE))
+  expect_doppelganger("gg-inrevisions-showlegendF",
+                      autoplot(in_revisions(benchmark,
+                                            benchmark2,
+                                            type="changes"),
+                               show.legend = FALSE))
+  expect_doppelganger("gg-scatter-showlegendF",
+                      autoplot(in_scatter(benchmark),
+                               show.legend = FALSE))
   
   set.seed(1)
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
@@ -328,23 +332,23 @@ test_that("show.legend=FALSE works", {
     `colnames<-`(c("a","b","c")) %>%
     twoStepsBenchmark(construction)
   
-  vdiffr::expect_doppelganger("gg-mts-ctb",
-                              autoplot(in_dicator(mts,
-                                                  type = "contributions")))
-  vdiffr::expect_doppelganger("gg-mts-ins",
-                              autoplot(in_sample(mts,type="levels")))
+  expect_doppelganger("gg-mts-ctb",
+                      autoplot(in_dicator(mts,
+                                          type = "contributions")))
+  expect_doppelganger("gg-mts-ins",
+                      autoplot(in_sample(mts,type="levels")))
   
-  vdiffr::expect_doppelganger("gg-mts-indic",
-                              autoplot(in_dicator(mts,
-                                                  type="levels-rebased")))
+  expect_doppelganger("gg-mts-indic",
+                      autoplot(in_dicator(mts,
+                                          type="levels-rebased")))
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
   mts2 <- ts(series,start=c(2000,1),freq=12) %>%
     `colnames<-`(c("a","b","c")) %>%
     twoStepsBenchmark(construction)
-  vdiffr::expect_doppelganger("gg-mts-rev",
-                              autoplot(suppressWarnings(in_revisions(mts,
-                                                                     mts2,
-                                                                     type="levels"))))
+  expect_doppelganger("gg-mts-rev",
+                      autoplot(suppressWarnings(in_revisions(mts,
+                                                             mts2,
+                                                             type="levels"))))
 })
 
 test_that("xlab and ylab works", {
@@ -353,18 +357,18 @@ test_that("xlab and ylab works", {
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = TRUE)
-  vdiffr::expect_doppelganger("plot-benchmark-lab-foo-bar",
-                              function() plot(benchmark,xlab = "foo",ylab="bar"))
-  vdiffr::expect_doppelganger("plot-benchmark-lab-foo",
-                              function() plot(benchmark,xlab = "foo"))
-  vdiffr::expect_doppelganger("plot-benchmark-lab-bar",
-                              function() plot(benchmark,ylab = "bar"))
-  vdiffr::expect_doppelganger("gg-benchmark-lab-foo-bar",
-                              autoplot(benchmark,xlab = "foo",ylab="bar"))
-  vdiffr::expect_doppelganger("gg-benchmark-lab-foo",
-                              autoplot(benchmark,xlab = "foo"))
-  vdiffr::expect_doppelganger("gg-benchmark-lab-bar",
-                              autoplot(benchmark,ylab="bar"))
+  expect_doppelganger("plot-benchmark-lab-foo-bar",
+                      function() plot(benchmark,xlab = "foo",ylab="bar"))
+  expect_doppelganger("plot-benchmark-lab-foo",
+                      function() plot(benchmark,xlab = "foo"))
+  expect_doppelganger("plot-benchmark-lab-bar",
+                      function() plot(benchmark,ylab = "bar"))
+  expect_doppelganger("gg-benchmark-lab-foo-bar",
+                      autoplot(benchmark,xlab = "foo",ylab="bar"))
+  expect_doppelganger("gg-benchmark-lab-foo",
+                      autoplot(benchmark,xlab = "foo"))
+  expect_doppelganger("gg-benchmark-lab-bar",
+                      autoplot(benchmark,ylab="bar"))
 })
 
 context("plots functions")
