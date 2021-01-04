@@ -192,18 +192,21 @@ window_default <- function(x,start,end) {
   start <- if (is.null(start)) floor(min(timex[non_na_vals])) else start
   end <- if (is.null(end)) floor(max(timex[non_na_vals])) + 1 - deltat(x) else end
   
-  window(x,start=start,end=end,extend=TRUE)
+  res <- window(x,start=start,end=end,extend=TRUE)
+  
+  attr(res,"coefficients") <- attr(x,"coefficients")
+  attr(res,"func") <- attr(x,"func")
+  
+  res
 }
 
 eval_function_if_it_is_one <- function(f,arg) if (is.function(f)) f(arg) else f
 
-plotts <-function(x,show.legend,col,lty,
-                  series_names,type="line",
-                  start,end,
-                  xlab,ylab, main,
-                  ...) {
-  
-  coefficients <- attr(x,"coefficients") # Only for the scatter plot
+plotts <- function(x,show.legend,col,lty,
+                   series_names,type="line",
+                   start,end,
+                   xlab,ylab, main,
+                   ...) {
   
   x <- window_default(x,start,end)
   
@@ -257,27 +260,30 @@ plotts <-function(x,show.legend,col,lty,
                      extend.x = TRUE, extend.y = TRUE,
                      abline.x=FALSE, main = main, ...)
            
-           abline(a = coefficients["constant"],
-                  b = coefficients[names(coefficients) != "constant"],
+           abline(a = attr(x,"coefficients")["constant"],
+                  b = attr(x,"coefficients")[names(attr(x,"coefficients")) != "constant"],
                   col = "red",
                   lwd = 2)
            
            scatterplot_ts(x[,c(1L,2L)], col=col, lty = lty[1L])
            
            if (ncol(x) == 3L) {
+             # It's the benchmark case (not praislm)
              is_value_reg <- which(!is.na(x[,2L]))
              
-             x_temp <- x[,c(1L,3L)]
-             x_temp[(is_value_reg[1L] + 1L):nrow(x),2L] <- NA
-             scatterplot_ts(x_temp,col = col, lty = lty[2L])
+             if (is_value_reg[1L] != 1L) {
+               x_temp <- x[,c(1L,3L)]
+               x_temp[(is_value_reg[1L] + 1L):nrow(x),2L] <- NA
+               scatterplot_ts(x_temp,col = col, lty = lty[2L])
+             }
              
-             x_temp <- x[,c(1L,3L)]
-             x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
-             scatterplot_ts(x_temp,col = col, lty = lty[2L])
+             if (is_value_reg[length(is_value_reg)] != nrow(x)) {
+               x_temp <- x[,c(1L,3L)]
+               x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
+               scatterplot_ts(x_temp,col = col, lty = lty[2L])
+             }
              
              # These are the parts before and after the coefficients calc window
-             
-             rm(x_temp)
            }
            
            if (show.legend) {
@@ -293,6 +299,9 @@ plotts <-function(x,show.legend,col,lty,
            } 
          }
   )
+  
+  draw_axes(if (identical(attr(x,"func"),"in_scatter")) NULL else timex_win)
+  
   invisible()
 }
 
@@ -337,8 +346,6 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
   
   if (show.legend) legend("bottomleft",legend=c("Benchmark", "Low-frequency serie"),
                           col=col,lty=lty,horiz=TRUE,bty="n",cex=0.8)
-  
-  draw_axes(time(x))
   
   invisible()
 }
@@ -422,8 +429,6 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
                   ...)
     )
   }
-  
-  draw_axes(if (identical(attr(x,"func"),"in_scatter")) NULL else time(x))
   
   invisible()
 }
@@ -516,7 +521,6 @@ geom_path_scatter <- function(object,i,lty) {
 
 ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
                       col, lty,...) {
-  coefficients <- attr(object,"coefficients")
   
   object <- window_default(object,start = start, end = end)
   
@@ -525,13 +529,14 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
   lty <- lty(ncol(object)-1L)
   
   g <- ggplot(show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab) +
-    geom_abline(intercept = coefficients["constant"],
-                slope = coefficients[names(coefficients) != "constant"],
+    geom_abline(intercept = attr(x,"coefficients")["constant"],
+                slope = attr(x,"coefficients")[names(attr(x,"coefficients")) != "constant"],
                 lty = "solid", colour = "red", size = 1)
   
   g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L])
   
   if (ncol(object) == 3L) {
+    # It's the benchmark case (not praislm)
     is_value_reg <- which(!is.na(object[,2L]))
     
     if (is_value_reg[1L] != 1L) {
