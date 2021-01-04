@@ -201,7 +201,7 @@ in_scatter.praislm <- function(object) {
 }
 
 #' @export
-in_scatter.twoStepsBenchmark<- function(object) {
+in_scatter.twoStepsBenchmark <- function(object) {
   m <- model.list(object)
   
   coeff_clean_win <- switch_window(m$start.coeff.calc,
@@ -217,6 +217,8 @@ in_scatter.twoStepsBenchmark<- function(object) {
               max(coeff_clean_win[2L],benchmark_clean_win[2L]))
   
   X <- m$hfserie[,colnames(m$hfserie) != "constant",drop = FALSE]
+  
+  if (ncol(X) != 1L) stop("This in_scatter method is only for univariate benchmarks.", call. = FALSE)
   
   series <- cbind(y,
                   window(
@@ -260,4 +262,19 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
         quote = FALSE, right = TRUE,digits = digits,
         ...)
   invisible(x)
+}
+
+#' @export
+distance <- function(x, p = 2) UseMethod("distance")
+
+#' @export
+distance.tscomparison <- function(x, p = 2) {
+  if (p < 1) stop("p should be greater than 1", call. = FALSE)
+  if (identical(attr(x,"func"),"in_scatter")) {
+    coefficients <- attr(x,"coefficients")
+    x <- x[,c(1L,2L)] # Doesn't take the benchmark values
+    x[,2L] <- coefficients["constant"] + coefficients[names(coefficients) != "constant"] * x[,2L]
+  }
+  if (p == Inf) max(abs(x[,1L]-x[,2L]),na.rm = TRUE)
+  else sum(abs(x[,1L]-x[,2L])^p,na.rm = TRUE)^(1/p)
 }
