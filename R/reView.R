@@ -1,8 +1,3 @@
-csspresetplot <- function() {
-  if (isTRUE(getOption("shiny.testmode"))) "{height: 496px; width: 761px;}"
-  else "{height: calc(100vh - 104px);width: calc(50vw - 39px);}"
-}
-
 cssmainoutwithtitle <- function() {
   if (isTRUE(getOption("shiny.testmode"))) "{height: 442px;}"
   else "{height: calc(100vh - 158px);}"
@@ -81,17 +76,17 @@ info_switch <- function(mainout_choice)
 
 info_dialog <- function(session,mainout_choice) {
   showModal(session = session,
-    modalDialog(title = mainout_choice,
-                info_switch(mainout_choice),
-                easyClose = TRUE,
-                footer = {
-                  if (mainout_choice == "Scatter plot") HTML("<center><b>Double-click</b> to reset plot window</center>")
-                  else HTML("<div style=\"display:flex;justify-content: space-evenly\">",
-                            "<div><b>Brush</b> to change plot window</div>",
-                            "<div><b>Double-click</b> to reset it</div>",
-                            "</div>")
-                },
-                fade = FALSE))
+            modalDialog(title = mainout_choice,
+                        info_switch(mainout_choice),
+                        easyClose = TRUE,
+                        footer = {
+                          if (mainout_choice == "Scatter plot") HTML("<center><b>Double-click</b> to reset plot window</center>")
+                          else HTML("<div style=\"display:flex;justify-content: space-evenly\">",
+                                    "<div><b>Brush</b> to change plot window</div>",
+                                    "<div><b>Double-click</b> to reset it</div>",
+                                    "</div>")
+                        },
+                        fade = FALSE))
   
 }
 
@@ -170,12 +165,10 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
 
 presets_list_fun <- function(hfserie,lfserie,...) {
   lapply(1L:6L,function(type) {
-    in_sample(
-      twoStepsBenchmark(hfserie,lfserie,
-                        include.differenciation = presets$include.differenciation[type],
-                        include.rho = presets$include.rho[type],
-                        set.const = presets$set.const[[type]])
-    )
+    twoStepsBenchmark(hfserie,lfserie,
+                      include.differenciation = presets$include.differenciation[type],
+                      include.rho = presets$include.rho[type],
+                      set.const = presets$set.const[[type]])
   })
 }
 
@@ -332,16 +325,15 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   div(fluidRow(
-    tags$style(type = "text/css", paste0(".",ns("presetplot"),csspresetplot())),
-    column(6,
-           div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "33%"),
-               plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "33%"),
-               plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "33%"),class=ns("presetplot"))),
-    column(6,
-           div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "33%"),
-               plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "33%"),
-               plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "33%"),class=ns("presetplot")))
-  ),style=boxstyle)
+    tags$style(type = "text/css", paste0(".",ns("presetplot"),cssmainoutwithouttitle())),
+    column(12,
+           radioButtons(ns("firsttab_choice"),NULL,
+                        choices = c("In-sample changes","Summary table"),
+                        selected = "In-sample changes",inline=TRUE),
+           align="center"
+    )),
+    div(uiOutput(ns("firstTabOutput")),style=boxstyle)
+  )
 }
 
 reView_ui_tab2 <- function(id) {
@@ -447,6 +439,123 @@ reView_ui <- function() reView_ui_module("reView")
 
 #### server ####
 
+reView_server_tab1_switch <- function(input,output,session,presets_list) {
+  
+  ns <- session$ns
+  
+  switch(input$firsttab_choice,
+         "In-sample changes" = {
+           fluidRow(
+             column(6,
+                    div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "33%"),
+                        plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "33%"),
+                        plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "33%"),class=ns("presetplot"))),
+             column(6,
+                    div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "33%"),
+                        plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "33%"),
+                        plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "33%"),class=ns("presetplot"))))
+         },
+         "Summary table" = {
+           HTML("<table width= \"100%\" border = 1 padding=6>
+                  <tr>
+                    <td colspan = 2></td>
+                    <th>Model 1</th>
+                    <th>Model 2</th>
+                    <th>Model 3</th>
+                    <th>Model 4</th>
+                    <th>Model 5</th>
+                    <th>Model 6</th>
+                  </tr>
+                  <tr>
+                    <th rowspan = 2>Distance</td>
+                    <th>In-sample changes</th>",
+                paste(
+                  "<td>",
+                  round(vapply(presets_list(),function(x) distance(in_sample(x,
+                                                                             type="changes")),0),1),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
+                  <tr>
+                    <th>Indicator contributions</th>",
+                paste(
+                  "<td>",
+                  round(vapply(presets_list(),function(x) distance(in_dicator(x,
+                                                                              type="contributions")),0),1),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
+                  <tr>
+                    <th colspan = 2>Portmanteau</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th rowspan = 2>Constant</td>
+                    <th>Value</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th>Student</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th rowspan = 2>Indicator</td>
+                    <th>Value</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th>Student</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th rowspan = 2>Rho</td>
+                    <th>Value</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th>Student</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>")
+         }
+  )
+}
+
 reView_server_tab1 <- function(id,old_bn) {
   moduleServer(id,
                function(input,output,session) {
@@ -454,10 +563,15 @@ reView_server_tab1 <- function(id,old_bn) {
                  presets_list <- reactive(presets_list_fun(hfserie(old_bn()),
                                                            lfserie(old_bn())))
                  
+                 
+                 output$firstTabOutput <- renderUI({
+                   reView_server_tab1_switch(input,output,session,presets_list)
+                 })
+                 
                  selected_preset <- reactiveVal(NULL)
                  
                  lapply(1L:6L, function(n) {
-                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(presets_list()[[n]],
+                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(lapply(presets_list(),in_sample)[[n]],
                                                                           main = presets$label[n]))
                  })
                  
@@ -478,8 +592,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
          old={
            title <- div("Before",class="section")
            outputclass <- ns("mainoutwithtitle")
-         }
-         ,
+         },
          new={
            title <- div("After",class="section")
            outputclass <- ns("mainoutwithtitle")

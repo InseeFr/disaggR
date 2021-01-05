@@ -177,7 +177,6 @@ draw_axes <- function(timex) {
     year <- floor(timex)
     axis(side = 1L, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
     axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.1, cex.axis=0.7)
-    
   }
 }
 
@@ -267,23 +266,21 @@ plotts <- function(x,show.legend,col,lty,
            
            scatterplot_ts(x[,c(1L,2L)], col=col, lty = lty[1L])
            
-           if (ncol(x) == 3L) {
-             # It's the benchmark case (not praislm)
-             is_value_reg <- which(!is.na(x[,2L]))
+           if ("High-frequency serie (benchmark)" %in% colnames(x)) {
+             is_value_reg <- which(!is.na(x[,"High-frequency serie (regression)"]))
              
              if (is_value_reg[1L] != 1L) {
-               x_temp <- x[,c(1L,3L)]
-               x_temp[(is_value_reg[1L] + 1L):nrow(x),2L] <- NA
+               x_temp <- x[,c("Low-frequency serie","High-frequency serie (benchmark)")]
+               x_temp[(is_value_reg[1L] + 1L):nrow(x),"High-frequency serie (benchmark)"] <- NA
                scatterplot_ts(x_temp,col = col, lty = lty[2L])
              }
              
              if (is_value_reg[length(is_value_reg)] != nrow(x)) {
-               x_temp <- x[,c(1L,3L)]
-               x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
+               x_temp <- x[,c("Low-frequency serie","High-frequency serie (benchmark)")]
+               x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),"High-frequency serie (benchmark)"] <- NA
                scatterplot_ts(x_temp,col = col, lty = lty[2L])
              }
              
-             # These are the parts before and after the coefficients calc window
            }
            
            if (show.legend) {
@@ -529,25 +526,24 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
   lty <- lty(ncol(object)-1L)
   
   g <- ggplot(show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab) +
-    geom_abline(intercept = attr(x,"coefficients")["constant"],
-                slope = attr(x,"coefficients")[names(attr(x,"coefficients")) != "constant"],
+    geom_abline(intercept = attr(object,"coefficients")["constant"],
+                slope = attr(object,"coefficients")[names(attr(object,"coefficients")) != "constant"],
                 lty = "solid", colour = "red", size = 1)
   
   g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L])
   
-  if (ncol(object) == 3L) {
-    # It's the benchmark case (not praislm)
-    is_value_reg <- which(!is.na(object[,2L]))
+  if ("High-frequency serie (benchmark)" %in% colnames(object)) {
+    is_value_reg <- which(!is.na(object[,"High-frequency serie (regression)"]))
     
     if (is_value_reg[1L] != 1L) {
-      object_temp <- object[,c(1L,3L)]
-      object_temp[(is_value_reg[1L] + 1L):nrow(object),2L] <- NA
+      object_temp <- object[,c("Low-frequency serie","High-frequency serie (benchmark)")]
+      object_temp[(is_value_reg[1L] + 1L):nrow(object),"High-frequency serie (benchmark)"] <- NA
       g <- g + geom_path_scatter(object_temp,2L,lty[2L])
     }
     
     if (is_value_reg[length(is_value_reg)] != nrow(object)) {
-      object_temp <- object[,c(1L,3L)]
-      object_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
+      object_temp <- object[,c("Low-frequency serie","High-frequency serie (benchmark)")]
+      object_temp[1L:(is_value_reg[length(is_value_reg)]-1L),"High-frequency serie (benchmark)"] <- NA
       g <- g + geom_path_scatter(object_temp,3L,lty[2L]) 
     }
     

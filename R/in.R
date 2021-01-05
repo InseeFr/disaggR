@@ -149,7 +149,7 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   class(series) <- c("tscomparison",class(series))
   if (type != "contributions") {
     if (sum(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
-      warning("The indicators contain revisions!")
+      warning("The indicators contain revisions!", .call = FALSE)
     }
     series <- structure(series[,"Benchmark",drop = FALSE],
                         type=attr(series,"type"),
@@ -196,7 +196,7 @@ in_scatter.praislm <- function(object) {
             type=if (m$include.differenciation) "differences" else "levels",
             func="in_scatter",
             class=c("tscomparison",class(series)),
-            dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie")),
+            dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie (regression)")),
             coefficients=coefficients(object))
 }
 
@@ -272,8 +272,9 @@ distance.tscomparison <- function(x, p = 2) {
   if (p < 1) stop("p should be greater than 1", call. = FALSE)
   if (identical(attr(x,"func"),"in_scatter")) {
     coefficients <- attr(x,"coefficients")
-    x <- x[,c(1L,2L)] # Doesn't take the benchmark values
-    x[,2L] <- coefficients["constant"] + coefficients[names(coefficients) != "constant"] * x[,2L]
+    x <- x[,c("Low-frequency serie",
+              "High-frequency serie (regression)")] # Doesn't take the benchmark values
+    x[,"High-frequency serie (regression)"] <- coefficients["constant"] + coefficients[names(coefficients) != "constant"] * x[,"High-frequency serie (regression)"]
   }
   if (p == Inf) max(abs(x[,1L]-x[,2L]),na.rm = TRUE)
   else sum(abs(x[,1L]-x[,2L])^p,na.rm = TRUE)^(1/p)
