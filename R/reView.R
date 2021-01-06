@@ -439,6 +439,37 @@ reView_ui <- function() reView_ui_module("reView")
 
 #### server ####
 
+format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
+                             min.is.green = FALSE,
+                             class.5pct = NULL) {
+  res <- format(round(object,digits),nsmall=digits,trim=TRUE)
+  if (signif.stars) {
+    res <- paste(symnum(object, corr = FALSE, na = FALSE, 
+                        cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+                        symbols = c("***", "**", "*", 
+                                    ".", " "),
+                        legend=FALSE),
+                 res)
+  }
+  
+  if (min.is.green) res[which.min(object)] <- paste("<div class='p-3 mb-2 bg-success text-white'>",
+                                                    res[which.min(object)],
+                                                    "</dif>")
+  else if (!(is.null(class.5pct))) res[object <= 0.05] <- paste("<div class='",
+                                                                class.5pct,
+                                                                "'>",
+                                                                res[which.min(object)],
+                                                                "</dif>")
+  
+  res[hide] <- ""
+  res <- paste(
+    "<td style='text-align: right'>",
+    res,
+    "</td>",
+    collapse = "")
+  res
+}
+
 reView_server_tab1_switch <- function(input,output,session,presets_list) {
   
   ns <- session$ns
@@ -457,97 +488,73 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
          },
          "Summary table" = {
            summ <- lapply(presets_list(),summary)
-           HTML("<table width= \"100%\" border = 1>
-                  <tr>
+           HTML("<table width= \"100%\" border = 1 style='border-radius: 4px;'>
+                  <tr style='text-align: center;'>
                     <td colspan = 2></td>
-                    <th>Model 1</th>
-                    <th>Model 2</th>
-                    <th>Model 3</th>
-                    <th>Model 4</th>
-                    <th>Model 5</th>
-                    <th>Model 6</th>
+                    <th style='text-align:center'>Model 1</th>
+                    <th style='text-align:center'>Model 2</th>
+                    <th style='text-align:center'>Model 3</th>
+                    <th style='text-align:center'>Model 4</th>
+                    <th style='text-align:center'>Model 5</th>
+                    <th style='text-align:center'>Model 6</th>
                   </tr>
                   <tr>
                     <th rowspan = 2>Distance</th>
                     <th>In-sample vs response (lf changes)</th>",
-                paste(
-                  "<td>",
-                  round(vapply(presets_list(),function(x) distance(in_sample(x,
-                                                                             type="changes")),0),1L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(presets_list(),function(x) distance(in_sample(x,
+                                                                                      type="changes")),
+                                        0),
+                                 digits = 2L,min.is.green = TRUE),
                 "</tr>
                   <tr>
                     <th>Indicator contributions vs benchmark (hf changes)</th>",
-                paste(
-                  "<td>",
-                  round(vapply(presets_list(),function(x) distance(in_dicator(x,
-                                                                              type="contributions")),0),1L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(presets_list(),function(x) distance(in_dicator(x,
+                                                                                       type="contributions")),
+                                        0),
+                                 digits=2L,min.is.green = TRUE),
                 "</tr>
                   <tr>
                     <th rowspan = 2>Portmanteau</th>
                     <th>Statistic</th>",
-                paste(
-                  "<td>",
-                  round(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
-                                                     else "residuals.decorrelated",
-                                                     "statistic"],0),1L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
+                                                              else "residuals.decorrelated",
+                                                              "statistic"],0),
+                                 digits=2L),
                 "</tr>
                   <tr>
                   <th>p-value</th>",
-                paste(
-                  "<td>",
-                  round(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
-                                                     else "residuals.decorrelated",
-                                                     "p.value"],0),3L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
+                                                              else "residuals.decorrelated",
+                                                              "p.value"],0),
+                                 digits=3L,signif.stars = TRUE,
+                                 class.5pct="p-3 mb-2 bg-danger text-white"),
                 "</tr>
                   <tr>
                   <th rowspan = 2>Constant</th>
                   <th>Value</th>",
-                paste(
-                  "<td>",
-                  round(vapply(summ,function(x) x$coefficients["constant","Estimate"],0),2L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(summ,function(x) x$coefficients["constant","Estimate"],0),
+                                 digits=2L,hide=c(2L,5L,6L)),
                 "</tr>
                   <tr>
                   <th>p-value</th>",
-                paste(
-                  "<td>",
-                  round(vapply(summ,function(x) x$coefficients["constant","p.value"],0),3L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(summ,function(x) x$coefficients["constant","p.value"],0),
+                                 digits=3L,hide=c(2L,5L,6L),signif.stars = TRUE),
                 "</tr>
                   <tr>
                   <th rowspan = 2>Indicator</th>
                   <th>Value</th>",
-                paste(
-                  "<td>",
-                  round(vapply(summ,function(x) x$coefficients[rownames(x$coefficients) != "constant","Estimate"],0),2L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(summ,function(x) x$coefficients[rownames(x$coefficients) != "constant","Estimate"],0),
+                                 digits=2L),
                 "</tr>
                   <tr>
                   <th>p-value</th>",
-                paste(
-                  "<td>",
-                  round(vapply(summ,function(x) x$coefficients[rownames(x$coefficients) != "constant","p.value"],0),3L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(summ,function(x) x$coefficients[rownames(x$coefficients) != "constant","p.value"],0),
+                                 digits=3L,signif.stars = TRUE),
                 "</tr>
                   <tr>
                   <th colspan = 2>Rho</th>",
-                paste(
-                  "<td>",
-                  round(vapply(summ,function(x) x$rho,0),2L),
-                  "</td>",
-                  collapse = ""),
+                format_table_row(vapply(summ,function(x) x$rho,0),
+                                 digits=2L,hide=c(4L,6L)),
                 "</tr>
                   </table>")
          }
