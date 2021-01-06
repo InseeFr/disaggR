@@ -168,7 +168,8 @@ presets_list_fun <- function(hfserie,lfserie,...) {
     twoStepsBenchmark(hfserie,lfserie,
                       include.differenciation = presets$include.differenciation[type],
                       include.rho = presets$include.rho[type],
-                      set.const = presets$set.const[[type]])
+                      set.const = presets$set.const[[type]],
+                      ...)
   })
 }
 
@@ -565,8 +566,17 @@ reView_server_tab1 <- function(id,old_bn) {
   moduleServer(id,
                function(input,output,session) {
                  
-                 presets_list <- reactive(presets_list_fun(hfserie(old_bn()),
-                                                           lfserie(old_bn())))
+                 presets_list <- reactive({
+                   m <- model.list(old_bn())
+                   presets_list_fun(hfserie(old_bn()),
+                                    lfserie(old_bn()),
+                                    start.coeff.calc=m$start.coeff.calc,
+                                    end.coeff.calc=m$end.coeff.calc,
+                                    start.benchmark=m$start.benchmark,
+                                    end.benchmark=m$end.benchmark,
+                                    start.domain=m$start.domain,
+                                    end.domain=m$end.domain)
+                   })
                  
                  
                  output$firstTabOutput <- renderUI({

@@ -280,5 +280,5 @@ distance.tscomparison <- function(x, p = 2) {
   else res <- x[,1L] - x[,2L]
   
   if (p == Inf) max(abs(res),na.rm = TRUE)
-  else sum(abs(res)^p,na.rm = TRUE)^(1/p)
+  else mean(abs(res)^p,na.rm = TRUE)^(1/p)
 }
