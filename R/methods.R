@@ -98,9 +98,10 @@ summary.praislm <- function (object, ...) {
   adj.r.squared <- 1 - (1 - r.squared) * n/rdf
   rho <- object$rho
   
-  pm <- rbind(residuals=do.call(c,Box.test(object$residuals, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]),
-              if (rho != 0) residuals.decorrelated=do.call(c,Box.test(object$residuals.decorrelated, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]))
-  colnames(pm) <- c("statistic","p.value")
+  pm <- rbind(matrix(do.call(c,Box.test(object$residuals, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]),
+                             dimnames = list("residuals",c("statistic","p.value")),nrow = 1L),
+              if (rho != 0) matrix(do.call(c,Box.test(object$residuals.decorrelated, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]),
+                                   dimnames = list("residuals.decorrelated",c("statistic","p.value")),nrow = 1L))
   
   incdiff <- model.list(object)$include.differenciation
   
@@ -144,10 +145,10 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
   pm <- x$pm
   if (x$rho==0) {
     rownames(pm) <- "u"
-    mes <- "Where Y=X*C+u"
+    mes <- "Where Y = X %*% coefficients + u"
   } else {
     rownames(pm) <- c("u","epsilon")
-    mes <- c("Where Y=X*C+u","Where u=rho*lag(u)+epsilon")
+    mes <- c("Where Y = X %*% coefficients + u","Where u = rho * lag(u) + epsilon")
   }
 
   pm <- formatC(pm,digits=digits)
