@@ -456,7 +456,8 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                         plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "33%"),class=ns("presetplot"))))
          },
          "Summary table" = {
-           HTML("<table width= \"100%\" border = 1 padding=6>
+           summ <- lapply(presets_list(),summary)
+           HTML("<table width= \"100%\" border = 1>
                   <tr>
                     <td colspan = 2></td>
                     <th>Model 1</th>
@@ -467,91 +468,88 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                     <th>Model 6</th>
                   </tr>
                   <tr>
-                    <th rowspan = 2>Distance</td>
-                    <th>In-sample changes</th>",
+                    <th rowspan = 2>Distance</th>
+                    <th>In-sample vs response (lf changes)</th>",
                 paste(
                   "<td>",
                   round(vapply(presets_list(),function(x) distance(in_sample(x,
-                                                                             type="changes")),0),1),
+                                                                             type="changes")),0),1L),
                   "</td>",
                   collapse = ""),
                 "</tr>
                   <tr>
-                    <th>Indicator contributions</th>",
+                    <th>Indicator contributions vs benchmark (hf changes)</th>",
                 paste(
                   "<td>",
                   round(vapply(presets_list(),function(x) distance(in_dicator(x,
-                                                                              type="contributions")),0),1),
+                                                                              type="contributions")),0),1L),
                   "</td>",
                   collapse = ""),
                 "</tr>
                   <tr>
-                    <th colspan = 2>Portmanteau</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                    <th rowspan = 2>Portmanteau</th>
+                    <th>Statistic</th>",
+                paste(
+                  "<td>",
+                  round(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
+                                                     else "residuals.decorrelated",
+                                                     "statistic"],0),1L),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
                   <tr>
-                    <th rowspan = 2>Constant</td>
-                    <th>Value</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                  <th>p-value</th>",
+                paste(
+                  "<td>",
+                  round(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
+                                                     else "residuals.decorrelated",
+                                                     "p.value"],0),3L),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
                   <tr>
-                    <th>Student</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                  <th rowspan = 2>Constant</th>
+                  <th>Value</th>",
+                paste(
+                  "<td>",
+                  round(vapply(summ,function(x) x$coefficients["constant","Estimate"],0),2L),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
                   <tr>
-                    <th rowspan = 2>Indicator</td>
-                    <th>Value</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                  <th>p-value</th>",
+                paste(
+                  "<td>",
+                  round(vapply(summ,function(x) x$coefficients["constant","p.value"],0),3L),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
                   <tr>
-                    <th>Student</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                  <th rowspan = 2>Indicator</th>
+                  <th>Value</th>",
+                paste(
+                  "<td>",
+                  round(vapply(summ,function(x) x$coefficients[rownames(x$coefficients) != "constant","Estimate"],0),2L),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
                   <tr>
-                    <th rowspan = 2>Rho</td>
-                    <th>Value</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
+                  <th>p-value</th>",
+                paste(
+                  "<td>",
+                  round(vapply(summ,function(x) x$coefficients[rownames(x$coefficients) != "constant","p.value"],0),3L),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
                   <tr>
-                    <th>Student</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </table>")
+                  <th colspan = 2>Rho</th>",
+                paste(
+                  "<td>",
+                  round(vapply(summ,function(x) x$rho,0),2L),
+                  "</td>",
+                  collapse = ""),
+                "</tr>
+                  </table>")
          }
   )
 }
