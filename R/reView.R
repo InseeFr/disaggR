@@ -155,12 +155,12 @@ plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,
 presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 include.rho = c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE),
                 set.const = list(NULL,0,NULL,NULL,0,0),
-                label = c("Model 1 (differences - with constant)",
-                          "Model 2 (differences - without constant)",
-                          "Model 3 (levels - with constant)",
-                          "Model 4 (autocorrelated levels - with constant)",
-                          "Model 5 (levels - without constant)",
-                          "Model 6 (autocorrelated levels - without constant)"
+                label = c("differences - with constant",
+                          "differences - without constant",
+                          "levels - with constant",
+                          "autocorrelated levels - with constant",
+                          "levels - without constant",
+                          "autocorrelated levels - without constant"
                 ))
 
 presets_list_fun <- function(hfserie,lfserie,...) {
@@ -468,10 +468,10 @@ format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
            })
     
     res[bckg.select] <- paste("<div class='",
-                                   bckg.class,
-                                   "'>",
-                                   res[bckg.select],
-                                   "</dif>")
+                              bckg.class,
+                              "'>",
+                              res[bckg.select],
+                              "</dif>")
   }
   
   res[hide] <- ""
@@ -491,25 +491,25 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
          "In-sample changes" = {
            fluidRow(
              column(6,
-                    div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "33%"),
-                        plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "33%"),
-                        plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "33%"),class=ns("presetplot"))),
+                    div(plotOutput(ns("model1_plot"),click=ns("model1_plotclick"),height = "33%"),
+                        plotOutput(ns("model3_plot"),click=ns("model3_plotclick"),height = "33%"),
+                        plotOutput(ns("model5_plot"),click=ns("model5_plotclick"),height = "33%"),class=ns("presetplot"))),
              column(6,
-                    div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "33%"),
-                        plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "33%"),
-                        plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "33%"),class=ns("presetplot"))))
+                    div(plotOutput(ns("model2_plot"),click=ns("model2_plotclick"),height = "33%"),
+                        plotOutput(ns("model4_plot"),click=ns("model4_plotclick"),height = "33%"),
+                        plotOutput(ns("model6_plot"),click=ns("model6_plotclick"),height = "33%"),class=ns("presetplot"))))
          },
          "Summary table" = {
            summ <- lapply(presets_list(),summary)
            HTML("<table width= \"100%\" border = 1 style='border-radius: 4px;'>
                   <tr style='text-align: center;'>
                     <td colspan = 2></td>
-                    <th style='text-align:center'>Model 1</th>
-                    <th style='text-align:center'>Model 2</th>
-                    <th style='text-align:center'>Model 3</th>
-                    <th style='text-align:center'>Model 4</th>
-                    <th style='text-align:center'>Model 5</th>
-                    <th style='text-align:center'>Model 6</th>
+                    <th style='text-align:center'>",as.character(actionLink(ns("model1_actionlink"),"Model 1")),"</th>
+                    <th style='text-align:center'>",as.character(actionLink(ns("model2_actionlink"),"Model 2")),"</th>
+                    <th style='text-align:center'>",as.character(actionLink(ns("model3_actionlink"),"Model 3")),"</th>
+                    <th style='text-align:center'>",as.character(actionLink(ns("model4_actionlink"),"Model 4")),"</th>
+                    <th style='text-align:center'>",as.character(actionLink(ns("model5_actionlink"),"Model 5")),"</th>
+                    <th style='text-align:center'>",as.character(actionLink(ns("model6_actionlink"),"Model 6")),"</th>
                   </tr>
                   <tr>
                     <th rowspan = 2>Distance</th>
@@ -590,7 +590,7 @@ reView_server_tab1 <- function(id,old_bn) {
                                     end.benchmark=m$end.benchmark,
                                     start.domain=m$start.domain,
                                     end.domain=m$end.domain)
-                   })
+                 })
                  
                  
                  output$firstTabOutput <- renderUI({
@@ -601,15 +601,22 @@ reView_server_tab1 <- function(id,old_bn) {
                  
                  lapply(1L:6L, function(n) {
                    output[[paste0("model",n,"_plot")]] <- renderPlot(plot(lapply(presets_list(),in_sample)[[n]],
-                                                                          main = presets$label[n]))
+                                                                          main = paste0("Model ",n," (",presets$label[n],")")))
                  })
                  
                  lapply(1L:6L,function(type) {
-                   observeEvent(input[[paste0("model",type,"_click")]],
-                                {
-                                  selected_preset(NULL)
-                                  selected_preset(type)
-                                })
+                   observeEvent(
+                       input[[paste0("model",type,"_plotclick")]],
+                     {
+                       selected_preset(NULL)
+                       selected_preset(type)
+                     })
+                   observeEvent(
+                     input[[paste0("model",type,"_actionlink")]],
+                     {
+                       selected_preset(NULL)
+                       selected_preset(type)
+                     },ignoreInit = TRUE)
                  })
                  selected_preset
                })
@@ -784,7 +791,7 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  
                  # Inputs initializers
                  
-                 observeEvent({reset();old_bn()},
+                 observeEvent(c(reset(),old_bn()),
                               set_inputs_to_default(session,old_bn),
                               priority = 2L)
                  
