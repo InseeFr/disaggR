@@ -6,6 +6,14 @@
 \usage{
 distance(x, p = 2)
 }
+\arguments{
+\item{x}{an object of class \code{tscomparison}}
+
+\item{p}{an integer greater than 1L, or Inf.}
+}
+\value{
+a numeric of length 1, the distance.
+}
 \description{
 This function \code{distance} computes the Minkowski distance of exponent p,
 related to a tscomparison object, produced with \code{in_sample}, \code{in_dicator} or
@@ -21,6 +29,13 @@ value and the response, on the coefficient calculation window.
 \item \code{in_revisions} will produce the high-frequency distance between the two
 benchmarked series (eventually, between the two contributions sums of the inputs).
 }
-
-As for the contributions of the inputs, the trend
+}
+\examples{
+benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+distance(in_sample(benchmark,type="changes"))
+distance(in_dicator(benchmark,type="contributions"),p=1L)
+distance(in_dicator(benchmark,type="changes"),p=Inf)
+}
+\seealso{
+in_sample in_dicator in_revisions
 }

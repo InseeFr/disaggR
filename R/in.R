@@ -285,8 +285,17 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' * `in_revisions` will produce the high-frequency distance between the two
 #' benchmarked series (eventually, between the two contributions sums of the inputs).
 #' 
-#' As for the contributions of the inputs, the trend
+#' @param x an object of class `tscomparison`
+#' @param p an integer greater than 1L, or Inf.
 #' 
+#' @return
+#' a numeric of length 1, the distance.
+#' @seealso in_sample in_dicator in_revisions
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' distance(in_sample(benchmark,type="changes"))
+#' distance(in_dicator(benchmark,type="contributions"),p=1L)
+#' distance(in_dicator(benchmark,type="changes"),p=Inf)
 #' @export
 distance <- function(x, p = 2) UseMethod("distance")
 
@@ -299,7 +308,7 @@ distance.tscomparison <- function(x, p = 2) {
                 in_scatter = stop("This function doesn't work with in_scatter", call. = FALSE),
                 in_dicator = {
                   if (identical(attr(x,"type"),"contributions")) x[,"Smoothed part"] + x[,"Trend"]
-                  else x[,"Benchmark"] - ts_from_tsp(rowSums(x[,!(colnames(x) != "Benchmark")]),
+                  else x[,"Benchmark"] - ts_from_tsp(rowSums(x[,colnames(x) != "Benchmark",drop = FALSE]),
                                                      tsp(x))
                 },
                 in_revisions = {
