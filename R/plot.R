@@ -24,7 +24,7 @@ default_col_pal <- function(object) {
 
 #' Default color palette
 #' 
-#' The default palette for the graphics. l`linetype_pal` is imported from the
+#' The default palette for the graphics. `linetype_pal` is imported from the
 #' package \pkg{scales}.
 #' 
 #' @keywords internal
@@ -398,12 +398,18 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
   
   type_label <- type_label(x)
   
-  if (type_label == "Contributions") plotts(x = x, show.legend = show.legend,
-                                            col = col, lty = lty,
-                                            series_names = colnames(x),type = "bar",
-                                            start = start, end = end,
-                                            xlab = xlab, ylab = ylab, main = main,
-                                            ...)
+  if (type_label == "Contributions") {
+    if (all(x[,"Trend"] == 0,na.rm = TRUE)) {
+      force(col);force(lty)
+      x <- x[,colnames(x) != "Trend", drop = FALSE]
+    }
+    plotts(x = x, show.legend = show.legend,
+           col = col, lty = lty,
+           series_names = colnames(x),type = "bar",
+           start = start, end = end,
+           xlab = xlab, ylab = ylab, main = main,
+           ...)
+  }
   else {
     switch(attr(x,"func"),
            in_revisions = plotts(x = x, show.legend = show.legend,
@@ -623,6 +629,8 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
   type_label <- type_label(object)
   
   if (type_label == "Contributions") {
+    if (all(object[,"Trend"] == 0,na.rm = TRUE)) object <- object[,colnames(x) != "Trend", drop = FALSE]
+    
     ggplotts(object, show.legend = show.legend,
              type = "bar", series_names = colnames(object), theme = theme,
              start = start, end = end,
