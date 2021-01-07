@@ -281,9 +281,9 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' * `in_sample` will produce the low-frequency distance between the predicted
 #' value and the response, on the coefficient calculation window.
 #' * `in_dicator` will produce the high-frequency distance between the inputs
-#' (eventually, its contributions) and the benchmarked serie.
+#' (eventually, the sum of its contributions) and the benchmarked serie.
 #' * `in_revisions` will produce the high-frequency distance between the two
-#' benchmarked series (eventually, between the two contributions of the inputs).
+#' benchmarked series (eventually, between the two contributions sums of the inputs).
 #' 
 #' As for the contributions of the inputs, the trend
 #' 
