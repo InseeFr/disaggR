@@ -501,7 +501,7 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
          },
          "Summary table" = {
            summ <- lapply(presets_list(),summary)
-           HTML("<table width= \"100%\" border = 1 style='border-radius: 4px;'>
+           HTML("<div style='margin: 6px'><table width= \"100%\" border = 1>
                   <tr style='text-align: center;'>
                     <td colspan = 2></td>
                     <th style='text-align:center'>",as.character(actionLink(ns("model1_actionlink"),"Model 1")),"</th>
@@ -571,7 +571,12 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                 format_table_row(vapply(summ,function(x) x$rho,0),
                                  digits=2L,hide=c(4L,6L)),
                 "</tr>
-                  </table>")
+                  </table>
+                  <div style='margin-top: 20px;margin-right: 6px;' align='right'><table>",
+                paste0("<tr>","<th>Model ",1:length(presets$label),
+                       " : </th><td>",presets$label,"</td></tr>",
+                       collapse=""),
+                "</table>")
          }
   )
 }
@@ -606,7 +611,7 @@ reView_server_tab1 <- function(id,old_bn) {
                  
                  lapply(1L:6L,function(type) {
                    observeEvent(
-                       input[[paste0("model",type,"_plotclick")]],
+                     input[[paste0("model",type,"_plotclick")]],
                      {
                        selected_preset(NULL)
                        selected_preset(type)
