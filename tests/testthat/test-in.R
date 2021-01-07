@@ -64,7 +64,6 @@ test_that("in_dicator works", {
                                include.differenciation = FALSE)
   
   simul <- in_dicator(benchmark,type = "levels")
-  attributes(simul)
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
   class(obtained) <- c("tscomparison","mts","ts","matrix")
   attr(obtained,"type") <- "levels"
@@ -89,9 +88,9 @@ test_that("in_dicator works", {
   
   simul <- in_dicator(benchmark,type="contributions")/100
   simul <- unname(simul*stats::lag(as.ts(benchmark),-1))
-  simul <- ts_from_tsp(simul  %*% diag(1/c(coef(benchmark)["hfserie"],1)),tsp(simul))
+  simul <- ts_from_tsp(simul  %*% diag(1/c(coef(benchmark)["hfserie"],1,1)),tsp(simul))
   expect_equal(unname(simul),
-               unname(window(diff(cbind(turnover,smoothed.part(benchmark))),end=c(2020,5))))
+               unname(window(diff(cbind(turnover,smoothed.part(benchmark),0)),end=c(2020,5))))
 })
 
 test_that("in revisions works",{

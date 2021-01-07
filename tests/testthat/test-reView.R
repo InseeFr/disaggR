@@ -128,9 +128,7 @@ test_that("reView",{
                  model4,model5,model6)
   
   expect_true(all(vapply(models,`[[`,0,"height") >= 153))
-  expect_true(all(vapply(models,`[[`,0,"height") <= 164))
-  expect_true(all(vapply(models,`[[`,0,"width") <= 771))
-  expect_true(all(vapply(models,`[[`,0,"width") >= 751))
+  expect_true(all(vapply(models,`[[`,0,"height") <= 174))
   
   expect_equal(as.ts(get_bn()),as.ts(twoStepsBenchmark(turnover,construction)))
   
@@ -317,5 +315,3 @@ test_that("reView",{
   # the previous code is to quit the shinyprocess for codecov to update
   
 })
-
-###### Review tests
