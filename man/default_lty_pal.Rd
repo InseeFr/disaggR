@@ -7,7 +7,7 @@
 default_lty_pal(object)
 }
 \description{
-The default palette for the graphics. l\code{linetype_pal} is imported from the
+The default palette for the graphics. \code{linetype_pal} is imported from the
 package \pkg{scales}.
 }
 \keyword{internal}

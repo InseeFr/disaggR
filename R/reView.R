@@ -441,8 +441,7 @@ reView_ui <- function() reView_ui_module("reView")
 #### server ####
 
 format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
-                             min.is.green = FALSE,
-                             class.5pct = NULL) {
+                             background.format = NULL) {
   res <- format(round(object,digits),nsmall=digits,trim=TRUE)
   if (signif.stars) {
     res <- paste(symnum(object, corr = FALSE, na = FALSE, 
@@ -453,14 +452,27 @@ format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
                  res)
   }
   
-  if (min.is.green) res[which.min(object)] <- paste("<div class='p-3 mb-2 bg-success text-white'>",
-                                                    res[which.min(object)],
-                                                    "</dif>")
-  else if (!(is.null(class.5pct))) res[object <= 0.05] <- paste("<div class='",
-                                                                class.5pct,
-                                                                "'>",
-                                                                res[which.min(object)],
-                                                                "</dif>")
+  if (!is.null(background.format)) {
+    switch(background.format,
+           min.is.green = {
+             bckg.class <- "p-3 mb-2 bg-success text-white"
+             bckg.select <- which.min(object)
+           },
+           success.is.red = {
+             bckg.class <- "p-3 mb-2 bg-danger text-white"
+             bckg.select <- object <= 0.05 & !is.na(object)
+           },
+           fail.is.red = {
+             bckg.class <- "p-3 mb-2 bg-danger text-white"
+             bckg.select <- object > 0.05 & !is.na(object)
+           })
+    
+    res[bckg.select] <- paste("<div class='",
+                                   bckg.class,
+                                   "'>",
+                                   res[bckg.select],
+                                   "</dif>")
+  }
   
   res[hide] <- ""
   res <- paste(
@@ -505,14 +517,14 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                 format_table_row(vapply(presets_list(),function(x) distance(in_sample(x,
                                                                                       type="changes")),
                                         0),
-                                 digits = 2L,min.is.green = TRUE),
+                                 digits = 2L,background.format = "min.is.green"),
                 "</tr>
                   <tr>
                     <th>Indicator contributions vs benchmark (hf changes)</th>",
                 format_table_row(vapply(presets_list(),function(x) distance(in_dicator(x,
                                                                                        type="contributions")),
                                         0),
-                                 digits=2L,min.is.green = TRUE),
+                                 digits=2L,background.format = "min.is.green"),
                 "</tr>
                   <tr>
                     <th rowspan = 2>Portmanteau</th>
@@ -528,7 +540,7 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                                                               else "residuals.decorrelated",
                                                               "p.value"],0),
                                  digits=3L,signif.stars = TRUE,
-                                 class.5pct="p-3 mb-2 bg-danger text-white"),
+                                 background.format = "success.is.red"),
                 "</tr>
                   <tr>
                   <th rowspan = 2>Constant</th>
@@ -539,7 +551,8 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                   <tr>
                   <th>p-value</th>",
                 format_table_row(vapply(summ,function(x) x$coefficients["constant","p.value"],0),
-                                 digits=3L,hide=c(2L,5L,6L),signif.stars = TRUE),
+                                 digits=3L,hide=c(2L,5L,6L),signif.stars = TRUE,
+                                 background.format = "fail.is.red"),
                 "</tr>
                   <tr>
                   <th rowspan = 2>Indicator</th>
@@ -550,7 +563,8 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                   <tr>
                   <th>p-value</th>",
                 format_table_row(vapply(summ,function(x) x$coefficients[rownames(x$coefficients) != "constant","p.value"],0),
-                                 digits=3L,signif.stars = TRUE),
+                                 digits=3L,signif.stars = TRUE,
+                                 background.format = "fail.is.red"),
                 "</tr>
                   <tr>
                   <th colspan = 2>Rho</th>",
