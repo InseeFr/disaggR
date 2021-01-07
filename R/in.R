@@ -270,18 +270,29 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
   invisible(x)
 }
 
+#' Distance computation for benchmarks
+#' 
+#' This function `distance` computes the Minkowski distance of exponent p,
+#' related to a tscomparison object, produced with `in_sample`, `in_dicator` or
+#' `in_sample` 
+#' 
+#' The meaning depends on the tscomparison function :
+#' 
+#' * `in_sample` will produce the low-frequency distance between the predicted
+#' value and the response, on the coefficient calculation window.
+#' * `in_dicator` will produce the high-frequency distance between the inputs
+#' (eventually, the sum of its contributions) and the benchmarked serie.
+#' * `in_revisions` will produce the high-frequency distance between the two
+#' benchmarked series (eventually, between the two contributions of the inputs)
+#' 
 #' @export
 distance <- function(x, p = 2) UseMethod("distance")
 
 #' @export
 distance.tscomparison <- function(x, p = 2) {
+  if (identical(attr(x,"func"),"in_scatter")) stop("This function doesn't work with in_scatter", call. = FALSE)
   if (p < 1) stop("p should be greater than 1", call. = FALSE)
-  if (identical(attr(x,"func"),"in_scatter")) {
-    coefficients <- attr(x,"coefficients")
-    x <- x[,c("Low-frequency serie",
-              "High-frequency serie (regression)")] # Doesn't take the benchmark values
-    x[,"High-frequency serie (regression)"] <- coefficients["constant"] + coefficients[names(coefficients) != "constant"] * x[,"High-frequency serie (regression)"]
-  }
+  if (identical(attr(x,"func"),"in_revisions")) res <- x[,1L]
   else if (identical(attr(x,"type"),"contributions")) res <- x[,"Smoothed part"] + x[,"Trend"]
   else res <- x[,1L] - x[,2L]
   
