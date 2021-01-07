@@ -1,5 +1,4 @@
 test_that("params for other things than shiny test",{
-  expect_identical(csspresetplot(),"{height: calc(100vh - 104px);width: calc(50vw - 39px);}")
   expect_identical(cssmainoutwithtitle(),"{height: calc(100vh - 158px);}")
   expect_identical(cssmainoutwithouttitle (),"{height: calc(100vh - 138px);}")
 })
@@ -59,15 +58,15 @@ test_that("reView output class",{
 test_that("presets list fun",{
   produced <- presets_list_fun(turnover,construction)
   
-  presets_list <- list(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE),
+  expected <- list(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE),
                        twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
                                          set.const = 0),
                        twoStepsBenchmark(turnover,construction),
                        twoStepsBenchmark(turnover,construction,include.rho = TRUE),
                        twoStepsBenchmark(turnover,construction,set.const = 0),
                        twoStepsBenchmark(turnover,construction,set.const = 0,include.rho = TRUE))
-  expected <- lapply(presets_list,in_sample)
-  expect_identical(produced,expected)
+  
+  expect_identical(lapply(produced,in_sample),lapply(expected,in_sample))
 })
 
 test_that("rePort produces a report",{
@@ -127,13 +126,13 @@ test_that("reView",{
   models <- list(model1,model2,model3,
                  model4,model5,model6)
   
-  expect_true(all(vapply(models,`[[`,0,"height") >= 153))
-  expect_true(all(vapply(models,`[[`,0,"height") <= 174))
+  expect_true(all(vapply(models,`[[`,0,"height") >= 142))
+  expect_true(all(vapply(models,`[[`,0,"height") <= 163))
   
   expect_equal(as.ts(get_bn()),as.ts(twoStepsBenchmark(turnover,construction)))
   
   # Click on a model changes navbar
-  app$setInputs(`reView-reViewtab1-model1_click` = 10L,
+  app$setInputs(`reView-reViewtab1-model1_plotclick` = 10L,
                 allowInputNoBinding_ = TRUE)
   slidercoeffcalc <- app$waitForValue("reView-reViewtab2-coeffcalc",iotype="input",
                                       timeout=5000)

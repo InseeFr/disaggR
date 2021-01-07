@@ -629,7 +629,7 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
   type_label <- type_label(object)
   
   if (type_label == "Contributions") {
-    if (all(object[,"Trend"] == 0,na.rm = TRUE)) object <- object[,colnames(x) != "Trend", drop = FALSE]
+    if (all(object[,"Trend"] == 0,na.rm = TRUE)) object <- object[,colnames(object) != "Trend", drop = FALSE]
     
     ggplotts(object, show.legend = show.legend,
              type = "bar", series_names = colnames(object), theme = theme,
