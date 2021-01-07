@@ -97,12 +97,13 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
                    "levels-rebased" = ts(t(t(series)/series[1L,]) * 100,start=start(series),frequency=frequency(series)),
                    changes = (series/stats::lag(series,-1)-1)*100,
                    contributions = {
-                     smoothed_and_trend <- smoothed.part(object)
-                     if (model.list(object)$include.differenciation && coef(object)["constant"] != 0) {
-                       smoothed_and_trend <- smoothed_and_trend + coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
-                     }
-                     series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],smoothed_and_trend)
-                     diff(ts(t(t(series_with_smoothed_part) * c(coef(object)[names(coef(object)) != "constant"],1)),
+                     trend <- 
+                     series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],
+                                                        smoothed.part(object),
+                                                        if (model.list(object)$include.differenciation && coef(object)["constant"] != 0) {
+                                                          coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
+                                                        } else 0)
+                     diff(ts(t(t(series_with_smoothed_part) * c(coef(object)[names(coef(object)) != "constant"],1,1)),
                              start = start(series_with_smoothed_part),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
                    },
@@ -116,7 +117,7 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
             dimnames=list(NULL,
                           c(if (type != "contributions") "Benchmark",
                             if (is.null(colnames(hfserie))) "High-frequency serie" else colnames(hfserie),
-                            if (type == "contributions") "Smoothed part"
+                            if (type == "contributions") c("Smoothed part","Trend")
                           ))
   )
 }
