@@ -282,7 +282,7 @@ distance.tscomparison <- function(x, p = 2) {
               "High-frequency serie (regression)")] # Doesn't take the benchmark values
     x[,"High-frequency serie (regression)"] <- coefficients["constant"] + coefficients[names(coefficients) != "constant"] * x[,"High-frequency serie (regression)"]
   }
-  if (identical(attr(x,"type"),"contributions")) res <- x[,"Smoothed part"]
+  if (identical(attr(x,"type"),"contributions")) res <- x[,"Smoothed part"] + x[,"Trend"]
   else res <- x[,1L] - x[,2L]
   
   if (p == Inf) max(abs(res),na.rm = TRUE)
