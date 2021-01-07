@@ -97,7 +97,11 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
                    "levels-rebased" = ts(t(t(series)/series[1L,]) * 100,start=start(series),frequency=frequency(series)),
                    changes = (series/stats::lag(series,-1)-1)*100,
                    contributions = {
-                     series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],smoothed.part(object))
+                     smoothed_and_trend <- smoothed.part(object)
+                     if (model.list(object)$include.differenciation && coef(object)["constant"] != 0) {
+                       smoothed_and_trend <- smoothed_and_trend + coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
+                     }
+                     series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],smoothed_and_trend)
                      diff(ts(t(t(series_with_smoothed_part) * c(coef(object)[names(coef(object)) != "constant"],1)),
                              start = start(series_with_smoothed_part),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
@@ -202,6 +206,7 @@ in_scatter.praislm <- function(object) {
 
 #' @export
 in_scatter.twoStepsBenchmark <- function(object) {
+
   m <- model.list(object)
   
   coeff_clean_win <- switch_window(m$start.coeff.calc,
