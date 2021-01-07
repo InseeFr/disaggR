@@ -98,11 +98,11 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
                    changes = (series/stats::lag(series,-1)-1)*100,
                    contributions = {
                      trend <- 
-                     series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],
-                                                        smoothed.part(object),
-                                                        if (model.list(object)$include.differenciation && coef(object)["constant"] != 0) {
-                                                          coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
-                                                        } else 0)
+                       series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],
+                                                          smoothed.part(object),
+                                                          if (model.list(object)$include.differenciation && coef(object)["constant"] != 0) {
+                                                            coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
+                                                          } else 0)
                      diff(ts(t(t(series_with_smoothed_part) * c(coef(object)[names(coef(object)) != "constant"],1,1)),
                              start = start(series_with_smoothed_part),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
@@ -207,7 +207,7 @@ in_scatter.praislm <- function(object) {
 
 #' @export
 in_scatter.twoStepsBenchmark <- function(object) {
-
+  
   m <- model.list(object)
   
   coeff_clean_win <- switch_window(m$start.coeff.calc,
@@ -281,20 +281,33 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' * `in_sample` will produce the low-frequency distance between the predicted
 #' value and the response, on the coefficient calculation window.
 #' * `in_dicator` will produce the high-frequency distance between the inputs
-#' (eventually, the sum of its contributions) and the benchmarked serie.
+#' (eventually, its contributions) and the benchmarked serie.
 #' * `in_revisions` will produce the high-frequency distance between the two
-#' benchmarked series (eventually, between the two contributions of the inputs)
+#' benchmarked series (eventually, between the two contributions of the inputs).
+#' 
+#' As for the contributions of the inputs, the trend
 #' 
 #' @export
 distance <- function(x, p = 2) UseMethod("distance")
 
 #' @export
 distance.tscomparison <- function(x, p = 2) {
-  if (identical(attr(x,"func"),"in_scatter")) stop("This function doesn't work with in_scatter", call. = FALSE)
   if (p < 1) stop("p should be greater than 1", call. = FALSE)
-  if (identical(attr(x,"func"),"in_revisions")) res <- x[,1L]
-  else if (identical(attr(x,"type"),"contributions")) res <- x[,"Smoothed part"] + x[,"Trend"]
-  else res <- x[,1L] - x[,2L]
+  
+  res <- switch(attr(x,"func"),
+                in_sample = x[,"Benchmark"] - x[,"Predicted value"],
+                in_scatter = stop("This function doesn't work with in_scatter", call. = FALSE),
+                in_dicator = {
+                  if (identical(attr(x,"type"),"contributions")) x[,"Smoothed part"] + x[,"Trend"]
+                  else x[,"Benchmark"] - ts_from_tsp(rowSums(x[,!(colnames(x) != "Benchmark")]),
+                                                     tsp(x))
+                },
+                in_revisions = {
+                  if (identical(attr(x,"type"),"contributions")) {
+                    ts_from_tsp(rowSums(x[,!(colnames(x) %in% c("Smoothed part","Trend")),drop = FALSE]),
+                                tsp(x))
+                  } else x[,"Benchmark"]
+                })
   
   if (p == Inf) max(abs(res),na.rm = TRUE)
   else mean(abs(res)^p,na.rm = TRUE)^(1/p)

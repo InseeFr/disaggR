@@ -17,8 +17,10 @@ The meaning depends on the tscomparison function :
 \item \code{in_sample} will produce the low-frequency distance between the predicted
 value and the response, on the coefficient calculation window.
 \item \code{in_dicator} will produce the high-frequency distance between the inputs
-(eventually, the sum of its contributions) and the benchmarked serie.
+(eventually, its contributions) and the benchmarked serie.
 \item \code{in_revisions} will produce the high-frequency distance between the two
-benchmarked series (eventually, between the two contributions of the inputs)
+benchmarked series (eventually, between the two contributions of the inputs).
 }
+
+As for the contributions of the inputs, the trend
 }
