@@ -283,7 +283,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' * `in_dicator` will produce the high-frequency distance between the inputs
 #' (eventually, the sum of its contributions) and the benchmarked serie.
 #' * `in_revisions` will produce the high-frequency distance between the two
-#' benchmarked series (eventually, between the two contributions sums of the inputs).
+#' benchmarked series (contributions distance isn't permitted).
 #' 
 #' @param x an object of class `tscomparison`
 #' @param p an integer greater than 1L, or Inf.
@@ -305,17 +305,15 @@ distance.tscomparison <- function(x, p = 2) {
   
   res <- switch(attr(x,"func"),
                 in_sample = x[,"Benchmark"] - x[,"Predicted value"],
-                in_scatter = stop("This function doesn't work with in_scatter", call. = FALSE),
+                in_scatter = stop("The distance method doesn't support in_scatter results", call. = FALSE),
                 in_dicator = {
                   if (identical(attr(x,"type"),"contributions")) x[,"Smoothed part"] + x[,"Trend"]
                   else x[,"Benchmark"] - ts_from_tsp(rowSums(x[,colnames(x) != "Benchmark",drop = FALSE]),
                                                      tsp(x))
                 },
                 in_revisions = {
-                  if (identical(attr(x,"type"),"contributions")) {
-                    ts_from_tsp(rowSums(x[,!(colnames(x) %in% c("Smoothed part","Trend")),drop = FALSE]),
-                                tsp(x))
-                  } else x[,"Benchmark"]
+                  if (identical(attr(x,"type"),"contributions")) stop("The function distance isn't permitted on revisions of contributions", call. = FALSE)
+                  else x[,"Benchmark"]
                 })
   
   if (p == Inf) max(abs(res),na.rm = TRUE)

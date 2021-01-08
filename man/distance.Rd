@@ -27,7 +27,7 @@ value and the response, on the coefficient calculation window.
 \item \code{in_dicator} will produce the high-frequency distance between the inputs
 (eventually, the sum of its contributions) and the benchmarked serie.
 \item \code{in_revisions} will produce the high-frequency distance between the two
-benchmarked series (eventually, between the two contributions sums of the inputs).
+benchmarked series (contributions distance isn't permitted).
 }
 }
 \examples{

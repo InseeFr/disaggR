@@ -483,7 +483,7 @@ format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
   res
 }
 
-reView_server_tab1_switch <- function(input,output,session,presets_list) {
+reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn) {
   
   ns <- session$ns
   
@@ -512,21 +512,29 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                     <th style='text-align:center'>",as.character(actionLink(ns("model6_actionlink"),"Model 6")),"</th>
                   </tr>
                   <tr>
-                    <th rowspan = 2>Distance</th>
-                    <th>In-sample vs response (lf changes)</th>",
+                    <th rowspan = 3>Distance</th>
+                    <th>In-sample predictions (lf changes)</th>",
                 format_table_row(vapply(presets_list(),function(x) distance(in_sample(x,
                                                                                       type="changes")),
                                         0),
                                  digits = 2L,background.format = "min.is.green"),
                 "</tr>
-                  <tr>
-                    <th>Indicator contributions vs benchmark (hf changes)</th>",
+                 <tr>
+                    <th>Benchmark contributions (hf changes)</th>",
                 format_table_row(vapply(presets_list(),function(x) distance(in_dicator(x,
                                                                                        type="contributions")),
                                         0),
                                  digits=2L,background.format = "min.is.green"),
                 "</tr>
-                  <tr>
+                 <tr>
+                    <th>Revisions (hf changes)</th>",
+                format_table_row(vapply(presets_list(),function(x) distance(in_revisions(x,
+                                                                                         old_bn(),
+                                                                                         type="changes")),
+                                        0),
+                                 digits=2L,background.format = "min.is.green"),
+                "</tr>
+                 <tr>
                     <th rowspan = 2>Portmanteau</th>
                     <th>Statistic</th>",
                 format_table_row(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
@@ -571,12 +579,12 @@ reView_server_tab1_switch <- function(input,output,session,presets_list) {
                 format_table_row(vapply(summ,function(x) x$rho,0),
                                  digits=2L,hide=c(4L,6L)),
                 "</tr>
-                  </table>
-                  <div style='margin-top: 20px;margin-right: 6px;' align='right'><table>",
+                 </table>
+                  <div style='margin-top: 20px;'><table>",
                 paste0("<tr>","<th>Model ",1:length(presets$label),
-                       " : </th><td>",presets$label,"</td></tr>",
+                       " : </th><td style='padding-left: 3px'>",presets$label,"</td></tr>",
                        collapse=""),
-                "</table>")
+                "</table></div>")
          }
   )
 }
@@ -599,7 +607,7 @@ reView_server_tab1 <- function(id,old_bn) {
                  
                  
                  output$firstTabOutput <- renderUI({
-                   reView_server_tab1_switch(input,output,session,presets_list)
+                   reView_server_tab1_switch(input,output,session,presets_list,old_bn)
                  })
                  
                  selected_preset <- reactiveVal(NULL)
