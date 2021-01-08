@@ -98,11 +98,11 @@ in_dicator.twoStepsBenchmark <- function(object,type="changes") {
                    changes = (series/stats::lag(series,-1)-1)*100,
                    contributions = {
                      trend <- 
-                     series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],
-                                                        smoothed.part(object),
-                                                        if (model.list(object)$include.differenciation && coef(object)["constant"] != 0) {
-                                                          coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
-                                                        } else 0)
+                       series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],
+                                                          smoothed.part(object),
+                                                          if (model.list(object)$include.differenciation && coef(object)["constant"] != 0) {
+                                                            coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
+                                                          } else 0)
                      diff(ts(t(t(series_with_smoothed_part) * c(coef(object)[names(coef(object)) != "constant"],1,1)),
                              start = start(series_with_smoothed_part),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
@@ -154,7 +154,7 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   class(series) <- c("tscomparison",class(series))
   if (type != "contributions") {
     if (sum(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
-      warning("The indicators contain revisions!")
+      warning("The indicators contain revisions!", .call = FALSE)
     }
     series <- structure(series[,"Benchmark",drop = FALSE],
                         type=attr(series,"type"),
@@ -201,12 +201,13 @@ in_scatter.praislm <- function(object) {
             type=if (m$include.differenciation) "differences" else "levels",
             func="in_scatter",
             class=c("tscomparison",class(series)),
-            dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie")),
+            dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie (regression)")),
             coefficients=coefficients(object))
 }
 
 #' @export
-in_scatter.twoStepsBenchmark<- function(object) {
+in_scatter.twoStepsBenchmark <- function(object) {
+  
   m <- model.list(object)
   
   coeff_clean_win <- switch_window(m$start.coeff.calc,
@@ -222,6 +223,8 @@ in_scatter.twoStepsBenchmark<- function(object) {
               max(coeff_clean_win[2L],benchmark_clean_win[2L]))
   
   X <- m$hfserie[,colnames(m$hfserie) != "constant",drop = FALSE]
+  
+  if (ncol(X) != 1L) stop("This in_scatter method is only for univariate benchmarks.", call. = FALSE)
   
   series <- cbind(y,
                   window(
@@ -265,4 +268,54 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
         quote = FALSE, right = TRUE,digits = digits,
         ...)
   invisible(x)
+}
+
+#' Distance computation for benchmarks
+#' 
+#' This function `distance` computes the Minkowski distance of exponent p,
+#' related to a tscomparison object, produced with `in_sample`, `in_dicator` or
+#' `in_sample` 
+#' 
+#' The meaning depends on the tscomparison function :
+#' 
+#' * `in_sample` will produce the low-frequency distance between the predicted
+#' value and the response, on the coefficient calculation window.
+#' * `in_dicator` will produce the high-frequency distance between the inputs
+#' (eventually, the sum of its contributions) and the benchmarked serie.
+#' * `in_revisions` will produce the high-frequency distance between the two
+#' benchmarked series (contributions distance isn't permitted).
+#' 
+#' @param x an object of class `tscomparison`
+#' @param p an integer greater than 1L, or Inf.
+#' 
+#' @return
+#' a numeric of length 1, the distance.
+#' @seealso in_sample in_dicator in_revisions
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' distance(in_sample(benchmark,type="changes"))
+#' distance(in_dicator(benchmark,type="contributions"),p=1L)
+#' distance(in_dicator(benchmark,type="changes"),p=Inf)
+#' @export
+distance <- function(x, p = 2) UseMethod("distance")
+
+#' @export
+distance.tscomparison <- function(x, p = 2) {
+  if (p < 1) stop("p should be greater than 1", call. = FALSE)
+  
+  res <- switch(attr(x,"func"),
+                in_sample = x[,"Benchmark"] - x[,"Predicted value"],
+                in_scatter = stop("The distance method doesn't support in_scatter results", call. = FALSE),
+                in_dicator = {
+                  if (identical(attr(x,"type"),"contributions")) x[,"Smoothed part"] + x[,"Trend"]
+                  else x[,"Benchmark"] - ts_from_tsp(rowSums(x[,colnames(x) != "Benchmark",drop = FALSE]),
+                                                     tsp(x))
+                },
+                in_revisions = {
+                  if (identical(attr(x,"type"),"contributions")) stop("The function distance isn't permitted on revisions of contributions", call. = FALSE)
+                  else x[,"Benchmark"]
+                })
+  
+  if (p == Inf) max(abs(res),na.rm = TRUE)
+  else mean(abs(res)^p,na.rm = TRUE)^(1/p)
 }

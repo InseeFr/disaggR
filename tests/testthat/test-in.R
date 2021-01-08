@@ -152,3 +152,4 @@ test_that("warning revisions",
                                         twoStepsBenchmark(turnover+10,construction)),
                            "The indicators contain revisions")
           })
+

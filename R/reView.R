@@ -1,8 +1,3 @@
-csspresetplot <- function() {
-  if (isTRUE(getOption("shiny.testmode"))) "{height: 496px; width: 761px;}"
-  else "{height: calc(100vh - 104px);width: calc(50vw - 39px);}"
-}
-
 cssmainoutwithtitle <- function() {
   if (isTRUE(getOption("shiny.testmode"))) "{height: 442px;}"
   else "{height: calc(100vh - 158px);}"
@@ -81,17 +76,17 @@ info_switch <- function(mainout_choice)
 
 info_dialog <- function(session,mainout_choice) {
   showModal(session = session,
-    modalDialog(title = mainout_choice,
-                info_switch(mainout_choice),
-                easyClose = TRUE,
-                footer = {
-                  if (mainout_choice == "Scatter plot") HTML("<center><b>Double-click</b> to reset plot window</center>")
-                  else HTML("<div style=\"display:flex;justify-content: space-evenly\">",
-                            "<div><b>Brush</b> to change plot window</div>",
-                            "<div><b>Double-click</b> to reset it</div>",
-                            "</div>")
-                },
-                fade = FALSE))
+            modalDialog(title = mainout_choice,
+                        info_switch(mainout_choice),
+                        easyClose = TRUE,
+                        footer = {
+                          if (mainout_choice == "Scatter plot") HTML("<center><b>Double-click</b> to reset plot window</center>")
+                          else HTML("<div style=\"display:flex;justify-content: space-evenly\">",
+                                    "<div><b>Brush</b> to change plot window</div>",
+                                    "<div><b>Double-click</b> to reset it</div>",
+                                    "</div>")
+                        },
+                        fade = FALSE))
   
 }
 
@@ -160,22 +155,21 @@ plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,
 presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 include.rho = c(FALSE,FALSE,FALSE,TRUE,FALSE,TRUE),
                 set.const = list(NULL,0,NULL,NULL,0,0),
-                label = c("Model 1 (differences - with constant)",
-                          "Model 2 (differences - without constant)",
-                          "Model 3 (levels - with constant)",
-                          "Model 4 (autocorrelated levels - with constant)",
-                          "Model 5 (levels - without constant)",
-                          "Model 6 (autocorrelated levels - without constant)"
+                label = c("differences - with constant",
+                          "differences - without constant",
+                          "levels - with constant",
+                          "autocorrelated levels - with constant",
+                          "levels - without constant",
+                          "autocorrelated levels - without constant"
                 ))
 
 presets_list_fun <- function(hfserie,lfserie,...) {
   lapply(1L:6L,function(type) {
-    in_sample(
-      twoStepsBenchmark(hfserie,lfserie,
-                        include.differenciation = presets$include.differenciation[type],
-                        include.rho = presets$include.rho[type],
-                        set.const = presets$set.const[[type]])
-    )
+    twoStepsBenchmark(hfserie,lfserie,
+                      include.differenciation = presets$include.differenciation[type],
+                      include.rho = presets$include.rho[type],
+                      set.const = presets$set.const[[type]],
+                      ...)
   })
 }
 
@@ -332,16 +326,15 @@ benchmarkCall <- function(benchmark,hfserie_name,lfserie_name) {
 reView_ui_tab1 <- function(id) {
   ns <- NS(id)
   div(fluidRow(
-    tags$style(type = "text/css", paste0(".",ns("presetplot"),csspresetplot())),
-    column(6,
-           div(plotOutput(ns("model1_plot"),click=ns("model1_click"),height = "33%"),
-               plotOutput(ns("model3_plot"),click=ns("model3_click"),height = "33%"),
-               plotOutput(ns("model5_plot"),click=ns("model5_click"),height = "33%"),class=ns("presetplot"))),
-    column(6,
-           div(plotOutput(ns("model2_plot"),click=ns("model2_click"),height = "33%"),
-               plotOutput(ns("model4_plot"),click=ns("model4_click"),height = "33%"),
-               plotOutput(ns("model6_plot"),click=ns("model6_click"),height = "33%"),class=ns("presetplot")))
-  ),style=boxstyle)
+    tags$style(type = "text/css", paste0(".",ns("presetplot"),cssmainoutwithouttitle())),
+    column(12,
+           radioButtons(ns("firsttab_choice"),NULL,
+                        choices = c("In-sample changes","Summary table"),
+                        selected = "In-sample changes",inline=TRUE),
+           align="center"
+    )),
+    div(uiOutput(ns("firstTabOutput")),style=boxstyle)
+  )
 }
 
 reView_ui_tab2 <- function(id) {
@@ -447,26 +440,210 @@ reView_ui <- function() reView_ui_module("reView")
 
 #### server ####
 
+format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
+                             background.format = NULL) {
+  
+  char_content <- format(round(object,digits),nsmall=digits,trim=TRUE)
+  
+  if (signif.stars) {
+    char_content <- paste(symnum(object, corr = FALSE, na = FALSE, 
+                                 cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+                                 symbols = c("***", "**", "*", 
+                                             ".", " "),
+                                 legend=FALSE),
+                          char_content)
+  }
+  
+  bckg.class <- vector("list",length(object))
+  
+  if (!is.null(background.format)) {
+    switch(background.format,
+           min.is.green = bckg.class[which.min(object)] <- "p-3 mb-2 bg-success text-white",
+           success.is.red = bckg.class[object <= 0.05 & !is.na(object)] <- "p-3 mb-2 bg-danger text-white",
+           fail.is.red = bckg.class[object > 0.05 & !is.na(object)] <- "p-3 mb-2 bg-danger text-white")
+  }
+  
+  res <- Map(tags$td,
+             char_content,
+             class = bckg.class,style="text-align: right")
+  
+  res[hide] <- rep(list(tags$td()),length(hide))
+  
+  HTML(do.call(paste,res))
+}
+
+link_if_in_shiny <- function(id,label,ns) {
+  if (is.null(ns)) label
+  else actionLink(ns(id),label)
+}
+
+summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL) {
+  
+  summ <- lapply(presets_list,summary)
+  
+  tags$table(
+    tags$tr(
+      tags$td(colspan = 2),
+      tags$th(link_if_in_shiny("model1_actionlink","Model 1",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model2_actionlink","Model 2",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model3_actionlink","Model 3",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model4_actionlink","Model 4",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model5_actionlink","Model 5",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model6_actionlink","Model 6",ns),style="text-align:center"),
+    ),
+    tags$tr(tags$th("Distance",
+                    rowspan=if (is.null(old_bn)) 2 else 3),
+            tags$th("In-sample predictions (lf changes)",
+                    format_table_row(vapply(presets_list,
+                                            function(x) distance(in_sample(x,
+                                                                           type="changes"),
+                                                                 distance_p),
+                                            0),
+                                     digits = 2L,background.format = "min.is.green"))),
+    tags$tr(tags$th("Benchmark contributions (hf changes)",
+                    format_table_row(vapply(presets_list,
+                                            function(x) distance(in_dicator(x,
+                                                                            type="contributions"),
+                                                                 distance_p),
+                                            0),
+                                     digits=2L,background.format = "min.is.green"))),
+    if (!is.null(old_bn)) {
+      tags$tr(tags$th("Revisions (hf changes)",
+                      format_table_row(vapply(presets_list,
+                                              function(x) distance(in_revisions(x,
+                                                                                old_bn,
+                                                                                type="changes"),
+                                                                   distance_p),
+                                              0),
+                                       digits=2L,background.format = "min.is.green")))
+    },
+    tags$tr(tags$th("Portmanteau",rowspan=2),
+            tags$th("Statistic"),
+            format_table_row(vapply(summ,
+                                    function(x) x$pm[if (x$rho == 0) "residuals"
+                                                     else "residuals.decorrelated",
+                                                     "statistic"],0),
+                             digits=2L)),
+    tags$tr(tags$th("p-value"),
+            format_table_row(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
+                                                          else "residuals.decorrelated",
+                                                          "p.value"],0),
+                             digits=3L,signif.stars = TRUE,
+                             background.format = "success.is.red")),
+    tags$tr(tags$th("Constant",rowspan=2),
+            tags$th("Value"),
+            format_table_row(vapply(summ,
+                                    function(x) x$coefficients["constant","Estimate"],0),
+                             digits=2L,hide=c(2L,5L,6L))),
+    tags$tr(tags$th("p-value"),
+            format_table_row(vapply(summ,
+                                    function(x) x$coefficients["constant","p.value"],0),
+                             digits=3L,hide=c(2L,5L,6L),signif.stars = TRUE,
+                             background.format = "fail.is.red")),
+    tags$tr(tags$th("Indicator",rowspan=2),
+            tags$th("Value"),
+            format_table_row(vapply(summ,
+                                    function(x) x$coefficients[rownames(x$coefficients) != "constant","Estimate"],0),
+                             digits=2L)),
+    tags$tr(tags$th("p-value"),
+            format_table_row(vapply(summ,
+                                    function(x) x$coefficients[rownames(x$coefficients) != "constant","p.value"],0),
+                             digits=3L,signif.stars = TRUE,
+                             background.format = "fail.is.red")),
+    tags$tr(tags$th("Rho",colspan=2),
+            format_table_row(vapply(summ,function(x) x$rho,0),
+                             digits=2L,hide=c(4L,6L))),
+    width = "100%",border = 1
+  )
+}
+
+reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn) {
+  
+  ns <- session$ns
+  
+  switch(input$firsttab_choice,
+         "In-sample changes" = {
+           fluidRow(
+             column(6,
+                    div(plotOutput(ns("model1_plot"),click=ns("model1_plotclick"),height = "33%"),
+                        plotOutput(ns("model3_plot"),click=ns("model3_plotclick"),height = "33%"),
+                        plotOutput(ns("model5_plot"),click=ns("model5_plotclick"),height = "33%"),class=ns("presetplot"))),
+             column(6,
+                    div(plotOutput(ns("model2_plot"),click=ns("model2_plotclick"),height = "33%"),
+                        plotOutput(ns("model4_plot"),click=ns("model4_plotclick"),height = "33%"),
+                        plotOutput(ns("model6_plot"),click=ns("model6_plotclick"),height = "33%"),class=ns("presetplot"))))
+         },
+         "Summary table" = {
+           
+           div(
+             isolate(renderUI({ # for the table to be independent of the input distance
+               
+               summary_table_html(presets_list(),
+                                  old_bn(),
+                                  if (!isTruthy(input$distance_p)) 2L
+                                  else switch(input$distance_p,Manhattan=1L,Euclidean=2L,Max=Inf),
+                                  session$ns)
+               
+             })),
+             do.call(tags$table,
+                     c(
+                       list(tags$tr(tags$th("Models",colspan=2),tags$th("Distance"))),
+                       Map(tags$tr,
+                           lapply(1:length(presets$label),tags$th," : "),
+                           lapply(presets$label,tags$td,style='padding-left: 3px'),
+                           c(
+                             list(tags$td(radioButtons(ns("distance_p"),NULL,
+                                                       choices = c("Manhattan","Euclidean","Max"),
+                                                       selected = "Euclidean"),
+                                          rowspan=length(presets$label))),
+                             rep(list(NULL),length(presets$label)-1L))),
+                       list(style='margin-top: 20px')
+                     ))
+           )
+         }
+  )
+}
+
 reView_server_tab1 <- function(id,old_bn) {
   moduleServer(id,
                function(input,output,session) {
                  
-                 presets_list <- reactive(presets_list_fun(hfserie(old_bn()),
-                                                           lfserie(old_bn())))
+                 presets_list <- reactive({
+                   m <- model.list(old_bn())
+                   presets_list_fun(hfserie(old_bn()),
+                                    lfserie(old_bn()),
+                                    start.coeff.calc=m$start.coeff.calc,
+                                    end.coeff.calc=m$end.coeff.calc,
+                                    start.benchmark=m$start.benchmark,
+                                    end.benchmark=m$end.benchmark,
+                                    start.domain=m$start.domain,
+                                    end.domain=m$end.domain)
+                 })
+                 
+                 output$firstTabOutput <- renderUI({
+                   reView_server_tab1_switch(input,output,session,presets_list,old_bn)
+                 })
                  
                  selected_preset <- reactiveVal(NULL)
                  
                  lapply(1L:6L, function(n) {
-                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(presets_list()[[n]],
-                                                                          main = presets$label[n]))
+                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(lapply(presets_list(),in_sample)[[n]],
+                                                                          main = paste0("Model ",n," (",presets$label[n],")")))
                  })
                  
                  lapply(1L:6L,function(type) {
-                   observeEvent(input[[paste0("model",type,"_click")]],
-                                {
-                                  selected_preset(NULL)
-                                  selected_preset(type)
-                                })
+                   observeEvent(
+                     input[[paste0("model",type,"_plotclick")]],
+                     {
+                       selected_preset(NULL)
+                       selected_preset(type)
+                     })
+                   observeEvent(
+                     input[[paste0("model",type,"_actionlink")]],
+                     {
+                       selected_preset(NULL)
+                       selected_preset(type)
+                     },ignoreInit = TRUE)
                  })
                  selected_preset
                })
@@ -478,8 +655,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
          old={
            title <- div("Before",class="section")
            outputclass <- ns("mainoutwithtitle")
-         }
-         ,
+         },
          new={
            title <- div("After",class="section")
            outputclass <- ns("mainoutwithtitle")
@@ -642,7 +818,7 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  
                  # Inputs initializers
                  
-                 observeEvent({reset();old_bn()},
+                 observeEvent(c(reset(),old_bn()),
                               set_inputs_to_default(session,old_bn),
                               priority = 2L)
                  
@@ -943,4 +1119,4 @@ rePort.reViewOutput <- function(object, output_file = NULL,
 }
 
 #' @export
-print.reViewOutput <- function(x, ...) rePort(x, output_file=NULL, ...) 
+print.reViewOutput <- function(x, ...) rePort(x, output_file=NULL, ...)
