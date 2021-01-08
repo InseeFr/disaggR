@@ -472,6 +472,91 @@ format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
   HTML(do.call(paste,res))
 }
 
+link_if_in_shiny <- function(id,label,ns) {
+  if (is.null(ns)) label
+  else actionLink(ns(id),label)
+}
+
+summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL) {
+  
+  summ <- lapply(presets_list,summary)
+  
+  tags$table(
+    tags$tr(
+      tags$td(colspan = 2),
+      tags$th(link_if_in_shiny("model1_actionlink","Model 1",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model2_actionlink","Model 2",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model3_actionlink","Model 3",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model4_actionlink","Model 4",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model5_actionlink","Model 5",ns),style="text-align:center"),
+      tags$th(link_if_in_shiny("model6_actionlink","Model 6",ns),style="text-align:center"),
+    ),
+    tags$tr(tags$th("Distance",
+                    rowspan=if (is.null(old_bn)) 2 else 3),
+            tags$th("In-sample predictions (lf changes)",
+                    format_table_row(vapply(presets_list,
+                                            function(x) distance(in_sample(x,
+                                                                           type="changes"),
+                                                                 distance_p),
+                                            0),
+                                     digits = 2L,background.format = "min.is.green"))),
+    tags$tr(tags$th("Benchmark contributions (hf changes)",
+                    format_table_row(vapply(presets_list,
+                                            function(x) distance(in_dicator(x,
+                                                                            type="contributions"),
+                                                                 distance_p),
+                                            0),
+                                     digits=2L,background.format = "min.is.green"))),
+    if (!is.null(old_bn)) {
+      tags$tr(tags$th("Revisions (hf changes)",
+                      format_table_row(vapply(presets_list,
+                                              function(x) distance(in_revisions(x,
+                                                                                old_bn,
+                                                                                type="changes"),
+                                                                   distance_p),
+                                              0),
+                                       digits=2L,background.format = "min.is.green")))
+    },
+    tags$tr(tags$th("Portmanteau",rowspan=2),
+            tags$th("Statistic"),
+            format_table_row(vapply(summ,
+                                    function(x) x$pm[if (x$rho == 0) "residuals"
+                                                     else "residuals.decorrelated",
+                                                     "statistic"],0),
+                             digits=2L)),
+    tags$tr(tags$th("p-value"),
+            format_table_row(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
+                                                          else "residuals.decorrelated",
+                                                          "p.value"],0),
+                             digits=3L,signif.stars = TRUE,
+                             background.format = "success.is.red")),
+    tags$tr(tags$th("Constant",rowspan=2),
+            tags$th("Value"),
+            format_table_row(vapply(summ,
+                                    function(x) x$coefficients["constant","Estimate"],0),
+                             digits=2L,hide=c(2L,5L,6L))),
+    tags$tr(tags$th("p-value"),
+            format_table_row(vapply(summ,
+                                    function(x) x$coefficients["constant","p.value"],0),
+                             digits=3L,hide=c(2L,5L,6L),signif.stars = TRUE,
+                             background.format = "fail.is.red")),
+    tags$tr(tags$th("Indicator",rowspan=2),
+            tags$th("Value"),
+            format_table_row(vapply(summ,
+                                    function(x) x$coefficients[rownames(x$coefficients) != "constant","Estimate"],0),
+                             digits=2L)),
+    tags$tr(tags$th("p-value"),
+            format_table_row(vapply(summ,
+                                    function(x) x$coefficients[rownames(x$coefficients) != "constant","p.value"],0),
+                             digits=3L,signif.stars = TRUE,
+                             background.format = "fail.is.red")),
+    tags$tr(tags$th("Rho",colspan=2),
+            format_table_row(vapply(summ,function(x) x$rho,0),
+                             digits=2L,hide=c(4L,6L))),
+    width = "100%",border = 1
+  )
+}
+
 reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn) {
   
   ns <- session$ns
@@ -489,88 +574,17 @@ reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn) 
                         plotOutput(ns("model6_plot"),click=ns("model6_plotclick"),height = "33%"),class=ns("presetplot"))))
          },
          "Summary table" = {
-           summ <- lapply(presets_list(),summary)
            
            div(
              isolate(renderUI({ # for the table to be independent of the input distance
                
-               distance_p <- {
-                 if (!isTruthy(input$distance_p)) 2L
-                 else switch(input$distance_p,Manhattan=1L,Euclidean=2L,Max=Inf)
-               }
+               summary_table_html(presets_list(),
+                                  old_bn(),
+                                  if (!isTruthy(input$distance_p)) 2L
+                                  else switch(input$distance_p,Manhattan=1L,Euclidean=2L,Max=Inf),
+                                  session$ns)
                
-               tags$table(
-                 tags$tr(
-                   tags$td(colspan = 2),
-                   tags$th(actionLink(ns("model1_actionlink"),"Model 1"),style="text-align:center"),
-                   tags$th(actionLink(ns("model2_actionlink"),"Model 2"),style="text-align:center"),
-                   tags$th(actionLink(ns("model3_actionlink"),"Model 3"),style="text-align:center"),
-                   tags$th(actionLink(ns("model4_actionlink"),"Model 4"),style="text-align:center"),
-                   tags$th(actionLink(ns("model5_actionlink"),"Model 5"),style="text-align:center"),
-                   tags$th(actionLink(ns("model6_actionlink"),"Model 6"),style="text-align:center"),
-                 ),
-                 tags$tr(tags$th("Distance",
-                                 rowspan=3),
-                         tags$th("In-sample predictions (lf changes)",
-                                 format_table_row(vapply(presets_list(),
-                                                         function(x) distance(in_sample(x,
-                                                                                        type="changes"),
-                                                                              distance_p),
-                                                         0),
-                                                  digits = 2L,background.format = "min.is.green"))),
-                 tags$tr(tags$th("Benchmark contributions (hf changes)",
-                                 format_table_row(vapply(presets_list(),
-                                                         function(x) distance(in_dicator(x,
-                                                                                         type="contributions"),
-                                                                              distance_p),
-                                                         0),
-                                                  digits=2L,background.format = "min.is.green"))),
-                 tags$tr(tags$th("Revisions (hf changes)",
-                                 format_table_row(vapply(presets_list(),
-                                                         function(x) distance(in_revisions(x,
-                                                                                           old_bn(),
-                                                                                           type="changes"),
-                                                                              distance_p),
-                                                         0),
-                                                  digits=2L,background.format = "min.is.green"))),
-                 tags$tr(tags$th("Portmanteau",rowspan=2),
-                         tags$th("Statistic"),
-                         format_table_row(vapply(summ,
-                                                 function(x) x$pm[if (x$rho == 0) "residuals"
-                                                                  else "residuals.decorrelated",
-                                                                  "statistic"],0),
-                                          digits=2L)),
-                 tags$tr(tags$th("p-value"),
-                         format_table_row(vapply(summ,function(x) x$pm[if (x$rho == 0) "residuals"
-                                                                       else "residuals.decorrelated",
-                                                                       "p.value"],0),
-                                          digits=3L,signif.stars = TRUE,
-                                          background.format = "success.is.red")),
-                 tags$tr(tags$th("Constant",rowspan=2),
-                         tags$th("Value"),
-                         format_table_row(vapply(summ,
-                                                 function(x) x$coefficients["constant","Estimate"],0),
-                                          digits=2L,hide=c(2L,5L,6L))),
-                 tags$tr(tags$th("p-value"),
-                         format_table_row(vapply(summ,
-                                                 function(x) x$coefficients["constant","p.value"],0),
-                                          digits=3L,hide=c(2L,5L,6L),signif.stars = TRUE,
-                                          background.format = "fail.is.red")),
-                 tags$tr(tags$th("Indicator",rowspan=2),
-                         tags$th("Value"),
-                         format_table_row(vapply(summ,
-                                                 function(x) x$coefficients[rownames(x$coefficients) != "constant","Estimate"],0),
-                                          digits=2L)),
-                 tags$tr(tags$th("p-value"),
-                         format_table_row(vapply(summ,
-                                                 function(x) x$coefficients[rownames(x$coefficients) != "constant","p.value"],0),
-                                          digits=3L,signif.stars = TRUE,
-                                          background.format = "fail.is.red")),
-                 tags$tr(tags$th("Rho",colspan=2),
-                         format_table_row(vapply(summ,function(x) x$rho,0),
-                                          digits=2L,hide=c(4L,6L))),
-                 width = "100%",border = 1
-               )})),
+             })),
              do.call(tags$table,
                      c(
                        list(tags$tr(tags$th("Models",colspan=2),tags$th("Distance"))),
@@ -1105,3 +1119,4 @@ rePort.reViewOutput <- function(object, output_file = NULL,
 }
 
 #' @export
+print.reViewOutput <- function(x, ...) rePort(x, output_file=NULL, ...)

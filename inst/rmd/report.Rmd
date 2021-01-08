@@ -70,6 +70,41 @@ plot(presets_list[[6]])
 
 ::::
 
+```{r echo=FALSE,results = 'asis'}
+htmltools::HTML(
+  as.character(
+    disaggR:::summary_table_html(presets_list,
+                                 params$old_bn,
+                                 2L)
+    ))
+```
+
+# Scatter plot
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+**Before**
+
+```{r echo=FALSE,fig.height=5}
+plot(in_scatter(params$old_bn))
+```
+
+:::
+
+::: {.column width="50%"}
+
+**After**
+
+```{r echo=FALSE,fig.height=5}
+plot(in_scatter(params$new_bn))
+```
+
+:::
+
+::::
+
 # Benchmarks
 
 :::: {.columns}
@@ -111,32 +146,6 @@ plot(params$old_bn)
 
 ```{r echo=FALSE}
 plot(params$new_bn)
-```
-
-:::
-
-::::
-
-# Scatter plot
-
-:::: {.columns}
-
-::: {.column width="50%"}
-
-**Before**
-
-```{r echo=FALSE,fig.height=5}
-plot(in_scatter(params$old_bn))
-```
-
-:::
-
-::: {.column width="50%"}
-
-**After**
-
-```{r echo=FALSE,fig.height=5}
-plot(in_scatter(params$new_bn))
 ```
 
 :::

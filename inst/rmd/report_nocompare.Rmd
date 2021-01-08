@@ -70,19 +70,29 @@ plot(presets_list[[6]])
 
 ::::
 
+```{r echo=FALSE,results = 'asis'}
+htmltools::HTML(
+  as.character(
+    disaggR:::summary_table_html(presets_list,
+                                 params$old_bn,
+                                 2L)
+    ))
+```
+
 # Scatter plots
 
 :::: {.columns}
 
 ::: {.column width="100%"}
 
-```{r echo=FALSE,fig.height=5}
+```{r echo=FALSE}
 plot(in_scatter(params$new_bn))
 ```
 
 :::
 
 ::::
+
 # Benchmarks
 
 :::: {.columns}
