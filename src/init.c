@@ -1,13 +1,8 @@
 #include <R.h>
 #include <Rinternals.h>
-#include <stdlib.h> // for NULL
+#include <stdlib.h>
 #include <R_ext/Rdynload.h>
 
-/* FIXME: 
-   Check these declarations against the C/Fortran source code.
-*/
-
-/* .Call calls */
 extern SEXP Cpp_window(SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
