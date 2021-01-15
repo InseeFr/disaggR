@@ -5,12 +5,12 @@ test_that("in_sample works with include.differenciation=TRUE", {
   
   simul <- lag(aggregate(construction),-1)*(100+in_sample(benchmark,type="changes")[,1])/100
   obtained <- construction
-  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  obtained <- window(obtained,start=tsp(obtained)[1]+1,extend = TRUE)
   expect_equal(simul,obtained)
   
   simul <- lag(aggregate(construction),-1)*(na.omit(in_sample(benchmark,type="changes")[,2]))/100
   obtained <- fitted(prais(benchmark))
-  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  obtained <- window(obtained,start=tsp(obtained)[1]+1,extend = TRUE)
   expect_equal(simul,obtained)
   
   simul <- na.omit(in_sample(benchmark,type="levels")[,1])
@@ -20,7 +20,7 @@ test_that("in_sample works with include.differenciation=TRUE", {
   simul <- na.omit(in_sample(benchmark,type="levels")[,2])
   attr(simul, "na.action") <- NULL
   obtained <- fitted(prais(benchmark))+lag(construction,-1)
-  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  obtained <- window(obtained,start=tsp(obtained)[1]+1,extend = TRUE)
   expect_equal(simul,obtained)
 })
 
@@ -31,7 +31,7 @@ test_that("in_sample works with include.differenciation=FALSE", {
   
   simul <- lag(aggregate(construction),-1)*(100+in_sample(benchmark,type="changes")[,1])/100
   obtained <- construction
-  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  obtained <- window(obtained,start=tsp(obtained)[1]+1,extend = TRUE)
   expect_equal(simul,obtained)
   
   simul <- lag(aggregate(construction),-1)*(na.omit(in_sample(benchmark,type="changes")[,2]))/100
@@ -45,7 +45,7 @@ test_that("in_sample works with include.differenciation=FALSE", {
   simul <- na.omit(in_sample(benchmark,type="levels")[,2])
   attr(simul, "na.action") <- NULL
   obtained <- fitted(prais(benchmark))
-  obtained <- window(obtained,start=tsp(obtained)[1]+1)
+  obtained <- window(obtained,start=tsp(obtained)[1]+1,extend = TRUE)
   expect_equal(simul,obtained)
 })
 
@@ -76,7 +76,7 @@ test_that("in_dicator works", {
   simul <- (100+in_dicator(benchmark,type="changes"))/100
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
   simul <- unname(simul*stats::lag(obtained,-1))
-  obtained <- unname(window(obtained,start= tsp(obtained)[1L]+ deltat(obtained)))
+  obtained <- unname(window(obtained,start= tsp(obtained)[1L]+ deltat(obtained),extend = TRUE))
   expect_equal(simul,obtained,tolerance = 1e-10)
   
   simul <- in_dicator(benchmark,type="contributions")
@@ -90,7 +90,7 @@ test_that("in_dicator works", {
   simul <- unname(simul*stats::lag(as.ts(benchmark),-1))
   simul <- ts_from_tsp(simul  %*% diag(1/c(coef(benchmark)["hfserie"],1,1)),tsp(simul))
   expect_equal(unname(simul),
-               unname(window(diff(cbind(turnover,smoothed.part(benchmark),0)),end=c(2020,5))))
+               unname(window(diff(cbind(turnover,smoothed.part(benchmark),0)),end=c(2020,5),extend = TRUE)))
 })
 
 test_that("in revisions works",{
@@ -114,9 +114,9 @@ test_that("in scatter works",{
                                end.coeff.calc = 2017,
                                end.benchmark = 2019)
   expected <- ts(matrix(c(construction,
-                          window(window(aggregate(turnover),start=2005,end=2017),
-                                 start=2000,end=2019),
-                          window(aggregate(turnover),end=2019)),
+                          window(window(aggregate(turnover),start=2005,end=2017,extend=TRUE),
+                                 start=2000,end=2019,extend=TRUE),
+                          window(aggregate(turnover),end=2019,extend=TRUE)),
                         ncol=3,dimnames = list(NULL,c("Low-frequency serie",
                                                       "High-frequency serie (regression)",
                                                       "High-frequency serie (benchmark)"))),
