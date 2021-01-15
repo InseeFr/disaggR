@@ -87,22 +87,15 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
 
 barplot_mts <- function (height,xlab,ylab,col,main, ...) {
   
-  timeh <- time(height)
-  
   pser <- height * (height > 0)
   nser <- height * (height < 0)
   ppser <- ts_from_tsp(rowSums(pser),tsp(pser))
   nnser <- ts_from_tsp(rowSums(nser),tsp(nser))
   
-  tsph <- tsp(height)
-  
   plot_init_x(cbind(nnser,ppser),xlab = xlab, ylab = ylab, main = main, ...)
   
-  d <- deltat(height)
-  
-  cc <- cycle(pser)
-  xleft <- floor(timeh) + (cc - 1) * d
-  xright <- xleft + d
+  xleft <- time(height)
+  xright <- xleft + deltat(height)
   
   for (i in 1L:ncol(height)) {
     rect(xleft = xleft, xright = xright,

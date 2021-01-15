@@ -149,18 +149,26 @@ in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisio
 #' @export
 in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   if (!inherits(object_old,"twoStepsBenchmark")) stop("old_object must be a twoStepsBenchmark", call. = FALSE)
-  series <- tryCatch(in_dicator(object,type)-in_dicator(object_old,type),
-                     error=function(e) stop(gsub("in_dicator","in_revisions",e$message), call.=FALSE))
-  class(series) <- c("tscomparison",class(series))
+  
+  tryCatch({
+    indic_old <- in_dicator(object_old,type)
+    indic_new <- in_dicator(object,type)
+    series <- indic_new-indic_old
+    colnames(series) <- colnames(indic_new)
+  },
+  error=function(e) stop(gsub("in_dicator","in_revisions",e$message), call.=FALSE))
+  
   if (type != "contributions") {
     if (sum(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
       warning("The indicators contain revisions!", .call = FALSE)
     }
-    series <- structure(series[,"Benchmark",drop = FALSE],
-                        type=attr(series,"type"),
-                        func="in_revisions")
+    series <- series[,"Benchmark",drop = FALSE]
   }
+  
+  attr(series,"type") <- type
+  attr(series,"func") <- "in_revisions"
   class(series) <- c("tscomparison",class(series))
+  
   series
 }
 
@@ -220,7 +228,8 @@ in_scatter.twoStepsBenchmark <- function(object) {
   
   y <- window(m$lfserie,
               min(coeff_clean_win[1L],benchmark_clean_win[1L]),
-              max(coeff_clean_win[2L],benchmark_clean_win[2L]))
+              max(coeff_clean_win[2L],benchmark_clean_win[2L]),
+              extend = TRUE)
   
   X <- m$hfserie[,colnames(m$hfserie) != "constant",drop = FALSE]
   
@@ -231,12 +240,14 @@ in_scatter.twoStepsBenchmark <- function(object) {
                     aggregate_and_crop_hf_to_lf(X,
                                                 y),
                     coeff_clean_win[1L],
-                    coeff_clean_win[2L]),
+                    coeff_clean_win[2L],
+                    extend = TRUE),
                   window(
                     aggregate_and_crop_hf_to_lf(X,
                                                 y),
                     benchmark_clean_win[1L],
-                    benchmark_clean_win[2L])
+                    benchmark_clean_win[2L],
+                    extend = TRUE)
   )
   
   if  (m$include.differenciation) series <- diff(series)
