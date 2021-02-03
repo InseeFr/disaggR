@@ -54,6 +54,7 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
   if (is.null(ylab)) ylab <- ""
   
   sizey <- ymax-ymin
+  
   plot(x = c(xmin,xmax), y = c(ymin,ymax),
        xlim = c(xmin,xmax) + if (extend.x) 0.02 * (xmax-xmin) * c(-1,1) else c(0,0),
        ylim = c(ymin,ymax) + if (extend.y) 0.02 * (ymax-ymin) * c(-1,1) else c(0,0),
@@ -75,7 +76,9 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
 }
 
 plot_init_x <- function(x, xlab, ylab, main, ...) {
+  
   tspx <- tsp(x)
+  
   plot_init(xmin = tspx[1L],xmax = tspx[2L]+deltat(x),
             # That x window is set to be able to translate x values
             # of deltat(x)/2 on the right
@@ -86,7 +89,6 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
 }
 
 barplot_mts <- function (height,xlab,ylab,col,main, ...) {
-  
   pser <- height * (height > 0)
   nser <- height * (height < 0)
   ppser <- ts_from_tsp(rowSums(pser),tsp(pser))
@@ -158,7 +160,6 @@ scatterplot_ts <- function(x,col,lty) {
 }
 
 draw_axes <- function(timex) {
-  
   axis(side = 2L, labels=NA, tick = TRUE)
   axis(side = 2L, tick = FALSE, line=-0.5, cex.axis=0.7)
   

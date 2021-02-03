@@ -20,7 +20,7 @@ A \code{tscomparison} class is added to the object.
 \description{
 The function \code{in_dicator}takes a \link{twoStepsBenchmark} object
 as an input. It produces a comparison between the benchmarked time-serie and the
-input.
+high-frequency input.
 }
 \details{
 The functions \code{plot} and \code{autoplot} can be used on this object to produce

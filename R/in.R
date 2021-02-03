@@ -64,7 +64,7 @@ in_sample.twoStepsBenchmark <- function(object,type="changes") {
 #' 
 #' The function `in_dicator`takes a \link{twoStepsBenchmark} object
 #' as an input. It produces a comparison between the benchmarked time-serie and the
-#' input.
+#' high-frequency input.
 #' 
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
