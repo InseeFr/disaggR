@@ -350,7 +350,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' * \code{autoplot} produces a ggplot object
 #' 
 #' The objects of class `tscomparison` can be produced with the functions
-#' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_dicator}.
+#' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_benchmark}.
 #' 
 #' @param x (for the plot method) a tscomparison or twoStepsBenchmark.
 #' @param object (for the autoplot method) a tscomparison or twoStepsBenchmark.
@@ -375,7 +375,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(benchmark)
 #' plot(in_sample(benchmark))
-#' autoplot(in_dicator(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
+#' autoplot(in_benchmark(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
 #' plot(in_scatter(benchmark),xlab="title x",ylab="title y")
 #' @export
 plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = NULL,
