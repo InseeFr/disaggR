@@ -9,8 +9,6 @@
 #'
 #' @import stats graphics ggplot2 shiny
 #' @keywords internal
-#' @useDynLib disaggR, .registration=TRUE
-#' @importFrom Rcpp sourceCpp
 "_PACKAGE"
 
 globalVariables(c("Date","Values","Low-Frequency Periods","Variables",

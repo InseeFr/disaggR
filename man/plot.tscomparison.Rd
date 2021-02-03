@@ -108,12 +108,12 @@ Plot methods for objects of class \code{"tscomparison"} and \link{twoStepsBenchm
 }
 
 The objects of class \code{tscomparison} can be produced with the functions
-\link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_dicator}.
+\link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_benchmark}.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 plot(benchmark)
 plot(in_sample(benchmark))
-autoplot(in_dicator(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
+autoplot(in_benchmark(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
 plot(in_scatter(benchmark),xlab="title x",ylab="title y")
 }

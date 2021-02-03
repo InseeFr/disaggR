@@ -54,6 +54,7 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
   if (is.null(ylab)) ylab <- ""
   
   sizey <- ymax-ymin
+  
   plot(x = c(xmin,xmax), y = c(ymin,ymax),
        xlim = c(xmin,xmax) + if (extend.x) 0.02 * (xmax-xmin) * c(-1,1) else c(0,0),
        ylim = c(ymin,ymax) + if (extend.y) 0.02 * (ymax-ymin) * c(-1,1) else c(0,0),
@@ -75,7 +76,9 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
 }
 
 plot_init_x <- function(x, xlab, ylab, main, ...) {
+  
   tspx <- tsp(x)
+  
   plot_init(xmin = tspx[1L],xmax = tspx[2L]+deltat(x),
             # That x window is set to be able to translate x values
             # of deltat(x)/2 on the right
@@ -86,23 +89,15 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
 }
 
 barplot_mts <- function (height,xlab,ylab,col,main, ...) {
-  
-  timeh <- time(height)
-  
   pser <- height * (height > 0)
   nser <- height * (height < 0)
   ppser <- ts_from_tsp(rowSums(pser),tsp(pser))
   nnser <- ts_from_tsp(rowSums(nser),tsp(nser))
   
-  tsph <- tsp(height)
-  
   plot_init_x(cbind(nnser,ppser),xlab = xlab, ylab = ylab, main = main, ...)
   
-  d <- deltat(height)
-  
-  cc <- cycle(pser)
-  xleft <- floor(timeh) + (cc - 1) * d
-  xright <- xleft + d
+  xleft <- time(height)
+  xright <- xleft + deltat(height)
   
   for (i in 1L:ncol(height)) {
     rect(xleft = xleft, xright = xright,
@@ -165,7 +160,6 @@ scatterplot_ts <- function(x,col,lty) {
 }
 
 draw_axes <- function(timex) {
-  
   axis(side = 2L, labels=NA, tick = TRUE)
   axis(side = 2L, tick = FALSE, line=-0.5, cex.axis=0.7)
   
@@ -356,7 +350,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' * \code{autoplot} produces a ggplot object
 #' 
 #' The objects of class `tscomparison` can be produced with the functions
-#' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_dicator}.
+#' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_benchmark}.
 #' 
 #' @param x (for the plot method) a tscomparison or twoStepsBenchmark.
 #' @param object (for the autoplot method) a tscomparison or twoStepsBenchmark.
@@ -381,7 +375,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(benchmark)
 #' plot(in_sample(benchmark))
-#' autoplot(in_dicator(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
+#' autoplot(in_benchmark(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
 #' plot(in_scatter(benchmark),xlab="title x",ylab="title y")
 #' @export
 plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = NULL,

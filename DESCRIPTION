@@ -22,12 +22,9 @@ Description: The twoStepsBenchmark() function and its wrappers allow you to disa
 	See "Methodology of quarterly national accounts", Insee Méthodes N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 Imports:
   ggplot2,
-	Rcpp,
 	rmarkdown,
 	scales,
 	shiny (>= 1.5.0)
-LinkingTo:
-  Rcpp
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

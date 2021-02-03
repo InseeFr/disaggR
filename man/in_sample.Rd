@@ -39,5 +39,5 @@ benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 plot(in_sample(benchmark))
 }
 \seealso{
-in_dicator in_revisions in_scatter plot.tscomparison
+in_benchmark in_revisions in_scatter plot.tscomparison
 }
