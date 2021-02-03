@@ -25,16 +25,6 @@ lrmargins <- "margin-left: 3px;
 
 info_switch <- function(mainout_choice)
   switch(mainout_choice,
-         Benchmark = {
-           HTML("Two-steps benchmarks bend a time-serie with a time-serie of",
-                "lower frequency. The procedure involved is a Prais-Winsten",
-                "regression, then an additive Denton benchmark.<br><br>",
-                "Therefore, it minimizes the sum of squares of the differences",
-                "while being strictly equal to the low-frequency serie afterthe",
-                "aggregation and the regression.<br><br>This plot displays both",
-                "the bending serie, disaggregated with an evenly distribution,",
-                "and the resulting time-serie of the benchmark.")
-         },
          "Scatter plot" = {
            HTML("These scatter plots display the relationship between both series",
                 "after aggregation and, eventually, differenciation.<br><br>",
@@ -53,12 +43,7 @@ info_switch <- function(mainout_choice)
                 "Besides, changes are relative to the latest benchmark value,",
                 "not the latest predicted value.")
          },
-         "Benchmark summary" = {
-           HTML("The portmanteau test here is of lag 1. If the test is positive,",
-                "either <i>include.differenciation</i> or <i>include.rho</i> should",
-                "be set to TRUE.")
-         },
-         "Comparison with indicator" = {
+         "Comparison benchmark/input" = {
            HTML("These plots compare the input high-frequency serie with the resulting",
                 "time-serie of the benchmark. These are intended to check that the",
                 "information of the input is preserved.<br><br>",
@@ -69,9 +54,24 @@ info_switch <- function(mainout_choice)
                 "input series. <i>The level of the smoothed part is arbitrary</i>.",
                 "Hence it is omitted in these plots.")
          },
-         Revisions = {
+         "Revisions" = {
            HTML("These plots display the differences between the former benchmark",
                 "and the newer one.")
+         },
+         "Benchmark plot" = {
+           HTML("Two-steps benchmarks bend a time-serie with a time-serie of",
+                "lower frequency. The procedure involved is a Prais-Winsten",
+                "regression, then an additive Denton benchmark.<br><br>",
+                "Therefore, it minimizes the sum of squares of the differences",
+                "while being strictly equal to the low-frequency serie afterthe",
+                "aggregation and the regression.<br><br>This plot displays both",
+                "the bending serie, disaggregated with an evenly distribution,",
+                "and the resulting time-serie of the benchmark.")
+         },
+         "Benchmark summary" = {
+           HTML("The portmanteau test here is of lag 1. If the test is positive,",
+                "either <i>include.differenciation</i> or <i>include.rho</i> should",
+                "be set to TRUE.")
          })
 
 info_dialog <- function(session,mainout_choice) {
@@ -366,10 +366,9 @@ reView_ui_tab2 <- function(id) {
                                              ".",ns("mainoutwithouttitle"),cssmainoutwithouttitle())),
         column(11,
                radioButtons(ns("mainout_choice"),NULL,
-                            choices = c("Benchmark","Scatter plot","In-sample predictions",
-                                        "Benchmark summary","Comparison with indicator",
-                                        "Revisions"),
-                            selected = "Benchmark",inline=TRUE)
+                            choices = c("Scatter plot","In-sample predictions","Comparison benchmark/input",
+                                        "Revisions","Benchmark plot","Benchmark summary"),
+                            selected = "Benchmark plot",inline=TRUE)
         ),
         column(1,
                actionButton(ns("infobtn"),label = NULL, icon = icon("info-circle"),
@@ -667,7 +666,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
   
   # The old_bn arg is only for revisions
   switch(mainout_choice,
-         "Benchmark" = {
+         "Benchmark plot" = {
            fluidRow(
              column(12,
                     title,
@@ -720,7 +719,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                            div(verbatimTextOutput(ns(output_name)),
                                class=outputclass)))
          },
-         "Comparison with indicator" = {
+         "Comparison benchmark/input" = {
            fluidRow(
              column(12,
                     title,
@@ -793,7 +792,7 @@ reView_server_tab2_switch <- function(input,output,new_bn,old_bn,ns,compare) {
   
   mainout_choice <- input$mainout_choice
   
-  if (compare && !(mainout_choice %in% c("Comparison with indicator","Revisions"))) {
+  if (compare && !(mainout_choice %in% c("Comparison benchmark/input","Revisions"))) {
     fluidRow(
       column(6,fluidRow(column(12,reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
                                style=boxstyle),style=lrmargins)),
@@ -837,10 +836,9 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  
                  observeEvent(compare(),{
                    updateRadioButtons(session,"mainout_choice", NULL,
-                                      choices = c("Benchmark","Scatter plot","In-sample predictions",
-                                                  "Benchmark summary","Comparison with indicator",
-                                                  if (compare()) "Revisions"),
-                                      selected = "Benchmark",
+                                      choices = c("Scatter plot","In-sample predictions","Comparison benchmark/input",
+                                                  if (compare()) "Revisions","Benchmark plot","Benchmark summary"),
+                                      selected = "Scatter plot",
                                       inline = TRUE)
                  },priority = 1L)
                  

@@ -15,11 +15,11 @@ test_that("switch window", {
 })
 
 test_that("info switch",{
-  expect_s3_class(info_switch("Benchmark"),"html")
+  expect_s3_class(info_switch("Benchmark plot"),"html")
   expect_s3_class(info_switch("Scatter plot"),"html")
   expect_s3_class(info_switch("In-sample predictions"),"html")
   expect_s3_class(info_switch("Benchmark summary"),"html")
-  expect_s3_class(info_switch("Comparison with indicator"),"html")
+  expect_s3_class(info_switch("Comparison benchmark/input"),"html")
   expect_s3_class(info_switch("Revisions"),"html")
 })
 
@@ -233,8 +233,7 @@ test_that("reView",{
   
   # Change output to in scatter
   expect_equal(app$waitForValue("reView-reViewtab2-mainout_choice",iotype="input"),
-               "Benchmark")
-  app$setInputs(`reView-reViewtab2-mainout_choice` = "Scatter plot")
+               "Scatter plot")
   
   newplot <- app$waitForValue("reView-reViewtab2-newplot",iotype="output")
   oldplot <- app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
@@ -276,7 +275,7 @@ test_that("reView",{
                )),collapse="\n")))
   
   # Indicator
-  app$setInputs(`reView-reViewtab2-mainout_choice` = "Comparison with indicator")
+  app$setInputs(`reView-reViewtab2-mainout_choice` = "Comparison benchmark/input")
   plotlev <- app$waitForValue("reView-reViewtab2-monoplotlev",iotype="output")
   plotcha <- app$waitForValue("reView-reViewtab2-monoplotcha",iotype="output")
   plotctb <- app$waitForValue("reView-reViewtab2-monoplotctb",iotype="output")
