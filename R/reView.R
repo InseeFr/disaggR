@@ -551,7 +551,7 @@ summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL) {
                              background.format = "fail.is.red")),
     tags$tr(tags$th("Rho",colspan=2),
             format_table_row(vapply(summ,function(x) x$rho,0),
-                             digits=2L,hide=c(4L,6L))),
+                             digits=2L,hide=c(1L,2L,3L,5L))),
     width = "100%",border = 1
   )
 }
