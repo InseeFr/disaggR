@@ -277,7 +277,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
 
 #' @export
 annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
-                            start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
+                            start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L]-1,
                             start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
                             start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
   if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)
