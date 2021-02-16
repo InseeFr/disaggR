@@ -1,7 +1,8 @@
 test_that("in_sample works with include.differenciation=TRUE", {
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
-                               include.differenciation = TRUE)
+                               include.differenciation = TRUE,
+                               end.coeff.calc = 2019)
   
   simul <- lag(aggregate(construction),-1)*(100+in_sample(benchmark,type="changes")[,1])/100
   obtained <- construction
@@ -27,7 +28,8 @@ test_that("in_sample works with include.differenciation=TRUE", {
 test_that("in_sample works with include.differenciation=FALSE", {
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
-                               include.differenciation = FALSE)
+                               include.differenciation = FALSE,
+                               end.coeff.calc = 2019)
   
   simul <- lag(aggregate(construction),-1)*(100+in_sample(benchmark,type="changes")[,1])/100
   obtained <- construction
