@@ -153,12 +153,10 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'                   start.benchmark=NULL,end.benchmark=NULL,
 #'                   start.domain=NULL,end.domain=NULL,...)
 #'
-#' annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
-#'                 set.coeff=NULL,set.const=NULL,
-#'                 start.coeff.calc=start(lfserie)[1],end.coeff.calc=end(lfserie)[1],
-#'                 start.benchmark=start(lfserie)[1],end.benchmark=end.coeff.calc+1,
-#'                 start.domain=start(hfserie),
-#'                 end.domain=c(end.benchmark+2,frequency(hfserie)))
+#' annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
+#'                 start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L]-1,
+#'                 start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
+#'                 start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie)))
 #' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
