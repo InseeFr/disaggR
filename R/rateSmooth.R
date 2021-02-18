@@ -94,11 +94,6 @@ calc_hfrate <- function(hfserie,lfserie,
                                 start.mean.delta.rate,end.mean.delta.rate,
                                 tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
   
-  assign("hfserie_win",hfserie_win,envir = globalenv())
-  assign("hfserie",hfserie,envir = globalenv())
-  
-  assign("lfrate_win",lfrate_win,envir = globalenv())
-  
   bflSmooth(lfserie = lfrate_win,
             nfrequency = frequency(hfserie),
             weights = hfserie_win,

@@ -279,3 +279,69 @@ print.twoStepsBenchmark <- function(x,...) {
 summary.twoStepsBenchmark <- function(object, ...) {
   summary.praislm(prais(object),...)
 }
+
+#' @importFrom stats as.ts
+#' @export
+as.ts.rateSmooth <- function(x, ...) x$benchmarked.serie
+
+#' @export
+print.rateSmooth <- function(x, ...) print(as.ts(x))
+
+#' @export
+model.list.rateSmooth <- function(object) object$model.list
+
+#' @importFrom stats as.ts
+#' @export
+Ops.twoStepsBenchmark <- function(e1,e2) {
+  
+  miss_e2 <- missing(e2)
+  
+  if (inherits(e1,"twoStepsBenchmark") || inherits(e1,"rateSmooth")) e1 <- as.ts(e1)
+  if (!miss_e2 && (inherits(e2,"twoStepsBenchmark") || inherits(e2,"rateSmooth"))) e2 <- as.ts(e2)
+  
+  if (!miss_e2) {
+    get(.Generic)(e1, e2)
+  } else {
+    get(.Generic)(e1)
+  }
+}
+
+#' @export
+Ops.rateSmooth <- Ops.twoStepsBenchmark
+
+#' @export
+Math.twoStepsBenchmark <- function(x) get(.Generic)(as.ts(x))
+
+#' @export
+Math.rateSmooth <- Math.twoStepsBenchmark
+
+#' @importFrom stats cycle
+#' @export
+cycle.twoStepsBenchmark <- function(x, ...) cycle(as.ts(x), ...)
+#' @export
+diff.twoStepsBenchmark <- function(x, lag = 1, differences = 1, ...)  diff(as.ts(x), lag, differences, ...)
+#' @importFrom stats diffinv
+#' @export
+diffinv.twoStepsBenchmark <- function(x, lag = 1, differences = 1, xi, ...) diffinv(as.ts(x), lag, differences, xi, ...)
+#' @importFrom stats na.omit
+#' @export
+na.omit.twoStepsBenchmark <- function(object, ...) na.omit(as.ts(object), ...)
+#' @importFrom stats time
+#' @export
+time.twoStepsBenchmark <- function(x, ...) time(as.ts(x), ...)
+#' @importFrom stats window
+#' @export
+window.twoStepsBenchmark <- function(x, ...) window(as.ts(x), ...)
+
+#' @export
+cycle.rateSmooth <- cycle.twoStepsBenchmark
+#' @export
+diff.rateSmooth <- diff.twoStepsBenchmark
+#' @export
+diffinv.rateSmooth <- diffinv.twoStepsBenchmark
+#' @export
+na.omit.rateSmooth <- na.omit.twoStepsBenchmark
+#' @export
+time.rateSmooth <- time.twoStepsBenchmark
+#' @export
+window.rateSmooth <- window.twoStepsBenchmark
