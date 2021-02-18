@@ -1,5 +1,5 @@
 hfserie_extrap_function <- function(incomplete_cycle,complete_cycle) {
-  complete_cycle * sum(incomplete_cycle/complete_cycle,na.rm=TRUE)
+  complete_cycle * mean(incomplete_cycle/complete_cycle,na.rm=TRUE)
 }
 
 hfserie_extrap <- function(hfserie,lffreq) {
@@ -9,15 +9,14 @@ hfserie_extrap <- function(hfserie,lffreq) {
     firstval <- valplaces[1L]
     lastval <- valplaces[length(valplaces)]
     if (lastval != length(hfserie)) {
-      incomplete_cycle_start <- (lastval + 1L) %% ratio * ratio + 1L
+      incomplete_cycle_start <- (lastval + 1L) %/% ratio * ratio + 1L
       hfserie[incomplete_cycle_start:length(hfserie)] <- 
-        hfserie_extrap_function(hfserie[(incomplete_cycle_start-ratio):(incomplete_cycle_start-1L)],
-                                hfserie[incomplete_cycle_start:(incomplete_cycle_start+ratio-1L)])
+        hfserie_extrap_function(hfserie[incomplete_cycle_start:(incomplete_cycle_start+ratio-1L)],
+                                hfserie[(incomplete_cycle_start-ratio):(incomplete_cycle_start-1L)])
     }
     if (firstval != 1L) {
-      incomplete_cycle_end <- (firstval + 1L) %% ratio * ratio + 1L
-      hfserie[(firstval-1):1] <-
-        hfserie[1L:incomplete_cycle_end] <- 
+      incomplete_cycle_end <- (firstval + 1L) %/% ratio * ratio + ratio
+      hfserie[1L:incomplete_cycle_end] <-
         hfserie_extrap_function(hfserie[(incomplete_cycle_end-ratio + 1L):incomplete_cycle_end],
                                 hfserie[(incomplete_cycle_end+1L):(incomplete_cycle_end+ratio)])
     }
@@ -26,6 +25,9 @@ hfserie_extrap <- function(hfserie,lffreq) {
 }
 
 calc_hfserie_win <- function(hfserie,start.domain,end.domain,lffreq) {
+  
+  hfserie <- window(hfserie,start=start.domain,end=end.domain,extend=TRUE)
+  
   tsphf <- tsp(hfserie)
   
   startdomain_extended <- floor(tsphf[1L]*lffreq)/lffreq
@@ -34,7 +36,9 @@ calc_hfserie_win <- function(hfserie,start.domain,end.domain,lffreq) {
   # This window is the smallest that is all around the domain of the hfserie
   # that is compatible with the low frequency.
   
-  hfserie_extrap(window(hfserie,startdomain_extended,enddomain_extended,extend = TRUE),
+  hfserie_extrap(window(hfserie,
+                        start = startdomain_extended,
+                        end = enddomain_extended,extend = TRUE),
                  lffreq)
 }
 
@@ -61,7 +65,9 @@ calc_lfrate_win <- function(hfserie,lfserie,
                             start.benchmark,end.benchmark,
                             start.mean.delta.rate,end.mean.delta.rate,
                             start.domain.extended,end.domain.extended) {
+  
   lfrate <- lfserie / aggregate_and_crop_hf_to_lf(hfserie,lfserie)
+  
   rate_extrap(
     window(
       window(lfrate,
@@ -79,13 +85,19 @@ calc_hfrate <- function(hfserie,lfserie,
                         start.domain,end.domain,
                         start.mean.delta.rate,end.mean.delta.rate) {
   
-  hfserie_win <- calc_hfserie_win(hfserie_extrap(window(hfserie,start=start.domain,end=end.domain,extend=TRUE),
-                                                 frequency(lfserie)))
+  hfserie_win <- calc_hfserie_win(hfserie,
+                                  start.domain,end.domain,
+                                  frequency(lfserie))
   
   lfrate_win <- calc_lfrate_win(hfserie,lfserie,
                                 start.benchmark,end.benchmark,
                                 start.mean.delta.rate,end.mean.delta.rate,
-                                start(hfserie_win),end(hfserie_win))
+                                tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
+  
+  assign("hfserie_win",hfserie_win,envir = globalenv())
+  assign("hfserie",hfserie,envir = globalenv())
+  
+  assign("lfrate_win",lfrate_win,envir = globalenv())
   
   bflSmooth(lfserie = lfrate_win,
             nfrequency = frequency(hfserie),
@@ -119,15 +131,19 @@ rateSmooth_impl <- function(hfserie,lfserie,
                                 start.mean.delta.rate = start.mean.delta.rate,
                                 end.mean.delta.rate = end.mean.delta.rate),
               call = cl)
-  class(res) <- c("twoStepsBenchmark","list")
+  
+  class(res) <- c("rateSmooth","list")
+  
   res
 }
 
+#' @export
 rateSmooth <- function(hfserie,lfserie,
                        start.benchmark=NULL,end.benchmark=NULL,
                        start.domain=NULL,end.domain=NULL,
                        start.mean.delta.rate=start.benchmark,end.mean.delta.rate=end.benchmark,
                        ...) {
+  
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
   tsplf <- tsp(lfserie)
   if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
@@ -138,8 +154,8 @@ rateSmooth <- function(hfserie,lfserie,
   maincl <- match.call()
   
   rateSmooth_impl(hfserie,lfserie,
-                  start.rate.deltamean,start.rate.deltamean,
                   start.benchmark,end.benchmark,
                   start.domain,end.domain,
+                  start.mean.delta.rate,end.mean.delta.rate,
                   maincl,...)
 }

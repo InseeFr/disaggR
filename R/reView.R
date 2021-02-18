@@ -134,12 +134,6 @@ reViewOutput <- function(benchmark,benchmark_old,compare) {
             class="reViewOutput")
 }
 
-lfserie <- function(benchmark) model.list(benchmark)$lfserie
-hfserie <- function(benchmark) {
-  res <- model.list(benchmark)$hfserie
-  res[,colnames(res) != "constant"]
-}
-
 plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,
                                   is.brush=TRUE,height,...) {
   output[[output_name]] <- renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L],

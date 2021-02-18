@@ -85,8 +85,8 @@ in_benchmark <- function(object,type="changes") UseMethod("in_benchmark")
 
 #' @export
 in_benchmark.twoStepsBenchmark <- function(object,type="changes") {
-  hfserie <- model.list(object)$hfserie
-  hfserie <- hfserie[,colnames(hfserie) != "constant"]
+  
+  hfserie <- hfserie(object)
   
   benchmark <- na.omit(as.ts(object))
   

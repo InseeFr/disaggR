@@ -37,3 +37,10 @@ switch_window <- function(start,end,init_tsp) {
   }
   c(start,end)
 }
+
+lfserie <- function(benchmark) model.list(benchmark)$lfserie
+hfserie <- function(benchmark) {
+  res <- model.list(benchmark)$hfserie
+  res[,colnames(res) != "constant"]
+}
+
