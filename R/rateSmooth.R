@@ -25,18 +25,121 @@ hfserie_extrap <- function(hfserie,lffreq) {
   hfserie
 }
 
-rateSmooth <- function(hfserie,lfserie,start.domain,end.domain) {
+calc_hfserie_win <- function(hfserie,start.domain,end.domain,lffreq) {
   tsphf <- tsp(hfserie)
-  tsplf <- tsp(lfserie)
   
-  hfserie <- window(hfserie,start=start.domain,end=end.domain)
+  startdomain_extended <- floor(tsphf[1L]*lffreq)/lffreq
+  enddomain_extended <- ceiling((tsphf[2L]+1/tsphf[3L])*lffreq)/lffreq-1/tsphf[3L]
   
-  startdomain_extended <- floor(tsphf[1]*tsplf[3])/tsplf[3]
-  enddomain_extended <- ceiling((tsphf[2]+1/tsphf[3])*tsplf[3])/tsplf[3]-1/tsphf[3]
+  # This window is the smallest that is all around the domain of the hfserie
+  # that is compatible with the low frequency.
   
-  lfserie <- window(lfserie,start=startdomain_extended,end=enddomain_extended)
-  hfserie <- window(hfserie,start=startdomain_extended,end=enddomain_extended)
-  
-  hfserie <- hfserie_extrap(hfserie,tsplf[3L])
+  hfserie_extrap(window(hfserie,startdomain_extended,enddomain_extended,extend = TRUE),
+                 lffreq)
 }
 
+mean_delta <- function(serie,start,end) {
+  mean(diff(as.numeric(window(serie,start,end,extend=TRUE))),na.rm = TRUE)
+}
+
+rate_extrap <- function(lfrate,mean.delta) {
+  valplaces <- which(!is.na(lfrate))
+  if (length(valplaces) != 0) {
+    firstval <- valplaces[1L]
+    lastval <- valplaces[length(valplaces)]
+    if (lastval != length(lfrate)) {
+      lfrate[(lastval+1L):length(lfrate)] <- lfrate[lastval] + 1:(length(lfrate)-lastval) * mean.delta
+    }
+    if (firstval != 1L) {
+      lfrate[(firstval-1L):1L] <- lfrate[firstval] - 1:(firstval-1L) * mean.delta
+    }
+  }
+  lfrate
+}
+
+calc_lfrate_win <- function(hfserie,lfserie,
+                            start.benchmark,end.benchmark,
+                            start.mean.delta.rate,end.mean.delta.rate,
+                            start.domain.extended,end.domain.extended) {
+  lfrate <- lfserie / aggregate_and_crop_hf_to_lf(hfserie,lfserie)
+  rate_extrap(
+    window(
+      window(lfrate,
+             start = start.benchmark,
+             end = end.benchmark,
+             extend=TRUE),
+      start = start.domain.extended,
+      end = end.domain.extended,
+      extend = TRUE),
+    mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate))
+}
+
+calc_hfrate <- function(hfserie,lfserie,
+                        start.benchmark,end.benchmark,
+                        start.domain,end.domain,
+                        start.mean.delta.rate,end.mean.delta.rate) {
+  
+  hfserie_win <- calc_hfserie_win(hfserie_extrap(window(hfserie,start=start.domain,end=end.domain,extend=TRUE),
+                                                 frequency(lfserie)))
+  
+  lfrate_win <- calc_lfrate_win(hfserie,lfserie,
+                                start.benchmark,end.benchmark,
+                                start.mean.delta.rate,end.mean.delta.rate,
+                                start(hfserie_win),end(hfserie_win))
+  
+  bflSmooth(lfserie = lfrate_win,
+            nfrequency = frequency(hfserie),
+            weights = hfserie_win,
+            lfserie.is.rate = TRUE)
+}
+
+rateSmooth_impl <- function(hfserie,lfserie,
+                            start.benchmark,end.benchmark,
+                            start.domain,end.domain,
+                            start.mean.delta.rate,end.mean.delta.rate,
+                            maincl,cl=NULL) {
+  
+  if (is.null(cl)) cl <- maincl
+  
+  hfrate <- calc_hfrate(hfserie,lfserie,
+                        start.benchmark,end.benchmark,
+                        start.domain,end.domain,
+                        start.mean.delta.rate,end.mean.delta.rate)
+  
+  rests <- hfrate * hfserie
+  
+  res <- list(benchmarked.serie = window(rests,start=start.domain,end=end.domain,extend = TRUE),
+              rate = hfrate,
+              model.list = list(hfserie = hfserie,
+                                lfserie = lfserie,
+                                start.benchmark = start.benchmark,
+                                end.benchmark = end.benchmark,
+                                start.domain = start.domain,
+                                end.domain = end.domain,
+                                start.mean.delta.rate = start.mean.delta.rate,
+                                end.mean.delta.rate = end.mean.delta.rate),
+              call = cl)
+  class(res) <- c("twoStepsBenchmark","list")
+  res
+}
+
+rateSmooth <- function(hfserie,lfserie,
+                       start.benchmark=NULL,end.benchmark=NULL,
+                       start.domain=NULL,end.domain=NULL,
+                       start.mean.delta.rate=start.benchmark,end.mean.delta.rate=end.benchmark,
+                       ...) {
+  if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
+  tsplf <- tsp(lfserie)
+  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
+  if  (!(frequency(hfserie) %% frequency(lfserie) == 0L)) stop("The low frequency should divide the higher one", call. = FALSE)
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
+  if (!is.null(dim(hfserie)) && dim(hfserie)[2L] != 1) stop("The high frequency serie must be one-dimensional", call. = FALSE)
+  
+  maincl <- match.call()
+  
+  rateSmooth_impl(hfserie,lfserie,
+                  start.rate.deltamean,start.rate.deltamean,
+                  start.benchmark,end.benchmark,
+                  start.domain,end.domain,
+                  maincl,...)
+}
