@@ -1,3 +1,16 @@
+#' Extrapolation function for the hfserie in a rateSmooth
+#' 
+#' This function replaces the incomplete low frequency cycles, at the start and the end of the hfserie,
+#' with respectively the first and the last complete cycles.
+#' It may seem very raw, but it's only used for the weights in `bflSmooth`, in order to get a high
+#' frequency rate.
+#'
+#' @param hfserie a time-serie, the high frequency serie to extrapolate
+#' @param lffreq a integer of length 1. The low frequency
+#' to twoStepsBenchmark
+#'
+#' @return a time-serie, the extrapolated hfserie
+#' @export
 hfserie_extrap <- function(hfserie,lffreq) {
   ratio <- frequency(hfserie)/lffreq
   valplaces <- which(!is.na(hfserie))
@@ -35,7 +48,7 @@ calc_hfserie_win <- function(hfserie,start.domain,end.domain,lffreq) {
 }
 
 mean_delta <- function(serie,start,end) {
-  mean(diff(as.numeric(window(serie,start,end,extend=TRUE))),na.rm = TRUE)
+  mean(diff(as.numeric(window(serie,start=start,end=end,extend=TRUE))),na.rm = TRUE)
 }
 
 rate_extrap <- function(lfrate,mean.delta) {
