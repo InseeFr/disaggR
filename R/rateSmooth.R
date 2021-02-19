@@ -1,9 +1,3 @@
-hfserie_extrap_function <- function(incomplete_cycle,complete_cycle) {
-  cumchange <- mean(incomplete_cycle/complete_cycle,na.rm=TRUE)
-  if (is.na(cumchange)) complete_cycle
-  else complete_cycle * cumchange
-}
-
 hfserie_extrap <- function(hfserie,lffreq) {
   ratio <- frequency(hfserie)/lffreq
   valplaces <- which(!is.na(hfserie))
@@ -12,15 +6,11 @@ hfserie_extrap <- function(hfserie,lffreq) {
     lastval <- valplaces[length(valplaces)]
     if (lastval != length(hfserie)) {
       incomplete_cycle_start <- lastval %/% ratio * ratio + 1L
-      hfserie[incomplete_cycle_start:length(hfserie)] <- 
-        hfserie_extrap_function(hfserie[incomplete_cycle_start:(incomplete_cycle_start+ratio-1L)],
-                                hfserie[(incomplete_cycle_start-ratio):(incomplete_cycle_start-1L)])
+      hfserie[incomplete_cycle_start:length(hfserie)] <- hfserie[(incomplete_cycle_start-ratio):(incomplete_cycle_start-1L)]
     }
     if (firstval != 1L) {
-      incomplete_cycle_end <- (firstval - 1L) %/% ratio * ratio + ratio
-      hfserie[1L:incomplete_cycle_end] <-
-        hfserie_extrap_function(hfserie[(incomplete_cycle_end-ratio + 1L):incomplete_cycle_end],
-                                hfserie[(incomplete_cycle_end+1L):(incomplete_cycle_end+ratio)])
+      incomplete_cycle_end <- (firstval - 2L) %/% ratio * ratio + ratio
+      hfserie[1L:incomplete_cycle_end] <- hfserie[(incomplete_cycle_end+1L):(incomplete_cycle_end+ratio)]
     }
   }
   hfserie
