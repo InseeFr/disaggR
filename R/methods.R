@@ -290,25 +290,6 @@ print.rateSmooth <- function(x, ...) print(as.ts(x))
 #' @export
 model.list.rateSmooth <- function(object) object$model.list
 
-#' @importFrom stats as.ts
-#' @export
-Ops.twoStepsBenchmark <- function(e1,e2) {
-  
-  miss_e2 <- missing(e2)
-  
-  if (inherits(e1,"twoStepsBenchmark") || inherits(e1,"rateSmooth")) e1 <- as.ts(e1)
-  if (!miss_e2 && (inherits(e2,"twoStepsBenchmark") || inherits(e2,"rateSmooth"))) e2 <- as.ts(e2)
-  
-  if (!miss_e2) {
-    get(.Generic)(e1, e2)
-  } else {
-    get(.Generic)(e1)
-  }
-}
-
-#' @export
-Ops.rateSmooth <- Ops.twoStepsBenchmark
-
 #' @export
 Math.twoStepsBenchmark <- function(x) get(.Generic)(as.ts(x))
 

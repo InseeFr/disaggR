@@ -2,8 +2,6 @@
 
 S3method(Math,rateSmooth)
 S3method(Math,twoStepsBenchmark)
-S3method(Ops,rateSmooth)
-S3method(Ops,twoStepsBenchmark)
 S3method(aggregate,rateSmooth)
 S3method(as.ts,rateSmooth)
 S3method(as.ts,twoStepsBenchmark)
