@@ -64,7 +64,7 @@ vcov.praislm <- function(object, ...) {
   m <- model.list(object)
   X <- m$X[,!(colnames(m$X) %in% names(m$set.coefficients))]
   if (m$include.differenciation) X <- diff(X)
-
+  
   epsilon_variance*solve(crossprod(X,omega_inv)%*%X)
 }
 
@@ -99,7 +99,7 @@ summary.praislm <- function (object, ...) {
   rho <- object$rho
   
   pm <- rbind(matrix(do.call(c,Box.test(object$residuals, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]),
-                             dimnames = list("residuals",c("statistic","p.value")),nrow = 1L),
+                     dimnames = list("residuals",c("statistic","p.value")),nrow = 1L),
               if (rho != 0) matrix(do.call(c,Box.test(object$residuals.decorrelated, lag = 1, type = "Ljung-Box")[c("statistic","p.value")]),
                                    dimnames = list("residuals.decorrelated",c("statistic","p.value")),nrow = 1L))
   
@@ -150,7 +150,7 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
     rownames(pm) <- c("u","epsilon")
     mes <- c("Where Y = X %*% coefficients + u","Where u = rho * lag(u) + epsilon")
   }
-
+  
   pm <- formatC(pm,digits=digits)
   if (signif.stars) {
     Signif <- symnum(x$pm[,"p.value"], corr = FALSE, na = FALSE, 
@@ -315,6 +315,21 @@ Math.twoStepsBenchmark <- function(x) get(.Generic)(as.ts(x))
 #' @export
 Math.rateSmooth <- Math.twoStepsBenchmark
 
+#' @export
+cbind.twoStepsBenchmark  <- function(..., deparse.level = 1) {
+  args <- c(lapply(list(...),
+                   function(x) {
+                     if (inherits(x,"twoStepsBenchmark") || inherits(x,"rateSmooth")) as.ts(x)
+                     else x
+                   }),
+            list(deparse.level=deparse.level)
+  )
+  
+  do.call(cbind,args)
+}
+
+#' @importFrom stats aggregate
+aggregate.twoStepsBenchmark <- function(x, ...) aggregate(as.ts(x), ...)
 #' @importFrom stats cycle
 #' @export
 cycle.twoStepsBenchmark <- function(x, ...) cycle(as.ts(x), ...)
@@ -323,6 +338,9 @@ diff.twoStepsBenchmark <- function(x, lag = 1, differences = 1, ...)  diff(as.ts
 #' @importFrom stats diffinv
 #' @export
 diffinv.twoStepsBenchmark <- function(x, lag = 1, differences = 1, xi, ...) diffinv(as.ts(x), lag, differences, xi, ...)
+#' @importFrom stats monthplot
+#' @export
+monthplot.twoStepsBenchmark <- function(x, ...) monthplot(as.ts(x), ...)
 #' @importFrom stats na.omit
 #' @export
 na.omit.twoStepsBenchmark <- function(object, ...) na.omit(as.ts(object), ...)
@@ -334,11 +352,17 @@ time.twoStepsBenchmark <- function(x, ...) time(as.ts(x), ...)
 window.twoStepsBenchmark <- function(x, ...) window(as.ts(x), ...)
 
 #' @export
+aggregate.rateSmooth <- aggregate.twoStepsBenchmark
+#' @export
+cbind.rateSmooth <- cbind.twoStepsBenchmark
+#' @export
 cycle.rateSmooth <- cycle.twoStepsBenchmark
 #' @export
 diff.rateSmooth <- diff.twoStepsBenchmark
 #' @export
 diffinv.rateSmooth <- diffinv.twoStepsBenchmark
+#' @export
+monthplot.rateSmooth <- monthplot.twoStepsBenchmark
 #' @export
 na.omit.rateSmooth <- na.omit.twoStepsBenchmark
 #' @export
