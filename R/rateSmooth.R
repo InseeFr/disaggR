@@ -76,11 +76,11 @@ calc_lfrate_win <- function(hfserie,lfserie,
   rate_extrap(
     window(
       window(lfrate,
-             start = start.benchmark,
-             end = end.benchmark,
-             extend=TRUE),
-      start = start.domain.extended,
-      end = end.domain.extended,
+             start  = start.benchmark,
+             end    = end.benchmark,
+             extend = TRUE),
+      start  = start.domain.extended,
+      end    = end.domain.extended,
       extend = TRUE),
     mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate))
 }
