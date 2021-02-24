@@ -1,4 +1,4 @@
-#' Extrapolation function for the hfserie in a rateSmooth
+#' Extrapolation function for the hfserie in a threeRuleSmooth
 #' 
 #' This function replaces the incomplete low frequency cycles, at the start and the end of the hfserie,
 #' with respectively the first and the last complete cycles.
@@ -7,7 +7,6 @@
 #'
 #' @param hfserie a time-serie, the high frequency serie to extrapolate
 #' @param lffreq a integer of length 1. The low frequency
-#' to twoStepsBenchmark
 #'
 #' @return a time-serie, the extrapolated hfserie
 #' @export
@@ -105,11 +104,11 @@ calc_hfrate <- function(hfserie,lfserie,
             lfserie.is.rate = TRUE)
 }
 
-rateSmooth_impl <- function(hfserie,lfserie,
-                            start.benchmark,end.benchmark,
-                            start.domain,end.domain,
-                            start.mean.delta.rate,end.mean.delta.rate,
-                            maincl,cl=NULL) {
+threeRuleSmooth_impl <- function(hfserie,lfserie,
+                                 start.benchmark,end.benchmark,
+                                 start.domain,end.domain,
+                                 start.mean.delta.rate,end.mean.delta.rate,
+                                 maincl,cl=NULL) {
   
   if (is.null(cl)) cl <- maincl
   
@@ -132,17 +131,17 @@ rateSmooth_impl <- function(hfserie,lfserie,
                                 end.mean.delta.rate = end.mean.delta.rate),
               call = cl)
   
-  class(res) <- c("rateSmooth","list")
+  class(res) <- c("threeRuleSmooth","list")
   
   res
 }
 
 #' @export
-rateSmooth <- function(hfserie,lfserie,
-                       start.benchmark=NULL,end.benchmark=NULL,
-                       start.domain=NULL,end.domain=NULL,
-                       start.mean.delta.rate=start.benchmark,end.mean.delta.rate=end.benchmark,
-                       ...) {
+threeRuleSmooth <- function(hfserie,lfserie,
+                            start.benchmark=NULL,end.benchmark=NULL,
+                            start.domain=NULL,end.domain=NULL,
+                            start.mean.delta.rate=start.benchmark,end.mean.delta.rate=end.benchmark,
+                            ...) {
   
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
   tsplf <- tsp(lfserie)
@@ -153,9 +152,9 @@ rateSmooth <- function(hfserie,lfserie,
   
   maincl <- match.call()
   
-  rateSmooth_impl(hfserie,lfserie,
-                  start.benchmark,end.benchmark,
-                  start.domain,end.domain,
-                  start.mean.delta.rate,end.mean.delta.rate,
-                  maincl,...)
+  threeRuleSmooth_impl(hfserie,lfserie,
+                       start.benchmark,end.benchmark,
+                       start.domain,end.domain,
+                       start.mean.delta.rate,end.mean.delta.rate,
+                       maincl,...)
 }
