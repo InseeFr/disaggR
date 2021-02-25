@@ -55,7 +55,7 @@ regression_estimation <- function(hfserie,lfserie,
   y <- window(lfserie,start=start.coeff.calc,end=end.coeff.calc,extend = TRUE)
   
   x <- aggregate_and_crop_hf_to_lf(hfserie,y)
-
+  
   praislm(x,y,include.rho,include.differenciation,set_coefficients,cl)
 }
 
@@ -130,15 +130,18 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   res
 }
 
-#' @title Bends a time-serie with a lower frequency one
+#' @title Bends a time-serie with a lower frequency one with a regression
 #' 
 #' @description twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
 #' The procedure involved is a Prais-Winsten regression, then an additive
 #' Denton benchmark.
 #' 
-#' Therefore, the resulting time-serie minimizes the sum of squares of the
-#' differences on the constraint that it is equal to the low-frequency serie after
-#' the aggregation and the regression. 
+#' Therefore, the resulting time-serie is the sum of a regression fit, eventually
+#' reintegrated, and of a smoothed part. The smoothed part minimizes the sum of squares
+#' of its differences.
+#' 
+#' As in any disaggregation, the resulting time-serie is equal to the
+#' low-frequency serie after aggregation.
 #' 
 #' @details annualBenchmark is a wrapper of the main function, that applies more specifically
 #' to annual series, and changes the default window parameters to the ones
@@ -152,10 +155,12 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'                   start.benchmark=NULL,end.benchmark=NULL,
 #'                   start.domain=NULL,end.domain=NULL,...)
 #'
-#' annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
+#' annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
+#'                 set.coeff=NULL,set.const=NULL,
 #'                 start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L]-1,
 #'                 start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
-#'                 start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie)))
+#'                 start.domain=start(hfserie),
+#'                 end.domain=c(end.benchmark+2,frequency(hfserie)))
 #' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
@@ -251,7 +256,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
     if (include.differenciation) 1L:NROW(hfserie)*(frequency(lfserie)/frequency(hfserie))^2
     else                         rep(frequency(lfserie)/frequency(hfserie),NROW(hfserie))
   }
- 
+  
   if (length(set.const) > 1L) stop("set.const must be of a single value", call. = FALSE)
   if (length(set.const) == 1L) names(set.const) <- "constant"
   if ((NCOL(hfserie) == 1L) && (length(set.coeff) == 1L)) names(set.coeff) <- "hfserie"

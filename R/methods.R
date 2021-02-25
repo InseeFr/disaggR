@@ -284,6 +284,38 @@ summary.twoStepsBenchmark <- function(object, ...) {
 #' @export
 as.ts.threeRuleSmooth <- function(x, ...) x$benchmarked.serie
 
+#' Extracting the rate of a threeRuleSmooth
+#' 
+#' The function `rate` returns the high-frequency rate
+#' from a \link{threeRuleSmooth} object.
+#' @usage
+#' rate(object)
+#' @param object a threeRuleSmooth object.
+#' @examples
+#' benchmark <- threeRuleSmooth(turnover,construction); rate(benchmark)
+#'
+#' @keywords internal
+#' @export
+rate <- function(object) UseMethod("rate")
+#' @export
+rate.threeRuleSmooth <- function(object) object$rate
+
+#' Extracting the extrapolation delta of a threeRuleSmooth
+#' 
+#' The function \link{threeRuleSmooth} involves a delta returns the high-frequency rate
+#' from a \link{threeRuleSmooth} object.
+#' @usage
+#' rate(object)
+#' @param object a threeRuleSmooth object.
+#' @examples
+#' benchmark <- threeRuleSmooth(turnover,construction); rate(benchmark)
+#'
+#' @keywords internal
+#' @export
+rate <- function(object) UseMethod("rate")
+#' @export
+rate.threeRuleSmooth <- function(object) object$rate
+
 #' @export
 print.threeRuleSmooth <- function(x, ...) print(as.ts(x))
 
@@ -291,7 +323,7 @@ print.threeRuleSmooth <- function(x, ...) print(as.ts(x))
 model.list.threeRuleSmooth <- function(object) object$model.list
 
 #' @export
-Math.twoStepsBenchmark <- function(x) get(.Generic)(as.ts(x))
+Math.twoStepsBenchmark <- function(x, ...) get(.Generic)(as.ts(x))
 
 #' @export
 Math.threeRuleSmooth <- Math.twoStepsBenchmark

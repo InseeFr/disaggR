@@ -142,6 +142,84 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
   res
 }
 
+#' @title Bends a time-serie with a lower frequency one by smoothing their rate
+#' 
+#' @description twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
+#' The procedure involved is a proportional Denton benchmark.
+#' 
+#' Therefore, the resulting time-serie is the product of the high-frequency input
+#' and of a smoothed rate. The smoothed rate minimizes the sum of squares
+#' of its differences.
+#' 
+#' The rate is extrapolated using a simple arithmetic sequence. The weights
+#' for its \link{bflSmooth} are copied from the last complete cycles.
+#' 
+#' As in any disaggregation, the resulting time-serie is equal to the
+#' low-frequency serie after aggregation.
+#'
+#' @param hfserie the bended time-serie. It can be a matrix time-serie.
+#' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
+#' @param start.benchmark an optional start for `lfserie` to bend `hfserie`.
+#' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
+#' @param end.benchmark an optional end for `lfserie` to bend `hfserie`.
+#' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
+#' @param start.domain the start of the output high-frequency serie. It also defines the smoothing window :
+#' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
+#' domain window.
+#' Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.
+#' @param end.domain the end of the output high-frequency serie. It also defines the smoothing window :
+#' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
+#' domain window.
+#' @param start.mean.delta.rate an optional start for the mean of the rate difference,
+#' required for the arithmetical extrapolation.
+#' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
+#' @param end.mean.delta.rate an optional end for the mean of the rate difference,
+#' required for the arithmetical extrapolation.
+#' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the end is defined by lfserie's window.
+#' @param \dots if the dots contain a cl item, its value overwrites the value
+#' of the returned call. This feature allows to build wrappers.
+#' @return
+#' threeRuleSmooth returns an object of class "`threeRuleSmooth`".
+#' 
+#' The function `summary` can be used to obtain and print a summary of the regression used by the benchmark.
+#' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
+#' serie and the bending serie.
+#' The function \link{in_sample} produces in-sample predictions with the inner regression.
+#' The generic accessor functions `as.ts`, `model.list`, 
+#' extract various useful features of the returned value.
+#' 
+#' An object of class "`twoStepsBenchmark`" is a list containing the following components :
+#'   \item{benchmarked.serie}{a time-serie, that is the result of the benchmark.}
+#'   \item{fitted.values}{a time-serie, that is the high-frequency serie as it is
+#'   after having applied the regression coefficients.
+#'   The difference `benchmarked.serie` - `fitted.values` is then a smoothed residual, eventually integrated
+#'   if `include.differenciation=TRUE`.}
+#'   \item{regression}{an object of class praislm, it is the regression on which relies the
+#'   benchmark. It can be extracted with the function \link{prais}}
+#'   \item{smoothed.part}{the smoothed part of the two-steps benchmark.}
+#'   \item{model.list}{a list containing all the arguments submitted to the function.}
+#'   \item{call}{the matched call (either of twoStepsBenchmark or annualBenchmark)}
+#' @examples
+#' 
+#' ## How to use annualBenchmark or twoStepsBenchark
+#' 
+#' benchmark <- annualBenchmark(hfserie = turnover,
+#'                             lfserie = construction,
+#'                             include.differenciation = TRUE)
+#' as.ts(benchmark)
+#' coef(benchmark)
+#' summary(benchmark)
+#' library(ggplot2)
+#' autoplot(in_sample(benchmark))
+#' 
+#' ## How to manually set the coefficient
+#' 
+#' benchmark2 <- annualBenchmark(hfserie = turnover,
+#'                               lfserie = construction,
+#'                               include.differenciation = TRUE,
+#'                               set.coeff = 0.1)
+#' coef(benchmark2)
+#'
 #' @export
 threeRuleSmooth <- function(hfserie,lfserie,
                             start.benchmark=NULL,end.benchmark=NULL,
