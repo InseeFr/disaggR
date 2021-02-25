@@ -267,13 +267,13 @@ plotts <- function(x,show.legend,col,lty,
              
              if (is_value_reg[1L] != 1L) {
                x_temp <- x[,c(1L,3L)]
-               x_temp[(is_value_reg[1L] + 1L):nrow(x),3L] <- NA
+               x_temp[(is_value_reg[1L] + 1L):nrow(x),2L] <- NA
                scatterplot_ts(x_temp,col = col, lty = lty[2L])
              }
              
              if (is_value_reg[length(is_value_reg)] != nrow(x)) {
                x_temp <- x[,c(1L,3L)]
-               x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),3L] <- NA
+               x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
                scatterplot_ts(x_temp,col = col, lty = lty[2L])
              }
              
@@ -342,6 +342,10 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
   
   invisible()
 }
+
+#' @export
+#' @rdname plot.tscomparison
+plot.threeRuleSmooth <- plot.twoStepsBenchmark
 
 #' @title Plotting twoStepsBenchmarks
 #' 
@@ -542,13 +546,13 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
     
     if (is_value_reg[1L] != 1L) {
       object_temp <- object[,c(1L,3L)]
-      object_temp[(is_value_reg[1L] + 1L):nrow(object),3L] <- NA
+      object_temp[(is_value_reg[1L] + 1L):nrow(object),2L] <- NA
       g <- g + geom_path_scatter(object_temp,2L,lty[2L])
     }
     
     if (is_value_reg[length(is_value_reg)] != nrow(object)) {
       object_temp <- object[,c(1L,3L)]
-      object_temp[1L:(is_value_reg[length(is_value_reg)]-1L),3L] <- NA
+      object_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
       g <- g + geom_path_scatter(object_temp,3L,lty[2L]) 
     }
     
