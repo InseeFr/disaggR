@@ -2,7 +2,7 @@
 % Please edit documentation in R/in.R
 \name{in_revisions}
 \alias{in_revisions}
-\title{Comparing two benchmarks together}
+\title{Comparing two disaggregations together}
 \usage{
 in_revisions(object, object_old, type = "changes")
 }
@@ -33,5 +33,5 @@ benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = 
 plot(in_revisions(benchmark,benchmark2))
 }
 \seealso{
-in_sample in_benchmark in_scatter plot.tscomparison
+in_sample in_disaggr in_scatter plot.tscomparison
 }

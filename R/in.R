@@ -21,7 +21,7 @@
 #' a named matrix time-serie of two columns, one for the
 #' response and the other for the predicted value.
 #' A `tscomparison` class is added to the object.
-#' @seealso in_benchmark in_revisions in_scatter plot.tscomparison
+#' @seealso in_disaggr in_revisions in_scatter plot.tscomparison
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_sample(benchmark))
@@ -60,9 +60,14 @@ in_sample.twoStepsBenchmark <- function(object,type="changes") {
   in_sample(prais(object),type=type)
 }
 
-#' Comparing a benchmark with the high-frequency input
+#' @export
+in_sample.threeRuleSmooth <- function(object,type="changes") {
+  stop("The in_sample method needs a regression hence isn't applicable on a threeRuleSmooth object",call. = FALSE)
+}
+
+#' Comparing a disaggregation with the high-frequency input
 #' 
-#' The function `in_benchmark`takes a \link{twoStepsBenchmark} object
+#' The function `in_disaggr` takes a \link{twoStepsBenchmark} object
 #' as an input. It produces a comparison between the benchmarked time-serie and the
 #' high-frequency input.
 #' 
@@ -79,12 +84,12 @@ in_sample.twoStepsBenchmark <- function(object,type="changes") {
 #' @seealso in_sample in_revisions in_scatter plot.tscomparison
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-#' plot(in_benchmark(benchmark))
+#' plot(in_disaggr(benchmark))
 #' @export
-in_benchmark <- function(object,type="changes") UseMethod("in_benchmark")
+in_disaggr <- function(object,type="changes") UseMethod("in_disaggr")
 
 #' @export
-in_benchmark.twoStepsBenchmark <- function(object,type="changes") {
+in_disaggr.twoStepsBenchmark <- function(object,type="changes") {
   
   hfserie <- hfserie(object)
   
@@ -107,12 +112,12 @@ in_benchmark.twoStepsBenchmark <- function(object,type="changes") {
                              start = start(series_with_smoothed_part),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
                    },
-                   stop("The type argument of in_benchmark should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
+                   stop("The type argument of in_disaggr should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
   )
   
   structure(window(series,start=start(benchmark),end=end(benchmark),extend=TRUE),
             type=type,
-            func="in_benchmark",
+            func="in_disaggr",
             class=c("tscomparison",class(series)),
             dimnames=list(NULL,
                           c(if (type != "contributions") "Benchmark",
@@ -122,7 +127,13 @@ in_benchmark.twoStepsBenchmark <- function(object,type="changes") {
   )
 }
 
-#' Comparing two benchmarks together
+#' @export
+in_disaggr.threeRuleSmooth <- function(object,type="changes") {
+  if (type == "contributions") stop("The type 'contributions' is invalid for threeRuleSmooth objects",call. = FALSE)
+  in_disaggr.twoStepsBenchmark(object,type)
+}
+
+#' Comparing two disaggregations together
 #' 
 #' The function `in_revisions`takes two \link{twoStepsBenchmark} objects
 #' as inputs, and produces a comparison between those.
@@ -138,7 +149,7 @@ in_benchmark.twoStepsBenchmark <- function(object,type="changes") {
 #' a named matrix time-serie of two columns, one for the
 #' response and the other for the predicted value.
 #' A `tscomparison` class is added to the object.
-#' @seealso in_sample in_benchmark in_scatter plot.tscomparison
+#' @seealso in_sample in_disaggr in_scatter plot.tscomparison
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)
@@ -148,15 +159,16 @@ in_revisions <- function(object,object_old,type="changes") UseMethod("in_revisio
 
 #' @export
 in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
-  if (!inherits(object_old,"twoStepsBenchmark")) stop("old_object must be a twoStepsBenchmark", call. = FALSE)
+  if (!inherits(object_old,"twoStepsBenchmark") &&
+      !inherits(object_old,"threeRuleSmooth")) stop("old_object must be a twoStepsBenchmark or a threeRuleSmooth", call. = FALSE)
   
   tryCatch({
-    indic_old <- in_benchmark(object_old,type)
-    indic_new <- in_benchmark(object,type)
+    indic_old <- in_disaggr(object_old,type)
+    indic_new <- in_disaggr(object,type)
     series <- indic_new-indic_old
     colnames(series) <- colnames(indic_new)
   },
-  error=function(e) stop(gsub("in_benchmark","in_revisions",e$message), call.=FALSE))
+  error=function(e) stop(gsub("in_disaggr","in_revisions",e$message), call.=FALSE))
   
   if (type != "contributions") {
     if (sum(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
@@ -172,6 +184,9 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   series
 }
 
+#' @export
+in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
+
 #' Comparing the inputs of a praislm regression
 #' 
 #' The function `in_scatter` returns comparison of the inputs from
@@ -185,7 +200,7 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
 #' and the other for the high-frequency-serie (eventually differencied if
 #' `include.differenciation` is `TRUE`).
 #' A `tscomparison` class is added to the object.
-#' @seealso in_sample in_benchmark in_revisions plot.tscomparison
+#' @seealso in_sample in_disaggr in_revisions plot.tscomparison
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_scatter(benchmark))
@@ -263,9 +278,42 @@ in_scatter.twoStepsBenchmark <- function(object) {
 }
 
 #' @export
+in_scatter.threeRuleSmooth <- function(object) {
+  m <- model.list(object)
+  
+  benchmark_clean_win <- switch_window(m$start.benchmark,
+                                       m$end.benchmark,
+                                       tsp(m$lfserie))
+  
+  y <- window(m$lfserie,
+              benchmark_clean_win[1L],
+              benchmark_clean_win[2L],
+              extend = TRUE)
+  
+  X <- m$hfserie
+  
+  series <- cbind(y,
+                  window(
+                    aggregate_and_crop_hf_to_lf(X,
+                                                y),
+                    benchmark_clean_win[1L],
+                    benchmark_clean_win[2L],
+                    extend = TRUE)
+  )
+  
+  structure(series,
+            type= "levels",
+            func="in_scatter",
+            class=c("tscomparison",class(series)),
+            dimnames=list(NULL,c("Low-frequency serie",
+                                 "High-frequency serie (benchmark)")),
+            coefficients=coefficients(object))
+}
+
+#' @export
 print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
   label <- switch(attr(x,"func")[1L],
-                  in_benchmark="Comparison between the benchmark and the input",
+                  in_disaggr="Comparison between the benchmark and the input",
                   in_sample="In-sample predictions",
                   in_revisions="Comparison between two benchmarks",
                   in_scatter="Comparison between the inputs")
@@ -284,14 +332,14 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' Distance computation for benchmarks
 #' 
 #' This function `distance` computes the Minkowski distance of exponent p,
-#' related to a tscomparison object, produced with `in_sample`, `in_benchmark` or
+#' related to a tscomparison object, produced with `in_sample`, `in_disaggr` or
 #' `in_sample` 
 #' 
 #' The meaning depends on the tscomparison function :
 #' 
 #' * `in_sample` will produce the low-frequency distance between the predicted
 #' value and the response, on the coefficient calculation window.
-#' * `in_benchmark` will produce the high-frequency distance between the inputs
+#' * `in_disaggr` will produce the high-frequency distance between the inputs
 #' (eventually, the sum of its contributions) and the benchmarked serie.
 #' * `in_revisions` will produce the high-frequency distance between the two
 #' benchmarked series (contributions distance isn't permitted).
@@ -301,12 +349,12 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' 
 #' @return
 #' a numeric of length 1, the distance.
-#' @seealso in_sample in_benchmark in_revisions
+#' @seealso in_sample in_disaggr in_revisions
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' distance(in_sample(benchmark,type="changes"))
-#' distance(in_benchmark(benchmark,type="contributions"),p=1L)
-#' distance(in_benchmark(benchmark,type="changes"),p=Inf)
+#' distance(in_disaggr(benchmark,type="contributions"),p=1L)
+#' distance(in_disaggr(benchmark,type="changes"),p=Inf)
 #' @export
 distance <- function(x, p = 2) UseMethod("distance")
 
@@ -317,7 +365,7 @@ distance.tscomparison <- function(x, p = 2) {
   res <- switch(attr(x,"func"),
                 in_sample = x[,"Benchmark"] - x[,"Predicted value"],
                 in_scatter = stop("The distance method doesn't support in_scatter results", call. = FALSE),
-                in_benchmark = {
+                in_disaggr = {
                   if (identical(attr(x,"type"),"contributions")) x[,"Smoothed part"] + x[,"Trend"]
                   else x[,"Benchmark"] - ts_from_tsp(rowSums(x[,colnames(x) != "Benchmark",drop = FALSE]),
                                                      tsp(x))

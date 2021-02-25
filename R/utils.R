@@ -41,6 +41,6 @@ switch_window <- function(start,end,init_tsp) {
 lfserie <- function(benchmark) model.list(benchmark)$lfserie
 hfserie <- function(benchmark) {
   res <- model.list(benchmark)$hfserie
-  res[,colnames(res) != "constant"]
+  if (is.mts(res)) res[,colnames(res) != "constant"] else res
 }
 

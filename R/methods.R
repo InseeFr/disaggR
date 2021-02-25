@@ -282,25 +282,25 @@ summary.twoStepsBenchmark <- function(object, ...) {
 
 #' @importFrom stats as.ts
 #' @export
-as.ts.rateSmooth <- function(x, ...) x$benchmarked.serie
+as.ts.threeRuleSmooth <- function(x, ...) x$benchmarked.serie
 
 #' @export
-print.rateSmooth <- function(x, ...) print(as.ts(x))
+print.threeRuleSmooth <- function(x, ...) print(as.ts(x))
 
 #' @export
-model.list.rateSmooth <- function(object) object$model.list
+model.list.threeRuleSmooth <- function(object) object$model.list
 
 #' @export
 Math.twoStepsBenchmark <- function(x) get(.Generic)(as.ts(x))
 
 #' @export
-Math.rateSmooth <- Math.twoStepsBenchmark
+Math.threeRuleSmooth <- Math.twoStepsBenchmark
 
 #' @export
 cbind.twoStepsBenchmark  <- function(..., deparse.level = 1) {
   args <- c(lapply(list(...),
                    function(x) {
-                     if (inherits(x,"twoStepsBenchmark") || inherits(x,"rateSmooth")) as.ts(x)
+                     if (inherits(x,"twoStepsBenchmark") || inherits(x,"threeRuleSmooth")) as.ts(x)
                      else x
                    }),
             list(deparse.level=deparse.level)
@@ -333,20 +333,20 @@ time.twoStepsBenchmark <- function(x, ...) time(as.ts(x), ...)
 window.twoStepsBenchmark <- function(x, ...) window(as.ts(x), ...)
 
 #' @export
-aggregate.rateSmooth <- aggregate.twoStepsBenchmark
+aggregate.threeRuleSmooth <- aggregate.twoStepsBenchmark
 #' @export
-cbind.rateSmooth <- cbind.twoStepsBenchmark
+cbind.threeRuleSmooth <- cbind.twoStepsBenchmark
 #' @export
-cycle.rateSmooth <- cycle.twoStepsBenchmark
+cycle.threeRuleSmooth <- cycle.twoStepsBenchmark
 #' @export
-diff.rateSmooth <- diff.twoStepsBenchmark
+diff.threeRuleSmooth <- diff.twoStepsBenchmark
 #' @export
-diffinv.rateSmooth <- diffinv.twoStepsBenchmark
+diffinv.threeRuleSmooth <- diffinv.twoStepsBenchmark
 #' @export
-monthplot.rateSmooth <- monthplot.twoStepsBenchmark
+monthplot.threeRuleSmooth <- monthplot.twoStepsBenchmark
 #' @export
-na.omit.rateSmooth <- na.omit.twoStepsBenchmark
+na.omit.threeRuleSmooth <- na.omit.twoStepsBenchmark
 #' @export
-time.rateSmooth <- time.twoStepsBenchmark
+time.threeRuleSmooth <- time.twoStepsBenchmark
 #' @export
-window.rateSmooth <- window.twoStepsBenchmark
+window.threeRuleSmooth <- window.twoStepsBenchmark

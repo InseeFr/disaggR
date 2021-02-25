@@ -33,13 +33,13 @@ test_that("plot works", {
                       function() plot(in_sample(benchmark,type="changes")))
   
   expect_doppelganger("plot-indicator-levels-nowin",
-                      function() plot(in_benchmark(benchmark,type="levels")))
+                      function() plot(in_disaggr(benchmark,type="levels")))
   expect_doppelganger("plot-indicator-levels-rebased-nowin",
-                      function() plot(in_benchmark(benchmark,type="levels-rebased")))
+                      function() plot(in_disaggr(benchmark,type="levels-rebased")))
   expect_doppelganger("plot-indicator-changes-nowin",
-                      function() plot(in_benchmark(benchmark,type="changes")))
+                      function() plot(in_disaggr(benchmark,type="changes")))
   expect_doppelganger("plot-indicator-contributions-nowin",
-                      function() plot(in_benchmark(benchmark,type="contributions")))
+                      function() plot(in_disaggr(benchmark,type="contributions")))
   
   expect_doppelganger("plot-inrevisions-levels-nowin",
                       function() plot(in_revisions(benchmark,
@@ -73,19 +73,19 @@ test_that("plot works", {
                                       end=2012))
   
   expect_doppelganger("plot-indicator-levels-2008-4-2012-7",
-                      function() plot(in_benchmark(benchmark,type="levels"),
+                      function() plot(in_disaggr(benchmark,type="levels"),
                                       start=c(2008,4),
                                       end=c(2012,7)))
   expect_doppelganger("plot-indicator-levels-rebased-2008-4-2012-7",
-                      function() plot(in_benchmark(benchmark,type="levels-rebased"),
+                      function() plot(in_disaggr(benchmark,type="levels-rebased"),
                                       start=c(2008,4),
                                       end=c(2012,7)))
   expect_doppelganger("plot-indicator-changes-2008-4-2012-7",
-                      function() plot(in_benchmark(benchmark,type="changes"),
+                      function() plot(in_disaggr(benchmark,type="changes"),
                                       start=c(2008,4),
                                       end=c(2012,7)))
   expect_doppelganger("plot-indicator-contributions-2008-4-2012-7",
-                      function() plot(in_benchmark(benchmark,type="contributions"),
+                      function() plot(in_disaggr(benchmark,type="contributions"),
                                       start=c(2008,4),
                                       end=c(2012,7)))
   
@@ -132,7 +132,7 @@ test_that("plot works", {
                                                    benchmark2),
                                       main="title in rev"))
   expect_doppelganger("plot-main-ctb",
-                      function() plot(in_benchmark(benchmark,
+                      function() plot(in_disaggr(benchmark,
                                                  type = "contributions"),
                                       main="title ctb"))
   expect_doppelganger("plot-main-scatter",
@@ -145,13 +145,13 @@ test_that("plot works", {
     twoStepsBenchmark(construction)
   
   expect_doppelganger("plot-mts-ctb",
-                      function() plot(in_benchmark(mts,
+                      function() plot(in_disaggr(mts,
                                                  type = "contributions")))
   expect_doppelganger("plot-mts-ins",
                       function() plot(in_sample(mts,type="levels")))
   
   expect_doppelganger("plot-mts-ind",
-                      function() plot(in_benchmark(mts,
+                      function() plot(in_disaggr(mts,
                                                  type="levels-rebased")))
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
   mts2 <- ts(series,start=c(2000,1),freq=12) %>%
@@ -181,13 +181,13 @@ test_that("ggplot works", {
                       autoplot(in_sample(benchmark,type="changes")))
   
   expect_doppelganger("gg-indicator-levels-nowin",
-                      autoplot(in_benchmark(benchmark,type="levels")))
+                      autoplot(in_disaggr(benchmark,type="levels")))
   expect_doppelganger("gg-indicator-levels-rebased-nowin",
-                      autoplot(in_benchmark(benchmark,type="levels-rebased")))
+                      autoplot(in_disaggr(benchmark,type="levels-rebased")))
   expect_doppelganger("gg-indicator-changes-nowin",
-                      autoplot(in_benchmark(benchmark,type="changes")))
+                      autoplot(in_disaggr(benchmark,type="changes")))
   expect_doppelganger("gg-indicator-contributions-nowin",
-                      autoplot(in_benchmark(benchmark,type="contributions")))
+                      autoplot(in_disaggr(benchmark,type="contributions")))
   
   expect_doppelganger("gg-inrevisions-levels-nowin",
                       autoplot(in_revisions(benchmark,
@@ -221,19 +221,19 @@ test_that("ggplot works", {
                                end=2012))
   
   expect_doppelganger("gg-indicator-levels-2008-4-2012-7",
-                      autoplot(in_benchmark(benchmark,type="levels"),
+                      autoplot(in_disaggr(benchmark,type="levels"),
                                start=c(2008,4),
                                end=c(2012,7)))
   expect_doppelganger("gg-indicator-levels-rebased-2008-4-2012-7",
-                      autoplot(in_benchmark(benchmark,type="levels-rebased"),
+                      autoplot(in_disaggr(benchmark,type="levels-rebased"),
                                start=c(2008,4),
                                end=c(2012,7)))
   expect_doppelganger("gg-indicator-changes-2008-4-2012-7",
-                      autoplot(in_benchmark(benchmark,type="changes"),
+                      autoplot(in_disaggr(benchmark,type="changes"),
                                start=c(2008,4),
                                end=c(2012,7)))
   expect_doppelganger("gg-indicator-contributions-2008-4-2012-7",
-                      autoplot(in_benchmark(benchmark,type="contributions"),
+                      autoplot(in_disaggr(benchmark,type="contributions"),
                                start=c(2008,4),
                                end=c(2012,7)))
   
@@ -279,7 +279,7 @@ test_that("ggplot works", {
                                             benchmark2),
                                main="title in rev"))
   expect_doppelganger("gg-plot-main-ctb",
-                      autoplot(in_benchmark(benchmark,
+                      autoplot(in_disaggr(benchmark,
                                           type = "contributions"),
                                main="title ctb"))
   expect_doppelganger("gg-plot-main-scatter",
@@ -304,10 +304,10 @@ test_that("show.legend=FALSE works", {
                       function() plot(in_sample(benchmark,type="levels"),
                                       show.legend = FALSE))
   expect_doppelganger("plot-indicator-showlegendF",
-                      function() plot(in_benchmark(benchmark,type="levels-rebased"),
+                      function() plot(in_disaggr(benchmark,type="levels-rebased"),
                                       show.legend = FALSE))
   expect_doppelganger("plot-ctb-showlegendF",
-                      function() plot(in_benchmark(benchmark,type="contributions"),
+                      function() plot(in_disaggr(benchmark,type="contributions"),
                                       show.legend = FALSE))
   expect_doppelganger("plot-inrevisions-showlegendF",
                       function() plot(in_revisions(benchmark,
@@ -324,10 +324,10 @@ test_that("show.legend=FALSE works", {
                       autoplot(in_sample(benchmark,type="levels"),
                                show.legend = FALSE))
   expect_doppelganger("gg-indicator-showlegendF",
-                      autoplot(in_benchmark(benchmark,type="levels-rebased"),
+                      autoplot(in_disaggr(benchmark,type="levels-rebased"),
                                show.legend = FALSE))
   expect_doppelganger("gg-ctb-showlegendF",
-                      autoplot(in_benchmark(benchmark,type="contributions"),
+                      autoplot(in_disaggr(benchmark,type="contributions"),
                                show.legend = FALSE))
   expect_doppelganger("gg-inrevisions-showlegendF",
                       autoplot(in_revisions(benchmark,
@@ -345,13 +345,13 @@ test_that("show.legend=FALSE works", {
     twoStepsBenchmark(construction)
   
   expect_doppelganger("gg-mts-ctb",
-                      autoplot(in_benchmark(mts,
+                      autoplot(in_disaggr(mts,
                                           type = "contributions")))
   expect_doppelganger("gg-mts-ins",
                       autoplot(in_sample(mts,type="levels")))
   
   expect_doppelganger("gg-mts-indic",
-                      autoplot(in_benchmark(mts,
+                      autoplot(in_disaggr(mts,
                                           type="levels-rebased")))
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
   mts2 <- ts(series,start=c(2000,1),freq=12) %>%

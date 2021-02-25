@@ -72,16 +72,20 @@ calc_lfrate_win <- function(hfserie,lfserie,
   
   lfrate <- lfserie / aggregate_and_crop_hf_to_lf(hfserie,lfserie)
   
-  rate_extrap(
-    window(
-      window(lfrate,
-             start  = start.benchmark,
-             end    = end.benchmark,
-             extend = TRUE),
-      start  = start.domain.extended,
-      end    = end.domain.extended,
-      extend = TRUE),
-    mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate))
+  delta_rate <- mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate)
+  
+  list(
+    lfrate = rate_extrap(
+      window(
+        window(lfrate,
+               start  = start.benchmark,
+               end    = end.benchmark,
+               extend = TRUE),
+        start  = start.domain.extended,
+        end    = end.domain.extended,
+        extend = TRUE),
+      delta_rate),
+    delta_rate = delta_rate)
 }
 
 calc_hfrate <- function(hfserie,lfserie,
@@ -98,10 +102,11 @@ calc_hfrate <- function(hfserie,lfserie,
                                 start.mean.delta.rate,end.mean.delta.rate,
                                 tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
   
-  bflSmooth(lfserie = lfrate_win,
-            nfrequency = frequency(hfserie),
-            weights = hfserie_win,
-            lfserie.is.rate = TRUE)
+  list(hfrate = bflSmooth(lfserie = lfrate_win$lfrate,
+                        nfrequency = frequency(hfserie),
+                        weights = hfserie_win,
+                        lfserie.is.rate = TRUE),
+       delta_rate = lfrate_win$delta_rate)
 }
 
 threeRuleSmooth_impl <- function(hfserie,lfserie,
@@ -117,10 +122,11 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
                         start.domain,end.domain,
                         start.mean.delta.rate,end.mean.delta.rate)
   
-  rests <- hfrate * hfserie
+  rests <- hfrate$hfrate * hfserie
   
   res <- list(benchmarked.serie = window(rests,start=start.domain,end=end.domain,extend = TRUE),
-              rate = hfrate,
+              rate = hfrate$hfrate,
+              delta.rate = hfrate$delta_rate,
               model.list = list(hfserie = hfserie,
                                 lfserie = lfserie,
                                 start.benchmark = start.benchmark,

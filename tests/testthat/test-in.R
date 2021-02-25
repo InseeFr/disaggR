@@ -60,35 +60,35 @@ test_that("print in_sample prints",{
 
 
 
-test_that("in_benchmark works", {
+test_that("in_disaggr works", {
   benchmark <- annualBenchmark(hfserie = turnover,
                                lfserie = construction,
                                include.differenciation = FALSE)
   
-  simul <- in_benchmark(benchmark,type = "levels")
+  simul <- in_disaggr(benchmark,type = "levels")
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
   class(obtained) <- c("tscomparison","mts","ts","matrix")
   attr(obtained,"type") <- "levels"
-  attr(obtained,"func") <- "in_benchmark"
+  attr(obtained,"func") <- "in_disaggr"
   colnames(obtained) <- c("Benchmark","High-frequency serie")
   
   expect_equal(simul,obtained)
   
   
-  simul <- (100+in_benchmark(benchmark,type="changes"))/100
+  simul <- (100+in_disaggr(benchmark,type="changes"))/100
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
   simul <- unname(simul*stats::lag(obtained,-1))
   obtained <- unname(window(obtained,start= tsp(obtained)[1L]+ deltat(obtained),extend = TRUE))
   expect_equal(simul,obtained,tolerance = 1e-10)
   
-  simul <- in_benchmark(benchmark,type="contributions")
+  simul <- in_disaggr(benchmark,type="contributions")
   simul <- unname(na.omit(ts_from_tsp(rowSums(simul),tsp(simul))))
   attr(simul,"na.action") <- NULL
   obtained <- unname(na.omit((as.ts(benchmark)/stats::lag(as.ts(benchmark),-1)-1)*100))
   attr(obtained,"na.action") <- NULL
   expect_equal(simul,obtained)
   
-  simul <- in_benchmark(benchmark,type="contributions")/100
+  simul <- in_disaggr(benchmark,type="contributions")/100
   simul <- unname(simul*stats::lag(as.ts(benchmark),-1))
   simul <- ts_from_tsp(simul  %*% diag(1/c(coef(benchmark)["hfserie"],1,1)),tsp(simul))
   expect_equal(unname(simul),
@@ -133,8 +133,8 @@ test_that("in scatter works",{
 
 test_that("error in",{
   benchmark <- twoStepsBenchmark(turnover,construction)
-  expect_error(in_benchmark(benchmark,type="aaza"),
-               "The type argument of in_benchmark")
+  expect_error(in_disaggr(benchmark,type="aaza"),
+               "The type argument of in_disaggr")
   expect_error(in_revisions(twoStepsBenchmark(turnover,construction),
                             twoStepsBenchmark(turnover,construction,
                                               include.differenciation = TRUE),
