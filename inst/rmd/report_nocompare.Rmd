@@ -147,9 +147,9 @@ print(summary(params$new_bn),call=FALSE)
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,fig.width = 14}
-plot(in_benchmark(params$new_bn,type="levels-rebased"))
-plot(in_benchmark(params$new_bn,type="changes"))
-plot(in_benchmark(params$new_bn,type="contributions"))
+plot(in_disaggr(params$new_bn,type="levels-rebased"))
+plot(in_disaggr(params$new_bn,type="changes"))
+plot(in_disaggr(params$new_bn,type="contributions"))
 ```
 
 :::

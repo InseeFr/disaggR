@@ -9,6 +9,7 @@ the S3 class was named "insample".
 * the plot and autoplot methods now have xlab, ylab, start, end, col, lty, show.legend, main and mar arguments. The autoplot methods have also a theme argument.
 * removed the c++ code to improve readability
 * the default argument end.coeff.calc, of annualBenchmark, changed to remove the last annual value from the coefficient calculation
+* most of the stats methods for time-series now coerce twoStepsBenchmarks or rateSmooths into time-series
 
 # disaggR 0.1.9
 * fixed the R check for old-release (3.6.3).

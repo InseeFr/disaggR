@@ -134,12 +134,6 @@ reViewOutput <- function(benchmark,benchmark_old,compare) {
             class="reViewOutput")
 }
 
-lfserie <- function(benchmark) model.list(benchmark)$lfserie
-hfserie <- function(benchmark) {
-  res <- model.list(benchmark)$hfserie
-  res[,colnames(res) != "constant"]
-}
-
 plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,
                                   is.brush=TRUE,height,...) {
   output[[output_name]] <- renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L],
@@ -501,7 +495,7 @@ summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL) {
                                      digits = 2L,background.format = "min.is.green"))),
     tags$tr(tags$th("Benchmark contributions (hf changes)",
                     format_table_row(vapply(presets_list,
-                                            function(x) distance(in_benchmark(x,
+                                            function(x) distance(in_disaggr(x,
                                                                             type="contributions"),
                                                                  distance_p),
                                             0),
@@ -723,7 +717,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
            fluidRow(
              column(12,
                     title,
-                    div(plotOutBrushAndRender(reactive(in_benchmark(benchmark(),
+                    div(plotOutBrushAndRender(reactive(in_disaggr(benchmark(),
                                                                   type="levels-rebased")),
                                               plotswin,
                                               output,
@@ -731,7 +725,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               ns,
                                               height="33%",
                                               ylab = "Rebased levels"),
-                        plotOutBrushAndRender(reactive(in_benchmark(benchmark(),
+                        plotOutBrushAndRender(reactive(in_disaggr(benchmark(),
                                                                   type="changes")),
                                               plotswin,
                                               output,
@@ -739,7 +733,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
                                               ns,
                                               height="33%",
                                               ylab = "Changes"),
-                        plotOutBrushAndRender(reactive(in_benchmark(benchmark(),
+                        plotOutBrushAndRender(reactive(in_disaggr(benchmark(),
                                                                   type="contributions")),
                                               plotswin,
                                               output,

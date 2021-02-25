@@ -16,7 +16,7 @@ a numeric of length 1, the distance.
 }
 \description{
 This function \code{distance} computes the Minkowski distance of exponent p,
-related to a tscomparison object, produced with \code{in_sample}, \code{in_benchmark} or
+related to a tscomparison object, produced with \code{in_sample}, \code{in_disaggr} or
 \code{in_sample}
 }
 \details{
@@ -24,7 +24,7 @@ The meaning depends on the tscomparison function :
 \itemize{
 \item \code{in_sample} will produce the low-frequency distance between the predicted
 value and the response, on the coefficient calculation window.
-\item \code{in_benchmark} will produce the high-frequency distance between the inputs
+\item \code{in_disaggr} will produce the high-frequency distance between the inputs
 (eventually, the sum of its contributions) and the benchmarked serie.
 \item \code{in_revisions} will produce the high-frequency distance between the two
 benchmarked series (contributions distance isn't permitted).
@@ -33,9 +33,9 @@ benchmarked series (contributions distance isn't permitted).
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 distance(in_sample(benchmark,type="changes"))
-distance(in_benchmark(benchmark,type="contributions"),p=1L)
-distance(in_benchmark(benchmark,type="changes"),p=Inf)
+distance(in_disaggr(benchmark,type="contributions"),p=1L)
+distance(in_disaggr(benchmark,type="changes"),p=Inf)
 }
 \seealso{
-in_sample in_benchmark in_revisions
+in_sample in_disaggr in_revisions
 }

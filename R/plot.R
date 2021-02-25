@@ -253,25 +253,27 @@ plotts <- function(x,show.legend,col,lty,
                      extend.x = TRUE, extend.y = TRUE,
                      abline.x=FALSE, main = main, ...)
            
-           abline(a = attr(x,"coefficients")["constant"],
-                  b = attr(x,"coefficients")[names(attr(x,"coefficients")) != "constant"],
-                  col = "red",
-                  lwd = 2)
+           if (!is.null(attr(x,"coefficients"))) {
+             abline(a = attr(x,"coefficients")["constant"],
+                    b = attr(x,"coefficients")[names(attr(x,"coefficients")) != "constant"],
+                    col = "red",
+                    lwd = 2)
+           }
            
            scatterplot_ts(x[,c(1L,2L)], col=col, lty = lty[1L])
            
-           if ("High-frequency serie (benchmark)" %in% colnames(x)) {
-             is_value_reg <- which(!is.na(x[,"High-frequency serie (regression)"]))
+           if (ncol(x) == 3L) {
+             is_value_reg <- which(!is.na(x[,2L]))
              
              if (is_value_reg[1L] != 1L) {
-               x_temp <- x[,c("Low-frequency serie","High-frequency serie (benchmark)")]
-               x_temp[(is_value_reg[1L] + 1L):nrow(x),"High-frequency serie (benchmark)"] <- NA
+               x_temp <- x[,c(1L,3L)]
+               x_temp[(is_value_reg[1L] + 1L):nrow(x),2L] <- NA
                scatterplot_ts(x_temp,col = col, lty = lty[2L])
              }
              
              if (is_value_reg[length(is_value_reg)] != nrow(x)) {
-               x_temp <- x[,c("Low-frequency serie","High-frequency serie (benchmark)")]
-               x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),"High-frequency serie (benchmark)"] <- NA
+               x_temp <- x[,c(1L,3L)]
+               x_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
                scatterplot_ts(x_temp,col = col, lty = lty[2L])
              }
              
@@ -341,6 +343,10 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
   invisible()
 }
 
+#' @export
+#' @rdname plot.tscomparison
+plot.threeRuleSmooth <- plot.twoStepsBenchmark
+
 #' @title Plotting twoStepsBenchmarks
 #' 
 #' @description 
@@ -350,7 +356,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' * \code{autoplot} produces a ggplot object
 #' 
 #' The objects of class `tscomparison` can be produced with the functions
-#' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_benchmark}.
+#' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_disaggr}.
 #' 
 #' @param x (for the plot method) a tscomparison or twoStepsBenchmark.
 #' @param object (for the autoplot method) a tscomparison or twoStepsBenchmark.
@@ -375,7 +381,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(benchmark)
 #' plot(in_sample(benchmark))
-#' autoplot(in_benchmark(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
+#' autoplot(in_disaggr(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
 #' plot(in_scatter(benchmark),xlab="title x",ylab="title y")
 #' @export
 plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = NULL,
@@ -525,25 +531,28 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
   
   lty <- lty(ncol(object)-1L)
   
-  g <- ggplot(show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab) +
-    geom_abline(intercept = attr(object,"coefficients")["constant"],
-                slope = attr(object,"coefficients")[names(attr(object,"coefficients")) != "constant"],
-                lty = "solid", colour = "red", size = 1)
+  g <- ggplot(show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab)
+  
+  if (!is.null(attr(object,"coefficients"))) {
+    g <- g + geom_abline(intercept = attr(object,"coefficients")["constant"],
+                         slope = attr(object,"coefficients")[names(attr(object,"coefficients")) != "constant"],
+                         lty = "solid", colour = "red", size = 1)
+  }
   
   g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L])
   
-  if ("High-frequency serie (benchmark)" %in% colnames(object)) {
-    is_value_reg <- which(!is.na(object[,"High-frequency serie (regression)"]))
+  if (ncol(object) == 3L) {
+    is_value_reg <- which(!is.na(object[,2L]))
     
     if (is_value_reg[1L] != 1L) {
-      object_temp <- object[,c("Low-frequency serie","High-frequency serie (benchmark)")]
-      object_temp[(is_value_reg[1L] + 1L):nrow(object),"High-frequency serie (benchmark)"] <- NA
+      object_temp <- object[,c(1L,3L)]
+      object_temp[(is_value_reg[1L] + 1L):nrow(object),2L] <- NA
       g <- g + geom_path_scatter(object_temp,2L,lty[2L])
     }
     
     if (is_value_reg[length(is_value_reg)] != nrow(object)) {
-      object_temp <- object[,c("Low-frequency serie","High-frequency serie (benchmark)")]
-      object_temp[1L:(is_value_reg[length(is_value_reg)]-1L),"High-frequency serie (benchmark)"] <- NA
+      object_temp <- object[,c(1L,3L)]
+      object_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
       g <- g + geom_path_scatter(object_temp,3L,lty[2L]) 
     }
     

@@ -2,12 +2,27 @@
 % Please edit documentation in R/plot.R
 \name{plot.twoStepsBenchmark}
 \alias{plot.twoStepsBenchmark}
+\alias{plot.threeRuleSmooth}
 \alias{plot.tscomparison}
 \alias{autoplot.twoStepsBenchmark}
 \alias{autoplot.tscomparison}
 \title{Plotting twoStepsBenchmarks}
 \usage{
 \method{plot}{twoStepsBenchmark}(
+  x,
+  xlab = NULL,
+  ylab = NULL,
+  start = NULL,
+  end = NULL,
+  col = default_col_pal(x),
+  lty = default_lty_pal(x),
+  show.legend = TRUE,
+  main = NULL,
+  mar = default_margins(main, xlab, ylab),
+  ...
+)
+
+\method{plot}{threeRuleSmooth}(
   x,
   xlab = NULL,
   ylab = NULL,
@@ -108,12 +123,12 @@ Plot methods for objects of class \code{"tscomparison"} and \link{twoStepsBenchm
 }
 
 The objects of class \code{tscomparison} can be produced with the functions
-\link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_benchmark}.
+\link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_disaggr}.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 plot(benchmark)
 plot(in_sample(benchmark))
-autoplot(in_benchmark(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
+autoplot(in_disaggr(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
 plot(in_scatter(benchmark),xlab="title x",ylab="title y")
 }
