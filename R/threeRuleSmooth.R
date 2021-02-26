@@ -68,11 +68,15 @@ rate_extrap <- function(lfrate,mean.delta) {
 calc_lfrate_win <- function(hfserie,lfserie,
                             start.benchmark,end.benchmark,
                             start.mean.delta.rate,end.mean.delta.rate,
+                            set.delta.rate,
                             start.domain.extended,end.domain.extended) {
   
   lfrate <- lfserie / aggregate_and_crop_hf_to_lf(hfserie,lfserie)
   
-  delta_rate <- mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate)
+  delta_rate <- {
+    if (is.null(set.delta.rate)) mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate)
+    else set.delta.rate
+  }
   
   list(
     lfrate = rate_extrap(
@@ -91,7 +95,8 @@ calc_lfrate_win <- function(hfserie,lfserie,
 calc_hfrate <- function(hfserie,lfserie,
                         start.benchmark,end.benchmark,
                         start.domain,end.domain,
-                        start.mean.delta.rate,end.mean.delta.rate) {
+                        start.mean.delta.rate,end.mean.delta.rate,
+                        set.delta.rate) {
   
   hfserie_win <- calc_hfserie_win(hfserie,
                                   start.domain,end.domain,
@@ -100,6 +105,7 @@ calc_hfrate <- function(hfserie,lfserie,
   lfrate_win <- calc_lfrate_win(hfserie,lfserie,
                                 start.benchmark,end.benchmark,
                                 start.mean.delta.rate,end.mean.delta.rate,
+                                set.delta.rate,
                                 tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
   
   list(hfrate = bflSmooth(lfserie = lfrate_win$lfrate,
@@ -113,6 +119,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
                                  start.benchmark,end.benchmark,
                                  start.domain,end.domain,
                                  start.mean.delta.rate,end.mean.delta.rate,
+                                 set.delta.rate,
                                  maincl,cl=NULL) {
   
   if (is.null(cl)) cl <- maincl
@@ -120,7 +127,8 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
   hfrate <- calc_hfrate(hfserie,lfserie,
                         start.benchmark,end.benchmark,
                         start.domain,end.domain,
-                        start.mean.delta.rate,end.mean.delta.rate)
+                        start.mean.delta.rate,end.mean.delta.rate,
+                        set.delta.rate)
   
   rests <- hfrate$hfrate * hfserie
   
@@ -134,7 +142,8 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
                                 start.domain = start.domain,
                                 end.domain = end.domain,
                                 start.mean.delta.rate = start.mean.delta.rate,
-                                end.mean.delta.rate = end.mean.delta.rate),
+                                end.mean.delta.rate = end.mean.delta.rate,
+                                set.delta.rate = set.delta.rate),
               call = cl)
   
   class(res) <- c("threeRuleSmooth","list")
@@ -172,6 +181,8 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' @param end.mean.delta.rate an optional end for the mean of the rate difference,
 #' required for the arithmetical extrapolation.
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the end is defined by lfserie's window.
+#' @param set.delta.rate  an optional double, that allows the user to set the
+#' delta mean instead of using the mean.
 #' @param \dots if the dots contain a cl item, its value overwrites the value
 #' of the returned call. This feature allows to build wrappers.
 #' @return
@@ -206,6 +217,7 @@ threeRuleSmooth <- function(hfserie,lfserie,
                             start.benchmark=NULL,end.benchmark=NULL,
                             start.domain=NULL,end.domain=NULL,
                             start.mean.delta.rate=start.benchmark,end.mean.delta.rate=end.benchmark,
+                            set.delta.rate=NULL,
                             ...) {
   
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
@@ -221,5 +233,6 @@ threeRuleSmooth <- function(hfserie,lfserie,
                        start.benchmark,end.benchmark,
                        start.domain,end.domain,
                        start.mean.delta.rate,end.mean.delta.rate,
+                       set.delta.rate,
                        maincl,...)
 }

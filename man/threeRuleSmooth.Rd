@@ -13,6 +13,7 @@ threeRuleSmooth(
   end.domain = NULL,
   start.mean.delta.rate = start.benchmark,
   end.mean.delta.rate = end.benchmark,
+  set.delta.rate = NULL,
   ...
 )
 }
@@ -43,6 +44,9 @@ Should be a double or a numeric of length 2, like a window for \code{lfserie}. I
 \item{end.mean.delta.rate}{an optional end for the mean of the rate difference,
 required for the arithmetical extrapolation.
 Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the end is defined by lfserie's window.}
+
+\item{set.delta.rate}{an optional double, that allows the user to set the
+delta mean instead of using the mean.}
 
 \item{\dots}{if the dots contain a cl item, its value overwrites the value
 of the returned call. This feature allows to build wrappers.}
