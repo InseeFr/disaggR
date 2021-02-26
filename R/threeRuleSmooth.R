@@ -68,11 +68,15 @@ rate_extrap <- function(lfrate,mean.delta) {
 calc_lfrate_win <- function(hfserie,lfserie,
                             start.benchmark,end.benchmark,
                             start.mean.delta.rate,end.mean.delta.rate,
+                            set.delta.rate,
                             start.domain.extended,end.domain.extended) {
   
   lfrate <- lfserie / aggregate_and_crop_hf_to_lf(hfserie,lfserie)
   
-  delta_rate <- mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate)
+  delta_rate <- {
+    if (is.null(set.delta.rate)) mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate)
+    else set.delta.rate
+  }
   
   list(
     lfrate = rate_extrap(
@@ -91,7 +95,8 @@ calc_lfrate_win <- function(hfserie,lfserie,
 calc_hfrate <- function(hfserie,lfserie,
                         start.benchmark,end.benchmark,
                         start.domain,end.domain,
-                        start.mean.delta.rate,end.mean.delta.rate) {
+                        start.mean.delta.rate,end.mean.delta.rate,
+                        set.delta.rate) {
   
   hfserie_win <- calc_hfserie_win(hfserie,
                                   start.domain,end.domain,
@@ -100,6 +105,7 @@ calc_hfrate <- function(hfserie,lfserie,
   lfrate_win <- calc_lfrate_win(hfserie,lfserie,
                                 start.benchmark,end.benchmark,
                                 start.mean.delta.rate,end.mean.delta.rate,
+                                set.delta.rate,
                                 tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
   
   list(hfrate = bflSmooth(lfserie = lfrate_win$lfrate,
@@ -113,6 +119,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
                                  start.benchmark,end.benchmark,
                                  start.domain,end.domain,
                                  start.mean.delta.rate,end.mean.delta.rate,
+                                 set.delta.rate,
                                  maincl,cl=NULL) {
   
   if (is.null(cl)) cl <- maincl
@@ -120,12 +127,13 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
   hfrate <- calc_hfrate(hfserie,lfserie,
                         start.benchmark,end.benchmark,
                         start.domain,end.domain,
-                        start.mean.delta.rate,end.mean.delta.rate)
+                        start.mean.delta.rate,end.mean.delta.rate,
+                        set.delta.rate)
   
   rests <- hfrate$hfrate * hfserie
   
   res <- list(benchmarked.serie = window(rests,start=start.domain,end=end.domain,extend = TRUE),
-              rate = hfrate$hfrate,
+              smoothed.rate = hfrate$hfrate,
               delta.rate = hfrate$delta_rate,
               model.list = list(hfserie = hfserie,
                                 lfserie = lfserie,
@@ -134,7 +142,8 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
                                 start.domain = start.domain,
                                 end.domain = end.domain,
                                 start.mean.delta.rate = start.mean.delta.rate,
-                                end.mean.delta.rate = end.mean.delta.rate),
+                                end.mean.delta.rate = end.mean.delta.rate,
+                                set.delta.rate = set.delta.rate),
               call = cl)
   
   class(res) <- c("threeRuleSmooth","list")
@@ -144,15 +153,11 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 
 #' @title Bends a time-serie with a lower frequency one by smoothing their rate
 #' 
-#' @description twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
-#' The procedure involved is a proportional Denton benchmark.
+#' @description threeRuleSmooth bends a time-serie with a time-serie of a lower
+#' frequency. The procedure involved is a proportional Denton benchmark.
 #' 
 #' Therefore, the resulting time-serie is the product of the high-frequency input
-#' and of a smoothed rate. The smoothed rate minimizes the sum of squares
-#' of its differences.
-#' 
-#' The rate is extrapolated using a simple arithmetic sequence. The weights
-#' for its \link{bflSmooth} are copied from the last complete cycles.
+#' with a smoothed rate. This latter is extrapolated using an arithmetic sequence.
 #' 
 #' As in any disaggregation, the resulting time-serie is equal to the
 #' low-frequency serie after aggregation.
@@ -176,6 +181,8 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' @param end.mean.delta.rate an optional end for the mean of the rate difference,
 #' required for the arithmetical extrapolation.
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the end is defined by lfserie's window.
+#' @param set.delta.rate  an optional double, that allows the user to set the
+#' delta mean instead of using the mean.
 #' @param \dots if the dots contain a cl item, its value overwrites the value
 #' of the returned call. This feature allows to build wrappers.
 #' @return
@@ -184,47 +191,33 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' The function `summary` can be used to obtain and print a summary of the regression used by the benchmark.
 #' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 #' serie and the bending serie.
-#' The function \link{in_sample} produces in-sample predictions with the inner regression.
-#' The generic accessor functions `as.ts`, `model.list`, 
-#' extract various useful features of the returned value.
+#' The generic accessor functions `as.ts`, `model.list`, `smoothed.rate` extract
+#' various useful features of the returned value.
 #' 
-#' An object of class "`twoStepsBenchmark`" is a list containing the following components :
+#' An object of class "`threeRuleSmooth`" is a list containing the following components :
 #'   \item{benchmarked.serie}{a time-serie, that is the result of the benchmark.}
-#'   \item{fitted.values}{a time-serie, that is the high-frequency serie as it is
-#'   after having applied the regression coefficients.
-#'   The difference `benchmarked.serie` - `fitted.values` is then a smoothed residual, eventually integrated
-#'   if `include.differenciation=TRUE`.}
-#'   \item{regression}{an object of class praislm, it is the regression on which relies the
-#'   benchmark. It can be extracted with the function \link{prais}}
-#'   \item{smoothed.part}{the smoothed part of the two-steps benchmark.}
+#'   \item{smoothed.rate}{the smoothed rate of the threeRuleSmooth.}
+#'   \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
+#'   the rate time-serie. It is estimated as the mean value in the specified window.}
 #'   \item{model.list}{a list containing all the arguments submitted to the function.}
 #'   \item{call}{the matched call (either of twoStepsBenchmark or annualBenchmark)}
 #' @examples
 #' 
-#' ## How to use annualBenchmark or twoStepsBenchark
+#' ## How to use threeRuleSmooth
 #' 
-#' benchmark <- annualBenchmark(hfserie = turnover,
-#'                             lfserie = construction,
-#'                             include.differenciation = TRUE)
-#' as.ts(benchmark)
-#' coef(benchmark)
-#' summary(benchmark)
+#' smooth <- threeRuleSmooth(hfserie = turnover,
+#'                           lfserie = construction)
+#' as.ts(smooth)
+#' coef(smooth)
+#' summary(smooth)
 #' library(ggplot2)
-#' autoplot(in_sample(benchmark))
 #' 
-#' ## How to manually set the coefficient
-#' 
-#' benchmark2 <- annualBenchmark(hfserie = turnover,
-#'                               lfserie = construction,
-#'                               include.differenciation = TRUE,
-#'                               set.coeff = 0.1)
-#' coef(benchmark2)
-#'
 #' @export
 threeRuleSmooth <- function(hfserie,lfserie,
                             start.benchmark=NULL,end.benchmark=NULL,
                             start.domain=NULL,end.domain=NULL,
                             start.mean.delta.rate=start.benchmark,end.mean.delta.rate=end.benchmark,
+                            set.delta.rate=NULL,
                             ...) {
   
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
@@ -240,5 +233,6 @@ threeRuleSmooth <- function(hfserie,lfserie,
                        start.benchmark,end.benchmark,
                        start.domain,end.domain,
                        start.mean.delta.rate,end.mean.delta.rate,
+                       set.delta.rate,
                        maincl,...)
 }
