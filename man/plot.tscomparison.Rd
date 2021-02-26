@@ -5,6 +5,7 @@
 \alias{plot.threeRuleSmooth}
 \alias{plot.tscomparison}
 \alias{autoplot.twoStepsBenchmark}
+\alias{autoplot.threeRuleSmooth}
 \alias{autoplot.tscomparison}
 \title{Plotting twoStepsBenchmarks}
 \usage{
@@ -51,6 +52,21 @@
 )
 
 \method{autoplot}{twoStepsBenchmark}(
+  object,
+  xlab = NULL,
+  ylab = NULL,
+  start = NULL,
+  end = NULL,
+  col = default_col_pal(object),
+  lty = default_lty_pal(object),
+  show.legend = TRUE,
+  main = NULL,
+  mar = NULL,
+  theme = default_theme_ggplot(show.legend, xlab, ylab, mar),
+  ...
+)
+
+\method{autoplot}{threeRuleSmooth}(
   object,
   xlab = NULL,
   ylab = NULL,

@@ -2,25 +2,18 @@
 % Please edit documentation in R/methods.R
 \name{rate}
 \alias{rate}
-\title{Extracting the rate of a threeRuleSmooth}
+\title{Extracting the extrapolation delta of a threeRuleSmooth}
 \usage{
-rate(object)
-
 rate(object)
 }
 \arguments{
 \item{object}{a threeRuleSmooth object.}
 }
 \description{
-The function \code{rate} returns the high-frequency rate
-from a \link{threeRuleSmooth} object.
-
 The function \link{threeRuleSmooth} involves a delta returns the high-frequency rate
 from a \link{threeRuleSmooth} object.
 }
 \examples{
-benchmark <- threeRuleSmooth(turnover,construction); rate(benchmark)
-
 benchmark <- threeRuleSmooth(turnover,construction); rate(benchmark)
 
 }

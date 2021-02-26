@@ -615,6 +615,10 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
 
 #' @export
 #' @rdname plot.tscomparison
+autoplot.threeRuleSmooth <- autoplot.twoStepsBenchmark
+
+#' @export
+#' @rdname plot.tscomparison
 autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                                   start=NULL,end=NULL,
                                   col = default_col_pal(object),

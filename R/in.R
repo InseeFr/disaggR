@@ -129,8 +129,17 @@ in_disaggr.twoStepsBenchmark <- function(object,type="changes") {
 
 #' @export
 in_disaggr.threeRuleSmooth <- function(object,type="changes") {
-  if (type == "contributions") stop("The type 'contributions' is invalid for threeRuleSmooth objects",call. = FALSE)
-  in_disaggr.twoStepsBenchmark(object,type)
+  if (type == "contributions") {
+    series <- cbind(na.omit(as.ts(object)),0,0)
+    structure(series,
+              type="contributions",
+              func="in_disaggr",
+              class=c("tscomparison",class(series)),
+              dimnames=list(NULL,
+                            c("High-frequency serie","Smoothed part","Trend")
+                            ))
+  }
+  else in_disaggr.twoStepsBenchmark(object,type)
 }
 
 #' Comparing two disaggregations together

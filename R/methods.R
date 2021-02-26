@@ -286,19 +286,19 @@ as.ts.threeRuleSmooth <- function(x, ...) x$benchmarked.serie
 
 #' Extracting the rate of a threeRuleSmooth
 #' 
-#' The function `rate` returns the high-frequency rate
+#' The function `smoothed.rate` returns the high-frequency rate
 #' from a \link{threeRuleSmooth} object.
 #' @usage
-#' rate(object)
+#' smoothed.rate(object)
 #' @param object a threeRuleSmooth object.
 #' @examples
-#' benchmark <- threeRuleSmooth(turnover,construction); rate(benchmark)
+#' benchmark <- threeRuleSmooth(turnover,construction); smoothed.rate(benchmark)
 #'
 #' @keywords internal
 #' @export
-rate <- function(object) UseMethod("rate")
+smoothed.rate <- function(object) UseMethod("smoothed.rate")
 #' @export
-rate.threeRuleSmooth <- function(object) object$rate
+smoothed.rate.threeRuleSmooth <- function(object) object$smoothed.rate
 
 #' Extracting the extrapolation delta of a threeRuleSmooth
 #' 
