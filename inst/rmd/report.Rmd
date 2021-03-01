@@ -6,9 +6,6 @@ params:
   lfserie_name: NA
 title: "Benchmark report `r params$hfserie_name` on `r params$lfserie_name`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-output:
-  html_document:
-    theme: NULL
 ---
 
 ```{r include=F}

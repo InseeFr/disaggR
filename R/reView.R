@@ -1097,6 +1097,8 @@ rePort.reViewOutput <- function(object, output_file = NULL,
                                   hfserie_name=object$hfserie_name,
                                   lfserie_name=object$lfserie_name),
                     envir = new.env(parent = globalenv()),
+                    output_format = rmarkdown::html_document(css=system.file("rmd/report.css", package = "disaggR"),
+                                                             theme=NULL),
                     quiet = TRUE,
                     ...)
   if (is.null(output_file))  {
