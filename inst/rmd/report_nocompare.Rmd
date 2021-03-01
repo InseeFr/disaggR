@@ -26,19 +26,19 @@ presets_list <- disaggR:::presets_list_fun(hfserie,model.list(params$new_bn)$lfs
 Model 1 (*differences --- with constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[1]])
+plot(in_sample(presets_list[[1]]))
 ```
 
 Model 3 (*levels --- with constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[3]])
+plot(in_sample(presets_list[[3]]))
 ```
 
 Model 5 (*levels --- without constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[5]])
+plot(in_sample(presets_list[[5]]))
 ```
 
 :::
@@ -48,19 +48,19 @@ plot(presets_list[[5]])
 Model 2 (*differences --- without constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[2]])
+plot(in_sample(presets_list[[2]]))
 ```
 
 Model 4 (*autocorrelated levels --- with constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[4]])
+plot(in_sample(presets_list[[4]]))
 ```
 
 Model 6 (*autocorrelated levels --- without constant*)
 
 ```{r echo=FALSE}
-plot(presets_list[[6]])
+plot(in_sample(presets_list[[6]]))
 ```
 
 :::
