@@ -3,6 +3,11 @@
 \name{twoStepsBenchmark}
 \alias{twoStepsBenchmark}
 \alias{annualBenchmark}
+\alias{twoStepsBenchmark-class}
+\alias{Ops,twoStepsBenchmark,ts-method}
+\alias{Ops,ts,twoStepsBenchmark-method}
+\alias{Math2,twoStepsBenchmark,vector-method}
+\alias{show,twoStepsBenchmark-method}
 \title{Bends a time-serie with a lower frequency one with a regression}
 \usage{
 twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,

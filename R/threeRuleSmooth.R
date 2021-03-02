@@ -167,7 +167,11 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' 
 #' As in any disaggregation, the resulting time-serie is equal to the
 #' low-frequency serie after aggregation.
-#'
+#' 
+#' @aliases threeRuleSmooth-class
+#' Ops,threeRuleSmooth,ts-method Ops,ts,threeRuleSmooth-method
+#' Math2,threeRuleSmooth,vector-method
+#' show,threeRuleSmooth-method
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
 #' @param start.benchmark an optional start for `lfserie` to bend `hfserie`.

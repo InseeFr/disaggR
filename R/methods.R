@@ -370,13 +370,13 @@ Ops.threeRuleSmooth <- Ops.twoStepsBenchmark
 setMethod("Ops",signature = c("twoStepsBenchmark","ts"),function(e1,e2) callGeneric(as.ts(e1),e2))
 #' @include twoStepsBenchmark.R
 #' @export
-setMethod("Ops",signature = c("ts","twoStepsBenchmark"),function(e1,e2) callGeneric(e1,as.ts(data)))
+setMethod("Ops",signature = c("ts","twoStepsBenchmark"),function(e1,e2) callGeneric(e1,as.ts(e2)))
 #' @include threeRuleSmooth.R
 #' @export
-setMethod("Ops",signature = c("threeRuleSmooth","ts"),function(e1,e2) callGeneric(e1$data,e2))
+setMethod("Ops",signature = c("threeRuleSmooth","ts"),function(e1,e2) callGeneric(as.ts(e1),e2))
 #' @include threeRuleSmooth.R
 #' @export
-setMethod("Ops",signature = c("ts","threeRuleSmooth"),function(e1,e2) callGeneric(e1,e2$data))
+setMethod("Ops",signature = c("ts","threeRuleSmooth"),function(e1,e2) callGeneric(e1,as.ts(e2)))
 
 #' @include twoStepsBenchmark.R
 #' @export

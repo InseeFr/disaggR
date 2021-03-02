@@ -153,7 +153,10 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' to annual series, and changes the default window parameters to the ones
 #' that are commonly used by quarterly national accounts.
 #' 
-#' @aliases annualBenchmark
+#' @aliases annualBenchmark twoStepsBenchmark-class
+#' Ops,twoStepsBenchmark,ts-method Ops,ts,twoStepsBenchmark-method
+#' Math2,twoStepsBenchmark,vector-method
+#' show,twoStepsBenchmark-method
 #' @usage
 #' twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
 #'                   set.coeff=NULL,set.const=NULL,
