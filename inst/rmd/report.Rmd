@@ -85,7 +85,9 @@ htmltools::HTML(
 **Before**
 
 ```{r echo=FALSE,fig.height=5}
-plot(in_scatter(params$old_bn))
+plot(in_scatter(params$old_bn),
+     xlab = "High-frequency serie",
+     ylab = "Low-frequency serie")
 ```
 
 :::
@@ -102,7 +104,7 @@ plot(in_scatter(params$new_bn))
 
 ::::
 
-# Benchmarks
+# Benchmark
 
 :::: {.columns}
 
@@ -158,8 +160,10 @@ plot(params$new_bn)
 **Before**
 
 ```{r echo=FALSE}
-plot(in_sample(params$old_bn,type="levels"))
-plot(in_sample(params$old_bn,type="changes"))
+plot(in_sample(params$old_bn,type="levels"),
+     ylab = "Levels")
+plot(in_sample(params$old_bn,type="changes"),
+     ylab = "Changes")
 ```
 
 :::
@@ -169,15 +173,17 @@ plot(in_sample(params$old_bn,type="changes"))
 **After**
 
 ```{r echo=FALSE}
-plot(in_sample(params$new_bn,type="levels"))
-plot(in_sample(params$new_bn,type="changes"))
+plot(in_sample(params$new_bn,type="levels"),
+     ylab = "Levels")
+plot(in_sample(params$new_bn,type="changes"),
+     ylab = "Changes")
 ```
 
 :::
 
 ::::
 
-# Summary
+# Benchmark summary
 
 :::: {.columns}
 
@@ -203,16 +209,19 @@ print(summary(params$new_bn),call=FALSE)
 
 ::::
 
-# Comparison with indicator
+# Comparison benchmark/input
 
 :::: {.columns}
 
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,fig.width = 14}
-plot(in_disaggr(params$new_bn,type="levels-rebased"))
-plot(in_disaggr(params$new_bn,type="changes"))
-plot(in_disaggr(params$new_bn,type="contributions"))
+plot(in_disaggr(params$new_bn,type="levels-rebased"),
+     ylab = "Rebased levels")
+plot(in_disaggr(params$new_bn,type="changes"),
+     ylab = "Changes")
+plot(in_disaggr(params$new_bn,type="contributions"),
+     ylab = "Contributions")
 ```
 
 :::
@@ -226,9 +235,12 @@ plot(in_disaggr(params$new_bn,type="contributions"))
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,fig.width=14}
-plot(in_revisions(params$new_bn,params$old_bn,type="levels"))
-plot(in_revisions(params$new_bn,params$old_bn,type="changes"))
-plot(in_revisions(params$new_bn,params$old_bn,type="contributions"))
+plot(in_revisions(params$new_bn,params$old_bn,type="levels"),
+     ylab = "Levels")
+plot(in_revisions(params$new_bn,params$old_bn,type="changes"),
+     ylab = "Changes")
+plot(in_revisions(params$new_bn,params$old_bn,type="contributions"),
+     ylab = "Contributions")
 ```
 
 :::
