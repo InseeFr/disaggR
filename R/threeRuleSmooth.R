@@ -1,3 +1,9 @@
+#' @import methods
+#' @export
+setClass("threeRuleSmooth",contains = "list")
+#' @export
+setOldClass("threeRuleSmooth",S4Class = "threeRuleSmooth")
+
 #' Extrapolation function for the hfserie in a threeRuleSmooth
 #' 
 #' This function replaces the incomplete low frequency cycles, at the start and the end of the hfserie,
@@ -148,7 +154,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
   
   class(res) <- c("threeRuleSmooth","list")
   
-  res
+  asS4(res)
 }
 
 #' @title Bends a time-serie with a lower frequency one by smoothing their rate

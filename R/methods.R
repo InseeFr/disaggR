@@ -275,6 +275,11 @@ print.twoStepsBenchmark <- function(x,...) {
   invisible(x)
 }
 
+#' @include twoStepsBenchmark.R
+#' @export
+setMethod("show","twoStepsBenchmark",
+          function(object) print(object))
+
 #' @export
 summary.twoStepsBenchmark <- function(object, ...) {
   summary.praislm(prais(object),...)
@@ -319,6 +324,11 @@ rate.threeRuleSmooth <- function(object) object$rate
 #' @export
 print.threeRuleSmooth <- function(x, ...) print(as.ts(x))
 
+#' @include threeRuleSmooth.R
+#' @export
+setMethod("show","threeRuleSmooth",
+          function(object) print(object))
+
 #' @export
 model.list.threeRuleSmooth <- function(object) object$model.list
 
@@ -339,6 +349,59 @@ cbind.twoStepsBenchmark  <- function(..., deparse.level = 1) {
   )
   
   do.call(cbind,args)
+}
+
+#' @export
+Ops.twoStepsBenchmark <- function(e1,e2) {
+  if (inherits(e1,"twoStepsBenchmark") || inherits(e1,"threeRuleSmooth")) {
+    e1 <- as.ts(e1)
+  }
+  if (inherits(e2,"twoStepsBenchmark") || inherits(e2,"threeRuleSmooth")) {
+    e2 <- as.ts(e2)
+  }
+  get(.Generic)(e1,e2)
+}
+
+#' @export
+Ops.threeRuleSmooth <- Ops.twoStepsBenchmark
+
+#' @include twoStepsBenchmark.R
+#' @export
+setMethod("Ops",signature = c("twoStepsBenchmark","ts"),function(e1,e2) callGeneric(as.ts(e1),e2))
+#' @include twoStepsBenchmark.R
+#' @export
+setMethod("Ops",signature = c("ts","twoStepsBenchmark"),function(e1,e2) callGeneric(e1,as.ts(data)))
+#' @include threeRuleSmooth.R
+#' @export
+setMethod("Ops",signature = c("threeRuleSmooth","ts"),function(e1,e2) callGeneric(e1$data,e2))
+#' @include threeRuleSmooth.R
+#' @export
+setMethod("Ops",signature = c("ts","threeRuleSmooth"),function(e1,e2) callGeneric(e1,e2$data))
+
+#' @include twoStepsBenchmark.R
+#' @export
+setAs("twoStepsBenchmark","ts",function(from) as.ts(from))
+#' @include twoStepsBenchmark.R
+#' @export
+setAs("threeRuleSmooth","ts",function(from) as.ts(from))
+
+#' @include twoStepsBenchmark.R
+#' @export
+setMethod("Math2",c("twoStepsBenchmark","vector"),
+          function(x,digits = 0) callGeneric(as.ts(x),digits))
+#' @include threeRuleSmooth.R
+#' @export
+setMethod("Math2",c("threeRuleSmooth","vector"),
+          function(x,digits = 0) callGeneric(as.ts(x),digits))
+
+#' @export
+Summary.twoStepsBenchmark <- function(x, ..., na.rm = FALSE) {
+  get(.Generic)(as.ts(x), ..., na.rm = na.rm)
+}
+
+#' @export
+Summary.threeRuleSmooth <- function(x, ..., na.rm = FALSE) {
+  get(.Generic)(as.ts(x), ..., na.rm = na.rm)
 }
 
 #' @importFrom stats aggregate

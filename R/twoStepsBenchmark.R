@@ -1,3 +1,9 @@
+#' @import methods
+#' @export
+setClass("twoStepsBenchmark",contains = "list")
+#' @export
+setOldClass("twoStepsBenchmark",S4Class = "twoStepsBenchmark")
+
 residuals_extrap_sequence <- function(u0,u1,rho,n,include.differenciation) {
   if (include.differenciation) {
     if (rho == 1) u1 + (u1-u0) * (1:n)
@@ -127,7 +133,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                 end.domain = end.domain),
               call = cl)
   class(res) <- c("twoStepsBenchmark","list")
-  res
+  asS4(res)
 }
 
 #' @title Bends a time-serie with a lower frequency one with a regression
