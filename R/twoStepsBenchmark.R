@@ -1,4 +1,4 @@
-# twoStepsBenchmark class is registered as a minimal S4 in order to allow
+# twoStepsBenchmark is registered as a minimal S4 class in order to allow
 # Ops group generic double dispatch with ts. Through, most of the package uses
 # S3 methods for simplicity
 #' @import methods
@@ -150,7 +150,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' The resulting time-serie is equal to the low-frequency serie after aggregation.
 #' 
 #' @aliases twoStepsBenchmark-class Ops,twoStepsBenchmark,ts-method
-#' Ops,ts,twoStepsBenchmark-method Math2,twoStepsBenchmark,vector-method
+#' Ops,ts,twoStepsBenchmark-method Math2,twoStepsBenchmark-method
 #' show,twoStepsBenchmark-method
 #' @usage
 #' twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,

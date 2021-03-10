@@ -1,4 +1,4 @@
-# threeRuleSmooth class is registered as a minimal S4 in order to allow
+# threeRuleSmooth is registered as a minimal S4 class in order to allow
 # Ops group generic double dispatch with ts. Through, most of the package uses
 # S3 methods for simplicity
 #' @import methods
@@ -168,7 +168,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' 
 #' @aliases threeRuleSmooth-class
 #' Ops,threeRuleSmooth,ts-method Ops,ts,threeRuleSmooth-method
-#' Math2,threeRuleSmooth,vector-method
+#' Math2,threeRuleSmooth-method
 #' show,threeRuleSmooth-method
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.

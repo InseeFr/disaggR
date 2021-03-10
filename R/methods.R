@@ -201,6 +201,9 @@ prais <- function(x) x$regression
 #' @export
 as.ts.twoStepsBenchmark <- function(x, ...) x$benchmarked.serie
 
+#' @export
+as.list.twoStepsBenchmark <- function(x, ...) x@.Data
+
 #' @importFrom stats coef
 #' @export
 coef.twoStepsBenchmark <- function(object, ...) coef(prais(object))
@@ -288,6 +291,9 @@ summary.twoStepsBenchmark <- function(object, ...) {
 #' @importFrom stats as.ts
 #' @export
 as.ts.threeRuleSmooth <- function(x, ...) x$benchmarked.serie
+
+#' @export
+as.list.threeRuleSmooth <- function(x, ...) x@.Data
 
 #' Extracting the rate of a threeRuleSmooth
 #' 

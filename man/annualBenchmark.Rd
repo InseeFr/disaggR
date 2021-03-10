@@ -20,7 +20,7 @@ annualBenchmark(
 )
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+\ifelse{html}{\figure{lifecycle-deprecated.svg}{options: alt='Deprecated lifecycle'}}{\strong{Deprecated}}
 
 This function was deprecated because it's a special case of the
 \link{twoStepsBenchmark} function that has not proved to be of much practical

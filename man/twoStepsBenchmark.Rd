@@ -5,7 +5,7 @@
 \alias{twoStepsBenchmark-class}
 \alias{Ops,twoStepsBenchmark,ts-method}
 \alias{Ops,ts,twoStepsBenchmark-method}
-\alias{Math2,twoStepsBenchmark,vector-method}
+\alias{Math2,twoStepsBenchmark-method}
 \alias{show,twoStepsBenchmark-method}
 \title{Regress and bends a time-serie with a lower frequency one}
 \usage{
