@@ -1,8 +1,9 @@
+# twoStepsBenchmark class is registered as a minimal S4 in order to allow
+# Ops group generic double dispatch with ts. Through, most of the package uses
+# S3 methods for simplicity
 #' @import methods
 #' @export
 setClass("twoStepsBenchmark",contains = "list")
-#' @export
-setOldClass("twoStepsBenchmark",S4Class = "twoStepsBenchmark")
 
 residuals_extrap_sequence <- function(u0,u1,rho,n,include.differenciation) {
   if (include.differenciation) {
@@ -132,11 +133,11 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                 start.domain = start.domain,
                                 end.domain = end.domain),
               call = cl)
-  class(res) <- c("twoStepsBenchmark","list")
-  asS4(res)
+  
+  new(Class="twoStepsBenchmark",res)
 }
 
-#' @title Bends a time-serie with a lower frequency one with a regression
+#' @title Regress and bends a time-serie with a lower frequency one
 #' 
 #' @description twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
 #' The procedure involved is a Prais-Winsten regression, then an additive
@@ -166,7 +167,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'
 #' annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
 #'                 set.coeff=NULL,set.const=NULL,
-#'                 start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L]-1,
+#'                 start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
 #'                 start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
 #'                 start.domain=start(hfserie),
 #'                 end.domain=c(end.benchmark+2,frequency(hfserie)))
@@ -193,11 +194,11 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
 #' @param end.benchmark an optional end for `lfserie` to bend `hfserie`.
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
-#' @param start.domain the start of the output high-frequency serie. It also defines the smoothing window :
+#' @param start.domain an optional for the output high-frequency serie. It also defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 #' domain window.
 #' Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.
-#' @param end.domain the end of the output high-frequency serie. It also defines the smoothing window :
+#' @param end.domain an optional end for the output high-frequency serie. It also defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 #' domain window.
 #' Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.

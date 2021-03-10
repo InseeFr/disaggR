@@ -1,8 +1,9 @@
+# threeRuleSmooth class is registered as a minimal S4 in order to allow
+# Ops group generic double dispatch with ts. Through, most of the package uses
+# S3 methods for simplicity
 #' @import methods
 #' @export
 setClass("threeRuleSmooth",contains = "list")
-#' @export
-setOldClass("threeRuleSmooth",S4Class = "threeRuleSmooth")
 
 #' Extrapolation function for the hfserie in a threeRuleSmooth
 #' 
@@ -152,9 +153,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
                                 set.delta.rate = set.delta.rate),
               call = cl)
   
-  class(res) <- c("threeRuleSmooth","list")
-  
-  asS4(res)
+  new("threeRuleSmooth",res)
 }
 
 #' @title Bends a time-serie with a lower frequency one by smoothing their rate
@@ -178,11 +177,11 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
 #' @param end.benchmark an optional end for `lfserie` to bend `hfserie`.
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
-#' @param start.domain the start of the output high-frequency serie. It also defines the smoothing window :
+#' @param start.domain an optional start of the output high-frequency serie. It also defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 #' domain window.
 #' Should be a double or a numeric of length 2, like a window for `hfserie`. If NULL, the start is defined by hfserie's window.
-#' @param end.domain the end of the output high-frequency serie. It also defines the smoothing window :
+#' @param end.domain an optional end of the output high-frequency serie. It also defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 #' domain window.
 #' @param start.mean.delta.rate an optional start for the mean of the rate difference,
@@ -198,7 +197,6 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' @return
 #' threeRuleSmooth returns an object of class "`threeRuleSmooth`".
 #' 
-#' The function `summary` can be used to obtain and print a summary of the regression used by the benchmark.
 #' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 #' serie and the bending serie.
 #' The generic accessor functions `as.ts`, `model.list`, `smoothed.rate` extract
