@@ -2,6 +2,11 @@
 % Please edit documentation in R/threeRuleSmooth.R
 \name{threeRuleSmooth}
 \alias{threeRuleSmooth}
+\alias{threeRuleSmooth-class}
+\alias{Ops,threeRuleSmooth,ts-method}
+\alias{Ops,ts,threeRuleSmooth-method}
+\alias{Math2,threeRuleSmooth,vector-method}
+\alias{show,threeRuleSmooth-method}
 \title{Bends a time-serie with a lower frequency one by smoothing their rate}
 \usage{
 threeRuleSmooth(

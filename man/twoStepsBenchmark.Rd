@@ -3,7 +3,12 @@
 \name{twoStepsBenchmark}
 \alias{twoStepsBenchmark}
 \alias{annualBenchmark}
-\title{Bends a time-serie with a lower frequency one with a regression}
+\alias{twoStepsBenchmark-class}
+\alias{Ops,twoStepsBenchmark,ts-method}
+\alias{Ops,ts,twoStepsBenchmark-method}
+\alias{Math2,twoStepsBenchmark,vector-method}
+\alias{show,twoStepsBenchmark-method}
+\title{Regress and bends a time-serie with a lower frequency one}
 \usage{
 twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
                   set.coeff=NULL,set.const=NULL,
@@ -51,12 +56,12 @@ Should be a double or a numeric of length 2, like a window for \code{lfserie}. I
 \item{end.benchmark}{an optional end for \code{lfserie} to bend \code{hfserie}.
 Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the start is defined by lfserie's window.}
 
-\item{start.domain}{the start of the output high-frequency serie. It also defines the smoothing window :
+\item{start.domain}{an optional for the output high-frequency serie. It also defines the smoothing window :
 The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 domain window.
 Should be a double or a numeric of length 2, like a window for \code{hfserie}. If NULL, the start is defined by hfserie's window.}
 
-\item{end.domain}{the end of the output high-frequency serie. It also defines the smoothing window :
+\item{end.domain}{an optional end for the output high-frequency serie. It also defines the smoothing window :
 The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 domain window.
 Should be a double or a numeric of length 2, like a window for \code{hfserie}. If NULL, the start is defined by hfserie's window.}

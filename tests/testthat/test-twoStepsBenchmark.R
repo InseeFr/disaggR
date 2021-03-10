@@ -138,7 +138,7 @@ test_that("Error if any missing value between the coefficient calc",{
   expect_error(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE))
   mensualts <- ts(diffinv(rnorm(36,1,1)),start=c(2010,1),freq=12)
   annualts <- ts(diffinv(rnorm(2,12,1)),start=2010,freq=1)
-  expect_s3_class(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE),"twoStepsBenchmark")
+  expect_s4_class(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE),"twoStepsBenchmark")
   mensualts[10] <- NA
   expect_error(twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE))
 })
@@ -219,7 +219,7 @@ test_that("The classes in the bn object are the good ones",{
   bn <- twoStepsBenchmark(hfserie = mensualts,
                           lfserie = trimts,
                           include.differenciation = TRUE)
-  expect_s3_class(bn,"twoStepsBenchmark")
+  expect_s4_class(bn,"twoStepsBenchmark")
   expect_true(is.ts(bn$benchmarked.serie))
   expect_true(is.ts(bn$fitted.values))
   expect_s3_class(bn$regression,"praislm")
