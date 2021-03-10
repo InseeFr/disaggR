@@ -2,7 +2,6 @@
 % Please edit documentation in R/twoStepsBenchmark.R
 \name{twoStepsBenchmark}
 \alias{twoStepsBenchmark}
-\alias{annualBenchmark}
 \alias{twoStepsBenchmark-class}
 \alias{Ops,twoStepsBenchmark,ts-method}
 \alias{Ops,ts,twoStepsBenchmark-method}
@@ -15,13 +14,6 @@ twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALS
                   start.coeff.calc=NULL,end.coeff.calc=NULL,
                   start.benchmark=NULL,end.benchmark=NULL,
                   start.domain=NULL,end.domain=NULL,...)
-
-annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
-                set.coeff=NULL,set.const=NULL,
-                start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
-                start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
-                start.domain=start(hfserie),
-                end.domain=c(end.benchmark+2,frequency(hfserie)))
 }
 \arguments{
 \item{hfserie}{the bended time-serie. It can be a matrix time-serie.}
@@ -109,11 +101,11 @@ The resulting time-serie is equal to the low-frequency serie after aggregation.
 }
 \examples{
 
-## How to use annualBenchmark or twoStepsBenchark
+## How to use twoStepsBenchmark
 
-benchmark <- annualBenchmark(hfserie = turnover,
-                            lfserie = construction,
-                            include.differenciation = TRUE)
+benchmark <- twoStepsBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = TRUE)
 as.ts(benchmark)
 coef(benchmark)
 summary(benchmark)
@@ -122,10 +114,10 @@ autoplot(in_sample(benchmark))
 
 ## How to manually set the coefficient
 
-benchmark2 <- annualBenchmark(hfserie = turnover,
-                              lfserie = construction,
-                              include.differenciation = TRUE,
-                              set.coeff = 0.1)
+benchmark2 <- twoStepsBenchmark(hfserie = turnover,
+                                lfserie = construction,
+                                include.differenciation = TRUE,
+                                set.coeff = 0.1)
 coef(benchmark2)
 
 }

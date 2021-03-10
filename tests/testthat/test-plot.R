@@ -16,13 +16,17 @@ expect_doppelganger <- function(title, fig) {
 
 test_that("plot works", {
   testthat::skip_if_not_installed("vdiffr")
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE)
-  benchmark2 <- annualBenchmark(hfserie = turnover,
-                                lfserie = construction,
-                                include.differenciation = FALSE,
-                                set.const = TRUE)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = TRUE,
+                                 end.coeff.calc = 2018,
+                                 end.domain = c(2021,12))
+  benchmark2 <- twoStepsBenchmark(hfserie = turnover,
+                                  lfserie = construction,
+                                  include.differenciation = FALSE,
+                                  set.const = TRUE,
+                                  end.coeff.calc = 2018,
+                                  end.domain = c(2021,12))
   
   expect_doppelganger("plot-benchmark-nowin",
                       function() plot(benchmark))
@@ -165,13 +169,13 @@ test_that("plot works", {
 
 test_that("ggplot works", {
   testthat::skip_if_not_installed("vdiffr")
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE)
-  benchmark2 <- annualBenchmark(hfserie = turnover,
-                                lfserie = construction,
-                                include.differenciation = FALSE,
-                                set.const = TRUE)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = TRUE)
+  benchmark2 <- twoStepsBenchmark(hfserie = turnover,
+                                  lfserie = construction,
+                                  include.differenciation = FALSE,
+                                  set.const = TRUE)
   
   expect_doppelganger("gg-benchmark-nowin",autoplot(benchmark))
   
@@ -289,14 +293,14 @@ test_that("ggplot works", {
 
 test_that("show.legend=FALSE works", {
   testthat::skip_if_not_installed("vdiffr")
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = TRUE)
   
-  benchmark2 <- annualBenchmark(hfserie = turnover,
-                                lfserie = construction,
-                                include.differenciation = FALSE,
-                                set.const = TRUE)
+  benchmark2 <- twoStepsBenchmark(hfserie = turnover,
+                                  lfserie = construction,
+                                  include.differenciation = FALSE,
+                                  set.const = TRUE)
   
   expect_doppelganger("plot-benchmark-showlegendF",
                       function() plot(benchmark,show.legend = FALSE))
@@ -366,9 +370,9 @@ test_that("show.legend=FALSE works", {
 test_that("xlab and ylab works", {
   testthat::skip_if_not_installed("vdiffr")
   skip_on_os(c("mac","linux","solaris"))
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = TRUE)
   expect_doppelganger("plot-benchmark-lab-foo-bar",
                       function() plot(benchmark,xlab = "foo",ylab="bar"))
   expect_doppelganger("plot-benchmark-lab-foo",
