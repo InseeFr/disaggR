@@ -387,22 +387,12 @@ setAs("threeRuleSmooth","ts",function(from) as.ts(from))
 
 #' @include twoStepsBenchmark.R
 #' @export
-setMethod("Math2",c("twoStepsBenchmark","vector"),
+setMethod("Math2","twoStepsBenchmark",
           function(x,digits = 0) callGeneric(as.ts(x),digits))
 #' @include threeRuleSmooth.R
 #' @export
-setMethod("Math2",c("threeRuleSmooth","vector"),
+setMethod("Math2","threeRuleSmooth",
           function(x,digits = 0) callGeneric(as.ts(x),digits))
-
-#' @export
-Summary.twoStepsBenchmark <- function(x, ..., na.rm = FALSE) {
-  get(.Generic)(as.ts(x), ..., na.rm = na.rm)
-}
-
-#' @export
-Summary.threeRuleSmooth <- function(x, ..., na.rm = FALSE) {
-  get(.Generic)(as.ts(x), ..., na.rm = na.rm)
-}
 
 #' @importFrom stats aggregate
 aggregate.twoStepsBenchmark <- function(x, ...) aggregate(as.ts(x), ...)

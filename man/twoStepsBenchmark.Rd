@@ -18,7 +18,7 @@ twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALS
 
 annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
                 set.coeff=NULL,set.const=NULL,
-                start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L]-1,
+                start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
                 start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
                 start.domain=start(hfserie),
                 end.domain=c(end.benchmark+2,frequency(hfserie)))
@@ -75,7 +75,12 @@ twoStepsBenchark returns an object of class "\code{twoStepsBenchmark}".
 The function \code{summary} can be used to obtain and print a summary of the regression used by the benchmark.
 The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 serie and the bending serie.
-The function \link{in_sample} produces in-sample predictions with the inner regression.
+The functions \link{in_sample}, \link{in_disaggr}, \link{in_revisions},
+\link{in_scatter} produces various comparisons on which plot and autoplot can also
+be used.
+
+The function \link{in_revisions} takes two \link{twoStepsBenchmark} objects
+as inputs, and produces a comparison between those.
 The generic accessor functions \code{as.ts}, \code{prais}, \code{coefficients}, \code{residuals}, \code{fitted.values}, \code{model.list}, \code{se}, \code{rho}
 extract various useful features of the returned value.
 
@@ -100,13 +105,7 @@ Therefore, the resulting time-serie is the sum of a regression fit, eventually
 reintegrated, and of a smoothed part. The smoothed part minimizes the sum of squares
 of its differences.
 
-As in any disaggregation, the resulting time-serie is equal to the
-low-frequency serie after aggregation.
-}
-\details{
-annualBenchmark is a wrapper of the main function, that applies more specifically
-to annual series, and changes the default window parameters to the ones
-that are commonly used by quarterly national accounts.
+The resulting time-serie is equal to the low-frequency serie after aggregation.
 }
 \examples{
 

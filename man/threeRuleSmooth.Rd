@@ -33,12 +33,12 @@ Should be a double or a numeric of length 2, like a window for \code{lfserie}. I
 \item{end.benchmark}{an optional end for \code{lfserie} to bend \code{hfserie}.
 Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the start is defined by lfserie's window.}
 
-\item{start.domain}{the start of the output high-frequency serie. It also defines the smoothing window :
+\item{start.domain}{an optional start of the output high-frequency serie. It also defines the smoothing window :
 The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 domain window.
 Should be a double or a numeric of length 2, like a window for \code{hfserie}. If NULL, the start is defined by hfserie's window.}
 
-\item{end.domain}{the end of the output high-frequency serie. It also defines the smoothing window :
+\item{end.domain}{an optional end of the output high-frequency serie. It also defines the smoothing window :
 The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 domain window.}
 
@@ -59,9 +59,12 @@ of the returned call. This feature allows to build wrappers.}
 \value{
 threeRuleSmooth returns an object of class "\code{threeRuleSmooth}".
 
-The function \code{summary} can be used to obtain and print a summary of the regression used by the benchmark.
 The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 serie and the bending serie.
+The functions \link{in_disaggr}, \link{in_revisions},
+\link{in_scatter} produces various comparisons on which plot and autoplot can also
+be used.
+
 The generic accessor functions \code{as.ts}, \code{model.list}, \code{smoothed.rate} extract
 various useful features of the returned value.
 
@@ -80,8 +83,7 @@ frequency. The procedure involved is a proportional Denton benchmark.
 Therefore, the resulting time-serie is the product of the high-frequency input
 with a smoothed rate. This latter is extrapolated using an arithmetic sequence.
 
-As in any disaggregation, the resulting time-serie is equal to the
-low-frequency serie after aggregation.
+The resulting time-serie is equal to the low-frequency serie after aggregation.
 }
 \examples{
 
@@ -93,5 +95,6 @@ as.ts(smooth)
 coef(smooth)
 summary(smooth)
 library(ggplot2)
+autoplot(in_disaggr(smooth))
 
 }

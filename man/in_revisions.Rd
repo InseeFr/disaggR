@@ -7,9 +7,9 @@
 in_revisions(object, object_old, type = "changes")
 }
 \arguments{
-\item{object}{an object of class twoStepsBenchmark`}
+\item{object}{an object of class twoStepsBenchmark` or \link{threeRuleSmooth}}
 
-\item{object_old}{an object of class twoStepsBenchmark`}
+\item{object_old}{an object of class twoStepsBenchmark` or \link{threeRuleSmooth}}
 
 \item{type}{"levels","levels-rebased", "changes" or "contributions". This
 defines the type of output.}
@@ -20,8 +20,8 @@ response and the other for the predicted value.
 A \code{tscomparison} class is added to the object.
 }
 \description{
-The function \code{in_revisions}takes two \link{twoStepsBenchmark} objects
-as inputs, and produces a comparison between those.
+The function \code{in_revisions}takes two inputs, \link{twoStepsBenchmark} or a
+\link{threeRuleSmooth}, and produces a comparison between those.
 }
 \details{
 The functions \code{plot} and \code{autoplot} can be used on this object to produce

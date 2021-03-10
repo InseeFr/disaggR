@@ -147,12 +147,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' reintegrated, and of a smoothed part. The smoothed part minimizes the sum of squares
 #' of its differences.
 #' 
-#' As in any disaggregation, the resulting time-serie is equal to the
-#' low-frequency serie after aggregation.
-#' 
-#' @details annualBenchmark is a wrapper of the main function, that applies more specifically
-#' to annual series, and changes the default window parameters to the ones
-#' that are commonly used by quarterly national accounts.
+#' The resulting time-serie is equal to the low-frequency serie after aggregation.
 #' 
 #' @aliases annualBenchmark twoStepsBenchmark-class
 #' Ops,twoStepsBenchmark,ts-method Ops,ts,twoStepsBenchmark-method
@@ -210,7 +205,12 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' The function `summary` can be used to obtain and print a summary of the regression used by the benchmark.
 #' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 #' serie and the bending serie.
-#' The function \link{in_sample} produces in-sample predictions with the inner regression.
+#' The functions \link{in_sample}, \link{in_disaggr}, \link{in_revisions},
+#' \link{in_scatter} produces various comparisons on which plot and autoplot can also
+#' be used.
+#' 
+#' The function \link{in_revisions} takes two \link{twoStepsBenchmark} objects
+#' as inputs, and produces a comparison between those.
 #' The generic accessor functions `as.ts`, `prais`, `coefficients`, `residuals`, `fitted.values`, `model.list`, `se`, `rho`
 #' extract various useful features of the returned value.
 #' 
@@ -289,7 +289,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
 
 #' @export
 annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
-                            start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L]-1,
+                            start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
                             start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
                             start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
   if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)

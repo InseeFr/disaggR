@@ -7,7 +7,7 @@
 in_disaggr(object, type = "changes")
 }
 \arguments{
-\item{object}{an object of class twoStepsBenchmark`}
+\item{object}{an object of class \code{twoStepsBenchmark} or \code{threeRuleSmooth}}
 
 \item{type}{"levels","levels-rebased", "changes" or "contributions". This
 defines the type of output.}
@@ -18,9 +18,9 @@ response and the other for the predicted value.
 A \code{tscomparison} class is added to the object.
 }
 \description{
-The function \code{in_disaggr} takes a \link{twoStepsBenchmark} object
-as an input. It produces a comparison between the benchmarked time-serie and the
-high-frequency input.
+The function \code{in_disaggr} takes a \link{twoStepsBenchmark} or a
+\link{threeRuleSmooth} object as an input. It produces a comparison between
+the benchmarked time-serie and the high-frequency input.
 }
 \details{
 The functions \code{plot} and \code{autoplot} can be used on this object to produce
