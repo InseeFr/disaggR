@@ -1,8 +1,8 @@
 test_that("in_sample works with include.differenciation=TRUE", {
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE,
-                               end.coeff.calc = 2019)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = TRUE,
+                                 end.coeff.calc = 2019)
   
   simul <- lag(aggregate(construction),-1)*(100+in_sample(benchmark,type="changes")[,1])/100
   obtained <- construction
@@ -26,10 +26,10 @@ test_that("in_sample works with include.differenciation=TRUE", {
 })
 
 test_that("in_sample works with include.differenciation=FALSE", {
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = FALSE,
-                               end.coeff.calc = 2019)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = FALSE,
+                                 end.coeff.calc = 2019)
   
   simul <- lag(aggregate(construction),-1)*(100+in_sample(benchmark,type="changes")[,1])/100
   obtained <- construction
@@ -52,18 +52,18 @@ test_that("in_sample works with include.differenciation=FALSE", {
 })
 
 test_that("print in_sample prints",{
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = TRUE)
   expect_known_output(print(in_sample(benchmark)),"outputs/in_sample.txt",update=FALSE)
 })
 
 
 
 test_that("in_disaggr works", {
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = FALSE)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = FALSE)
   
   simul <- in_disaggr(benchmark,type = "levels")
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
@@ -96,9 +96,9 @@ test_that("in_disaggr works", {
 })
 
 test_that("in revisions works",{
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = FALSE)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = FALSE)
   expected <- ts(matrix(c(NA,rep(0,244L)),dimnames = list(NULL,"Benchmark")),
                  start=2000,frequency=12)
   class(expected) <- c("tscomparison","ts")
@@ -109,12 +109,12 @@ test_that("in revisions works",{
 
 
 test_that("in scatter works",{
-  benchmark <- annualBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = FALSE,
-                               start.coeff.calc = 2005,
-                               end.coeff.calc = 2017,
-                               end.benchmark = 2019)
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = FALSE,
+                                 start.coeff.calc = 2005,
+                                 end.coeff.calc = 2017,
+                                 end.benchmark = 2019)
   expected <- ts(matrix(c(construction,
                           window(window(aggregate(turnover),start=2005,end=2017,extend=TRUE),
                                  start=2000,end=2019,extend=TRUE),

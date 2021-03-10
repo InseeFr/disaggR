@@ -67,14 +67,14 @@ in_sample.threeRuleSmooth <- function(object,type="changes") {
 
 #' Comparing a disaggregation with the high-frequency input
 #' 
-#' The function `in_disaggr` takes a \link{twoStepsBenchmark} object
-#' as an input. It produces a comparison between the benchmarked time-serie and the
-#' high-frequency input.
+#' The function `in_disaggr` takes a \link{twoStepsBenchmark} or a 
+#' \link{threeRuleSmooth} object as an input. It produces a comparison between
+#' the benchmarked time-serie and the high-frequency input.
 #' 
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
 #' 
-#' @param object an object of class twoStepsBenchmark`
+#' @param object an object of class `twoStepsBenchmark` or `threeRuleSmooth`
 #' @param type "levels","levels-rebased", "changes" or "contributions". This
 #' defines the type of output.
 #' @return
@@ -144,14 +144,14 @@ in_disaggr.threeRuleSmooth <- function(object,type="changes") {
 
 #' Comparing two disaggregations together
 #' 
-#' The function `in_revisions`takes two \link{twoStepsBenchmark} objects
-#' as inputs, and produces a comparison between those.
+#' The function `in_revisions`takes two inputs, \link{twoStepsBenchmark} or a 
+#' \link{threeRuleSmooth}, and produces a comparison between those.
 #' 
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
 #' 
-#' @param object an object of class twoStepsBenchmark`
-#' @param object_old an object of class twoStepsBenchmark`
+#' @param object an object of class twoStepsBenchmark` or \link{threeRuleSmooth}
+#' @param object_old an object of class twoStepsBenchmark` or \link{threeRuleSmooth}
 #' @param type "levels","levels-rebased", "changes" or "contributions". This
 #' defines the type of output.
 #' @return
@@ -198,12 +198,13 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 
 #' Comparing the inputs of a praislm regression
 #' 
-#' The function `in_scatter` returns comparison of the inputs from
-#' a \link{praislm} or the inner regression of a \link{twoStepsBenchmark} object.
+#' The function `in_scatter` returns low-frequency comparisons of the inputs from
+#' a \link{praislm}, a \link{twoStepsBenchmark} or \link{threeRuleSmooth}.
 #' 
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
-#' @param object an object of class `praislm` or `twoStepsBenchmark`
+#' @param object an object of class `praislm`, `twoStepsBenchmark`
+#' or \link{threeRuleSmooth}.
 #' @return
 #' a named matrix time-serie of two columns, one for the low-frequency serie
 #' and the other for the high-frequency-serie (eventually differencied if

@@ -164,8 +164,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' Therefore, the resulting time-serie is the product of the high-frequency input
 #' with a smoothed rate. This latter is extrapolated using an arithmetic sequence.
 #' 
-#' As in any disaggregation, the resulting time-serie is equal to the
-#' low-frequency serie after aggregation.
+#' The resulting time-serie is equal to the low-frequency serie after aggregation.
 #' 
 #' @aliases threeRuleSmooth-class
 #' Ops,threeRuleSmooth,ts-method Ops,ts,threeRuleSmooth-method
@@ -199,6 +198,10 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' 
 #' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 #' serie and the bending serie.
+#' The functions \link{in_disaggr}, \link{in_revisions},
+#' \link{in_scatter} produces various comparisons on which plot and autoplot can also
+#' be used.
+#' 
 #' The generic accessor functions `as.ts`, `model.list`, `smoothed.rate` extract
 #' various useful features of the returned value.
 #' 
@@ -219,6 +222,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' coef(smooth)
 #' summary(smooth)
 #' library(ggplot2)
+#' autoplot(in_disaggr(smooth))
 #' 
 #' @export
 threeRuleSmooth <- function(hfserie,lfserie,

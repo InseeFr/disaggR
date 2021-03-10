@@ -7,7 +7,8 @@
 in_scatter(object)
 }
 \arguments{
-\item{object}{an object of class \code{praislm} or \code{twoStepsBenchmark}}
+\item{object}{an object of class \code{praislm}, \code{twoStepsBenchmark}
+or \link{threeRuleSmooth}.}
 }
 \value{
 a named matrix time-serie of two columns, one for the low-frequency serie
@@ -16,8 +17,8 @@ and the other for the high-frequency-serie (eventually differencied if
 A \code{tscomparison} class is added to the object.
 }
 \description{
-The function \code{in_scatter} returns comparison of the inputs from
-a \link{praislm} or the inner regression of a \link{twoStepsBenchmark} object.
+The function \code{in_scatter} returns low-frequency comparisons of the inputs from
+a \link{praislm}, a \link{twoStepsBenchmark} or \link{threeRuleSmooth}.
 }
 \details{
 The functions \code{plot} and \code{autoplot} can be used on this object to produce

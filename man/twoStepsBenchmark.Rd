@@ -2,7 +2,6 @@
 % Please edit documentation in R/twoStepsBenchmark.R
 \name{twoStepsBenchmark}
 \alias{twoStepsBenchmark}
-\alias{annualBenchmark}
 \alias{twoStepsBenchmark-class}
 \alias{Ops,twoStepsBenchmark,ts-method}
 \alias{Ops,ts,twoStepsBenchmark-method}
@@ -15,13 +14,6 @@ twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALS
                   start.coeff.calc=NULL,end.coeff.calc=NULL,
                   start.benchmark=NULL,end.benchmark=NULL,
                   start.domain=NULL,end.domain=NULL,...)
-
-annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
-                set.coeff=NULL,set.const=NULL,
-                start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L]-1,
-                start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
-                start.domain=start(hfserie),
-                end.domain=c(end.benchmark+2,frequency(hfserie)))
 }
 \arguments{
 \item{hfserie}{the bended time-serie. It can be a matrix time-serie.}
@@ -75,7 +67,12 @@ twoStepsBenchark returns an object of class "\code{twoStepsBenchmark}".
 The function \code{summary} can be used to obtain and print a summary of the regression used by the benchmark.
 The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 serie and the bending serie.
-The function \link{in_sample} produces in-sample predictions with the inner regression.
+The functions \link{in_sample}, \link{in_disaggr}, \link{in_revisions},
+\link{in_scatter} produces various comparisons on which plot and autoplot can also
+be used.
+
+The function \link{in_revisions} takes two \link{twoStepsBenchmark} objects
+as inputs, and produces a comparison between those.
 The generic accessor functions \code{as.ts}, \code{prais}, \code{coefficients}, \code{residuals}, \code{fitted.values}, \code{model.list}, \code{se}, \code{rho}
 extract various useful features of the returned value.
 
@@ -100,21 +97,15 @@ Therefore, the resulting time-serie is the sum of a regression fit, eventually
 reintegrated, and of a smoothed part. The smoothed part minimizes the sum of squares
 of its differences.
 
-As in any disaggregation, the resulting time-serie is equal to the
-low-frequency serie after aggregation.
-}
-\details{
-annualBenchmark is a wrapper of the main function, that applies more specifically
-to annual series, and changes the default window parameters to the ones
-that are commonly used by quarterly national accounts.
+The resulting time-serie is equal to the low-frequency serie after aggregation.
 }
 \examples{
 
-## How to use annualBenchmark or twoStepsBenchark
+## How to use twoStepsBenchmark
 
-benchmark <- annualBenchmark(hfserie = turnover,
-                            lfserie = construction,
-                            include.differenciation = TRUE)
+benchmark <- twoStepsBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = TRUE)
 as.ts(benchmark)
 coef(benchmark)
 summary(benchmark)
@@ -123,10 +114,10 @@ autoplot(in_sample(benchmark))
 
 ## How to manually set the coefficient
 
-benchmark2 <- annualBenchmark(hfserie = turnover,
-                              lfserie = construction,
-                              include.differenciation = TRUE,
-                              set.coeff = 0.1)
+benchmark2 <- twoStepsBenchmark(hfserie = turnover,
+                                lfserie = construction,
+                                include.differenciation = TRUE,
+                                set.coeff = 0.1)
 coef(benchmark2)
 
 }
