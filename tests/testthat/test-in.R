@@ -186,6 +186,11 @@ test_that("error in",{
                "The type argument of in_sample")
   expect_error(in_revisions(benchmark,"nothing important"),
                "old_object must be a twoStepsBenchmark")
+  set.seed(1L)
+  bn <- twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
+                            `colnames<-`(c("a","b","c")),construction)
+  expect_error(in_scatter(bn),"univariate")
+  expect_error(in_scatter(prais(bn)),"univariate")
 })
 
 test_that("warning revisions",
