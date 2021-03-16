@@ -141,6 +141,20 @@ test_that("in scatter works",{
   expect_identical(in_scatter(benchmark),expected)
   
   
+  reg <- prais(benchmark)
+  expected <- ts(matrix(c(window(reg$model.list$y,start=2005,end=2017,extend=TRUE),
+                          window(aggregate(turnover),start=2005,end=2017,extend=TRUE)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)"))),
+                 start=2005,frequency=1)
+  
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"coefficients") <- coefficients(reg)
+  expect_identical(in_scatter(reg),expected)
+  
+  
   benchmark <- threeRuleSmooth(hfserie = turnover,
                                lfserie = construction,
                                end.benchmark = 2019)
