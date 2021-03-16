@@ -105,6 +105,16 @@ test_that("in revisions works",{
   attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_revisions"
   expect_identical(in_revisions(benchmark,benchmark),expected)
+  
+  benchmark <- threeRuleSmooth(hfserie = turnover,
+                               lfserie = construction)
+  
+  expected <- ts(matrix(c(NA,rep(0,244L)),dimnames = list(NULL,"Benchmark")),
+                 start=2000,frequency=12)
+  class(expected) <- c("tscomparison","ts")
+  attr(expected,"type") <- "changes"
+  attr(expected,"func") <- "in_revisions"
+  expect_identical(in_revisions(benchmark,benchmark),expected)
 })
 
 
@@ -121,6 +131,22 @@ test_that("in scatter works",{
                           window(aggregate(turnover),end=2019,extend=TRUE)),
                         ncol=3,dimnames = list(NULL,c("Low-frequency serie",
                                                       "High-frequency serie (regression)",
+                                                      "High-frequency serie (benchmark)"))),
+                 start=2000,frequency=1)
+  
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"coefficients") <- coefficients(benchmark)
+  expect_identical(in_scatter(benchmark),expected)
+  
+  
+  benchmark <- threeRuleSmooth(hfserie = turnover,
+                               lfserie = construction,
+                               end.benchmark = 2019)
+  expected <- ts(matrix(c(construction,
+                          window(aggregate(turnover),end=2019,extend=TRUE)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
                                                       "High-frequency serie (benchmark)"))),
                  start=2000,frequency=1)
   
