@@ -2,12 +2,6 @@ ts_from_tsp <- function(x,tspx) {
   ts(x, start=tspx[1L], frequency=tspx[3L])
 }
 
-drop_tsp <- function(x) {
-  attr(x,"tsp") <- NULL
-  class(x) <- setdiff(class(x),c("mts","ts"))
-  x
-}
-
 aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
   tsplf <- tsp(lfserie)
   aggregate.ts(
