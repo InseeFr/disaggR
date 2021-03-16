@@ -130,8 +130,14 @@ in_disaggr.twoStepsBenchmark <- function(object,type="changes") {
 #' @export
 in_disaggr.threeRuleSmooth <- function(object,type="changes") {
   if (type == "contributions") {
-    series <- cbind(na.omit(as.ts(object)),0,0)
-    structure(series,
+    
+    benchmark <- na.omit(as.ts(object))
+    
+    series <- cbind((benchmark/stats::lag(benchmark,-1)-1)*100,
+                    0,
+                    0)
+    
+    structure(window(series,start=start(benchmark),end=end(benchmark),extend=TRUE),
               type="contributions",
               func="in_disaggr",
               class=c("tscomparison",class(series)),

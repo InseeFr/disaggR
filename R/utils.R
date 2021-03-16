@@ -8,6 +8,12 @@ drop_tsp <- function(x) {
   x
 }
 
+ev <- function(x) UseMethod("ev")
+
+ev.mts <- function(x) (series/stats::lag(series,-1)-1)*100
+
+ev.ts <- function(x) 
+
 aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
   tsplf <- tsp(lfserie)
   aggregate.ts(

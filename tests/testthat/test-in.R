@@ -93,6 +93,33 @@ test_that("in_disaggr works", {
   simul <- ts_from_tsp(simul  %*% diag(1/c(coef(benchmark)["hfserie"],1,1)),tsp(simul))
   expect_equal(unname(simul),
                unname(window(diff(cbind(turnover,smoothed.part(benchmark),0)),end=c(2020,5),extend = TRUE)))
+  
+  benchmark <- threeRuleSmooth(hfserie = turnover,
+                               lfserie = construction)
+  
+  simul <- in_disaggr(benchmark,type = "levels")
+  obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
+  class(obtained) <- c("tscomparison","mts","ts","matrix")
+  attr(obtained,"type") <- "levels"
+  attr(obtained,"func") <- "in_disaggr"
+  colnames(obtained) <- c("Benchmark","High-frequency serie")
+  
+  expect_equal(simul,obtained)
+  
+  
+  simul <- (100+in_disaggr(benchmark,type="changes"))/100
+  obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
+  simul <- unname(simul*stats::lag(obtained,-1))
+  obtained <- unname(window(obtained,start= tsp(obtained)[1L]+ deltat(obtained),extend = TRUE))
+  expect_equal(simul,obtained,tolerance = 1e-10)
+  
+  simul <- in_disaggr(benchmark,type="contributions")
+  expect_equal(simul[,1L],in_disaggr(benchmark,type="changes")[,1L])
+  simul <- unname(na.omit(ts_from_tsp(rowSums(simul),tsp(simul))))
+  attr(simul,"na.action") <- NULL
+  obtained <- unname(na.omit((as.ts(benchmark)/stats::lag(as.ts(benchmark),-1)-1)*100))
+  attr(obtained,"na.action") <- NULL
+  expect_equal(simul,obtained)
 })
 
 test_that("in revisions works",{
@@ -146,6 +173,8 @@ test_that("error in",{
                "The type argument of in_sample")
   expect_error(in_revisions(benchmark,"nothing important"),
                "old_object must be a twoStepsBenchmark")
+  expect_error(in_sample(threeRuleSmooth(turnover,construction)),
+               "The in_sample method needs a regression")
 })
 
 test_that("warning revisions",
