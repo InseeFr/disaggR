@@ -395,3 +395,19 @@ test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenc
   sequence <- residuals_extrap_sequence(1,3,1,10,TRUE)
   expect_equal(sequence[-1]-sequence[-length(sequence)],rep(2,9))
 })
+
+test_that("deprecated annualBenchmark",{
+  lifecycle::expect_deprecated(annualBenchmark(turnover,construction))
+  set.seed(27)
+  mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+  trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
+  expect_error(annualBenchmark(mensualts,trimts),
+               "annual time-serie")
+  expect_equal(as.ts(annualBenchmark(turnover,construction,
+                               end.coeff.calc = 2018)),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                 end.coeff.calc = 2018,
+                                 end.benchmark = 2019,
+                                 end.domain = c(2021,12))))
+})
+
