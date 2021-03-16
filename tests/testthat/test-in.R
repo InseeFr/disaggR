@@ -210,7 +210,7 @@ test_that("distance",
             expect_equal(distance(insam,p=Inf),
                          max(insam[,1L]-insam[,2L]))
             
-            expect_error(in_scatter(benchmark))
+            expect_error(distance(in_scatter(benchmark)))
             
             
             indis <- in_disaggr(benchmark)
