@@ -2,7 +2,7 @@
 % Please edit documentation in R/in.R
 \name{distance}
 \alias{distance}
-\title{Distance computation for benchmarks}
+\title{Distance computation for disaggregations}
 \usage{
 distance(x, p = 2)
 }
