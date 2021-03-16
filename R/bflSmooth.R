@@ -96,7 +96,7 @@ bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=FALSE) {
   if (nfrequency %% tsplf[3L] != 0L) stop("The new frequency must be a multiple of the lower one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   if (is.null(weights) && lfserie.is.rate) {
-    warning("weights is NULL. Ignoring lfserie.is.rate")
+    warning("weights is NULL. Ignoring lfserie.is.rate",call. = FALSE)
     lfserie.is.rate <- FALSE
   }
   

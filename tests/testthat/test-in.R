@@ -200,3 +200,29 @@ test_that("warning revisions",
                            "The high-frequency inputs contain revisions")
           })
 
+test_that("distance",
+          {
+            benchmark <- twoStepsBenchmark(turnover,construction)
+            
+            insam <- in_sample(benchmark)
+            expect_equal(distance(insam,p=2),
+                         sqrt(mean((insam[,1L]-insam[,2L])^2)))
+            expect_equal(distance(insam,p=Inf),
+                         max(insam[,1L]-insam[,2L]))
+            
+            expect_error(in_scatter(benchmark))
+            
+            
+            indis <- in_disaggr(benchmark)
+            expect_equal(distance(indis,p=2),
+                         sqrt(mean((indis[,1L]-indis[,2L])^2,na.rm = TRUE)))
+            expect_equal(distance(indis,p=Inf),
+                         max(indis[,1L]-indis[,2L],na.rm = TRUE))
+            
+            inrev <- in_revisions(benchmark,benchmark)
+            expect_equal(distance(inrev),
+                         0)
+            
+            expect_error(distance(in_revisions(benchmark,benchmark,type = "contributions")),
+                         "support revisions of contributions")
+          })

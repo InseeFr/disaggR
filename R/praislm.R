@@ -47,7 +47,7 @@ praislm_impl <- function(X,y,include.rho) {
         PQR <- qr(X_star)
         coefficients <- qr.coef(PQR,y_star)
         if (i == 50L) {
-          warning("Maximum iterations without convergence")
+          warning("Maximum iterations without convergence", call. = FALSE)
           break
         }
         i <- i+1L

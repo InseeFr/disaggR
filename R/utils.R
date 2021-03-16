@@ -16,7 +16,7 @@ aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
   )
 }
 
-ts_expand <- function(x,nfrequency,divide.by.ratio=TRUE){
+ts_expand <- function(x,nfrequency,divide.by.ratio=TRUE) {
   ratio <- nfrequency/frequency(x)
   res <- if (divide.by.ratio) x/ratio else x
   ts(rep(res, each = ratio), start = tsp(x)[1], frequency = nfrequency)
