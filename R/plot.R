@@ -298,16 +298,12 @@ plotts <- function(x,show.legend,col,lty,
   invisible()
 }
 
-#' @export
-#' @rdname plot.tscomparison
-plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
-                                   start = NULL, end = NULL,
-                                   col = default_col_pal(x),
-                                   lty = default_lty_pal(x),
-                                   show.legend = TRUE,
-                                   main=NULL,
-                                   mar = default_margins(main, xlab, ylab),
-                                   ...) {
+plot_with_lf <- function(x, xlab, ylab,
+                         start, end,
+                         col, lty,
+                         show.legend, main,
+                         mar, serie_name,
+                         ...) {
   
   mar_save <- par("mar")
   on.exit(par(mar=mar_save))
@@ -321,7 +317,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
   
   plotts(x = x,show.legend = FALSE,
          col = col[1L],lty = lty[1L],
-         series_names = "Benchmark",type = "line",
+         series_names = serie_name,type = "line",
          start = start, end = end,
          xlab = xlab, ylab = ylab, main = main,
          ...)
@@ -337,7 +333,7 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
     model$lfserie
   )
   
-  if (show.legend) legend("bottomleft",legend=c("Benchmark", "Low-frequency serie"),
+  if (show.legend) legend("bottomleft",legend=c(serie_name, "Low-frequency serie"),
                           col=col,lty=lty,horiz=TRUE,bty="n",cex=0.8)
   
   invisible()
@@ -345,7 +341,35 @@ plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
 
 #' @export
 #' @rdname plot.tscomparison
-plot.threeRuleSmooth <- plot.twoStepsBenchmark
+plot.twoStepsBenchmark <- function(x, xlab = NULL, ylab = NULL,
+                                   start = NULL, end = NULL,
+                                   col = default_col_pal(x),
+                                   lty = default_lty_pal(x),
+                                   show.legend = TRUE,
+                                   main=NULL,
+                                   mar = default_margins(main, xlab, ylab),
+                                   ...) {
+  plot_with_lf(x,xlab,ylab,
+               start,end,col,lty,
+               show.legend,main,
+               mar,"Benchmark",...)
+}
+
+#' @export
+#' @rdname plot.tscomparison
+plot.threeRuleSmooth <- function(x, xlab = NULL, ylab = NULL,
+                                 start = NULL, end = NULL,
+                                 col = default_col_pal(x),
+                                 lty = default_lty_pal(x),
+                                 show.legend = TRUE,
+                                 main=NULL,
+                                 mar = default_margins(main, xlab, ylab),
+                                 ...) {
+  plot_with_lf(x,xlab,ylab,
+               start,end,col,lty,
+               show.legend,main,
+               mar,"Smooth",...)
+}
 
 #' @title Plotting twoStepsBenchmarks
 #' 
