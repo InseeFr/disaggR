@@ -74,14 +74,14 @@ rate_extrap <- function(lfrate,mean.delta) {
 
 calc_lfrate_win <- function(hfserie,lfserie,
                             start.benchmark,end.benchmark,
-                            start.mean.delta.rate,end.mean.delta.rate,
+                            start.delta.rate,end.delta.rate,
                             set.delta.rate,
                             start.domain.extended,end.domain.extended) {
   
   lfrate <- lfserie / aggregate_and_crop_hf_to_lf(hfserie,lfserie)
   
   delta_rate <- {
-    if (is.null(set.delta.rate)) mean_delta(lfrate,start.mean.delta.rate,end.mean.delta.rate)
+    if (is.null(set.delta.rate)) mean_delta(lfrate,start.delta.rate,end.delta.rate)
     else set.delta.rate
   }
   
@@ -99,11 +99,14 @@ calc_lfrate_win <- function(hfserie,lfserie,
     delta_rate = delta_rate)
 }
 
-calc_hfrate <- function(hfserie,lfserie,
-                        start.benchmark,end.benchmark,
-                        start.domain,end.domain,
-                        start.mean.delta.rate,end.mean.delta.rate,
-                        set.delta.rate) {
+threeRuleSmooth_impl <- function(hfserie,lfserie,
+                                 start.benchmark,end.benchmark,
+                                 start.domain,end.domain,
+                                 start.delta.rate,end.delta.rate,
+                                 set.delta.rate,
+                                 maincl,cl=NULL) {
+  
+  if (is.null(cl)) cl <- maincl
   
   hfserie_win <- calc_hfserie_win(hfserie,
                                   start.domain,end.domain,
@@ -111,45 +114,30 @@ calc_hfrate <- function(hfserie,lfserie,
   
   lfrate_win <- calc_lfrate_win(hfserie,lfserie,
                                 start.benchmark,end.benchmark,
-                                start.mean.delta.rate,end.mean.delta.rate,
+                                start.delta.rate,end.delta.rate,
                                 set.delta.rate,
                                 tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
   
-  list(hfrate = bflSmooth(lfserie = lfrate_win$lfrate,
-                          nfrequency = frequency(hfserie),
-                          weights = hfserie_win,
-                          lfserie.is.rate = TRUE),
-       delta_rate = lfrate_win$delta_rate)
-}
-
-threeRuleSmooth_impl <- function(hfserie,lfserie,
-                                 start.benchmark,end.benchmark,
-                                 start.domain,end.domain,
-                                 start.mean.delta.rate,end.mean.delta.rate,
-                                 set.delta.rate,
-                                 maincl,cl=NULL) {
+  hfrate <- bflSmooth(lfserie = lfrate_win$lfrate,
+                      nfrequency = frequency(hfserie),
+                      weights = hfserie_win,
+                      lfserie.is.rate = TRUE)
   
-  if (is.null(cl)) cl <- maincl
-  
-  hfrate <- calc_hfrate(hfserie,lfserie,
-                        start.benchmark,end.benchmark,
-                        start.domain,end.domain,
-                        start.mean.delta.rate,end.mean.delta.rate,
-                        set.delta.rate)
-  
-  rests <- hfrate$hfrate * hfserie
+  rests <- hfrate * hfserie
   
   res <- list(benchmarked.serie = window(rests,start=start.domain,end=end.domain,extend = TRUE),
-              smoothed.rate = hfrate$hfrate,
-              delta.rate = hfrate$delta_rate,
+              lfrate = lfrate_win$lfrate,
+              smoothed.rate = hfrate,
+              hfserie.as.weights = hfserie_win,
+              delta.rate = lfrate_win$delta_rate,
               model.list = list(hfserie = hfserie,
                                 lfserie = lfserie,
                                 start.benchmark = start.benchmark,
                                 end.benchmark = end.benchmark,
                                 start.domain = start.domain,
                                 end.domain = end.domain,
-                                start.mean.delta.rate = start.mean.delta.rate,
-                                end.mean.delta.rate = end.mean.delta.rate,
+                                start.delta.rate = start.delta.rate,
+                                end.delta.rate = end.delta.rate,
                                 set.delta.rate = set.delta.rate),
               call = cl)
   
@@ -165,6 +153,13 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' with a smoothed rate. This latter is extrapolated using an arithmetic sequence.
 #' 
 #' The resulting time-serie is equal to the low-frequency serie after aggregation.
+#' 
+#' @details In order to smooth the rate, threeRuleSmooth calls \link{bflSmooth}
+#' and uses a modified and extrapolated version of hfserie as weights :
+#' 
+#' * only the full cycles are kept
+#' * the first and last full cycles are replicated respectively backwards and
+#' forwards to fill the domain window.
 #' 
 #' @aliases threeRuleSmooth-class
 #' Ops,threeRuleSmooth,ts-method Ops,ts,threeRuleSmooth-method
@@ -183,14 +178,14 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' @param end.domain an optional end of the output high-frequency serie. It also defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 #' domain window.
-#' @param start.mean.delta.rate an optional start for the mean of the rate difference,
-#' required for the arithmetical extrapolation.
+#' @param start.delta.rate an optional start for the mean of the rate difference
+#' required for the arithmetical extrapolation of the rate.
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the start is defined by lfserie's window.
-#' @param end.mean.delta.rate an optional end for the mean of the rate difference,
-#' required for the arithmetical extrapolation.
+#' @param end.delta.rate an optional end for the mean of the rate difference
+#' required for the arithmetical extrapolation of the rate.
 #' Should be a double or a numeric of length 2, like a window for `lfserie`. If NULL, the end is defined by lfserie's window.
 #' @param set.delta.rate  an optional double, that allows the user to set the
-#' delta mean instead of using the mean.
+#' delta mean instead of using a mean.
 #' @param \dots if the dots contain a cl item, its value overwrites the value
 #' of the returned call. This feature allows to build wrappers.
 #' @return
@@ -207,7 +202,9 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' 
 #' An object of class "`threeRuleSmooth`" is a list containing the following components :
 #'   \item{benchmarked.serie}{a time-serie, that is the result of the benchmark.}
+#'   \item{lfrate}{a time-serie, that is the low-frequency rate of the threeRuleSmooth.}
 #'   \item{smoothed.rate}{the smoothed rate of the threeRuleSmooth.}
+#'   \item{hfserie.as.weights}{the modified and extrapolated hfserie (see details)}
 #'   \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
 #'   the rate time-serie. It is estimated as the mean value in the specified window.}
 #'   \item{model.list}{a list containing all the arguments submitted to the function.}
@@ -228,7 +225,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 threeRuleSmooth <- function(hfserie,lfserie,
                             start.benchmark=NULL,end.benchmark=NULL,
                             start.domain=NULL,end.domain=NULL,
-                            start.mean.delta.rate=start.benchmark,end.mean.delta.rate=end.benchmark,
+                            start.delta.rate=start.benchmark,end.delta.rate=end.benchmark,
                             set.delta.rate=NULL,
                             ...) {
   
@@ -244,7 +241,7 @@ threeRuleSmooth <- function(hfserie,lfserie,
   threeRuleSmooth_impl(hfserie,lfserie,
                        start.benchmark,end.benchmark,
                        start.domain,end.domain,
-                       start.mean.delta.rate,end.mean.delta.rate,
+                       start.delta.rate,end.delta.rate,
                        set.delta.rate,
                        maincl,...)
 }
