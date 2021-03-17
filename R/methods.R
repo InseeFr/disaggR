@@ -279,11 +279,6 @@ print.twoStepsBenchmark <- function(x,...) {
   invisible(x)
 }
 
-#' @include twoStepsBenchmark.R
-#' @export
-setMethod("show","twoStepsBenchmark",
-          function(object) print(object))
-
 #' @export
 summary.twoStepsBenchmark <- function(object, ...) {
   summary.praislm(prais(object),...)
@@ -315,11 +310,6 @@ smoothed.rate.threeRuleSmooth <- function(object) object$smoothed.rate
 
 #' @export
 print.threeRuleSmooth <- function(x, ...) print(as.ts(x))
-
-#' @include threeRuleSmooth.R
-#' @export
-setMethod("show","threeRuleSmooth",
-          function(object) print(object))
 
 #' @export
 model.list.threeRuleSmooth <- function(object) object$model.list
@@ -354,14 +344,15 @@ setAs("twoStepsBenchmark","ts",function(from) as.ts(from))
 #' @export
 setAs("threeRuleSmooth","ts",function(from) as.ts(from))
 
-#' @include twoStepsBenchmark.R
+#' @include s4declaration.R
 #' @export
-setMethod("Math2","twoStepsBenchmark",
+setMethod("Math2","disaggR",
           function(x,digits = 0) callGeneric(as.ts(x),digits))
-#' @include threeRuleSmooth.R
+
+#' @include s4declaration.R
 #' @export
-setMethod("Math2","threeRuleSmooth",
-          function(x,digits = 0) callGeneric(as.ts(x),digits))
+setMethod("show","disaggR",
+          function(object) print(object))
 
 #' @importFrom stats aggregate
 #' @export

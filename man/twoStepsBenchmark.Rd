@@ -4,8 +4,6 @@
 \alias{twoStepsBenchmark}
 \alias{annualBenchmark}
 \alias{twoStepsBenchmark-class}
-\alias{Math2,twoStepsBenchmark-method}
-\alias{show,twoStepsBenchmark-method}
 \title{Regress and bends a time-serie with a lower frequency one}
 \usage{
 twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,

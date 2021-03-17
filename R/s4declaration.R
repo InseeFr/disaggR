@@ -16,6 +16,8 @@
 #' Ops,disaggR,vector-method Ops,vector,disaggR-method
 #' Ops,disaggR,ts-method Ops,ts,disaggR-method
 #' Ops,disaggR,disaggR-method
+#' Math2,disaggR-method
+#' show,disaggR-method
 setClass("disaggR", contains = "VIRTUAL")
 
 #' @import methods

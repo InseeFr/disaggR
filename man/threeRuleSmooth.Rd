@@ -3,8 +3,6 @@
 \name{threeRuleSmooth}
 \alias{threeRuleSmooth}
 \alias{threeRuleSmooth-class}
-\alias{Math2,threeRuleSmooth-method}
-\alias{show,threeRuleSmooth-method}
 \title{Bends a time-serie with a lower frequency one by smoothing their rate}
 \usage{
 threeRuleSmooth(

@@ -156,10 +156,6 @@ test_that("diverse ts methods",{
   expect_identical(diffinv(smooth,xi = 0),
                    diffinv(as.ts(smooth),xi = 0))
   
-  expect_identical(monthplot(benchmark),NULL)
-  expect_identical(monthplot(smooth),NULL)
-    # just to check if the method is triggered
-  
   expect_identical(na.omit(benchmark),
                    na.omit(as.ts(benchmark)))
   expect_identical(na.omit(smooth),
@@ -169,4 +165,17 @@ test_that("diverse ts methods",{
                    window(as.ts(benchmark),start=2001,end=c(2014,3)))
   expect_identical(window(smooth,start=2001,end=c(2014,3)),
                    window(as.ts(smooth),start=2001,end=c(2014,3)))
+})
+
+test_that("monthplot ts method",{
+  expect_doppelganger <- function(title, fig) {
+    vdiffr::expect_doppelganger(title,
+                                fig,
+                                path = if (R.version$major>=4 && R.version$minor>=1.0) "/plots-R-4-1/" else "/plots-R-4-0/")
+  }
+  testthat::skip_if_not_installed("vdiffr")
+  expect_doppelganger("monthplot-twoStepsBenchmark",
+                      function() monthplot(benchmark))
+  expect_doppelganger("monthplot-threeRuleSmooth",
+                      function() monthplot(smooth))
 })

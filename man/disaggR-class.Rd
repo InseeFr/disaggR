@@ -8,6 +8,8 @@
 \alias{Ops,disaggR,ts-method}
 \alias{Ops,ts,disaggR-method}
 \alias{Ops,disaggR,disaggR-method}
+\alias{Math2,disaggR-method}
+\alias{show,disaggR-method}
 \title{Virtual Class "disaggR" Class of disaggregations}
 \description{
 The \code{disaggR} class is a class contained by the actual disaggregation classes

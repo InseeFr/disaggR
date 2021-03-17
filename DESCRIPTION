@@ -44,11 +44,11 @@ Collate:
     'disaggR.R'
     'in.R'
     's4declaration.R'
-    'threeRuleSmooth.R'
     'twoStepsBenchmark.R'
     'methods.R'
     'plot.R'
     'praislm.R'
     'reView.R'
+    'threeRuleSmooth.R'
     'utils.R'
 Config/testthat/edition: 3

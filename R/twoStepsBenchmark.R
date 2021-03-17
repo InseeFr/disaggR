@@ -149,8 +149,6 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' that are commonly used by quarterly national accounts.
 #'   
 #' @aliases annualBenchmark twoStepsBenchmark-class
-#' Math2,twoStepsBenchmark-method
-#' show,twoStepsBenchmark-method
 #' @usage
 #' twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
 #'                   set.coeff=NULL,set.const=NULL,
