@@ -330,34 +330,42 @@ Math.twoStepsBenchmark <- function(x, ...) get(.Generic)(as.ts(x))
 #' @export
 Math.threeRuleSmooth <- Math.twoStepsBenchmark
 
-Ops_disaggr <- function(e1,e2) {
-  if (inherits(e1,"twoStepsBenchmark") || inherits(e1,"threeRuleSmooth")) {
-    e1 <- as.ts(e1)
-  }
-  if (inherits(e2,"twoStepsBenchmark") || inherits(e2,"threeRuleSmooth")) {
-    e2 <- as.ts(e2)
-  }
-  get(.Generic)(e1,e2)
-}
-
-#' @export
-Ops.twoStepsBenchmark <- Ops_disaggr
-
-#' @export
-Ops.threeRuleSmooth <- Ops_disaggr
-
 #' @include twoStepsBenchmark.R
 #' @export
-setMethod("Ops",signature = c("twoStepsBenchmark","ts"),function(e1,e2) callGeneric(as.ts(e1),e2))
+setMethod("Ops",signature = c("twoStepsBenchmark","vector"),
+          function(e1,e2) callGeneric(as.ts(e1),e2))
+#' @export
+setMethod("Ops",signature = c("vector","twoStepsBenchmark"),
+          function(e1,e2) callGeneric(e1,as.ts(e2)))
+#' @export
+setMethod("Ops",signature = c("twoStepsBenchmark","ts"),
+          function(e1,e2) callGeneric(as.ts(e1),e2))
+#' @export
+setMethod("Ops",signature = c("ts","twoStepsBenchmark"),
+          function(e1,e2) callGeneric(e1,as.ts(e2)))
+
+#' @include threeRuleSmooth.R
+#' @export
+setMethod("Ops",signature = c("threeRuleSmooth","vector"),
+          function(e1,e2) callGeneric(as.ts(e1),e2))
+#' @export
+setMethod("Ops",signature = c("vector","threeRuleSmooth"),
+          function(e1,e2) callGeneric(e1,as.ts(e2)))
+#' @export
+setMethod("Ops",signature = c("threeRuleSmooth","ts"),
+          function(e1,e2) callGeneric(as.ts(e1),e2))
+#' @export
+setMethod("Ops",signature = c("ts","threeRuleSmooth"),
+          function(e1,e2) callGeneric(e1,as.ts(e2)))
+
 #' @include twoStepsBenchmark.R
-#' @export
-setMethod("Ops",signature = c("ts","twoStepsBenchmark"),function(e1,e2) callGeneric(e1,as.ts(e2)))
 #' @include threeRuleSmooth.R
 #' @export
-setMethod("Ops",signature = c("threeRuleSmooth","ts"),function(e1,e2) callGeneric(as.ts(e1),e2))
-#' @include threeRuleSmooth.R
+setMethod("Ops",signature = c("twoStepsBenchmark","threeRuleSmooth"),
+          function(e1,e2) callGeneric(as.ts(e1),as.ts(e2)))
 #' @export
-setMethod("Ops",signature = c("ts","threeRuleSmooth"),function(e1,e2) callGeneric(e1,as.ts(e2)))
+setMethod("Ops",signature = c("threeRuleSmooth","twoStepsBenchmark"),
+          function(e1,e2) callGeneric(as.ts(e1),as.ts(e2)))
 
 #' @include twoStepsBenchmark.R
 #' @export
