@@ -313,22 +313,6 @@ smoothed.rate <- function(object) UseMethod("smoothed.rate")
 #' @export
 smoothed.rate.threeRuleSmooth <- function(object) object$smoothed.rate
 
-#' Extracting the extrapolation delta of a threeRuleSmooth
-#' 
-#' The function \link{threeRuleSmooth} involves a delta returns the high-frequency rate
-#' from a \link{threeRuleSmooth} object.
-#' @usage
-#' rate(object)
-#' @param object a threeRuleSmooth object.
-#' @examples
-#' benchmark <- threeRuleSmooth(turnover,construction); rate(benchmark)
-#'
-#' @keywords internal
-#' @export
-rate <- function(object) UseMethod("rate")
-#' @export
-rate.threeRuleSmooth <- function(object) object$rate
-
 #' @export
 print.threeRuleSmooth <- function(x, ...) print(as.ts(x))
 
@@ -345,19 +329,6 @@ Math.twoStepsBenchmark <- function(x, ...) get(.Generic)(as.ts(x))
 
 #' @export
 Math.threeRuleSmooth <- Math.twoStepsBenchmark
-
-#' @export
-cbind.twoStepsBenchmark  <- function(..., deparse.level = 1) {
-  args <- c(lapply(list(...),
-                   function(x) {
-                     if (inherits(x,"twoStepsBenchmark") || inherits(x,"threeRuleSmooth")) as.ts(x)
-                     else x
-                   }),
-            list(deparse.level=deparse.level)
-  )
-  
-  do.call(cbind,args)
-}
 
 #' @export
 Ops.twoStepsBenchmark <- function(e1,e2) {
@@ -403,6 +374,7 @@ setMethod("Math2","threeRuleSmooth",
           function(x,digits = 0) callGeneric(as.ts(x),digits))
 
 #' @importFrom stats aggregate
+#' @export
 aggregate.twoStepsBenchmark <- function(x, ...) aggregate(as.ts(x), ...)
 #' @importFrom stats cycle
 #' @export
@@ -427,8 +399,6 @@ window.twoStepsBenchmark <- function(x, ...) window(as.ts(x), ...)
 
 #' @export
 aggregate.threeRuleSmooth <- aggregate.twoStepsBenchmark
-#' @export
-cbind.threeRuleSmooth <- cbind.twoStepsBenchmark
 #' @export
 cycle.threeRuleSmooth <- cycle.twoStepsBenchmark
 #' @export

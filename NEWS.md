@@ -5,10 +5,9 @@
 * *in_sample* now generates a more general class *tscomparison*, with a "in_sample" func attribute. In previous versions,
 the S3 class was named "insample".
 * the new functions *in_scatter*, *in_benchmark* and *in_revisions* also produce tscomparisons, with plot and autoplot methods.
-* the graphics are more beautiful thanks to the package scales.
+* the graphics are prettier thanks to the package scales.
 * the plot and autoplot methods now have xlab, ylab, start, end, col, lty, show.legend, main and mar arguments. The autoplot methods have also a theme argument.
 * removed the c++ code to improve readability
-* deprecated
 * most of the stats methods for time-series now coerce twoStepsBenchmarks or rateSmooths into time-series
 
 # disaggR 0.1.9

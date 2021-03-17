@@ -73,3 +73,100 @@ test_that("as.list",
             expect_identical(benchmark,
                              new("threeRuleSmooth",as.list(benchmark)))
           })
+
+test_that("smoothed.rate",{
+  expect_true(all(abs(smoothed.rate(threeRuleSmooth(turnover,aggregate(turnover)*3))-3)<10^-5))
+})
+
+test_that("Math group generic",{
+  expect_identical(abs(twoStepsBenchmark(turnover,construction)),
+                   abs(as.ts(twoStepsBenchmark(turnover,construction))))
+  expect_identical(abs(threeRuleSmooth(turnover,construction)),
+                   abs(as.ts(threeRuleSmooth(turnover,construction))))
+})
+
+test_that("Math2 group generic",{
+  expect_identical(round(twoStepsBenchmark(turnover,construction),3),
+                   round(as.ts(twoStepsBenchmark(turnover,construction)),3))
+  expect_identical(round(threeRuleSmooth(turnover,construction),3),
+                   round(as.ts(threeRuleSmooth(turnover,construction)),3))
+})
+
+test_that("Math2 group generic",{
+  expect_identical(round(twoStepsBenchmark(turnover,construction),3),
+                   round(as.ts(twoStepsBenchmark(turnover,construction)),3))
+  expect_identical(round(threeRuleSmooth(turnover,construction),3),
+                   round(as.ts(threeRuleSmooth(turnover,construction)),3))
+})
+
+test_that("Ops group generic",{
+  tsnewobject_a <- twoStepsBenchmark(turnover,construction)
+  tsnewobject_b <- threeRuleSmooth(turnover,construction)
+  tsnewobject_c <- turnover
+  
+  expect_identical(tsnewobject_a+tsnewobject_b,
+                   as.ts(tsnewobject_a)+as.ts(tsnewobject_b))
+  expect_identical(tsnewobject_b+tsnewobject_a,
+                   as.ts(tsnewobject_a)+as.ts(tsnewobject_b))
+  
+  expect_identical(tsnewobject_c+tsnewobject_a,
+                   as.ts(tsnewobject_a)+tsnewobject_c)
+  expect_identical(tsnewobject_a+tsnewobject_c,
+                   as.ts(tsnewobject_a)+tsnewobject_c)
+  expect_identical(tsnewobject_c+tsnewobject_b,
+                   as.ts(tsnewobject_b)+tsnewobject_c)
+  expect_identical(tsnewobject_b+tsnewobject_c,
+                   as.ts(tsnewobject_b)+tsnewobject_c)
+  
+  expect_identical(tsnewobject_a+1,
+                   as.ts(tsnewobject_a)+1)
+  expect_identical(tsnewobject_b+1,
+                   as.ts(tsnewobject_b)+1)
+  expect_identical(1+tsnewobject_a,
+                   as.ts(tsnewobject_a)+1)
+  expect_identical(1+tsnewobject_b,
+                   as.ts(tsnewobject_b)+1)
+  
+  expect_identical(tsnewobject_c+tsnewobject_c,
+                   2*tsnewobject_c)
+    # to ensure stats::Ops.ts has not been replaced
+})
+
+test_that("diverse ts methods",{
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  smooth <- threeRuleSmooth(turnover,construction)
+  
+  expect_identical(aggregate(benchmark),
+                   aggregate(as.ts(benchmark)))
+  expect_identical(aggregate(smooth),
+                   aggregate(as.ts(smooth)))
+  
+  expect_identical(cycle(benchmark),
+                   cycle(as.ts(benchmark)))
+  expect_identical(cycle(smooth),
+                   cycle(as.ts(smooth)))
+  
+  expect_identical(diff(benchmark),
+                   diff(as.ts(benchmark)))
+  expect_identical(diff(smooth),
+                   diff(as.ts(smooth)))
+  
+  expect_identical(diffinv(benchmark,xi = 0),
+                   diffinv(as.ts(benchmark),xi = 0))
+  expect_identical(diffinv(smooth,xi = 0),
+                   diffinv(as.ts(smooth),xi = 0))
+  
+  expect_identical(monthplot(benchmark),NULL)
+  expect_identical(monthplot(smooth),NULL)
+    # just to check if the method is triggered
+  
+  expect_identical(na.omit(benchmark),
+                   na.omit(as.ts(benchmark)))
+  expect_identical(na.omit(smooth),
+                   na.omit(as.ts(smooth)))
+  
+  expect_identical(window(benchmark,start=2001,end=c(2014,3)),
+                   window(as.ts(benchmark),start=2001,end=c(2014,3)))
+  expect_identical(window(smooth,start=2001,end=c(2014,3)),
+                   window(as.ts(smooth),start=2001,end=c(2014,3)))
+})
