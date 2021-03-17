@@ -330,8 +330,7 @@ Math.twoStepsBenchmark <- function(x, ...) get(.Generic)(as.ts(x))
 #' @export
 Math.threeRuleSmooth <- Math.twoStepsBenchmark
 
-#' @export
-Ops.twoStepsBenchmark <- function(e1,e2) {
+Ops_disaggr <- function(e1,e2) {
   if (inherits(e1,"twoStepsBenchmark") || inherits(e1,"threeRuleSmooth")) {
     e1 <- as.ts(e1)
   }
@@ -342,7 +341,10 @@ Ops.twoStepsBenchmark <- function(e1,e2) {
 }
 
 #' @export
-Ops.threeRuleSmooth <- Ops.twoStepsBenchmark
+Ops.twoStepsBenchmark <- Ops_disaggr
+
+#' @export
+Ops.threeRuleSmooth <- Ops_disaggr
 
 #' @include twoStepsBenchmark.R
 #' @export
