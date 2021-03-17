@@ -4,8 +4,11 @@
 \alias{twoStepsBenchmark}
 \alias{annualBenchmark}
 \alias{twoStepsBenchmark-class}
+\alias{Ops,twoStepsBenchmark,vector-method}
+\alias{Ops,vector,twoStepsBenchmark-method}
 \alias{Ops,twoStepsBenchmark,ts-method}
 \alias{Ops,ts,twoStepsBenchmark-method}
+\alias{Ops,twoStepsBenchmark,threeRuleSmooth-method}
 \alias{Math2,twoStepsBenchmark-method}
 \alias{show,twoStepsBenchmark-method}
 \title{Regress and bends a time-serie with a lower frequency one}

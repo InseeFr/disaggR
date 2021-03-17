@@ -163,7 +163,9 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' forwards to fill the domain window.
 #' 
 #' @aliases threeRuleSmooth-class
+#' Ops,threeRuleSmooth,vector-method Ops,vector,threeRuleSmooth-method
 #' Ops,threeRuleSmooth,ts-method Ops,ts,threeRuleSmooth-method
+#' Ops,threeRuleSmooth,twoStepsBenchmark-method
 #' Math2,threeRuleSmooth-method
 #' show,threeRuleSmooth-method
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
