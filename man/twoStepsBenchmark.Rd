@@ -17,10 +17,15 @@ twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALS
                   start.domain=NULL,end.domain=NULL,...)
 
 
-annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
-                start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
-                start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc[1L]+1,
-                start.domain=start(hfserie),end.domain=c(end.benchmark[1L]+2,frequency(hfserie)))
+annualBenchmark(hfserie,lfserie,
+                include.differenciation=FALSE,include.rho=FALSE,
+                set.coeff=NULL,set.const=NULL,
+                start.coeff.calc=start(lfserie)[1L],
+                end.coeff.calc=end(lfserie)[1L],
+                start.benchmark=start(lfserie)[1L],
+                end.benchmark=end.coeff.calc[1L]+1L,
+                start.domain=start(hfserie),
+                end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)))
 }
 \arguments{
 \item{hfserie}{the bended time-serie. It can be a matrix time-serie.}

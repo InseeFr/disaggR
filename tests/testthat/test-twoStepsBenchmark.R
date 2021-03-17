@@ -437,5 +437,8 @@ test_that("annualBenchmark",{
                                            include.differenciation = FALSE,
                                            set.coeff=-3))),
                c(2264.80095,-3))
+  
+  expect_equal(as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = 2019)),
+               as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = c(2019,1))))
 })
 

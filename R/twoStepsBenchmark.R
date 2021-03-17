@@ -164,10 +164,15 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'                   start.domain=NULL,end.domain=NULL,...)
 #'
 #'
-#' annualBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
-#'                 start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
-#'                 start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc[1L]+1,
-#'                 start.domain=start(hfserie),end.domain=c(end.benchmark[1L]+2,frequency(hfserie)))
+#' annualBenchmark(hfserie,lfserie,
+#'                 include.differenciation=FALSE,include.rho=FALSE,
+#'                 set.coeff=NULL,set.const=NULL,
+#'                 start.coeff.calc=start(lfserie)[1L],
+#'                 end.coeff.calc=end(lfserie)[1L],
+#'                 start.benchmark=start(lfserie)[1L],
+#'                 end.benchmark=end.coeff.calc[1L]+1L,
+#'                 start.domain=start(hfserie),
+#'                 end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)))
 #' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
@@ -290,10 +295,15 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
 }
 
 #' @export
-annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
-                            start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
-                            start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc[1L]+1,
-                            start.domain=start(hfserie),end.domain=c(end.benchmark[1L]+2,frequency(hfserie))) {
+annualBenchmark <- function(hfserie,lfserie,
+                            include.differenciation=FALSE,include.rho=FALSE,
+                            set.coeff=NULL,set.const=NULL,
+                            start.coeff.calc=start(lfserie)[1L],
+                            end.coeff.calc=end(lfserie)[1L],
+                            start.benchmark=start(lfserie)[1L],
+                            end.benchmark=end.coeff.calc[1L]+1L,
+                            start.domain=start(hfserie),
+                            end.domain=c(end.benchmark[1L]+2L,frequency(hfserie))) {
 
   if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)
   twoStepsBenchmark(hfserie,lfserie,
