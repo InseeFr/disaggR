@@ -77,8 +77,8 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 #' 
 #' * if `FALSE` the rate output/weights is smoothed with the constraint that the aggregated output
 #' is equal to the input lfserie.
-#' * if `TRUE` the input lfserie is the rate to be smoothed, with the constraint that it respects
-#' the products lfserie*weights through aggregation.
+#' * if `TRUE` the input lfserie is the rate to be smoothed, with the constraint
+#' that the product aggregate(output*weights)/aggregate(weights) is equal to lfserie
 #' 
 #' @param lfserie a time-serie to be smoothed
 #' @param nfrequency the new high frequency. It must be a multiple of the low frequency.

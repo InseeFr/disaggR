@@ -116,9 +116,9 @@ calc_hfrate <- function(hfserie,lfserie,
                                 tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
   
   list(hfrate = bflSmooth(lfserie = lfrate_win$lfrate,
-                        nfrequency = frequency(hfserie),
-                        weights = hfserie_win,
-                        lfserie.is.rate = TRUE),
+                          nfrequency = frequency(hfserie),
+                          weights = hfserie_win,
+                          lfserie.is.rate = TRUE),
        delta_rate = lfrate_win$delta_rate)
 }
 
