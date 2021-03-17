@@ -85,7 +85,8 @@ frequency. The procedure involved is a proportional Denton benchmark.
 Therefore, the resulting time-serie is the product of the high-frequency input
 with a smoothed rate. This latter is extrapolated using an arithmetic sequence.
 
-The resulting time-serie is equal to the low-frequency serie after aggregation.
+The resulting time-serie is equal to the low-frequency serie after aggregation
+within the benchmark window.
 }
 \details{
 In order to smooth the rate, threeRuleSmooth calls \link{bflSmooth}

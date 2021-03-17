@@ -147,7 +147,8 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' reintegrated, and of a smoothed part. The smoothed part minimizes the sum of squares
 #' of its differences.
 #' 
-#' The resulting time-serie is equal to the low-frequency serie after aggregation.
+#' The resulting time-serie is equal to the low-frequency serie after aggregation
+#' within the benchmark window.
 #'
 #' @details annualBenchmark is a wrapper of the main function, that applies more specifically
 #' to annual series, and changes the default window parameters to the ones
