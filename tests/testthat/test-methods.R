@@ -4,7 +4,7 @@ test_that("print praislm", {
                                  include.differenciation = TRUE,
                                  include.rho = TRUE,
                                  set.const = pi^2)
-  expect_known_output(print(prais(benchmark)),"outputs/prais.txt",update=FALSE)
+  expect_snapshot_output(print(prais(benchmark)),cran = TRUE)
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE,
@@ -38,8 +38,8 @@ test_that("methods tests", {
   expect_s3_class(residuals(benchmark),"ts")
   expect_equal(frequency(residuals(benchmark)),frequency(construction))
   expect_output(print(summary(benchmark)),"^\nCall:\ntwoStepsBenchmark\\(hfserie = turnover, lfserie = construction")
-  expect_known_output(print(benchmark),"outputs/benchmark.txt",update = FALSE)
-  expect_known_output(show(benchmark),"outputs/benchmark.txt",update = FALSE)
+  expect_snapshot_output(print(benchmark),cran = TRUE)
+  expect_snapshot_output(show(benchmark),cran = TRUE)
   
   a <- diff(aggregate(smoothed.part(benchmark)))
   b <- residuals(benchmark)

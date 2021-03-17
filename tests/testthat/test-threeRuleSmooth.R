@@ -49,4 +49,6 @@ test_that("mean delta", {
   expect_equal(mean_delta(lfserie,2010,NULL),1)
 })
 
-smoothed.rate(t)
+test_that("threeRuleSmooth works",{
+  expect_snapshot(threeRuleSmooth(turnover,construction))
+})

@@ -6,52 +6,52 @@ test_that("regression calculates the right coeffs", {
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = FALSE))),
-               c(-4.42319837,0.07996253))
+               c(-4.42319837305,0.07996253268))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = FALSE,
-                                             set.const=-4.42319837,set.coeff=0.07996253))),
-               c(-4.42319837,0.07996253))
+                                             set.const=-4.42319837305,set.coeff=0.07996253268))),
+               c(-4.42319837305,0.07996253268))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = FALSE,
                                              set.const=-3))),
-               c(-3,0.07851836))
+               c(-3,0.07851836099))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = FALSE,
                                              set.const=10))),
-               c(10,0.06532678))
+               c(10,0.06532678329))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = FALSE,
                                              set.coeff=-3))),
-               c(2264.800948,-3))
+               c(2264.800948259,-3))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = FALSE,
                                              set.coeff=10))),
-               c(-7313.209691,10))
+               c(-7313.2096909,10))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = FALSE,
                                              set.const=10))),
-               c(10.00000000,0.06532678))
+               c(10,0.06532678329))
   
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE))),
-               c(13.268370447,-0.008573728))
+               c(13.268370447389,-0.008573728055))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
                                              set.const=-3))),
-               c(-3,0.09641138))
+               c(-3,0.0964113832))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
                                              set.const=10))),
-               c(10,0.01251813))
+               c(10,0.0125181346))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
@@ -61,7 +61,7 @@ test_that("regression calculates the right coeffs", {
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
                                              set.coeff=10))),
-               c(-1477.674115,10))
+               c(-1477.674115137,10))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
@@ -76,27 +76,27 @@ test_that("regression calculates the right coeffs", {
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
                                              set.const=-3))),
-               c(-3,0.09641138))
+               c(-3,0.0964113832))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
                                              set.const=10))),
-               c(10,0.01251813))
+               c(10,0.0125181346))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
                                              set.coeff=-3))),
-               c(458.8907581,-3))
+               c(458.890758064,-3))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
                                              set.coeff=10))),
-               c(-1477.674115,10))
+               c(-1477.674115137,10))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.differenciation = TRUE,
                                              set.const=10))),
-               c(10.00000000,0.01251813))
+               c(10,0.0125181346))
   
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
@@ -111,7 +111,7 @@ test_that("regression calculates the right coeffs", {
                                              lfserie = annualts,
                                              include.rho = TRUE,
                                              set.const=10))),
-               c(10,0.06933154))
+               c(10,0.06933153642))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.rho = TRUE,
@@ -388,7 +388,8 @@ test_that("reUseBenchmark works",{
   benchmark2 <- reUseBenchmark(turnover_modif,benchmark)
   
   coefficients <- coef(benchmark)
-  expect_equivalent((as.ts(benchmark2)-as.ts(benchmark))[1],pi*coefficients[2])
+  expect_equal((as.ts(benchmark2)-as.ts(benchmark))[1],pi*coefficients[2],
+               ignore_attr = TRUE)
 })
 
 test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenciation=TRUE",{
@@ -416,27 +417,27 @@ test_that("annualBenchmark",{
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
                                            lfserie = annualts,
                                            include.differenciation = FALSE))),
-               c(-4.42319837,0.07996253))
+               c(-4.42319837305,0.07996253268))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
                                            lfserie = annualts,
                                            include.differenciation = FALSE,
-                                           set.const=-4.42319837,set.coeff=0.07996253))),
-               c(-4.42319837,0.07996253))
+                                           set.const=-4.42319837305,set.coeff=0.07996253268))),
+               c(-4.42319837305,0.07996253268))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
                                            lfserie = annualts,
                                            include.differenciation = FALSE,
                                            set.const=-3))),
-               c(-3,0.07851836))
+               c(-3,0.07851836099))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
                                            lfserie = annualts,
                                            include.differenciation = FALSE,
                                            set.const=10))),
-               c(10,0.06532678))
+               c(10,0.06532678329))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
                                            lfserie = annualts,
                                            include.differenciation = FALSE,
                                            set.coeff=-3))),
-               c(2264.80095,-3))
+               c(2264.800948259,-3))
   
   expect_equal(as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = 2019)),
                as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = c(2019,1))))

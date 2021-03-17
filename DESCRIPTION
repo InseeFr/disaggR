@@ -50,3 +50,4 @@ Collate:
     'praislm.R'
     'reView.R'
     'utils.R'
+Config/testthat/edition: 3
