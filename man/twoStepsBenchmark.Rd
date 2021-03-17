@@ -4,11 +4,6 @@
 \alias{twoStepsBenchmark}
 \alias{annualBenchmark}
 \alias{twoStepsBenchmark-class}
-\alias{Ops,twoStepsBenchmark,vector-method}
-\alias{Ops,vector,twoStepsBenchmark-method}
-\alias{Ops,twoStepsBenchmark,ts-method}
-\alias{Ops,ts,twoStepsBenchmark-method}
-\alias{Ops,twoStepsBenchmark,threeRuleSmooth-method}
 \alias{Math2,twoStepsBenchmark-method}
 \alias{show,twoStepsBenchmark-method}
 \title{Regress and bends a time-serie with a lower frequency one}
@@ -82,12 +77,10 @@ twoStepsBenchark returns an object of class "\code{twoStepsBenchmark}".
 The function \code{summary} can be used to obtain and print a summary of the regression used by the benchmark.
 The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 serie and the bending serie.
-The functions \link{in_sample}, \link{in_disaggr}, \link{in_revisions},
-\link{in_scatter} produces various comparisons on which plot and autoplot can also
+The functions \link{in_disaggr}, \link{in_revisions},
+\link{in_scatter} produces comparisons on which plot and autoplot can also
 be used.
 
-The function \link{in_revisions} takes two \link{twoStepsBenchmark} objects
-as inputs, and produces a comparison between those.
 The generic accessor functions \code{as.ts}, \code{prais}, \code{coefficients}, \code{residuals}, \code{fitted.values}, \code{model.list}, \code{se}, \code{rho}
 extract various useful features of the returned value.
 

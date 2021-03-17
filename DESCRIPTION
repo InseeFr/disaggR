@@ -43,6 +43,7 @@ Collate:
     'data.R'
     'disaggR.R'
     'in.R'
+    's4declaration.R'
     'threeRuleSmooth.R'
     'twoStepsBenchmark.R'
     'methods.R'

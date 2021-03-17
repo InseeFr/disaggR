@@ -3,11 +3,6 @@
 \name{threeRuleSmooth}
 \alias{threeRuleSmooth}
 \alias{threeRuleSmooth-class}
-\alias{Ops,threeRuleSmooth,vector-method}
-\alias{Ops,vector,threeRuleSmooth-method}
-\alias{Ops,threeRuleSmooth,ts-method}
-\alias{Ops,ts,threeRuleSmooth-method}
-\alias{Ops,threeRuleSmooth,twoStepsBenchmark-method}
 \alias{Math2,threeRuleSmooth-method}
 \alias{show,threeRuleSmooth-method}
 \title{Bends a time-serie with a lower frequency one by smoothing their rate}

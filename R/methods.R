@@ -330,41 +330,21 @@ Math.twoStepsBenchmark <- function(x, ...) get(.Generic)(as.ts(x))
 #' @export
 Math.threeRuleSmooth <- Math.twoStepsBenchmark
 
-#' @include twoStepsBenchmark.R
+#' @include s4declaration.R
 #' @export
-setMethod("Ops",signature = c("twoStepsBenchmark","vector"),
+setMethod("Ops",signature = c("disaggR","vector"),
           function(e1,e2) callGeneric(as.ts(e1),e2))
 #' @export
-setMethod("Ops",signature = c("vector","twoStepsBenchmark"),
+setMethod("Ops",signature = c("vector","disaggR"),
           function(e1,e2) callGeneric(e1,as.ts(e2)))
 #' @export
-setMethod("Ops",signature = c("twoStepsBenchmark","ts"),
+setMethod("Ops",signature = c("ts","disaggR"),
+          function(e1,e2) callGeneric(e1,as.ts(e2)))
+#' @export
+setMethod("Ops",signature = c("disaggR","ts"),
           function(e1,e2) callGeneric(as.ts(e1),e2))
 #' @export
-setMethod("Ops",signature = c("ts","twoStepsBenchmark"),
-          function(e1,e2) callGeneric(e1,as.ts(e2)))
-
-#' @include threeRuleSmooth.R
-#' @export
-setMethod("Ops",signature = c("threeRuleSmooth","vector"),
-          function(e1,e2) callGeneric(as.ts(e1),e2))
-#' @export
-setMethod("Ops",signature = c("vector","threeRuleSmooth"),
-          function(e1,e2) callGeneric(e1,as.ts(e2)))
-#' @export
-setMethod("Ops",signature = c("threeRuleSmooth","ts"),
-          function(e1,e2) callGeneric(as.ts(e1),e2))
-#' @export
-setMethod("Ops",signature = c("ts","threeRuleSmooth"),
-          function(e1,e2) callGeneric(e1,as.ts(e2)))
-
-#' @include twoStepsBenchmark.R
-#' @include threeRuleSmooth.R
-#' @export
-setMethod("Ops",signature = c("twoStepsBenchmark","threeRuleSmooth"),
-          function(e1,e2) callGeneric(as.ts(e1),as.ts(e2)))
-#' @export
-setMethod("Ops",signature = c("threeRuleSmooth","twoStepsBenchmark"),
+setMethod("Ops",signature = c("disaggR","disaggR"),
           function(e1,e2) callGeneric(as.ts(e1),as.ts(e2)))
 
 #' @include twoStepsBenchmark.R

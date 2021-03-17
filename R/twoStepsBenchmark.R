@@ -1,10 +1,3 @@
-# twoStepsBenchmark is registered as a minimal S4 class in order to allow
-# Ops group generic double dispatch with ts. Through, most of the package uses
-# S3 methods for simplicity
-#' @import methods
-#' @export
-setClass("twoStepsBenchmark",contains = "list")
-
 residuals_extrap_sequence <- function(u0,u1,rho,n,include.differenciation) {
   if (include.differenciation) {
     if (rho == 1) u1 + (u1-u0) * (1:n)
@@ -93,6 +86,7 @@ eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rh
   }
 }
 
+#' @include s4declaration.R
 twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    include.differenciation,include.rho,
                                    set_coefficients,
@@ -134,7 +128,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                 end.domain = end.domain),
               call = cl)
   
-  new(Class="twoStepsBenchmark",res)
+  new("twoStepsBenchmark",res)
 }
 
 #' @title Regress and bends a time-serie with a lower frequency one
@@ -155,9 +149,6 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' that are commonly used by quarterly national accounts.
 #'   
 #' @aliases annualBenchmark twoStepsBenchmark-class
-#' Ops,twoStepsBenchmark,vector-method Ops,vector,twoStepsBenchmark-method
-#' Ops,twoStepsBenchmark,ts-method Ops,ts,twoStepsBenchmark-method
-#' Ops,twoStepsBenchmark,threeRuleSmooth-method
 #' Math2,twoStepsBenchmark-method
 #' show,twoStepsBenchmark-method
 #' @usage
@@ -216,12 +207,10 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' The function `summary` can be used to obtain and print a summary of the regression used by the benchmark.
 #' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 #' serie and the bending serie.
-#' The functions \link{in_sample}, \link{in_disaggr}, \link{in_revisions},
-#' \link{in_scatter} produces various comparisons on which plot and autoplot can also
+#' The functions \link{in_disaggr}, \link{in_revisions},
+#' \link{in_scatter} produces comparisons on which plot and autoplot can also
 #' be used.
 #' 
-#' The function \link{in_revisions} takes two \link{twoStepsBenchmark} objects
-#' as inputs, and produces a comparison between those.
 #' The generic accessor functions `as.ts`, `prais`, `coefficients`, `residuals`, `fitted.values`, `model.list`, `se`, `rho`
 #' extract various useful features of the returned value.
 #' 

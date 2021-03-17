@@ -1,10 +1,3 @@
-# threeRuleSmooth is registered as a minimal S4 class in order to allow
-# Ops group generic double dispatch with ts. Through, most of the package uses
-# S3 methods for simplicity
-#' @import methods
-#' @export
-setClass("threeRuleSmooth",contains = "list")
-
 #' Extrapolation function for the hfserie in a threeRuleSmooth
 #' 
 #' This function replaces the incomplete low frequency cycles, at the start and the end of the hfserie,
@@ -99,6 +92,7 @@ calc_lfrate_win <- function(hfserie,lfserie,
     delta_rate = delta_rate)
 }
 
+#' @include s4declaration.R
 threeRuleSmooth_impl <- function(hfserie,lfserie,
                                  start.benchmark,end.benchmark,
                                  start.domain,end.domain,
@@ -163,9 +157,6 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' forwards to fill the domain window.
 #' 
 #' @aliases threeRuleSmooth-class
-#' Ops,threeRuleSmooth,vector-method Ops,vector,threeRuleSmooth-method
-#' Ops,threeRuleSmooth,ts-method Ops,ts,threeRuleSmooth-method
-#' Ops,threeRuleSmooth,twoStepsBenchmark-method
 #' Math2,threeRuleSmooth-method
 #' show,threeRuleSmooth-method
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
