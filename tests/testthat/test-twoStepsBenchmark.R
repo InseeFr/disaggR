@@ -396,8 +396,7 @@ test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenc
   expect_equal(sequence[-1]-sequence[-length(sequence)],rep(2,9))
 })
 
-test_that("deprecated annualBenchmark",{
-  lifecycle::expect_deprecated(annualBenchmark(turnover,construction))
+test_that("annualBenchmark",{
   set.seed(27)
   mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
   trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
@@ -409,5 +408,34 @@ test_that("deprecated annualBenchmark",{
                                  end.coeff.calc = 2018,
                                  end.benchmark = 2019,
                                  end.domain = c(2021,12))))
+  
+  set.seed(5)
+  mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+  annualts <- ts(diffinv(rnorm(9,12,1)),start=2010,freq=1)
+  
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE))),
+               c(-4.42319837,0.07996253))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=-4.42319837,set.coeff=0.07996253))),
+               c(-4.42319837,0.07996253))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=-3))),
+               c(-3,0.07851836))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=10))),
+               c(10,0.06532678))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.coeff=-3))),
+               c(2264.80095,-3))
 })
 
