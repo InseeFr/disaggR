@@ -168,6 +168,8 @@ test_that("diverse ts methods",{
 })
 
 test_that("monthplot ts method",{
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  smooth <- threeRuleSmooth(turnover,construction)
   expect_doppelganger <- function(title, fig) {
     vdiffr::expect_doppelganger(title,
                                 fig,
