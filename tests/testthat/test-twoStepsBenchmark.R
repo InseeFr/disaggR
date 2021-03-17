@@ -395,3 +395,50 @@ test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenc
   sequence <- residuals_extrap_sequence(1,3,1,10,TRUE)
   expect_equal(sequence[-1]-sequence[-length(sequence)],rep(2,9))
 })
+
+test_that("annualBenchmark",{
+  set.seed(27)
+  mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+  trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
+  expect_error(annualBenchmark(mensualts,trimts),
+               "annual time-serie")
+  expect_equal(as.ts(annualBenchmark(turnover,construction,
+                               end.coeff.calc = 2018)),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                 end.coeff.calc = 2018,
+                                 end.benchmark = 2019,
+                                 end.domain = c(2021,12))))
+  
+  set.seed(5)
+  mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+  annualts <- ts(diffinv(rnorm(9,12,1)),start=2010,freq=1)
+  
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE))),
+               c(-4.42319837,0.07996253))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=-4.42319837,set.coeff=0.07996253))),
+               c(-4.42319837,0.07996253))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=-3))),
+               c(-3,0.07851836))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=10))),
+               c(10,0.06532678))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.coeff=-3))),
+               c(2264.80095,-3))
+  
+  expect_equal(as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = 2019)),
+               as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = c(2019,1))))
+})
+

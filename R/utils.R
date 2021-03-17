@@ -2,12 +2,6 @@ ts_from_tsp <- function(x,tspx) {
   ts(x, start=tspx[1L], frequency=tspx[3L])
 }
 
-drop_tsp <- function(x) {
-  attr(x,"tsp") <- NULL
-  class(x) <- setdiff(class(x),c("mts","ts"))
-  x
-}
-
 aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
   tsplf <- tsp(lfserie)
   aggregate.ts(
@@ -16,7 +10,7 @@ aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
   )
 }
 
-ts_expand <- function(x,nfrequency,divide.by.ratio=TRUE){
+ts_expand <- function(x,nfrequency,divide.by.ratio=TRUE) {
   ratio <- nfrequency/frequency(x)
   res <- if (divide.by.ratio) x/ratio else x
   ts(rep(res, each = ratio), start = tsp(x)[1], frequency = nfrequency)

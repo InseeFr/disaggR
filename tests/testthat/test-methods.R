@@ -22,7 +22,7 @@ test_that("print praislm", {
                     -231003828.7,-135283645.5,331155559.0,169950995.2,-90566630.3,67288425.9,
                     123703311.7,238436884.6,219277478.2,130769309.3,-153197367.6,-70785583.2,
                     -224906369.3),start=2001,frequency=1))
-
+  
   expect_output(print(summary(prais(benchmark))),"^\nCall:\ntwoStepsBenchmark\\(hfserie = turnover, lfserie = construction(.*?)The model includes a differenciation.")
 })
 
@@ -39,6 +39,7 @@ test_that("methods tests", {
   expect_equal(frequency(residuals(benchmark)),frequency(construction))
   expect_output(print(summary(benchmark)),"^\nCall:\ntwoStepsBenchmark\\(hfserie = turnover, lfserie = construction")
   expect_known_output(print(benchmark),"outputs/benchmark.txt",update = FALSE)
+  expect_known_output(show(benchmark),"outputs/benchmark.txt",update = FALSE)
   
   a <- diff(aggregate(smoothed.part(benchmark)))
   b <- residuals(benchmark)
@@ -59,3 +60,16 @@ test_that("methods tests", {
   expect_equal(m$start.domain,2000)
   expect_equal(m$end.domain,c(2020,12))
 })
+
+test_that("as.list",
+          {
+            benchmark <- twoStepsBenchmark(turnover,construction)
+            
+            expect_identical(benchmark,
+                             new("twoStepsBenchmark",as.list(benchmark)))
+            
+            benchmark <- threeRuleSmooth(turnover,construction)
+            
+            expect_identical(benchmark,
+                             new("threeRuleSmooth",as.list(benchmark)))
+          })

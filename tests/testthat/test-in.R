@@ -132,6 +132,16 @@ test_that("in revisions works",{
   attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_revisions"
   expect_identical(in_revisions(benchmark,benchmark),expected)
+  
+  benchmark <- threeRuleSmooth(hfserie = turnover,
+                               lfserie = construction)
+  
+  expected <- ts(matrix(c(NA,rep(0,244L)),dimnames = list(NULL,"Benchmark")),
+                 start=2000,frequency=12)
+  class(expected) <- c("tscomparison","ts")
+  attr(expected,"type") <- "changes"
+  attr(expected,"func") <- "in_revisions"
+  expect_identical(in_revisions(benchmark,benchmark),expected)
 })
 
 
@@ -148,6 +158,36 @@ test_that("in scatter works",{
                           window(aggregate(turnover),end=2019,extend=TRUE)),
                         ncol=3,dimnames = list(NULL,c("Low-frequency serie",
                                                       "High-frequency serie (regression)",
+                                                      "High-frequency serie (benchmark)"))),
+                 start=2000,frequency=1)
+  
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"coefficients") <- coefficients(benchmark)
+  expect_identical(in_scatter(benchmark),expected)
+  
+  
+  reg <- prais(benchmark)
+  expected <- ts(matrix(c(window(reg$model.list$y,start=2005,end=2017,extend=TRUE),
+                          window(aggregate(turnover),start=2005,end=2017,extend=TRUE)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)"))),
+                 start=2005,frequency=1)
+  
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"coefficients") <- coefficients(reg)
+  expect_identical(in_scatter(reg),expected)
+  
+  
+  benchmark <- threeRuleSmooth(hfserie = turnover,
+                               lfserie = construction,
+                               end.benchmark = 2019)
+  expected <- ts(matrix(c(construction,
+                          window(aggregate(turnover),end=2019,extend=TRUE)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
                                                       "High-frequency serie (benchmark)"))),
                  start=2000,frequency=1)
   
@@ -173,6 +213,11 @@ test_that("error in",{
                "The type argument of in_sample")
   expect_error(in_revisions(benchmark,"nothing important"),
                "old_object must be a twoStepsBenchmark")
+  set.seed(1L)
+  bn <- twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
+                            `colnames<-`(c("a","b","c")),construction)
+  expect_error(in_scatter(bn),"univariate")
+  expect_error(in_scatter(prais(bn)),"univariate")
   expect_error(in_sample(threeRuleSmooth(turnover,construction)),
                "The in_sample method needs a regression")
 })
@@ -184,3 +229,29 @@ test_that("warning revisions",
                            "The high-frequency inputs contain revisions")
           })
 
+test_that("distance",
+          {
+            benchmark <- twoStepsBenchmark(turnover,construction)
+            
+            insam <- in_sample(benchmark)
+            expect_equal(distance(insam,p=2),
+                         sqrt(mean((insam[,1L]-insam[,2L])^2)))
+            expect_equal(distance(insam,p=Inf),
+                         max(insam[,1L]-insam[,2L]))
+            
+            expect_error(distance(in_scatter(benchmark)))
+            
+            
+            indis <- in_disaggr(benchmark)
+            expect_equal(distance(indis,p=2),
+                         sqrt(mean((indis[,1L]-indis[,2L])^2,na.rm = TRUE)))
+            expect_equal(distance(indis,p=Inf),
+                         max(indis[,1L]-indis[,2L],na.rm = TRUE))
+            
+            inrev <- in_revisions(benchmark,benchmark)
+            expect_equal(distance(inrev),
+                         0)
+            
+            expect_error(distance(in_revisions(benchmark,benchmark,type = "contributions")),
+                         "support revisions of contributions")
+          })

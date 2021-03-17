@@ -148,16 +148,31 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' of its differences.
 #' 
 #' The resulting time-serie is equal to the low-frequency serie after aggregation.
-#' 
-#' @aliases twoStepsBenchmark-class Ops,twoStepsBenchmark,ts-method
-#' Ops,ts,twoStepsBenchmark-method Math2,twoStepsBenchmark-method
-#' show,twoStepsBenchmark-method
+#'
+#' @details annualBenchmark is a wrapper of the main function, that applies more specifically
+#' to annual series, and changes the default window parameters to the ones
+#' that are commonly used by quarterly national accounts.
+#'   
+#' @aliases annualBenchmark twoStepsBenchmark-class
+#' Ops,twoStepsBenchmark,ts-method Ops,ts,twoStepsBenchmark-method
+#' Math2,twoStepsBenchmark-method show,twoStepsBenchmark-method
 #' @usage
 #' twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
 #'                   set.coeff=NULL,set.const=NULL,
 #'                   start.coeff.calc=NULL,end.coeff.calc=NULL,
 #'                   start.benchmark=NULL,end.benchmark=NULL,
 #'                   start.domain=NULL,end.domain=NULL,...)
+#'
+#'
+#' annualBenchmark(hfserie,lfserie,
+#'                 include.differenciation=FALSE,include.rho=FALSE,
+#'                 set.coeff=NULL,set.const=NULL,
+#'                 start.coeff.calc=start(lfserie)[1L],
+#'                 end.coeff.calc=end(lfserie)[1L],
+#'                 start.benchmark=start(lfserie)[1L],
+#'                 end.benchmark=end.coeff.calc[1L]+1L,
+#'                 start.domain=start(hfserie),
+#'                 end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)))
 #' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
@@ -219,7 +234,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'   \item{call}{the matched call (either of twoStepsBenchmark or annualBenchmark)}
 #' @examples
 #' 
-#' ## How to use twoStepsBenchmark
+#' ## How to use annualBenchmark or twoStepsBenchark
 #' 
 #' benchmark <- twoStepsBenchmark(hfserie = turnover,
 #'                                lfserie = construction,
@@ -279,22 +294,17 @@ twoStepsBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,incl
                          start.domain,end.domain,maincl,...)
 }
 
-#' Regress and bends a time-serie with a lower frequency one
-#' 
-#' @description
-#' `r lifecycle::badge("deprecated")`
-#' 
-#' This function was deprecated because it's a special case of the
-#' [twoStepsBenchmark] function that has not proved to be of much practical
-#' value.
-#' 
-#' @keywords internal
 #' @export
-annualBenchmark <- function(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,set.coeff=NULL,set.const=NULL,
-                            start.coeff.calc=start(lfserie)[1L],end.coeff.calc=end(lfserie)[1L],
-                            start.benchmark=start(lfserie)[1L],end.benchmark=end.coeff.calc+1,
-                            start.domain=start(hfserie),end.domain=c(end.benchmark+2,frequency(hfserie))) {
-  lifecycle::deprecate_warn("0.2", "annualBenchmark()", "twoStepsBenchmark()")
+annualBenchmark <- function(hfserie,lfserie,
+                            include.differenciation=FALSE,include.rho=FALSE,
+                            set.coeff=NULL,set.const=NULL,
+                            start.coeff.calc=start(lfserie)[1L],
+                            end.coeff.calc=end(lfserie)[1L],
+                            start.benchmark=start(lfserie)[1L],
+                            end.benchmark=end.coeff.calc[1L]+1L,
+                            start.domain=start(hfserie),
+                            end.domain=c(end.benchmark[1L]+2L,frequency(hfserie))) {
+
   if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)
   twoStepsBenchmark(hfserie,lfserie,
                     include.differenciation,include.rho,

@@ -2,6 +2,7 @@
 % Please edit documentation in R/twoStepsBenchmark.R
 \name{twoStepsBenchmark}
 \alias{twoStepsBenchmark}
+\alias{annualBenchmark}
 \alias{twoStepsBenchmark-class}
 \alias{Ops,twoStepsBenchmark,ts-method}
 \alias{Ops,ts,twoStepsBenchmark-method}
@@ -14,6 +15,17 @@ twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALS
                   start.coeff.calc=NULL,end.coeff.calc=NULL,
                   start.benchmark=NULL,end.benchmark=NULL,
                   start.domain=NULL,end.domain=NULL,...)
+
+
+annualBenchmark(hfserie,lfserie,
+                include.differenciation=FALSE,include.rho=FALSE,
+                set.coeff=NULL,set.const=NULL,
+                start.coeff.calc=start(lfserie)[1L],
+                end.coeff.calc=end(lfserie)[1L],
+                start.benchmark=start(lfserie)[1L],
+                end.benchmark=end.coeff.calc[1L]+1L,
+                start.domain=start(hfserie),
+                end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)))
 }
 \arguments{
 \item{hfserie}{the bended time-serie. It can be a matrix time-serie.}
@@ -99,9 +111,14 @@ of its differences.
 
 The resulting time-serie is equal to the low-frequency serie after aggregation.
 }
+\details{
+annualBenchmark is a wrapper of the main function, that applies more specifically
+to annual series, and changes the default window parameters to the ones
+that are commonly used by quarterly national accounts.
+}
 \examples{
 
-## How to use twoStepsBenchmark
+## How to use annualBenchmark or twoStepsBenchark
 
 benchmark <- twoStepsBenchmark(hfserie = turnover,
                                lfserie = construction,

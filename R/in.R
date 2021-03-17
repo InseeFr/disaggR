@@ -345,7 +345,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
   invisible(x)
 }
 
-#' Distance computation for benchmarks
+#' Distance computation for disaggregations
 #' 
 #' This function `distance` computes the Minkowski distance of exponent p,
 #' related to a tscomparison object, produced with `in_sample`, `in_disaggr` or
@@ -387,7 +387,7 @@ distance.tscomparison <- function(x, p = 2) {
                                                      tsp(x))
                 },
                 in_revisions = {
-                  if (identical(attr(x,"type"),"contributions")) stop("The function distance isn't permitted on revisions of contributions", call. = FALSE)
+                  if (identical(attr(x,"type"),"contributions")) stop("The distance method doesn't support revisions of contributions", call. = FALSE)
                   else x[,"Benchmark"]
                 })
   
