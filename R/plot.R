@@ -10,7 +10,7 @@ type_label <- function(object) {
 
 #' Default color palette
 #' 
-#' The default color palette for the graphics, imported from the package.
+#' The default color palette for the graphics, imported from the package
 #' \pkg{scales}. The chosen palette function depends on the input object.
 #' 
 #' @keywords internal
@@ -371,36 +371,40 @@ plot.threeRuleSmooth <- function(x, xlab = NULL, ylab = NULL,
                mar,"Smooth",...)
 }
 
-#' @title Plotting twoStepsBenchmarks
+#' @title Plotting disaggR objects
 #' 
 #' @description 
-#' Plot methods for objects of class `"tscomparison"` and \link{twoStepsBenchmark}. :
+#' Plot methods for objects of class `"tscomparison"`, \link{threeRuleSmooth}
+#' and \link{twoStepsBenchmark}. :
 #' 
 #' * \code{plot} draws a plot with base graphics
 #' * \code{autoplot} produces a ggplot object
 #' 
-#' The objects of class `tscomparison` can be produced with the functions
+#' Objects of class `tscomparison` can be produced with the functions
 #' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_disaggr}.
 #' 
-#' @param x (for the plot method) a tscomparison or twoStepsBenchmark.
-#' @param object (for the autoplot method) a tscomparison or twoStepsBenchmark.
+#' @param x (for the plot method) a tscomparison, a twoStepsBenchmark or a
+#' threeRuleSmooth.
+#' @param object (for the autoplot method) a tscomparison, a twoStepsBenchmark
+#' or a threeRuleSmooth.
 #' @param xlab the title for the x axis
 #' @param ylab the title for the y axis
 #' @param start a numeric of length 1 or 2. The start of the plot.
 #' @param end a numeric of length 1 or 2. The end of the plot.
 #' @param col the color scale applied on the plot. Could be a vector of colors,
 #' or a function from n to colors.
-#' @param lty the linetype scales applied on the plot. Could be a vector of linetypes,
-#' or a function from n to linetypes.
+#' @param lty the linetype scales applied on the plot. Could be a vector of
+#' linetypes, or a function from n to linetypes.
 #' @param show.legend `TRUE` or `FALSE`. Should an automatic legend be added to
 #' the plot.
 #' @param main a character of length 1, the title of the plot
-#' @param mar a numeric of length 4, the margins of the plot specified in the form
-#' `c(bottom, left, top, right)`.
+#' @param mar a numeric of length 4, the margins of the plot specified in the
+#' form `c(bottom, left, top, right)`.
 #' @param theme a ggplot theme object to replace the default one (only for
 #' autoplot methods)
 #' @param ... other arguments passed either to ggplot or plot
-#' @return `NULL` for the plot methods, the ggplot object for the autoplot methods
+#' @return `NULL` for the plot methods, the ggplot object for the autoplot
+#' methods
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(benchmark)

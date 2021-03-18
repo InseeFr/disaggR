@@ -408,9 +408,6 @@ reView_ui_tab3 <- function(id) {
     ),style=lrmargins)
 }
 
-#' @rdname reView
-#' @export
-#' @keywords internal
 reView_ui_module <- function(id) {
   ns <- NS(id)
   navbarPage(title = textOutput(ns("titlenavbar")),
@@ -893,9 +890,6 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                })
 }
 
-#' @rdname reView
-#' @export
-#' @keywords internal
 reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
   moduleServer(id,function(input, output, session) {
     
@@ -959,9 +953,9 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 #'  
 #' By default, these are set as defined in their `call` element.
 #'  
-#' The app is made of exported \pkg{shiny} modules in order to allow integration
-#' in a wider non-local application. In the module part, every input
-#' are defined as reactive variables.
+#' The app is made of \pkg{shiny} modules in order to make it easy to integrate
+#' it into a wider application. In the module part, every input are defined as
+#' reactive variables.
 #'
 #' @param object a twoStepsBenchmark with an univariate hfserie, a reViewOutput,
 #' or a character of length 1 with the path of their RDS file. If a reViewOutput
@@ -977,7 +971,7 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 #' The reViewOutput object can be displayed as a html report with the same
 #' informations than in shiny, with the \link{rePort} method.
 #'
-#' @seealso rePort
+#' @seealso \link{rePort}
 #'
 #' @examples
 #' \dontrun{

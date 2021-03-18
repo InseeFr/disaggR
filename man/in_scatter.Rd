@@ -7,8 +7,8 @@
 in_scatter(object)
 }
 \arguments{
-\item{object}{an object of class \code{praislm}, \code{twoStepsBenchmark}
-or \link{threeRuleSmooth}.}
+\item{object}{an object of class \code{"praislm"}, \code{"twoStepsBenchmark"}
+or \code{"threeRuleSmooth"}.}
 }
 \value{
 a named matrix time-serie of two columns, one for the low-frequency serie
@@ -29,5 +29,6 @@ benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 plot(in_scatter(benchmark))
 }
 \seealso{
-in_sample in_disaggr in_revisions plot.tscomparison
+\link{in_sample} \link{in_disaggr} \link{in_revisions}
+\link{plot.tscomparison}
 }

@@ -7,7 +7,7 @@
 \alias{autoplot.twoStepsBenchmark}
 \alias{autoplot.threeRuleSmooth}
 \alias{autoplot.tscomparison}
-\title{Plotting twoStepsBenchmarks}
+\title{Plotting disaggR objects}
 \usage{
 \method{plot}{twoStepsBenchmark}(
   x,
@@ -97,7 +97,8 @@
 )
 }
 \arguments{
-\item{x}{(for the plot method) a tscomparison or twoStepsBenchmark.}
+\item{x}{(for the plot method) a tscomparison, a twoStepsBenchmark or a
+threeRuleSmooth.}
 
 \item{xlab}{the title for the x axis}
 
@@ -123,7 +124,8 @@ the plot.}
 
 \item{...}{other arguments passed either to ggplot or plot}
 
-\item{object}{(for the autoplot method) a tscomparison or twoStepsBenchmark.}
+\item{object}{(for the autoplot method) a tscomparison, a twoStepsBenchmark
+or a threeRuleSmooth.}
 
 \item{theme}{a ggplot theme object to replace the default one (only for
 autoplot methods)}
@@ -132,13 +134,14 @@ autoplot methods)}
 \code{NULL} for the plot methods, the ggplot object for the autoplot methods
 }
 \description{
-Plot methods for objects of class \code{"tscomparison"} and \link{twoStepsBenchmark}. :
+Plot methods for objects of class \code{"tscomparison"}, \link{threeRuleSmooth}
+and \link{twoStepsBenchmark}. :
 \itemize{
 \item \code{plot} draws a plot with base graphics
 \item \code{autoplot} produces a ggplot object
 }
 
-The objects of class \code{tscomparison} can be produced with the functions
+Objects of class \code{tscomparison} can be produced with the functions
 \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_disaggr}.
 }
 \examples{

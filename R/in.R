@@ -1,7 +1,7 @@
 #' Producing the in sample predictions of a prais-lm regression
 #' 
-#' The function `in_sample` returns in-sample predictions from
-#' a \link{praislm} or a \link{twoStepsBenchmark} object.
+#' The function `in_sample` returns in-sample predictions from a \link{praislm}
+#' or a \link{twoStepsBenchmark} object.
 #' 
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
@@ -11,17 +11,18 @@
 #' * they are eventually reintegrated.
 #' * they contain the autocorrelated part of the residuals.
 #' 
-#' Besides, changes are relative to the latest benchmark value,
-#' not the latest predicted value.
+#' Besides, changes are relative to the latest benchmark value, not the latest
+#' predicted value.
 #' 
-#' @param object an object of class `praislm` or `twoStepsBenchmark`
-#' @param type "changes" or "levels". The results are either returned
+#' @param object an object of class `"praislm"` or `"twoStepsBenchmark"`.
+#' @param type `"changes"` or `"levels"`. The results are either returned
 #' in changes or in levels.
 #' @return
-#' a named matrix time-serie of two columns, one for the
-#' response and the other for the predicted value.
-#' A `tscomparison` class is added to the object.
-#' @seealso in_disaggr in_revisions in_scatter plot.tscomparison
+#' a named matrix time-serie of two columns, one for the response and the other
+#' for the predicted value.
+#' A `"tscomparison"` class is added to the object.
+#' @seealso \link{in_disaggr} \link{in_revisions} \link{in_scatter}
+#' \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_sample(benchmark))
@@ -34,7 +35,10 @@ in_sample.praislm <- function(object,type="changes") {
   m <- model.list(object)
   y <- m$y
   y_lagged <- stats::lag(y,k=-1)
-  predicted_diff <- if (m$include.differenciation) fitted(object) + autocor else fitted(object)+autocor-y_lagged
+  predicted_diff <- {
+    if (m$include.differenciation) fitted(object) + autocor
+    else fitted(object)+autocor-y_lagged
+  }
   
   series <- switch(type,
                    levels={
@@ -74,14 +78,15 @@ in_sample.threeRuleSmooth <- function(object,type="changes") {
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
 #' 
-#' @param object an object of class `twoStepsBenchmark` or `threeRuleSmooth`
-#' @param type "levels","levels-rebased", "changes" or "contributions". This
-#' defines the type of output.
+#' @param object an object of class `"twoStepsBenchmark"` or `"threeRuleSmooth"`.
+#' @param type `"levels"`,`"levels-rebased"`, `"changes"` or `"contributions"`.
+#' This defines the type of output.
 #' @return
-#' a named matrix time-serie of two columns, one for the
-#' response and the other for the predicted value.
+#' a named matrix time-serie of two columns, one for the response and the other
+#' for the input.
 #' A `tscomparison` class is added to the object.
-#' @seealso in_sample in_revisions in_scatter plot.tscomparison
+#' @seealso \link{in_sample} \link{in_revisions} \link{in_scatter}
+#' \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_disaggr(benchmark))
@@ -102,12 +107,14 @@ in_disaggr.twoStepsBenchmark <- function(object,type="changes") {
                    "levels-rebased" = ts(t(t(series)/series[1L,]) * 100,start=start(series),frequency=frequency(series)),
                    changes = (series/stats::lag(series,-1)-1)*100,
                    contributions = {
-                     trend <- 
-                       series_with_smoothed_part <- cbind(series[,-1L,drop=FALSE],
-                                                          smoothed.part(object),
-                                                          if (model.list(object)$include.differenciation && coef(object)["constant"] != 0) {
-                                                            coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
-                                                          } else 0)
+                     series_with_smoothed_part <-
+                       cbind(series[,-1L,drop=FALSE],
+                             smoothed.part(object),
+                             if (model.list(object)$include.differenciation &&
+                                 coef(object)["constant"] != 0) {
+                               coef(object)["constant"] * model.list(object)$hfserie[,"constant"]
+                             }
+                             else 0)
                      diff(ts(t(t(series_with_smoothed_part) * c(coef(object)[names(coef(object)) != "constant"],1,1)),
                              start = start(series_with_smoothed_part),
                              frequency = frequency(series)))/stats::lag(series[,1L],-1) * 100
@@ -143,7 +150,7 @@ in_disaggr.threeRuleSmooth <- function(object,type="changes") {
               class=c("tscomparison",class(series)),
               dimnames=list(NULL,
                             c("High-frequency serie","Smoothed part","Trend")
-                            ))
+              ))
   }
   else in_disaggr.twoStepsBenchmark(object,type)
 }
@@ -156,15 +163,16 @@ in_disaggr.threeRuleSmooth <- function(object,type="changes") {
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
 #' 
-#' @param object an object of class twoStepsBenchmark` or \link{threeRuleSmooth}
-#' @param object_old an object of class twoStepsBenchmark` or \link{threeRuleSmooth}
-#' @param type "levels","levels-rebased", "changes" or "contributions". This
-#' defines the type of output.
+#' @param object an object of class `"twoStepsBenchmark"` or `"threeRuleSmooth"`.
+#' @param object_old an object of class `"twoStepsBenchmark"` or `"threeRuleSmooth"`.
+#' @param type `"levels"`,`"levels-rebased"`, `"changes"` or `"contributions"`.
+#' This defines the type of output.
 #' @return
-#' a named matrix time-serie of two columns, one for the
-#' response and the other for the predicted value.
+#' a named matrix time-serie of two columns, one for the response and the other
+#' for the predicted value.
 #' A `tscomparison` class is added to the object.
-#' @seealso in_sample in_disaggr in_scatter plot.tscomparison
+#' @seealso \link{in_sample} \link{in_disaggr} \link{in_scatter}
+#' \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)
@@ -209,18 +217,18 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' 
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
-#' @param object an object of class `praislm`, `twoStepsBenchmark`
-#' or \link{threeRuleSmooth}.
+#' @param object an object of class `"praislm"`, `"twoStepsBenchmark"`
+#' or `"threeRuleSmooth"`.
 #' @return
 #' a named matrix time-serie of two columns, one for the low-frequency serie
 #' and the other for the high-frequency-serie (eventually differencied if
 #' `include.differenciation` is `TRUE`).
 #' A `tscomparison` class is added to the object.
-#' @seealso in_sample in_disaggr in_revisions plot.tscomparison
+#' @seealso \link{in_sample} \link{in_disaggr} \link{in_revisions}
+#' \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_scatter(benchmark))
-#' @export
 #' @export
 in_scatter <- function(object) UseMethod("in_scatter")
 

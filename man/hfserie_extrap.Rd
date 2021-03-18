@@ -15,8 +15,10 @@ hfserie_extrap(hfserie, lffreq)
 a time-serie, the extrapolated hfserie
 }
 \description{
-This function replaces the incomplete low frequency cycles, at the start and the end of the hfserie,
-with respectively the first and the last complete cycles.
-It may seem very raw, but it's only used for the weights in \code{bflSmooth}, in order to get a high
-frequency rate.
+This function replaces the incomplete low frequency cycles, at the start and
+the end of the hfserie, with respectively the first and the last complete
+cycles.
+It may seem very raw, but it's only used for the weights in \code{bflSmooth}, in
+order to get the high-frequency rate.
 }
+\keyword{internal}
