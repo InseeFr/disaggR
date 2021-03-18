@@ -2,7 +2,6 @@
 % Please edit documentation in R/threeRuleSmooth.R
 \name{threeRuleSmooth}
 \alias{threeRuleSmooth}
-\alias{threeRuleSmooth-class}
 \title{Bends a time-serie with a lower frequency one by smoothing their rate}
 \usage{
 threeRuleSmooth(
@@ -21,30 +20,40 @@ threeRuleSmooth(
 \arguments{
 \item{hfserie}{the bended time-serie. It can be a matrix time-serie.}
 
-\item{lfserie}{a time-serie whose frequency divides the frequency of \code{hfserie}.}
+\item{lfserie}{a time-serie whose frequency divides the frequency of
+\code{hfserie}.}
 
 \item{start.benchmark}{an optional start for \code{lfserie} to bend \code{hfserie}.
-Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the start is defined by lfserie's window.}
+Should be a numeric of length 1 or 2, like a window for \code{lfserie}. If NULL,
+the start is defined by lfserie's window.}
 
 \item{end.benchmark}{an optional end for \code{lfserie} to bend \code{hfserie}.
-Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the start is defined by lfserie's window.}
+Should be a numeric of length 1 or 2, like a window for \code{lfserie}. If NULL,
+the start is defined by lfserie's window.}
 
-\item{start.domain}{an optional start of the output high-frequency serie. It also defines the smoothing window :
-The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
-domain window.
-Should be a double or a numeric of length 2, like a window for \code{hfserie}. If NULL, the start is defined by hfserie's window.}
+\item{start.domain}{an optional start of the output high-frequency serie. It
+also defines the smoothing window :
+The low-frequency residuals will be extrapolated until they contain the
+smallest low-frequency window that is around the high-frequency domain
+window.
+Should be a numeric of length 1 or 2, like a window for \code{hfserie}. If NULL,
+the start is defined by hfserie's window.}
 
-\item{end.domain}{an optional end of the output high-frequency serie. It also defines the smoothing window :
-The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
-domain window.}
+\item{end.domain}{an optional end of the output high-frequency serie. It also
+defines the smoothing window :
+The low-frequency residuals will be extrapolated until they contain the
+smallest low-frequency window that is around the high-frequency domain
+window.}
 
 \item{start.delta.rate}{an optional start for the mean of the rate difference
 required for the arithmetical extrapolation of the rate.
-Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the start is defined by lfserie's window.}
+Should be a numeric of length 1 or 2, like a window for \code{lfserie}. If NULL,
+the start is defined by lfserie's window.}
 
 \item{end.delta.rate}{an optional end for the mean of the rate difference
 required for the arithmetical extrapolation of the rate.
-Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the end is defined by lfserie's window.}
+Should be a numeric of length 1 or 2, like a window for \code{lfserie}. If NULL,
+the end is defined by lfserie's window.}
 
 \item{set.delta.rate}{an optional double, that allows the user to set the
 delta mean instead of using a mean.}
@@ -55,24 +64,31 @@ of the returned call. This feature allows to build wrappers.}
 \value{
 threeRuleSmooth returns an object of class "\code{threeRuleSmooth}".
 
-The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
-serie and the bending serie.
-The functions \link{in_disaggr}, \link{in_revisions},
-\link{in_scatter} produces various comparisons on which plot and autoplot can also
-be used.
+The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce
+graphics of the benchmarked serie and the bending serie.
+The functions \link{in_disaggr}, \link{in_revisions}, \link{in_scatter}
+produce various comparisons on which plot and autoplot can also be used.
 
 The generic accessor functions \code{as.ts}, \code{model.list}, \code{smoothed.rate} extract
 various useful features of the returned value.
 
-An object of class "\code{threeRuleSmooth}" is a list containing the following components :
-\item{benchmarked.serie}{a time-serie, that is the result of the benchmark.}
-\item{lfrate}{a time-serie, that is the low-frequency rate of the threeRuleSmooth.}
+An object of class "\code{threeRuleSmooth}" is a list containing the following
+components :
+
+\item{benchmarked.serie}{a time-serie, that is the result of the
+benchmark.}
+\item{lfrate}{a time-serie, that is the low-frequency rate of the
+threeRuleSmooth.}
 \item{smoothed.rate}{the smoothed rate of the threeRuleSmooth.}
-\item{hfserie.as.weights}{the modified and extrapolated hfserie (see details)}
+\item{hfserie.as.weights}{the modified and extrapolated hfserie (see
+details)}
 \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
-the rate time-serie. It is estimated as the mean value in the specified window.}
-\item{model.list}{a list containing all the arguments submitted to the function.}
-\item{call}{the matched call (either of twoStepsBenchmark or annualBenchmark)}
+the rate time-serie. It is estimated as the mean value in the specified
+window.}
+\item{model.list}{a list containing all the arguments submitted to the
+function.}
+\item{call}{the matched call (either of twoStepsBenchmark or
+annualBenchmark)}
 }
 \description{
 threeRuleSmooth bends a time-serie with a time-serie of a lower

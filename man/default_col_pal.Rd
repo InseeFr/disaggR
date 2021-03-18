@@ -7,7 +7,7 @@
 default_col_pal(object)
 }
 \description{
-The default color palette for the graphics, imported from the package.
+The default color palette for the graphics, imported from the package
 \pkg{scales}. The chosen palette function depends on the input object.
 }
 \keyword{internal}

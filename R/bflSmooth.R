@@ -69,21 +69,25 @@ bflSmooth_matrices <- bflSmooth_matrices_generator()
 
 #' Smooth a time serie
 #' 
-#' bflSmooth smoothes a time-serie into a time serie of a higher frequency that exactly
-#' aggregate into the higher one. The process followed is Boot, Feibes and Lisman, which
-#' minimizes the squares of the variations.
+#' bflSmooth smoothes a time-serie into a time serie of a higher frequency that
+#' exactly aggregates into the higher one. The process followed is Boot, Feibes
+#' and Lisman, which minimizes the squares of the variations.
 #' 
 #' If `weights` isn't `NULL` the results depends of `lfserie.is.rate` :
 #' 
-#' * if `FALSE` the rate output/weights is smoothed with the constraint that the aggregated output
-#' is equal to the input lfserie.
+#' * if `FALSE` the rate output/weights is smoothed with the constraint that the
+#' aggregated output is equal to the input lfserie.
 #' * if `TRUE` the input lfserie is the rate to be smoothed, with the constraint
-#' that the product aggregate(output*weights)/aggregate(weights) is equal to lfserie
+#' that the product aggregate(output*weights)/aggregate(weights) is equal to
+#' lfserie.
 #' 
 #' @param lfserie a time-serie to be smoothed
-#' @param nfrequency the new high frequency. It must be a multiple of the low frequency.
-#' @param weights NULL or a time-serie of the same size than the expected high-frequency serie.
-#' @param lfserie.is.rate TRUE or FALSE. only means a thing if weights isn't NULL.
+#' @param nfrequency the new high frequency. It must be a multiple of the low
+#' frequency.
+#' @param weights NULL or a time-serie of the same size than the expected
+#' high-frequency serie.
+#' @param lfserie.is.rate TRUE or FALSE. only means a thing if weights isn't
+#' NULL.
 #' 
 #' @return A time serie of frequency nfrequency
 #' 

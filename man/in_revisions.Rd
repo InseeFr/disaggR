@@ -7,16 +7,16 @@
 in_revisions(object, object_old, type = "changes")
 }
 \arguments{
-\item{object}{an object of class twoStepsBenchmark` or \link{threeRuleSmooth}}
+\item{object}{an object of class \code{"twoStepsBenchmark"} or \code{"threeRuleSmooth"}.}
 
-\item{object_old}{an object of class twoStepsBenchmark` or \link{threeRuleSmooth}}
+\item{object_old}{an object of class \code{"twoStepsBenchmark"} or \code{"threeRuleSmooth"}.}
 
-\item{type}{"levels","levels-rebased", "changes" or "contributions". This
-defines the type of output.}
+\item{type}{\code{"levels"},\code{"levels-rebased"}, \code{"changes"} or \code{"contributions"}.
+This defines the type of output.}
 }
 \value{
-a named matrix time-serie of two columns, one for the
-response and the other for the predicted value.
+a named matrix time-serie of two columns, one for the response and the other
+for the predicted value.
 A \code{tscomparison} class is added to the object.
 }
 \description{
@@ -33,5 +33,6 @@ benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = 
 plot(in_revisions(benchmark,benchmark2))
 }
 \seealso{
-in_sample in_disaggr in_scatter plot.tscomparison
+\link{in_sample} \link{in_disaggr} \link{in_scatter}
+\link{plot.tscomparison}
 }

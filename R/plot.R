@@ -10,7 +10,7 @@ type_label <- function(object) {
 
 #' Default color palette
 #' 
-#' The default color palette for the graphics, imported from the package.
+#' The default color palette for the graphics, imported from the package
 #' \pkg{scales}. The chosen palette function depends on the input object.
 #' 
 #' @keywords internal
@@ -371,36 +371,40 @@ plot.threeRuleSmooth <- function(x, xlab = NULL, ylab = NULL,
                mar,"Smooth",...)
 }
 
-#' @title Plotting twoStepsBenchmarks
+#' @title Plotting disaggR objects
 #' 
 #' @description 
-#' Plot methods for objects of class `"tscomparison"` and \link{twoStepsBenchmark}. :
+#' Plot methods for objects of class `"tscomparison"`, \link{threeRuleSmooth}
+#' and \link{twoStepsBenchmark}. :
 #' 
 #' * \code{plot} draws a plot with base graphics
 #' * \code{autoplot} produces a ggplot object
 #' 
-#' The objects of class `tscomparison` can be produced with the functions
+#' Objects of class `tscomparison` can be produced with the functions
 #' \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_disaggr}.
 #' 
-#' @param x (for the plot method) a tscomparison or twoStepsBenchmark.
-#' @param object (for the autoplot method) a tscomparison or twoStepsBenchmark.
+#' @param x (for the plot method) a tscomparison, a twoStepsBenchmark or a
+#' threeRuleSmooth.
+#' @param object (for the autoplot method) a tscomparison, a twoStepsBenchmark
+#' or a threeRuleSmooth.
 #' @param xlab the title for the x axis
 #' @param ylab the title for the y axis
 #' @param start a numeric of length 1 or 2. The start of the plot.
 #' @param end a numeric of length 1 or 2. The end of the plot.
 #' @param col the color scale applied on the plot. Could be a vector of colors,
 #' or a function from n to colors.
-#' @param lty the linetype scales applied on the plot. Could be a vector of linetypes,
-#' or a function from n to linetypes.
+#' @param lty the linetype scales applied on the plot. Could be a vector of
+#' linetypes, or a function from n to linetypes.
 #' @param show.legend `TRUE` or `FALSE`. Should an automatic legend be added to
 #' the plot.
 #' @param main a character of length 1, the title of the plot
-#' @param mar a numeric of length 4, the margins of the plot specified in the form
-#' `c(bottom, left, top, right)`.
+#' @param mar a numeric of length 4, the margins of the plot specified in the
+#' form `c(bottom, left, top, right)`.
 #' @param theme a ggplot theme object to replace the default one (only for
 #' autoplot methods)
 #' @param ... other arguments passed either to ggplot or plot
-#' @return `NULL` for the plot methods, the ggplot object for the autoplot methods
+#' @return `NULL` for the plot methods, the ggplot object for the autoplot
+#' methods
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(benchmark)
@@ -488,31 +492,30 @@ dftsforggplot <- function(object,series_names) {
     Date = as.numeric(time(object)+deltat(object)/2),
     Values = as.numeric(object),
     Variables = factor(do.call(c,lapply(series_names,rep.int,times=NROW(object))),
-                       levels=series_names)
+                       levels=series_names,
+                       ordered = TRUE)
   )
 }
 
-ggplotts <- function(object,show.legend, series_names,theme,type,
-                     start, end, xlab,ylab,...) {
+ggplotts <- function(object,...) UseMethod("ggplotts")
+
+ggplotts.data.frame <- function(object,show.legend, theme,type,
+                                xlab,ylab, group,lims,
+                                ...) {
   
-  object <- window_default(object,start = start, end = end)
+  object <- object[!is.na(object$Values),]
   
-  df <- dftsforggplot(object,series_names)
+  group <- enquo(group)
   
-  df <- df[!is.na(df$Values),]
-  
-  lims <- gglims(object)
-  
-  # That x window is set to be able to translate x values
-  # of deltat(x)/2 on the right like for base plot init
-  g <- ggplot(df,aes(x=Date,y=Values),show.legend = show.legend,...) +
+  g <- ggplot(object,aes(x=Date,y=Values),show.legend = show.legend,...) +
     xlab(xlab) + ylab(ylab)
   switch(type,
-         line = g + geom_line(aes(colour=Variables,linetype=Variables,group=Variables)),
-         bar = g + geom_bar(aes(fill=Variables,group=Variables),stat="identity") +
+         line = g + geom_line(aes(colour=Variables,linetype=Variables,group=!!group),
+                              na.rm = TRUE),
+         bar = g + geom_bar(aes(fill=Variables,group=!!group),stat="identity") +
            stat_summary(fun = sum, geom="line", colour = "black",
                         size = 0.5, alpha=1,na.rm = TRUE),
-         segment = g + geom_segment(aes(xend=Date,colour=Variables,group=Variables),
+         segment = g + geom_segment(aes(xend=Date,colour=Variables,group=!!group),
                                     yend=0)
   ) +
     scale_x_continuous(
@@ -522,6 +525,22 @@ ggplotts <- function(object,show.legend, series_names,theme,type,
       expand=c(0,0)
     ) + 
     theme
+}
+
+ggplotts.ts <- function(object,show.legend, series_names,theme,type,
+                        start, end, xlab,ylab, ...) {
+  
+  object <- window_default(object,start = start, end = end)
+  
+  df <- dftsforggplot(object,series_names)
+  
+  lims <- gglims(object)
+  # That x window is set to be able to translate x values
+  # of deltat(x)/2 on the right like for base plot init
+  
+  ggplotts(df,show.legend, theme,type,
+           xlab,ylab, group = Variables,lims,
+           ...)
 }
 
 geom_path_scatter <- function(object,i,lty) {
@@ -602,6 +621,36 @@ function_if_it_isnt_one <- function(f) {
 #' @export
 ggplot2::autoplot
 
+autoplot_with_lf <- function(object, xlab, ylab,
+                             start, end, col, lty,
+                             show.legend, main,
+                             mar, theme,
+                             serie_name,
+                             ...) {
+  model <- model.list(object)
+  
+  col <- function_if_it_isnt_one(col)
+  lty <- function_if_it_isnt_one(lty)
+  
+  hfbench <- window_default(as.ts(object),start = start, end = end)
+  
+  hfdf <- dftsforggplot(hfbench,
+                        series_names = serie_name)
+  hfdf[,"group"] <- 1L
+  lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
+                        series_names = "Low-frequency serie")
+  lfdf[,"group"] <- rep((1L:length(model$lfserie))+1L,
+                        each=frequency(model$hfserie)/frequency(model$lfserie))
+  
+  ggplotts(object = rbind(hfdf,lfdf),show.legend = show.legend,
+           theme = theme, type = "line",
+           xlab = xlab, ylab = ylab, group = group,
+           lims = gglims(hfbench),...) +
+    discrete_scale("colour","hue",col,na.translate = FALSE) +
+    discrete_scale("linetype","hue",lty,na.translate = FALSE) +
+    ggtitle(main)
+}
+
 #' @export
 #' @rdname plot.tscomparison
 autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
@@ -615,31 +664,32 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                                                     xlab, ylab,
                                                                     mar),
                                        ...) {
-  model <- model.list(object)
-  
-  col <- function_if_it_isnt_one(col)
-  lty <- function_if_it_isnt_one(lty)
-  
-  lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
-                        series_names = "Low-frequency serie")
-  lfdf[,"Low-frequency periods"] <- rep(time(model$lfserie) + deltat(model$hfserie),
-                                        each=frequency(model$hfserie)/frequency(model$lfserie))
-  
-  ggplotts(object = as.ts(object),show.legend = show.legend,
-           series_names = "Benchmark", theme = theme, type = "line",
-           start = start, end = end,
-           xlab = xlab, ylab = ylab, ...) +
-    geom_line(aes(x=Date,y=Values,colour=Variables,linetype=Variables,
-                  group=`Low-frequency periods`),lfdf,
-              na.rm = TRUE) +
-    discrete_scale("colour","hue",col,na.translate = FALSE) +
-    discrete_scale("linetype","hue",lty,na.translate = FALSE) +
-    ggtitle(main)
+  autoplot_with_lf(object, xlab, ylab,
+                   start, end, col,
+                   lty,show.legend,
+                   main,mar,theme, "Benchmark",
+                   ...)
 }
 
 #' @export
 #' @rdname plot.tscomparison
-autoplot.threeRuleSmooth <- autoplot.twoStepsBenchmark
+autoplot.threeRuleSmooth <- function(object, xlab = NULL, ylab = NULL,
+                                     start=NULL,end=NULL,
+                                     col = default_col_pal(object),
+                                     lty = default_lty_pal(object),
+                                     show.legend = TRUE,
+                                     main = NULL,
+                                     mar = NULL,
+                                     theme = default_theme_ggplot(show.legend,
+                                                                  xlab, ylab,
+                                                                  mar),
+                                     ...) {
+  autoplot_with_lf(object, xlab, ylab,
+                   start, end, col,
+                   lty,show.legend,
+                   main,mar,theme, "Smooth",
+                   ...)
+}
 
 #' @export
 #' @rdname plot.tscomparison

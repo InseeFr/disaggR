@@ -7,7 +7,7 @@
 \alias{autoplot.twoStepsBenchmark}
 \alias{autoplot.threeRuleSmooth}
 \alias{autoplot.tscomparison}
-\title{Plotting twoStepsBenchmarks}
+\title{Plotting disaggR objects}
 \usage{
 \method{plot}{twoStepsBenchmark}(
   x,
@@ -97,7 +97,8 @@
 )
 }
 \arguments{
-\item{x}{(for the plot method) a tscomparison or twoStepsBenchmark.}
+\item{x}{(for the plot method) a tscomparison, a twoStepsBenchmark or a
+threeRuleSmooth.}
 
 \item{xlab}{the title for the x axis}
 
@@ -110,35 +111,38 @@
 \item{col}{the color scale applied on the plot. Could be a vector of colors,
 or a function from n to colors.}
 
-\item{lty}{the linetype scales applied on the plot. Could be a vector of linetypes,
-or a function from n to linetypes.}
+\item{lty}{the linetype scales applied on the plot. Could be a vector of
+linetypes, or a function from n to linetypes.}
 
 \item{show.legend}{\code{TRUE} or \code{FALSE}. Should an automatic legend be added to
 the plot.}
 
 \item{main}{a character of length 1, the title of the plot}
 
-\item{mar}{a numeric of length 4, the margins of the plot specified in the form
-\code{c(bottom, left, top, right)}.}
+\item{mar}{a numeric of length 4, the margins of the plot specified in the
+form \code{c(bottom, left, top, right)}.}
 
 \item{...}{other arguments passed either to ggplot or plot}
 
-\item{object}{(for the autoplot method) a tscomparison or twoStepsBenchmark.}
+\item{object}{(for the autoplot method) a tscomparison, a twoStepsBenchmark
+or a threeRuleSmooth.}
 
 \item{theme}{a ggplot theme object to replace the default one (only for
 autoplot methods)}
 }
 \value{
-\code{NULL} for the plot methods, the ggplot object for the autoplot methods
+\code{NULL} for the plot methods, the ggplot object for the autoplot
+methods
 }
 \description{
-Plot methods for objects of class \code{"tscomparison"} and \link{twoStepsBenchmark}. :
+Plot methods for objects of class \code{"tscomparison"}, \link{threeRuleSmooth}
+and \link{twoStepsBenchmark}. :
 \itemize{
 \item \code{plot} draws a plot with base graphics
 \item \code{autoplot} produces a ggplot object
 }
 
-The objects of class \code{tscomparison} can be produced with the functions
+Objects of class \code{tscomparison} can be produced with the functions
 \link{in_sample}, \link{in_scatter}, \link{in_revisions}, \link{in_disaggr}.
 }
 \examples{

@@ -7,14 +7,14 @@
 in_disaggr(object, type = "changes")
 }
 \arguments{
-\item{object}{an object of class \code{twoStepsBenchmark} or \code{threeRuleSmooth}}
+\item{object}{an object of class \code{"twoStepsBenchmark"} or \code{"threeRuleSmooth"}.}
 
-\item{type}{"levels","levels-rebased", "changes" or "contributions". This
-defines the type of output.}
+\item{type}{\code{"levels"},\code{"levels-rebased"}, \code{"changes"} or \code{"contributions"}.
+This defines the type of output.}
 }
 \value{
-a named matrix time-serie of two columns, one for the
-response and the other for the predicted value.
+a named matrix time-serie of two columns, one for the response and the other
+for the input.
 A \code{tscomparison} class is added to the object.
 }
 \description{
@@ -31,5 +31,6 @@ benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 plot(in_disaggr(benchmark))
 }
 \seealso{
-in_sample in_revisions in_scatter plot.tscomparison
+\link{in_sample} \link{in_revisions} \link{in_scatter}
+\link{plot.tscomparison}
 }

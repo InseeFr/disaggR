@@ -7,19 +7,19 @@
 in_sample(object, type = "changes")
 }
 \arguments{
-\item{object}{an object of class \code{praislm} or \code{twoStepsBenchmark}}
+\item{object}{an object of class \code{"praislm"} or \code{"twoStepsBenchmark"}.}
 
-\item{type}{"changes" or "levels". The results are either returned
+\item{type}{\code{"changes"} or \code{"levels"}. The results are either returned
 in changes or in levels.}
 }
 \value{
-a named matrix time-serie of two columns, one for the
-response and the other for the predicted value.
-A \code{tscomparison} class is added to the object.
+a named matrix time-serie of two columns, one for the response and the other
+for the predicted value.
+A \code{"tscomparison"} class is added to the object.
 }
 \description{
-The function \code{in_sample} returns in-sample predictions from
-a \link{praislm} or a \link{twoStepsBenchmark} object.
+The function \code{in_sample} returns in-sample predictions from a \link{praislm}
+or a \link{twoStepsBenchmark} object.
 }
 \details{
 The functions \code{plot} and \code{autoplot} can be used on this object to produce
@@ -31,13 +31,14 @@ The predicted values are different from the fitted values :
 \item they contain the autocorrelated part of the residuals.
 }
 
-Besides, changes are relative to the latest benchmark value,
-not the latest predicted value.
+Besides, changes are relative to the latest benchmark value, not the latest
+predicted value.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 plot(in_sample(benchmark))
 }
 \seealso{
-in_disaggr in_revisions in_scatter plot.tscomparison
+\link{in_disaggr} \link{in_revisions} \link{in_scatter}
+\link{plot.tscomparison}
 }

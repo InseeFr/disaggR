@@ -5,8 +5,6 @@ test_that("print praislm", {
                                  include.rho = TRUE,
                                  set.const = pi^2)
   expect_snapshot_output(print(prais(benchmark)),cran = TRUE)
-  expect_identical(print(prais(benchmark)),
-                   prais(benchmark))
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE,
@@ -31,8 +29,6 @@ test_that("print praislm", {
 test_that("print threeRuleSmooth",{
   expect_snapshot_output(print(threeRuleSmooth(turnover,construction)),
                          cran = TRUE)
-  expect_identical(print(threeRuleSmooth(turnover,construction)),
-                   threeRuleSmooth(turnover,construction))
 })
 
 test_that("methods tests", {
