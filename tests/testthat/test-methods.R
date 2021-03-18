@@ -162,6 +162,11 @@ test_that("diverse ts methods",{
   expect_identical(diff(smooth),
                    diff(as.ts(smooth)))
   
+  expect_identical(time(benchmark),
+                   time(as.ts(benchmark)))
+  expect_identical(time(smooth),
+                   time(as.ts(smooth)))
+  
   expect_identical(diffinv(benchmark,xi = 0),
                    diffinv(as.ts(benchmark),xi = 0))
   expect_identical(diffinv(smooth,xi = 0),

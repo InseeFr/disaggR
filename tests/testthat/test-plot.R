@@ -14,7 +14,7 @@ expect_doppelganger <- function(title, fig) {
                               path = if (R.version$major>=4 && R.version$minor>=1.0) "/plots-R-4-1/" else "/plots-R-4-0/")
 }
 
-test_that("plot works", {
+test_that("plot works with twoStepsBenchmark", {
   testthat::skip_if_not_installed("vdiffr")
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
@@ -52,7 +52,7 @@ test_that("plot works", {
   expect_doppelganger("plot-inrevisions-levels-rebased-nowin",
                       function() plot(in_revisions(benchmark,
                                                    benchmark2,
-                                                   type="levels")))
+                                                   type="levels-rebased")))
   expect_doppelganger("plot-inrevisions-changes-nowin",
                       function() plot(in_revisions(benchmark,
                                                    benchmark2,
@@ -102,7 +102,7 @@ test_that("plot works", {
   expect_doppelganger("plot-inrevisions-levels-rebased-2008-4-2012-7",
                       function() plot(in_revisions(benchmark,
                                                    benchmark2,
-                                                   type="levels"),
+                                                   type="levels-rebased"),
                                       start=c(2008,4),
                                       end=c(2012,7)))
   expect_doppelganger("plot-inrevisions-changes-2008-4-2012-7",
@@ -200,7 +200,7 @@ test_that("ggplot works", {
   expect_doppelganger("gg-inrevisions-levels-rebased-nowin",
                       autoplot(in_revisions(benchmark,
                                             benchmark2,
-                                            type="levels")))
+                                            type="levels-rebased")))
   expect_doppelganger("gg-inrevisions-changes-nowin",
                       autoplot(in_revisions(benchmark,
                                             benchmark2,
@@ -385,6 +385,212 @@ test_that("xlab and ylab works", {
                       autoplot(benchmark,xlab = "foo"))
   expect_doppelganger("gg-benchmark-lab-bar",
                       autoplot(benchmark,ylab="bar"))
+})
+
+test_that("plot works with threeRuleSmooth", {
+  testthat::skip_if_not_installed("vdiffr")
+  smooth <- threeRuleSmooth(hfserie = turnover,
+                            lfserie = construction,
+                            end.domain = c(2021,12))
+  smooth2 <- threeRuleSmooth(hfserie = turnover,
+                             lfserie = construction,
+                             end.benchmark = 2017,
+                             end.domain = c(2021,12))
+  
+  expect_doppelganger("plot-nowin-smooth",
+                      function() plot(smooth))
+  
+  expect_doppelganger("plot-indicator-levels-nowin-smooth",
+                      function() plot(in_disaggr(smooth,type="levels")))
+  expect_doppelganger("plot-indicator-levels-rebased-nowin-smooth",
+                      function() plot(in_disaggr(smooth,type="levels-rebased")))
+  expect_doppelganger("plot-indicator-changes-nowin-smooth",
+                      function() plot(in_disaggr(smooth,type="changes")))
+  expect_doppelganger("plot-indicator-contributions-nowin-smooth",
+                      function() plot(in_disaggr(smooth,type="contributions")))
+  
+  expect_doppelganger("plot-inrevisions-levels-nowin-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2,
+                                                   type="levels")))
+  expect_doppelganger("plot-inrevisions-levels-rebased-nowin-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2,
+                                                   type="levels-rebased")))
+  expect_doppelganger("plot-inrevisions-changes-nowin-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2,
+                                                   type="changes")))
+  expect_doppelganger("plot-inrevisions-contributions-nowin-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2,
+                                                   type="contributions")))
+  
+  expect_doppelganger("plot-smooth-2008-4-2012-7-smooth",
+                      function() plot(smooth,
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  
+  expect_doppelganger("plot-indicator-levels-2008-4-2012-7-smooth",
+                      function() plot(in_disaggr(smooth,type="levels"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-indicator-levels-rebased-2008-4-2012-7-smooth",
+                      function() plot(in_disaggr(smooth,type="levels-rebased"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-indicator-changes-2008-4-2012-7-smooth",
+                      function() plot(in_disaggr(smooth,type="changes"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-indicator-contributions-2008-4-2012-7-smooth",
+                      function() plot(in_disaggr(smooth,type="contributions"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  
+  expect_doppelganger("plot-inrevisions-levels-2008-4-2012-7-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2,
+                                                   type="levels"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-inrevisions-levels-rebased-2008-4-2012-7-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2,
+                                                   type="levels"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-inrevisions-changes-2008-4-2012-7-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2,
+                                                   type="changes"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-inrevisions-contributions-2008-4-2012-7-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2,
+                                                   type="contributions"),
+                                      start=c(2008,4),
+                                      end=c(2012,7)))
+  expect_doppelganger("plot-scatter-2008-2012-smooth",
+                      function() plot(in_scatter(smooth),
+                                      start=2008,
+                                      end=2012))
+  
+  expect_doppelganger("plot-main-inrev-smooth",
+                      function() plot(in_revisions(smooth,
+                                                   smooth2),
+                                      main="title in rev"))
+  expect_doppelganger("plot-main-ctb-smooth",
+                      function() plot(in_disaggr(smooth,
+                                                 type = "contributions"),
+                                      main="title ctb"))
+  expect_doppelganger("plot-main-scatter-smooth",
+                      function() plot(in_scatter(smooth),
+                                      main="title scatter"))
+})
+
+test_that("ggplot works with threeRuleSmooth", {
+  testthat::skip_if_not_installed("vdiffr")
+  smooth <- threeRuleSmooth(hfserie = turnover,
+                            lfserie = construction,
+                            end.domain = c(2021,12))
+  smooth2 <- threeRuleSmooth(hfserie = turnover,
+                             lfserie = construction,
+                             end.benchmark = 2017,
+                             end.domain = c(2021,12))
+  
+  expect_doppelganger("gg-nowin-smooth",
+                      autoplot(smooth))
+  
+  expect_doppelganger("gg-indicator-levels-nowin-smooth",
+                      autoplot(in_disaggr(smooth,type="levels")))
+  expect_doppelganger("gg-indicator-levels-rebased-nowin-smooth",
+                      autoplot(in_disaggr(smooth,type="levels-rebased")))
+  expect_doppelganger("gg-indicator-changes-nowin-smooth",
+                      autoplot(in_disaggr(smooth,type="changes")))
+  expect_doppelganger("gg-indicator-contributions-nowin-smooth",
+                      autoplot(in_disaggr(smooth,type="contributions")))
+  
+  expect_doppelganger("gg-inrevisions-levels-nowin-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2,
+                                            type="levels")))
+  expect_doppelganger("gg-inrevisions-levels-rebased-nowin-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2,
+                                            type="levels-rebased")))
+  expect_doppelganger("gg-inrevisions-changes-nowin-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2,
+                                            type="changes")))
+  expect_doppelganger("gg-inrevisions-contributions-nowin-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2,
+                                            type="contributions")))
+  
+  expect_doppelganger("gg-smooth-2008-4-2012-7-smooth",
+                      autoplot(smooth,
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  
+  expect_doppelganger("gg-indicator-levels-2008-4-2012-7-smooth",
+                      autoplot(in_disaggr(smooth,type="levels"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-indicator-levels-rebased-2008-4-2012-7-smooth",
+                      autoplot(in_disaggr(smooth,type="levels-rebased"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-indicator-changes-2008-4-2012-7-smooth",
+                      autoplot(in_disaggr(smooth,type="changes"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-indicator-contributions-2008-4-2012-7-smooth",
+                      autoplot(in_disaggr(smooth,type="contributions"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  
+  expect_doppelganger("gg-inrevisions-levels-2008-4-2012-7-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2,
+                                            type="levels"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-inrevisions-levels-rebased-2008-4-2012-7-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2,
+                                            type="levels"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-inrevisions-changes-2008-4-2012-7-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2,
+                                            type="changes"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-inrevisions-contributions-2008-4-2012-7-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2,
+                                            type="contributions"),
+                               start=c(2008,4),
+                               end=c(2012,7)))
+  expect_doppelganger("gg-scatter-2008-2012-smooth",
+                      autoplot(in_scatter(smooth),
+                               start=2008,
+                               end=2012))
+  
+  expect_doppelganger("gg-main-inrev-smooth",
+                      autoplot(in_revisions(smooth,
+                                            smooth2),
+                               main="title in rev"))
+  expect_doppelganger("gg-main-ctb-smooth",
+                      autoplot(in_disaggr(smooth,
+                                          type = "contributions"),
+                               main="title ctb"))
+  expect_doppelganger("gg-main-scatter-smooth",
+                      autoplot(in_scatter(smooth),
+                               main="title scatter"))
 })
 
 test_that("eval_function_if_it_is_one works", {

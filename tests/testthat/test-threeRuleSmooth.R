@@ -89,3 +89,21 @@ test_that("threeRuleSmooth works with set delta",{
     )
   )
 })
+
+test_that("errors",{
+  expect_error(threeRuleSmooth(1:10,construction),
+               regexp = "Not a ts object")
+  expect_error(threeRuleSmooth(matrix(1:9,3,3),construction),
+               regexp = "Not a ts object")
+  expect_error(threeRuleSmooth(turnover,1:10),
+               regexp = "Not a ts object")
+
+  expect_error(threeRuleSmooth(cbind(turnover,turnover),construction),
+               regexp = "one-dimensional")  
+  expect_error(threeRuleSmooth(turnover,cbind(construction,construction)),
+               regexp = "one-dimensional")
+  expect_error(threeRuleSmooth(turnover,ts(1:700,start=2000,frequency=7)),
+               regexp = "should divide")
+  expect_error(threeRuleSmooth(ts(1:10,frequency=0.5),ts(1:10,frequency=0.25)),
+               regexp = "integer")
+})
