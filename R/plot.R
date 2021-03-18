@@ -492,31 +492,30 @@ dftsforggplot <- function(object,series_names) {
     Date = as.numeric(time(object)+deltat(object)/2),
     Values = as.numeric(object),
     Variables = factor(do.call(c,lapply(series_names,rep.int,times=NROW(object))),
-                       levels=series_names)
+                       levels=series_names,
+                       ordered = TRUE)
   )
 }
 
-ggplotts <- function(object,show.legend, series_names,theme,type,
-                     start, end, xlab,ylab,...) {
+ggplotts <- function(object,...) UseMethod("ggplotts")
+
+ggplotts.data.frame <- function(object,show.legend, theme,type,
+                                xlab,ylab, group,lims,
+                                ...) {
   
-  object <- window_default(object,start = start, end = end)
+  object <- object[!is.na(object$Values),]
   
-  df <- dftsforggplot(object,series_names)
+  group <- enquo(group)
   
-  df <- df[!is.na(df$Values),]
-  
-  lims <- gglims(object)
-  
-  # That x window is set to be able to translate x values
-  # of deltat(x)/2 on the right like for base plot init
-  g <- ggplot(df,aes(x=Date,y=Values),show.legend = show.legend,...) +
+  g <- ggplot(object,aes(x=Date,y=Values),show.legend = show.legend,...) +
     xlab(xlab) + ylab(ylab)
   switch(type,
-         line = g + geom_line(aes(colour=Variables,linetype=Variables,group=Variables)),
-         bar = g + geom_bar(aes(fill=Variables,group=Variables),stat="identity") +
+         line = g + geom_line(aes(colour=Variables,linetype=Variables,group=!!group),
+                              na.rm = TRUE),
+         bar = g + geom_bar(aes(fill=Variables,group=!!group),stat="identity") +
            stat_summary(fun = sum, geom="line", colour = "black",
                         size = 0.5, alpha=1,na.rm = TRUE),
-         segment = g + geom_segment(aes(xend=Date,colour=Variables,group=Variables),
+         segment = g + geom_segment(aes(xend=Date,colour=Variables,group=!!group),
                                     yend=0)
   ) +
     scale_x_continuous(
@@ -526,6 +525,22 @@ ggplotts <- function(object,show.legend, series_names,theme,type,
       expand=c(0,0)
     ) + 
     theme
+}
+
+ggplotts.ts <- function(object,show.legend, series_names,theme,type,
+                        start, end, xlab,ylab, ...) {
+  
+  object <- window_default(object,start = start, end = end)
+  
+  df <- dftsforggplot(object,series_names)
+  
+  lims <- gglims(object)
+  # That x window is set to be able to translate x values
+  # of deltat(x)/2 on the right like for base plot init
+  
+  ggplotts(df,show.legend, theme,type,
+           xlab,ylab, group = Variables,lims,
+           ...)
 }
 
 geom_path_scatter <- function(object,i,lty) {
@@ -606,6 +621,36 @@ function_if_it_isnt_one <- function(f) {
 #' @export
 ggplot2::autoplot
 
+autoplot_with_lf <- function(object, xlab, ylab,
+                             start, end, col, lty,
+                             show.legend, main,
+                             mar, theme,
+                             serie_name,
+                             ...) {
+  model <- model.list(object)
+  
+  col <- function_if_it_isnt_one(col)
+  lty <- function_if_it_isnt_one(lty)
+  
+  hfbench <- window_default(as.ts(object),start = start, end = end)
+  
+  hfdf <- dftsforggplot(hfbench,
+                        series_names = serie_name)
+  hfdf[,"group"] <- 1L
+  lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
+                        series_names = "Low-frequency serie")
+  lfdf[,"group"] <- rep((1L:length(model$lfserie))+1L,
+                        each=frequency(model$hfserie)/frequency(model$lfserie))
+  
+  ggplotts(object = rbind(hfdf,lfdf),show.legend = show.legend,
+           theme = theme, type = "line",
+           xlab = xlab, ylab = ylab, group = group,
+           lims = gglims(hfbench),...) +
+    discrete_scale("colour","hue",col,na.translate = FALSE) +
+    discrete_scale("linetype","hue",lty,na.translate = FALSE) +
+    ggtitle(main)
+}
+
 #' @export
 #' @rdname plot.tscomparison
 autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
@@ -619,31 +664,32 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                                                     xlab, ylab,
                                                                     mar),
                                        ...) {
-  model <- model.list(object)
-  
-  col <- function_if_it_isnt_one(col)
-  lty <- function_if_it_isnt_one(lty)
-  
-  lfdf <- dftsforggplot(ts_expand(model$lfserie,nfrequency = frequency(model$hfserie)),
-                        series_names = "Low-frequency serie")
-  lfdf[,"Low-frequency periods"] <- rep(time(model$lfserie) + deltat(model$hfserie),
-                                        each=frequency(model$hfserie)/frequency(model$lfserie))
-  
-  ggplotts(object = as.ts(object),show.legend = show.legend,
-           series_names = "Benchmark", theme = theme, type = "line",
-           start = start, end = end,
-           xlab = xlab, ylab = ylab, ...) +
-    geom_line(aes(x=Date,y=Values,colour=Variables,linetype=Variables,
-                  group=`Low-frequency periods`),lfdf,
-              na.rm = TRUE) +
-    discrete_scale("colour","hue",col,na.translate = FALSE) +
-    discrete_scale("linetype","hue",lty,na.translate = FALSE) +
-    ggtitle(main)
+  autoplot_with_lf(object, xlab, ylab,
+                   start, end, col,
+                   lty,show.legend,
+                   main,mar,theme, "Benchmark",
+                   ...)
 }
 
 #' @export
 #' @rdname plot.tscomparison
-autoplot.threeRuleSmooth <- autoplot.twoStepsBenchmark
+autoplot.threeRuleSmooth <- function(object, xlab = NULL, ylab = NULL,
+                                     start=NULL,end=NULL,
+                                     col = default_col_pal(object),
+                                     lty = default_lty_pal(object),
+                                     show.legend = TRUE,
+                                     main = NULL,
+                                     mar = NULL,
+                                     theme = default_theme_ggplot(show.legend,
+                                                                  xlab, ylab,
+                                                                  mar),
+                                     ...) {
+  autoplot_with_lf(object, xlab, ylab,
+                   start, end, col,
+                   lty,show.legend,
+                   main,mar,theme, "Smooth",
+                   ...)
+}
 
 #' @export
 #' @rdname plot.tscomparison

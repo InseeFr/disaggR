@@ -111,16 +111,16 @@ threeRuleSmooth.}
 \item{col}{the color scale applied on the plot. Could be a vector of colors,
 or a function from n to colors.}
 
-\item{lty}{the linetype scales applied on the plot. Could be a vector of linetypes,
-or a function from n to linetypes.}
+\item{lty}{the linetype scales applied on the plot. Could be a vector of
+linetypes, or a function from n to linetypes.}
 
 \item{show.legend}{\code{TRUE} or \code{FALSE}. Should an automatic legend be added to
 the plot.}
 
 \item{main}{a character of length 1, the title of the plot}
 
-\item{mar}{a numeric of length 4, the margins of the plot specified in the form
-\code{c(bottom, left, top, right)}.}
+\item{mar}{a numeric of length 4, the margins of the plot specified in the
+form \code{c(bottom, left, top, right)}.}
 
 \item{...}{other arguments passed either to ggplot or plot}
 
@@ -131,7 +131,8 @@ or a threeRuleSmooth.}
 autoplot methods)}
 }
 \value{
-\code{NULL} for the plot methods, the ggplot object for the autoplot methods
+\code{NULL} for the plot methods, the ggplot object for the autoplot
+methods
 }
 \description{
 Plot methods for objects of class \code{"tscomparison"}, \link{threeRuleSmooth}
