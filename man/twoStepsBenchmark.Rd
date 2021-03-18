@@ -111,6 +111,11 @@ annualBenchmark is a wrapper of the main function, that applies more specificall
 to annual series, and changes the default window parameters to the ones
 that are commonly used by quarterly national accounts.
 }
+\details{
+annualBenchmark is a wrapper of the main function, that applies more specifically
+to annual series, and changes the default window parameters to the ones
+that are commonly used by quarterly national accounts.
+}
 \examples{
 
 ## How to use annualBenchmark or twoStepsBenchark
