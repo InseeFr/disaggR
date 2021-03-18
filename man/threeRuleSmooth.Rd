@@ -3,10 +3,6 @@
 \name{threeRuleSmooth}
 \alias{threeRuleSmooth}
 \alias{threeRuleSmooth-class}
-\alias{Ops,threeRuleSmooth,ts-method}
-\alias{Ops,ts,threeRuleSmooth-method}
-\alias{Math2,threeRuleSmooth-method}
-\alias{show,threeRuleSmooth-method}
 \title{Bends a time-serie with a lower frequency one by smoothing their rate}
 \usage{
 threeRuleSmooth(
@@ -16,8 +12,8 @@ threeRuleSmooth(
   end.benchmark = NULL,
   start.domain = NULL,
   end.domain = NULL,
-  start.mean.delta.rate = start.benchmark,
-  end.mean.delta.rate = end.benchmark,
+  start.delta.rate = start.benchmark,
+  end.delta.rate = end.benchmark,
   set.delta.rate = NULL,
   ...
 )
@@ -42,16 +38,16 @@ Should be a double or a numeric of length 2, like a window for \code{hfserie}. I
 The low-frequency residuals will be extrapolated until they contain the smallest low-frequency window that is around the high-frequency
 domain window.}
 
-\item{start.mean.delta.rate}{an optional start for the mean of the rate difference,
-required for the arithmetical extrapolation.
+\item{start.delta.rate}{an optional start for the mean of the rate difference
+required for the arithmetical extrapolation of the rate.
 Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the start is defined by lfserie's window.}
 
-\item{end.mean.delta.rate}{an optional end for the mean of the rate difference,
-required for the arithmetical extrapolation.
+\item{end.delta.rate}{an optional end for the mean of the rate difference
+required for the arithmetical extrapolation of the rate.
 Should be a double or a numeric of length 2, like a window for \code{lfserie}. If NULL, the end is defined by lfserie's window.}
 
 \item{set.delta.rate}{an optional double, that allows the user to set the
-delta mean instead of using the mean.}
+delta mean instead of using a mean.}
 
 \item{\dots}{if the dots contain a cl item, its value overwrites the value
 of the returned call. This feature allows to build wrappers.}
@@ -70,7 +66,9 @@ various useful features of the returned value.
 
 An object of class "\code{threeRuleSmooth}" is a list containing the following components :
 \item{benchmarked.serie}{a time-serie, that is the result of the benchmark.}
+\item{lfrate}{a time-serie, that is the low-frequency rate of the threeRuleSmooth.}
 \item{smoothed.rate}{the smoothed rate of the threeRuleSmooth.}
+\item{hfserie.as.weights}{the modified and extrapolated hfserie (see details)}
 \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
 the rate time-serie. It is estimated as the mean value in the specified window.}
 \item{model.list}{a list containing all the arguments submitted to the function.}
@@ -83,7 +81,17 @@ frequency. The procedure involved is a proportional Denton benchmark.
 Therefore, the resulting time-serie is the product of the high-frequency input
 with a smoothed rate. This latter is extrapolated using an arithmetic sequence.
 
-The resulting time-serie is equal to the low-frequency serie after aggregation.
+The resulting time-serie is equal to the low-frequency serie after aggregation
+within the benchmark window.
+}
+\details{
+In order to smooth the rate, threeRuleSmooth calls \link{bflSmooth}
+and uses a modified and extrapolated version of hfserie as weights :
+\itemize{
+\item only the full cycles are kept
+\item the first and last full cycles are replicated respectively backwards and
+forwards to fill the domain window.
+}
 }
 \examples{
 

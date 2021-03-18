@@ -387,8 +387,6 @@ test_that("xlab and ylab works", {
                       autoplot(benchmark,ylab="bar"))
 })
 
-context("plots functions")
-
 test_that("eval_function_if_it_is_one works", {
   expect_identical(eval_function_if_it_is_one(seq_len,2L),c(1L,2L))
   expect_identical(eval_function_if_it_is_one(3L,2L),3L)

@@ -55,7 +55,7 @@ test_that("print in_sample prints",{
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
-  expect_known_output(print(in_sample(benchmark)),"outputs/in_sample.txt",update=FALSE)
+  expect_snapshot_output(print(in_sample(benchmark)),cran = TRUE)
 })
 
 

@@ -4,10 +4,6 @@
 \alias{twoStepsBenchmark}
 \alias{annualBenchmark}
 \alias{twoStepsBenchmark-class}
-\alias{Ops,twoStepsBenchmark,ts-method}
-\alias{Ops,ts,twoStepsBenchmark-method}
-\alias{Math2,twoStepsBenchmark-method}
-\alias{show,twoStepsBenchmark-method}
 \title{Regress and bends a time-serie with a lower frequency one}
 \usage{
 twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
@@ -79,12 +75,10 @@ twoStepsBenchark returns an object of class "\code{twoStepsBenchmark}".
 The function \code{summary} can be used to obtain and print a summary of the regression used by the benchmark.
 The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce graphics of the benchmarked
 serie and the bending serie.
-The functions \link{in_sample}, \link{in_disaggr}, \link{in_revisions},
-\link{in_scatter} produces various comparisons on which plot and autoplot can also
+The functions \link{in_disaggr}, \link{in_revisions},
+\link{in_scatter} produces comparisons on which plot and autoplot can also
 be used.
 
-The function \link{in_revisions} takes two \link{twoStepsBenchmark} objects
-as inputs, and produces a comparison between those.
 The generic accessor functions \code{as.ts}, \code{prais}, \code{coefficients}, \code{residuals}, \code{fitted.values}, \code{model.list}, \code{se}, \code{rho}
 extract various useful features of the returned value.
 
@@ -109,7 +103,8 @@ Therefore, the resulting time-serie is the sum of a regression fit, eventually
 reintegrated, and of a smoothed part. The smoothed part minimizes the sum of squares
 of its differences.
 
-The resulting time-serie is equal to the low-frequency serie after aggregation.
+The resulting time-serie is equal to the low-frequency serie after aggregation
+within the benchmark window.
 }
 \details{
 annualBenchmark is a wrapper of the main function, that applies more specifically

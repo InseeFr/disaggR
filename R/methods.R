@@ -279,11 +279,6 @@ print.twoStepsBenchmark <- function(x,...) {
   invisible(x)
 }
 
-#' @include twoStepsBenchmark.R
-#' @export
-setMethod("show","twoStepsBenchmark",
-          function(object) print(object))
-
 #' @export
 summary.twoStepsBenchmark <- function(object, ...) {
   summary.praislm(prais(object),...)
@@ -313,29 +308,8 @@ smoothed.rate <- function(object) UseMethod("smoothed.rate")
 #' @export
 smoothed.rate.threeRuleSmooth <- function(object) object$smoothed.rate
 
-#' Extracting the extrapolation delta of a threeRuleSmooth
-#' 
-#' The function \link{threeRuleSmooth} involves a delta returns the high-frequency rate
-#' from a \link{threeRuleSmooth} object.
-#' @usage
-#' rate(object)
-#' @param object a threeRuleSmooth object.
-#' @examples
-#' benchmark <- threeRuleSmooth(turnover,construction); rate(benchmark)
-#'
-#' @keywords internal
-#' @export
-rate <- function(object) UseMethod("rate")
-#' @export
-rate.threeRuleSmooth <- function(object) object$rate
-
 #' @export
 print.threeRuleSmooth <- function(x, ...) print(as.ts(x))
-
-#' @include threeRuleSmooth.R
-#' @export
-setMethod("show","threeRuleSmooth",
-          function(object) print(object))
 
 #' @export
 model.list.threeRuleSmooth <- function(object) object$model.list
@@ -346,45 +320,22 @@ Math.twoStepsBenchmark <- function(x, ...) get(.Generic)(as.ts(x))
 #' @export
 Math.threeRuleSmooth <- Math.twoStepsBenchmark
 
+#' @include s4declaration.R
 #' @export
-cbind.twoStepsBenchmark  <- function(..., deparse.level = 1) {
-  args <- c(lapply(list(...),
-                   function(x) {
-                     if (inherits(x,"twoStepsBenchmark") || inherits(x,"threeRuleSmooth")) as.ts(x)
-                     else x
-                   }),
-            list(deparse.level=deparse.level)
-  )
-  
-  do.call(cbind,args)
-}
-
+setMethod("Ops",signature = c("disaggR","vector"),
+          function(e1,e2) callGeneric(as.ts(e1),e2))
 #' @export
-Ops.twoStepsBenchmark <- function(e1,e2) {
-  if (inherits(e1,"twoStepsBenchmark") || inherits(e1,"threeRuleSmooth")) {
-    e1 <- as.ts(e1)
-  }
-  if (inherits(e2,"twoStepsBenchmark") || inherits(e2,"threeRuleSmooth")) {
-    e2 <- as.ts(e2)
-  }
-  get(.Generic)(e1,e2)
-}
-
+setMethod("Ops",signature = c("vector","disaggR"),
+          function(e1,e2) callGeneric(e1,as.ts(e2)))
 #' @export
-Ops.threeRuleSmooth <- Ops.twoStepsBenchmark
-
-#' @include twoStepsBenchmark.R
+setMethod("Ops",signature = c("ts","disaggR"),
+          function(e1,e2) callGeneric(e1,as.ts(e2)))
 #' @export
-setMethod("Ops",signature = c("twoStepsBenchmark","ts"),function(e1,e2) callGeneric(as.ts(e1),e2))
-#' @include twoStepsBenchmark.R
+setMethod("Ops",signature = c("disaggR","ts"),
+          function(e1,e2) callGeneric(as.ts(e1),e2))
 #' @export
-setMethod("Ops",signature = c("ts","twoStepsBenchmark"),function(e1,e2) callGeneric(e1,as.ts(e2)))
-#' @include threeRuleSmooth.R
-#' @export
-setMethod("Ops",signature = c("threeRuleSmooth","ts"),function(e1,e2) callGeneric(as.ts(e1),e2))
-#' @include threeRuleSmooth.R
-#' @export
-setMethod("Ops",signature = c("ts","threeRuleSmooth"),function(e1,e2) callGeneric(e1,as.ts(e2)))
+setMethod("Ops",signature = c("disaggR","disaggR"),
+          function(e1,e2) callGeneric(as.ts(e1),as.ts(e2)))
 
 #' @include twoStepsBenchmark.R
 #' @export
@@ -393,16 +344,18 @@ setAs("twoStepsBenchmark","ts",function(from) as.ts(from))
 #' @export
 setAs("threeRuleSmooth","ts",function(from) as.ts(from))
 
-#' @include twoStepsBenchmark.R
+#' @include s4declaration.R
 #' @export
-setMethod("Math2","twoStepsBenchmark",
-          function(x,digits = 0) callGeneric(as.ts(x),digits))
-#' @include threeRuleSmooth.R
-#' @export
-setMethod("Math2","threeRuleSmooth",
+setMethod("Math2","disaggR",
           function(x,digits = 0) callGeneric(as.ts(x),digits))
 
+#' @include s4declaration.R
+#' @export
+setMethod("show","disaggR",
+          function(object) print(object))
+
 #' @importFrom stats aggregate
+#' @export
 aggregate.twoStepsBenchmark <- function(x, ...) aggregate(as.ts(x), ...)
 #' @importFrom stats cycle
 #' @export
@@ -427,8 +380,6 @@ window.twoStepsBenchmark <- function(x, ...) window(as.ts(x), ...)
 
 #' @export
 aggregate.threeRuleSmooth <- aggregate.twoStepsBenchmark
-#' @export
-cbind.threeRuleSmooth <- cbind.twoStepsBenchmark
 #' @export
 cycle.threeRuleSmooth <- cycle.twoStepsBenchmark
 #' @export

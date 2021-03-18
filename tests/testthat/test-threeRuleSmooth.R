@@ -48,3 +48,44 @@ test_that("mean delta", {
   expect_equal(mean_delta(lfserie,2009,NULL),6/7)
   expect_equal(mean_delta(lfserie,2010,NULL),1)
 })
+
+test_that("threeRuleSmooth works",{
+  expect_snapshot(as.ts(threeRuleSmooth(turnover,construction)))
+  expect_snapshot(as.ts(threeRuleSmooth(turnover,construction,
+                                        start.benchmark = 2004,
+                                        end.benchmark = 2017,
+                                        start.domain = c(2004,1),
+                                        end.domain = c(2030,12))))
+})
+
+test_that("threeRuleSmooth works with set delta",{
+  smooth <- threeRuleSmooth(turnover,construction,
+                            start.benchmark = 2004,
+                            end.benchmark = 2017,
+                            start.domain = c(1990,1),
+                            end.domain = c(2030,12),set.delta.rate = 2)
+  
+  expect_true(
+    all(
+      abs(window(diff(smooth$lfrate),start=1991,end=2004,extend=TRUE)-2) < 10^-5
+    )
+  )
+  
+  expect_true(
+    all(
+      abs(
+        aggregate(smooth$hfserie.as.weights * smooth$smoothed.rate) /
+          aggregate(smooth$hfserie.as.weights)-
+          smooth$lfrate) < 10^-5
+    )
+  )
+  expect_true(
+    all(
+      abs(
+        window(aggregate(as.ts(smooth))-construction,
+                     start=2004,
+                     end=2017)
+      ) < 10^-5
+    )
+  )
+})
