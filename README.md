@@ -53,9 +53,9 @@ plot(in_sample(benchmark))
 <img src="man/figures/README-unnamed-chunk-4-1.png" width="50%" /><img src="man/figures/README-unnamed-chunk-4-2.png" width="50%" />
 
 ``` r
-plot(in_dicator(benchmark,type="changes"),
+plot(in_disaggr(benchmark,type="changes"),
      start=c(2015,1),end=c(2020,12))
-plot(in_dicator(benchmark,type="contributions"),
+plot(in_disaggr(benchmark,type="contributions"),
      start=c(2015,1),end=c(2020,12))
 ```
 
