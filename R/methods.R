@@ -309,7 +309,16 @@ smoothed.rate <- function(object) UseMethod("smoothed.rate")
 smoothed.rate.threeRuleSmooth <- function(object) object$smoothed.rate
 
 #' @export
-print.threeRuleSmooth <- function(x, ...) print(as.ts(x))
+print.threeRuleSmooth <- function(x, digits = max(3L, getOption("digits") - 3L),
+                                  ...) {
+  cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
+      "\n\n", sep = "")
+  cat("delta rate:\n")
+  cat(format(x$delta.rate, digits = digits))
+  cat("\n\n")
+  print(as.ts(x))
+  invisible(x)
+}
 
 #' @export
 model.list.threeRuleSmooth <- function(object) object$model.list

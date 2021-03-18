@@ -5,6 +5,8 @@ test_that("print praislm", {
                                  include.rho = TRUE,
                                  set.const = pi^2)
   expect_snapshot_output(print(prais(benchmark)),cran = TRUE)
+  expect_identical(print(prais(benchmark)),
+                   prais(benchmark))
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE,
@@ -26,6 +28,13 @@ test_that("print praislm", {
   expect_output(print(summary(prais(benchmark))),"^\nCall:\ntwoStepsBenchmark\\(hfserie = turnover, lfserie = construction(.*?)The model includes a differenciation.")
 })
 
+test_that("print threeRuleSmooth",{
+  expect_snapshot_output(print(threeRuleSmooth(turnover,construction)),
+                         cran = TRUE)
+  expect_identical(print(threeRuleSmooth(turnover,construction)),
+                   threeRuleSmooth(turnover,construction))
+})
+
 test_that("methods tests", {
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
@@ -40,6 +49,8 @@ test_that("methods tests", {
   expect_output(print(summary(benchmark)),"^\nCall:\ntwoStepsBenchmark\\(hfserie = turnover, lfserie = construction")
   expect_snapshot_output(print(benchmark),cran = TRUE)
   expect_snapshot_output(show(benchmark),cran = TRUE)
+  expect_snapshot_output(show(threeRuleSmooth(turnover,construction)),
+                         cran = TRUE)
   
   a <- diff(aggregate(smoothed.part(benchmark)))
   b <- residuals(benchmark)
@@ -150,6 +161,11 @@ test_that("diverse ts methods",{
                    diff(as.ts(benchmark)))
   expect_identical(diff(smooth),
                    diff(as.ts(smooth)))
+  
+  expect_identical(time(benchmark),
+                   time(as.ts(benchmark)))
+  expect_identical(time(smooth),
+                   time(as.ts(smooth)))
   
   expect_identical(diffinv(benchmark,xi = 0),
                    diffinv(as.ts(benchmark),xi = 0))
