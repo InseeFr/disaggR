@@ -196,6 +196,43 @@ test_that("in scatter works",{
   attr(expected,"func") <- "in_scatter"
   attr(expected,"coefficients") <- coefficients(benchmark)
   expect_identical(in_scatter(benchmark),expected)
+  
+  
+  
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = TRUE,
+                                 start.coeff.calc = 2005,
+                                 end.coeff.calc = 2017,
+                                 end.benchmark = 2019)
+  expected <- diff(ts(matrix(c(construction,
+                               window(window(aggregate(turnover),start=2005,end=2017,extend=TRUE),
+                                      start=2000,end=2019,extend=TRUE),
+                               window(aggregate(turnover),end=2019,extend=TRUE)),
+                             ncol=3,dimnames = list(NULL,c("Low-frequency serie",
+                                                           "High-frequency serie (regression)",
+                                                           "High-frequency serie (benchmark)"))),
+                      start=2000,frequency=1))
+  
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "differences"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"coefficients") <- coefficients(benchmark)
+  expect_identical(in_scatter(benchmark),expected)
+  
+  
+  reg <- prais(benchmark)
+  expected <- diff(ts(matrix(c(window(reg$model.list$y,start=2005,end=2017,extend=TRUE),
+                               window(aggregate(turnover),start=2005,end=2017,extend=TRUE)),
+                             ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                                           "High-frequency serie (regression)"))),
+                      start=2005,frequency=1))
+  
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "differences"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"coefficients") <- coefficients(reg)
+  expect_identical(in_scatter(reg),expected)
 })
 
 test_that("error in",{
@@ -234,6 +271,9 @@ test_that("distance",
             benchmark <- twoStepsBenchmark(turnover,construction)
             
             insam <- in_sample(benchmark)
+            
+            expect_error(distance(insam,p=0),
+                         "p should be greater than 1")
             expect_equal(distance(insam,p=2),
                          sqrt(mean((insam[,1L]-insam[,2L])^2)))
             expect_equal(distance(insam,p=Inf),
