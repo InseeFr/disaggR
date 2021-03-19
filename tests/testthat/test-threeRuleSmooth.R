@@ -26,19 +26,19 @@ test_that("hfserie extrap works", {
 
 test_that("rate extrap works", {
   lfserie <- ts(c(NA,NA,3:7,NA,NA),start=2010,freq=12)
-  expect_equal(rate_extrap(lfserie,mean.delta = 0.2),
+  expect_equal(rate_extrap(lfserie,delta_rate = 0.2),
                ts(c(2.6,2.8,3:7,7.2,7.4),start=2010,freq=12))
   
   lfserie <- ts(c(NA,NA,3:7,NA,NA),start=2010,freq=4)
-  expect_equal(rate_extrap(lfserie,mean.delta = 0.2),
+  expect_equal(rate_extrap(lfserie,delta_rate = 0.2),
                ts(c(2.6,2.8,3:7,7.2,7.4),start=2010,freq=4))
   
   lfserie <- ts(c(3:7,NA,NA),start=2010,freq=4)
-  expect_equal(rate_extrap(lfserie,mean.delta = 0.5),
+  expect_equal(rate_extrap(lfserie,delta_rate = 0.5),
                ts(c(3:7,7.5,8),start=2010,freq=4))
   
   lfserie <- ts(c(NA,NA,3:7),start=2010,freq=4)
-  expect_equal(rate_extrap(lfserie,mean.delta = 0.5),
+  expect_equal(rate_extrap(lfserie,delta_rate = 0.5),
                ts(c(2,2.5,3:7),start=2010,freq=4))
 })
 
@@ -82,21 +82,31 @@ test_that("threeRuleSmooth works",{
   expect_true(abs(mean(diff(window(smooth1$lfrate,c(2001,2),c(2016,2))))-
                     smooth1$delta.rate)<10^-8)
   
-  expect_snapshot(smooth1,cran=TRUE)
-  expect_true(all(abs(aggregate(smooth1$smoothed.rate*smooth1$hfserie.as.weights,
+  smooth2 <- threeRuleSmooth(indic,account,
+                             start.benchmark = c(2003,3),
+                             end.benchmark = c(2007,4),
+                             start.domain = c(2004,1),
+                             end.domain = c(2017,12),
+                             start.delta.rate = c(2007,1),
+                             end.delta.rate = c(2008,4))
+  expect_snapshot(smooth2,cran=TRUE)
+  expect_true(all(abs(aggregate(smooth2$smoothed.rate*smooth2$hfserie.as.weights,
                                 nfrequency = 4)/
-                        aggregate(smooth1$hfserie.as.weights,nfrequency=4)-
-                        smooth1$lfrate)<10^-8))
-  expect_true(all(abs(aggregate(window(as.ts(smooth1),
-                                       start=c(2001,4),
-                                       end=c(2016,3),
+                        aggregate(smooth2$hfserie.as.weights,nfrequency=4)-
+                        smooth2$lfrate)<10^-8))
+  expect_true(all(abs(aggregate(window(as.ts(smooth2),
+                                       start=c(2004,1),
+                                       end=c(2007,4),
                                        extend=TRUE),
                                 nfrequency=4)-
                         account)<10^-8))
-  expect_true(all(abs(diff(window(smooth1$lfrate,end=c(2001,2)))-
-                        smooth1$delta.rate)<10^-8))
-  expect_true(all(abs(diff(window(smooth1$lfrate,start=c(2016,2)))-
-                        smooth1$delta.rate)<10^-8))
+  expect_equal(start(smooth2$lfrate),c(2004,1))
+  expect_true(all(abs(diff(window(smooth2$lfrate,start=c(2008,1)))-
+                        smooth2$delta.rate)<10^-8))
+  lfrate_before_bench <- account/aggregate(window(indic,start=c(2000,4)),nfrequency = 4)
+  expect_true(abs(mean(diff(window(lfrate_before_bench,c(2007,1),c(2008,4))))-
+                    smooth2$delta.rate)<10^-8)
+  
 })
 
 test_that("threeRuleSmooth works with set delta",{

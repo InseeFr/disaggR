@@ -52,16 +52,16 @@ mean_delta <- function(serie,start,end) {
   mean(diff(as.numeric(window(serie,start=start,end=end,extend=TRUE))),na.rm = TRUE)
 }
 
-rate_extrap <- function(lfrate,mean.delta) {
+rate_extrap <- function(lfrate,delta_rate) {
   valplaces <- which(!is.na(lfrate))
   if (length(valplaces) != 0) {
     firstval <- valplaces[1L]
     lastval <- valplaces[length(valplaces)]
     if (lastval != length(lfrate)) {
-      lfrate[(lastval+1L):length(lfrate)] <- lfrate[lastval] + 1:(length(lfrate)-lastval) * mean.delta
+      lfrate[(lastval+1L):length(lfrate)] <- lfrate[lastval] + 1:(length(lfrate)-lastval) * delta_rate
     }
     if (firstval != 1L) {
-      lfrate[(firstval-1L):1L] <- lfrate[firstval] - 1:(firstval-1L) * mean.delta
+      lfrate[(firstval-1L):1L] <- lfrate[firstval] - 1:(firstval-1L) * delta_rate
     }
   }
   lfrate
