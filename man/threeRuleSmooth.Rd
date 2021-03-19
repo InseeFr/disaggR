@@ -11,8 +11,8 @@ threeRuleSmooth(
   end.benchmark = NULL,
   start.domain = NULL,
   end.domain = NULL,
-  start.delta.rate = start.benchmark,
-  end.delta.rate = end.benchmark,
+  start.delta.rate = NULL,
+  end.delta.rate = NULL,
   set.delta.rate = NULL,
   ...
 )
@@ -62,7 +62,7 @@ delta mean instead of using a mean.}
 of the returned call. This feature allows to build wrappers.}
 }
 \value{
-threeRuleSmooth returns an object of class "\code{threeRuleSmooth}".
+threeRuleSmooth returns an object of class \code{"threeRuleSmooth"}.
 
 The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce
 graphics of the benchmarked serie and the bending serie.
@@ -72,7 +72,7 @@ produce various comparisons on which plot and autoplot can also be used.
 The generic accessor functions \code{as.ts}, \code{model.list}, \code{smoothed.rate} extract
 various useful features of the returned value.
 
-An object of class "\code{threeRuleSmooth}" is a list containing the following
+An object of class \code{"threeRuleSmooth"} is a list containing the following
 components :
 
 \item{benchmarked.serie}{a time-serie, that is the result of the
@@ -81,14 +81,14 @@ benchmark.}
 threeRuleSmooth.}
 \item{smoothed.rate}{the smoothed rate of the threeRuleSmooth.}
 \item{hfserie.as.weights}{the modified and extrapolated hfserie (see
-details)}
+details).}
 \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
 the rate time-serie. It is estimated as the mean value in the specified
 window.}
 \item{model.list}{a list containing all the arguments submitted to the
 function.}
 \item{call}{the matched call (either of twoStepsBenchmark or
-annualBenchmark)}
+annualBenchmark).}
 }
 \description{
 threeRuleSmooth bends a time-serie with a time-serie of a lower
@@ -108,6 +108,9 @@ and uses a modified and extrapolated version of hfserie as weights :
 \item the first and last full cycles are replicated respectively backwards and
 forwards to fill the domain window.
 }
+
+Therefore, the weighted means of the smoothed rate are equal to the
+low-frequency rate.
 }
 \examples{
 

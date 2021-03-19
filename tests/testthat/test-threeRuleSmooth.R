@@ -50,12 +50,53 @@ test_that("mean delta", {
 })
 
 test_that("threeRuleSmooth works",{
-  expect_snapshot(as.ts(threeRuleSmooth(turnover,construction)))
+  expect_snapshot(as.ts(threeRuleSmooth(turnover,construction)),
+                  cran = TRUE)
   expect_snapshot(as.ts(threeRuleSmooth(turnover,construction,
                                         start.benchmark = 2004,
                                         end.benchmark = 2017,
                                         start.domain = c(2004,1),
-                                        end.domain = c(2030,12))))
+                                        end.domain = c(2030,12))),
+                  cran = TRUE)
+  set.seed(10L)
+  indic <- ts(arima.sim(list(order = c(1,1,0), ar = 0.7), n = 200),
+              start=c(2000,2),
+              frequency = 12)
+  account <- aggregate(window(indic,start=c(2001,4),end=c(2016,3)),nfrequency=4) * rnorm(n=60,mean = 3L,sd = 0.5)
+  smooth1 <- threeRuleSmooth(indic,account)
+  expect_snapshot(smooth1,cran=TRUE)
+  expect_true(all(abs(aggregate(smooth1$smoothed.rate*smooth1$hfserie.as.weights,
+                                nfrequency = 4)/
+                        aggregate(smooth1$hfserie.as.weights,nfrequency=4)-
+                        smooth1$lfrate)<10^-8))
+  expect_true(all(abs(aggregate(window(as.ts(smooth1),
+                                       start=c(2001,4),
+                                       end=c(2016,3),
+                                       extend=TRUE),
+                                nfrequency=4)-
+                        account)<10^-8))
+  expect_true(all(abs(diff(window(smooth1$lfrate,end=c(2001,2)))-
+                        smooth1$delta.rate)<10^-8))
+  expect_true(all(abs(diff(window(smooth1$lfrate,start=c(2016,2)))-
+                        smooth1$delta.rate)<10^-8))
+  expect_true(abs(mean(diff(window(smooth1$lfrate,c(2001,2),c(2016,2))))-
+                    smooth1$delta.rate)<10^-8)
+  
+  expect_snapshot(smooth1,cran=TRUE)
+  expect_true(all(abs(aggregate(smooth1$smoothed.rate*smooth1$hfserie.as.weights,
+                                nfrequency = 4)/
+                        aggregate(smooth1$hfserie.as.weights,nfrequency=4)-
+                        smooth1$lfrate)<10^-8))
+  expect_true(all(abs(aggregate(window(as.ts(smooth1),
+                                       start=c(2001,4),
+                                       end=c(2016,3),
+                                       extend=TRUE),
+                                nfrequency=4)-
+                        account)<10^-8))
+  expect_true(all(abs(diff(window(smooth1$lfrate,end=c(2001,2)))-
+                        smooth1$delta.rate)<10^-8))
+  expect_true(all(abs(diff(window(smooth1$lfrate,start=c(2016,2)))-
+                        smooth1$delta.rate)<10^-8))
 })
 
 test_that("threeRuleSmooth works with set delta",{
@@ -64,10 +105,10 @@ test_that("threeRuleSmooth works with set delta",{
                             end.benchmark = 2017,
                             start.domain = c(1990,1),
                             end.domain = c(2030,12),set.delta.rate = 2)
-  
+  expect_snapshot(smooth)
   expect_true(
     all(
-      abs(window(diff(smooth$lfrate),start=1991,end=2004,extend=TRUE)-2) < 10^-5
+      abs(window(diff(smooth$lfrate),start=1991,end=2004,extend=TRUE)-2) < 10^-8
     )
   )
   
@@ -76,28 +117,51 @@ test_that("threeRuleSmooth works with set delta",{
       abs(
         aggregate(smooth$hfserie.as.weights * smooth$smoothed.rate) /
           aggregate(smooth$hfserie.as.weights)-
-          smooth$lfrate) < 10^-5
+          smooth$lfrate) < 10^-8
     )
   )
   expect_true(
     all(
       abs(
         window(aggregate(as.ts(smooth))-construction,
-                     start=2004,
-                     end=2017)
-      ) < 10^-5
+               start=2004,
+               end=2017)
+      ) < 10^-8
     )
   )
 })
 
 test_that("errors",{
+  set.seed(10L)
+  indic <- ts(arima.sim(list(order = c(1,1,0), ar = 0.7), n = 200),
+              start=c(2000,2),
+              frequency = 12)
+  account <- aggregate(window(indic,start=c(2001,4),end=c(2016,3)),nfrequency=4) * rnorm(n=60,mean = 3L,sd = 0.5)
+  expect_error(threeRuleSmooth(indic,account,
+                               start.domain = c(2012,3),
+                               end.domain = c(2014,1),
+                               start.benchmark = c(2004,3),
+                               end.benchmark = c(2007,2),
+                               start.delta.rate = c(2010,3)),
+               "should have an intersection")
+  indic <- ts(arima.sim(list(order = c(1,1,0), ar = 0.7), n = 200),
+              start=c(2000,2),
+              frequency = 12)
+  account <- ts(arima.sim(list(order = c(1,1,0), ar = 0.7), n = 80),
+                start=c(2000,2),
+                frequency = 4)
+  
+  expect_error(threeRuleSmooth(indic,account,
+                               start.domain = c(2017,1),end.domain = c(2017,12)),
+               "does not have any value")
+  
   expect_error(threeRuleSmooth(1:10,construction),
                regexp = "Not a ts object")
   expect_error(threeRuleSmooth(matrix(1:9,3,3),construction),
                regexp = "Not a ts object")
   expect_error(threeRuleSmooth(turnover,1:10),
                regexp = "Not a ts object")
-
+  
   expect_error(threeRuleSmooth(cbind(turnover,turnover),construction),
                regexp = "one-dimensional")  
   expect_error(threeRuleSmooth(turnover,cbind(construction,construction)),

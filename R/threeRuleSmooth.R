@@ -80,16 +80,31 @@ calc_lfrate_win <- function(hfserie,lfserie,
     else set.delta.rate
   }
   
+  lfrate_win <- window(lfrate,
+                       start  = start.benchmark,
+                       end    = end.benchmark,
+                       extend = TRUE)
+  
+  if ((tsp(lfrate_win)[2L] < start.domain.extended) ||
+      ((tsp(lfrate_win)[1L]) > end.domain.extended)) {
+    stop("The benchmark window should have an intersection with the domain window",
+         call. = FALSE)
+  }
+  
+  lfrate_win <- window(
+    lfrate_win,
+    start  = start.domain.extended,
+    end    = end.domain.extended,
+    extend = TRUE)
+  
+  if (all(is.na(lfrate_win))) {
+    stop("The low-frequency rate does not have any value inside the benchmark window and the domain window.",
+         call. = FALSE)
+  }
+  
   list(
     lfrate = rate_extrap(
-      window(
-        window(lfrate,
-               start  = start.benchmark,
-               end    = end.benchmark,
-               extend = TRUE),
-        start  = start.domain.extended,
-        end    = end.domain.extended,
-        extend = TRUE),
+      lfrate_win,
       delta_rate),
     delta_rate = delta_rate)
 }
@@ -158,6 +173,9 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' * the first and last full cycles are replicated respectively backwards and
 #' forwards to fill the domain window.
 #' 
+#' Therefore, the weighted means of the smoothed rate are equal to the
+#' low-frequency rate.
+#' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of
 #' `hfserie`.
@@ -192,7 +210,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' @param \dots if the dots contain a cl item, its value overwrites the value
 #' of the returned call. This feature allows to build wrappers.
 #' @return
-#' threeRuleSmooth returns an object of class "`threeRuleSmooth`".
+#' threeRuleSmooth returns an object of class `"threeRuleSmooth"`.
 #' 
 #' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce
 #' graphics of the benchmarked serie and the bending serie.
@@ -202,7 +220,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' The generic accessor functions `as.ts`, `model.list`, `smoothed.rate` extract
 #' various useful features of the returned value.
 #' 
-#' An object of class "`threeRuleSmooth`" is a list containing the following
+#' An object of class `"threeRuleSmooth"` is a list containing the following
 #' components :
 #' 
 #'   \item{benchmarked.serie}{a time-serie, that is the result of the
@@ -211,14 +229,14 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #'   threeRuleSmooth.}
 #'   \item{smoothed.rate}{the smoothed rate of the threeRuleSmooth.}
 #'   \item{hfserie.as.weights}{the modified and extrapolated hfserie (see
-#'   details)}
+#'   details).}
 #'   \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
 #'   the rate time-serie. It is estimated as the mean value in the specified
 #'   window.}
 #'   \item{model.list}{a list containing all the arguments submitted to the
 #'   function.}
 #'   \item{call}{the matched call (either of twoStepsBenchmark or
-#'   annualBenchmark)}
+#'   annualBenchmark).}
 #' @examples
 #' 
 #' ## How to use threeRuleSmooth
@@ -237,8 +255,8 @@ threeRuleSmooth <- function(hfserie,lfserie,
                             end.benchmark=NULL,
                             start.domain=NULL,
                             end.domain=NULL,
-                            start.delta.rate=start.benchmark,
-                            end.delta.rate=end.benchmark,
+                            start.delta.rate=NULL,
+                            end.delta.rate=NULL,
                             set.delta.rate=NULL,
                             ...) {
   
