@@ -425,7 +425,8 @@ test_that("reView-setcoefconst",{
   app$waitForValue("reView-reViewtab1-model5_actionlink")
   app$waitForValue("reView-reViewtab1-model6_actionlink")
   expect_true(grepl("distance",app$getSource(),fixed=TRUE))
-  app$click("reView-reViewtab1-model1_actionlink")
+  app$setInputs(`reView-reViewtab1-model1_actionlink` = "click",
+                allowInputNoBinding_ = TRUE)
   expect_equal(app$waitForValue("reView-menu"),"Modify")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
