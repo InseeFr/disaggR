@@ -50,7 +50,7 @@ in_sample.praislm <- function(object,type="changes") {
                      predicted_changes <- (predicted_diff/y_lagged)*100
                      cbind(y_changes,predicted_changes)
                    },
-                   stop("The type argument of in_sample should be either \"levels\" or  \"changes\".",call. = FALSE))
+                   stop("The type argument of in_sample should be either \"levels\" or  \"changes\"",call. = FALSE))
   
   structure(series,
             type=type,
@@ -194,7 +194,7 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   error=function(e) stop(gsub("in_disaggr","in_revisions",e$message), call.=FALSE))
   
   if (type != "contributions") {
-    if (sum(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
+    if (mean(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
       warning("The high-frequency inputs contain revisions!", .call = FALSE)
     }
     series <- series[,"Benchmark",drop = FALSE]
@@ -238,7 +238,7 @@ in_scatter.praislm <- function(object) {
   
   X <- m$X[,colnames(m$X) != "constant",drop = FALSE]
   
-  if (ncol(X) != 1L) stop("This in_scatter method is only for univariate benchmarks.", call. = FALSE)
+  if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
   series <- cbind(m$y,X)
   
@@ -272,7 +272,7 @@ in_scatter.twoStepsBenchmark <- function(object) {
   
   X <- m$hfserie[,colnames(m$hfserie) != "constant",drop = FALSE]
   
-  if (ncol(X) != 1L) stop("This in_scatter method is only for univariate benchmarks.", call. = FALSE)
+  if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
   series <- cbind(y,
                   window(
@@ -357,7 +357,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' 
 #' This function `distance` computes the Minkowski distance of exponent p,
 #' related to a tscomparison object, produced with `in_sample`, `in_disaggr` or
-#' `in_sample` 
+#' `in_revisions` 
 #' 
 #' The meaning depends on the tscomparison function :
 #' 

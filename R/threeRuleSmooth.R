@@ -49,7 +49,8 @@ calc_hfserie_win <- function(hfserie,start.domain,end.domain,lffreq) {
 }
 
 mean_delta <- function(serie,start,end) {
-  mean(diff(as.numeric(window(serie,start=start,end=end,extend=TRUE))),na.rm = TRUE)
+  mean(diff(as.numeric(window(serie,start=start,end=end,extend=TRUE))),
+       na.rm = TRUE)
 }
 
 rate_extrap <- function(lfrate,delta_rate) {
@@ -98,7 +99,7 @@ calc_lfrate_win <- function(hfserie,lfserie,
     extend = TRUE)
   
   if (all(is.na(lfrate_win))) {
-    stop("The low-frequency rate does not have any value inside the benchmark window and the domain window.",
+    stop("The low-frequency rate does not have any value inside the benchmark window and the domain window",
          call. = FALSE)
   }
   

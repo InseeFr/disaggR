@@ -7,14 +7,16 @@
 model.list(object)
 }
 \arguments{
-\item{object}{a praislm or twoStepsBenchmark object.}
+\item{object}{an object of class \code{"twoStepsBenchmark"}, \code{"threeRuleSmooth"}
+or \code{"praislm"}.}
 }
 \value{
 a list containing every evaluated arguments
 }
 \description{
-The function \code{model.list} returns the arguments submitted
-to the function \link{praislm} or a \link{twoStepsBenchmark}.
+The function \code{model.list} returns the arguments submitted to the function
+used to generate the object of class \code{"twoStepsBenchmark"},
+\code{"threeRuleSmooth"} or \code{"praislm"}.
 }
 \details{
 These are returned as they are after evaluation, model.list doesn't

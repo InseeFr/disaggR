@@ -10,7 +10,7 @@ se(object)
 \item{object}{a praislm or twoStepsBenchmark object.}
 }
 \value{
-a double, that is named the same way that the coefficients are.
+a numeric, that is named the same way that the coefficients are.
 If some coefficients are set by the user, they return \code{NA} as for
 their standard error.
 }

@@ -19,7 +19,7 @@ aggregated regression, with some differences :
 \itemize{
 \item it is eventually integrated if \code{include.differenciation=TRUE}.
 \item it is extrapolated to match the domain window.
-\item it is smoothed with an additive Denton benchmark.
+\item it is smoothed using the \link{bflSmooth} function.
 }
 }
 \examples{

@@ -7,27 +7,29 @@
 reUseBenchmark(hfserie,benchmark,reeval.smoothed.part=FALSE)
 }
 \arguments{
-\item{hfserie}{the bended time-serie. If it is a matrix time-serie, it has to have the
-same column names than the \code{hfserie} used for the benchmark.}
+\item{hfserie}{the bended time-serie. If it is a matrix time-serie, it has to
+have the same column names than the \code{hfserie} used for the benchmark.}
 
-\item{benchmark}{a twoStepsBenchmark object, from which the parameters and coefficients
-are taken}
+\item{benchmark}{a twoStepsBenchmark object, from which the parameters and
+coefficients are taken.}
 
-\item{reeval.smoothed.part}{a boolean of length 1. If \code{TRUE}, the smoothed part is
-reevaluated, hence the aggregated benchmarked serie is equal to the low-frequency serie.}
+\item{reeval.smoothed.part}{a boolean of length 1. If \code{TRUE}, the smoothed
+part is reevaluated, hence the aggregated benchmarked serie is equal to the
+low-frequency serie.}
 }
 \value{
-twoStepsBenchark returns an object of class \link{twoStepsBenchmark}.
+\code{reUseBenchmark} returns an object of class \link{twoStepsBenchmark}.
 }
 \description{
-This function reapplies the coefficients and parameters of a benchmark
-on new time-serie.
+This function reapplies the coefficients and parameters of a benchmark on new
+time-serie.
 }
 \details{
-reUseBenchmark is primarily meant to be used on a serie that is derived from the previous
-one, after some modifications that would bias the estimation otherwise. Working-day adjustment
-is a good example. Hence, by default, the smoothed part of the first model isn't
-reevaluated ; the aggregated benchmarked serie isn't equal to the low-frequency serie.
+\code{reUseBenchmark} is primarily meant to be used on a serie that is derived
+from the previous one, after some modifications that would bias the
+estimation otherwise. Working-day adjustment is a good example. Hence, by
+default, the smoothed part of the first model isn't reevaluated ; the
+aggregated benchmarked serie isn't equal to the low-frequency serie.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction) 

@@ -36,7 +36,7 @@ model.list.praislm <- function(object) object$model.list
 #' se(object)
 #' @param object a praislm or twoStepsBenchmark object.
 #' @return
-#' a double, that is named the same way that the coefficients are.
+#' a numeric, that is named the same way that the coefficients are.
 #' If some coefficients are set by the user, they return `NA` as for
 #' their standard error.
 #' @keywords internal
@@ -164,12 +164,12 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
 
 #' Extracting the regression of a twoStepsBenchmark
 #' 
-#' prais is a function which extracts the regression, a praislm object,
-#' of a twoStepsBenchmark.
+#' prais extracts the regression, which is an object of class `"praislm"`, of a
+#' twoStepsBenchmark object.
 #' 
 #' @param x a twoStepsBenchmark
 #' @return
-#' prais returns an object of class "`praislm`".
+#' prais returns an object of class `"praislm"`.
 #' 
 #' The functions that can be used on that class are almost the same than
 #' for the class `twoStepsBenchmark`.
@@ -178,7 +178,7 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
 #' of the regression, not the high-frequency, eventually integrated, time-serie
 #' contained in a twoStepsBenchmark.
 #' 
-#' An object of class "`praislm`" is a list containing the following components :
+#' An object of class `"praislm"` is a list containing the following components :
 #'   \item{coefficients}{a named vector of coefficients.}
 #'   \item{residuals}{the residuals, that is response minus fitted values.}
 #'   \item{fitted.values}{a time-serie, the fitted mean values}
@@ -188,8 +188,8 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
 #'   is equal to zero if twoStepsBenchmark was called with `include.rho=FALSE`}
 #'   \item{residuals.decorrelated}{the residuals of the model after having been
 #'   transformed by rho in a least square model.}
-#'   \item{fitted.values.decorrelated}{the fitted values of the model after having been
-#'   transformed by rho in a least square model.}
+#'   \item{fitted.values.decorrelated}{the fitted values of the model after
+#'   having been transformed by rho in a least square model.}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction); prais(benchmark)
 #' @export
@@ -223,15 +223,17 @@ fitted.twoStepsBenchmark <- function(object, ...) object$fitted.values
 
 #' Extracting all the arguments submitted to generate an object
 #' 
-#' The function `model.list` returns the arguments submitted
-#' to the function \link{praislm} or a \link{twoStepsBenchmark}.
+#' The function `model.list` returns the arguments submitted to the function
+#' used to generate the object of class `"twoStepsBenchmark"`, 
+#' `"threeRuleSmooth"` or `"praislm"`.
 #' 
 #' These are returned as they are after evaluation, model.list doesn't
 #' return a call.
 #'   
 #' @usage
 #' model.list(object)
-#' @param object a praislm or twoStepsBenchmark object.
+#' @param object an object of class `"twoStepsBenchmark"`, `"threeRuleSmooth"` 
+#' or `"praislm"`.
 #' @return
 #' a list containing every evaluated arguments
 #' @examples
@@ -250,7 +252,7 @@ model.list.twoStepsBenchmark <- function(object) object$model.list
 #' aggregated regression, with some differences :
 #'    * it is eventually integrated if `include.differenciation=TRUE`.
 #'    * it is extrapolated to match the domain window.
-#'    * it is smoothed with an additive Denton benchmark.
+#'    * it is smoothed using the \link{bflSmooth} function.
 #'   
 #' @usage
 #' smoothed.part(object)

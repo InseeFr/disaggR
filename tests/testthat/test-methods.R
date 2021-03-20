@@ -110,7 +110,11 @@ test_that("Ops group generic",{
   tsnewobject_a <- twoStepsBenchmark(turnover,construction)
   tsnewobject_b <- threeRuleSmooth(turnover,construction)
   tsnewobject_c <- turnover
-  
+
+  expect_identical(tsnewobject_a+tsnewobject_a,
+                   as.ts(tsnewobject_a)+as.ts(tsnewobject_a))
+  expect_identical(tsnewobject_b+tsnewobject_b,
+                   as.ts(tsnewobject_b)+as.ts(tsnewobject_b))
   expect_identical(tsnewobject_a+tsnewobject_b,
                    as.ts(tsnewobject_a)+as.ts(tsnewobject_b))
   expect_identical(tsnewobject_b+tsnewobject_a,

@@ -46,9 +46,16 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
   }
 }
 
-# This function generates a wrapper of bflSmooth_matrices_impl that gives the
-# same results but uses cache, which is useful considering a lot of similar calls
-bflSmooth_matrices_generator <- function(cache_size=100L) {
+#' Generating a clone for bflSmooth_matrices_impl
+#' 
+#' This *function factory* returns a clone of bflSmooth_matrices_impl that gives
+#' the same results than the original function but uses cache, which is useful
+#' considering people would often use a lot of similar calls.
+#' 
+#' bflSmooth_matrices_factory is only run at build time.
+#' 
+#' @keywords internal
+bflSmooth_matrices_factory <- function(cache_size=100L) {
   cache <- vector("list",cache_size)
   cache_next <- 1L
   function(lf_length,ratio,weights,lfserie.is.rate) {
@@ -65,7 +72,7 @@ bflSmooth_matrices_generator <- function(cache_size=100L) {
   }
 }
 
-bflSmooth_matrices <- bflSmooth_matrices_generator()
+bflSmooth_matrices <- bflSmooth_matrices_factory()
 
 #' Smooth a time serie
 #' 

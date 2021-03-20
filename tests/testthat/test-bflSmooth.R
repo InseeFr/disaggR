@@ -32,7 +32,7 @@ test_that("Smoothing works", {
 })
 
 test_that("cache works for smoothing", {
-  bflSmooth_matrices_cache <- bflSmooth_matrices_generator()
+  bflSmooth_matrices_cache <- bflSmooth_matrices_factory()
   expect_identical(bflSmooth_matrices_cache(20,12,NULL,TRUE),bflSmooth_matrices_impl(20,12,NULL,TRUE))
   expect_identical(bflSmooth_matrices_cache(20,12,NULL,TRUE),bflSmooth_matrices_impl(20,12,NULL,TRUE))
   set.seed(10)

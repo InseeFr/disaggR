@@ -17,7 +17,7 @@ a numeric of length 1, the distance.
 \description{
 This function \code{distance} computes the Minkowski distance of exponent p,
 related to a tscomparison object, produced with \code{in_sample}, \code{in_disaggr} or
-\code{in_sample}
+\code{in_revisions}
 }
 \details{
 The meaning depends on the tscomparison function :

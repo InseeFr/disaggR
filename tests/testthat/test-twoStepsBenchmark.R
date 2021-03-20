@@ -147,23 +147,18 @@ test_that("twoStepsBenchmark works",
             set.seed(5)
             mensualts <- ts(diffinv(rnorm(30,1,1)),start=c(2010,4),freq=12)
             trimts <- ts(diffinv(rnorm(2,12,1)),start=2011,freq=4)
-            bn <- twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE)
-            expect_equal(as.ts(bn),ts(c(-13.2250655390399,-11.7137209841592,-10.7287373045719,
-                                        -9.11931306475712,-7.82345954003013,-6.91584498370111,
-                                        -5.46078544573486,-4.0366520279386,-2.57391348874945,
-                                        -1.19387012919245,0.0859065845360174,1.10796354465643,
-                                        2.61006490598375,4.17807049258785,5.52777963978986,
-                                        7.09374324740536,8.43906492834152,9.89280103027344,
-                                        11.7218502943277,12.9773318186937,14.3511261089332,
-                                        15.4505609135171,16.5402128681158,17.5054208765419,
-                                        18.6506862539418,19.7694000952659,21.1512667853785,
-                                        22.128153633179,23.0860732705669,24.5539473616461,
-                                        26.0681162404146),start=c(2010,4),frequency=12))
+            expect_snapshot(twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE),
+                            cran = TRUE)
             set.seed(32)
             mensualts <- ts(diffinv(rnorm(30,1,1)),start=c(2010,3),freq=12)
             trimts <- ts(diffinv(rnorm(2,12,1)),start=2011,freq=4)
             bn <- twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE)
+            expect_snapshot(bn, cran = TRUE)
             expect_equal(aggregate(window(as.ts(bn),start=c(2010,4)),nf=4)-trimts,ts(c(0,0,0),start=2011,freq=4))
+            expect_snapshot(twoStepsBenchmark(turnover,construction,
+                                              include.differenciation = TRUE,
+                                              include.rho = TRUE),
+                            cran = TRUE)
           })
 test_that("standard errors are the same that the vcov diag",{
   set.seed(5)
@@ -198,6 +193,7 @@ test_that("standard errors are the same that the vcov diag",{
 test_that("mts works",{
   bn <- twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
                             `colnames<-`(c("a","b","c")),construction)
+  expect_snapshot(bn, cran = TRUE)
   expect_identical(names(coef(bn)),c("constant","a","b","c"))
   
   mat <- cbind(turnover,lag(turnover))
@@ -403,6 +399,9 @@ test_that("annualBenchmark",{
   trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
   expect_error(annualBenchmark(mensualts,trimts),
                "annual time-serie")
+  expect_snapshot(annualBenchmark(turnover,construction,
+                                  end.coeff.calc = 2018),
+                  cran = TRUE)
   expect_equal(as.ts(annualBenchmark(turnover,construction,
                                end.coeff.calc = 2018)),
                as.ts(twoStepsBenchmark(turnover,construction,
