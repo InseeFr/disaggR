@@ -99,7 +99,7 @@ test_that("rePort produces a report",{
   unlink(url)
 })
 
-test_that("reView",{
+test_that("reView-withoutset",{
   
   # important : the package should have been rebuilt for these tests
   # (ie with installed and restart in R Studio not loaded with devtools)
@@ -108,7 +108,7 @@ test_that("reView",{
   skip_on_os("mac") # phantomjs bugs with macos
   testthat::skip_if_not_installed("shinytest")
   
-  app <- shinytest::ShinyDriver$new(test_path("shiny"))
+  app <- shinytest::ShinyDriver$new(test_path("shiny-withoutset"))
   
   expect_identical(app$getTitle(),"reView")
   
@@ -145,6 +145,18 @@ test_that("reView",{
   expect_equal(sliderbenchmark,c(2000,2019))
   expect_equal(sliderplots,c(2000,2020))
   
+  set_coeff <- app$waitForValue("reView-reViewtab2-setcoeff",iotype="input")
+  set_const <- app$waitForValue("reView-reViewtab2-setconst",iotype="input")
+  
+  expect_equal(set_coeff,1)
+  expect_equal(set_const,0)
+  
+  set_coeff_button <- app$waitForValue("reView-reViewtab2-setcoeff_button",iotype="input")
+  set_const_button <- app$waitForValue("reView-reViewtab2-setconst_button",iotype="input")
+  
+  expect_equal(set_coeff_button,FALSE)
+  expect_equal(set_const_button,FALSE)
+  
   plots <- list(newplot,oldplot)
   
   expect_true(all(vapply(plots,`[[`,0,"height") >= 432))
@@ -154,6 +166,18 @@ test_that("reView",{
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        include.differenciation = TRUE)))
+  
+  # info button shows scatter plots modal
+  
+  app$setInputs(`reView-reViewtab2-infobtn` = "click")
+  app$waitFor("($('#shiny-modal').data('bs.modal') || {}).isShown")
+  expect_true(grepl("These scatter plots",
+                    app$getSource(),
+                    fixed = TRUE))
+  expect_true(grepl("reset plot window",
+                    app$getSource(),
+                    fixed = TRUE))
+  app$executeScript("$('.modal').modal('hide');")
   
   # Differenciation
   
@@ -231,9 +255,10 @@ test_that("reView",{
   expect_equal(app$getValue("reView-reViewtab2-plotswin"),
                c(2000,2020))
   
-  # Change output to in scatter
+  # Change output to benchmark plots
   expect_equal(app$waitForValue("reView-reViewtab2-mainout_choice",iotype="input"),
                "Scatter plot")
+  app$setInputs(`reView-reViewtab2-mainout_choice` = "Benchmark plot")
   
   newplot <- app$waitForValue("reView-reViewtab2-newplot",iotype="output")
   oldplot <- app$waitForValue("reView-reViewtab2-oldplot",iotype="output")
@@ -244,9 +269,21 @@ test_that("reView",{
   expect_true(all(vapply(plots,`[[`,0,"height") <= 452))
   expect_true(all(vapply(plots,`[[`,0,"width") >= 269))
   
+  # info button shows benchmark plots modal
+  
+  app$setInputs(`reView-reViewtab2-infobtn` = "click")
+  app$waitFor("($('#shiny-modal').data('bs.modal') || {}).isShown")
+  expect_true(grepl("procedure involved",
+                    app$getSource(),
+                    fixed = TRUE))
+  expect_true(grepl("to change plot window",
+                    app$getSource(),
+                    fixed = TRUE))
+  app$executeScript("$('.modal').modal('hide');")
+  
   # Change output to in sample
   expect_equal(app$waitForValue("reView-reViewtab2-mainout_choice",iotype="input"),
-               "Scatter plot")
+               "Benchmark plot")
   app$setInputs(`reView-reViewtab2-mainout_choice` = "In-sample predictions")
   
   newplotlev <- app$waitForValue("reView-reViewtab2-newplotlev",iotype="output")
@@ -311,5 +348,105 @@ test_that("reView",{
   p$interrupt()
   p$wait()
   # the previous code is to quit the shinyprocess for codecov to update
+})
+
+test_that("reView-setcoefconst",{
   
+  # important : the package should have been rebuilt for these tests
+  # (ie with installed and restart in R Studio not loaded with devtools)
+  # One has also have PhantomJS work with the firewall
+  
+  skip_on_os("mac") # phantomjs bugs with macos
+  testthat::skip_if_not_installed("shinytest")
+  
+  app <- shinytest::ShinyDriver$new(test_path("shiny-setcoefconst"))
+  
+  expect_identical(app$getTitle(),"reView")
+  
+  get_bn <- function() app$getAllValues()$export$`reView-reViewtab2-new_bn`
+  
+  app$setWindowSize(800,600)
+  app$waitForValue("reView-reViewtab1-model1_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model2_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model3_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model4_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model5_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model6_plot",iotype="output")
+  
+  expect_equal(as.ts(get_bn()),as.ts(twoStepsBenchmark(turnover,construction,
+                                                       set.coeff = 1,
+                                                       set.const = 0,
+                                                       include.differenciation = TRUE,
+                                                       include.rho = TRUE,
+                                                       start.coeff.calc = 2005,
+                                                       end.coeff.calc = 2015,
+                                                       start.benchmark = 2004,
+                                                       end.benchmark = 2018,
+                                                       start.domain = 1990,
+                                                       end.domain = c(2030,12))))
+  # Test in second tab if the sets are OK
+  app$setInputs(`reView-menu` = "Modify")
+  slidercoeffcalc <- app$waitForValue("reView-reViewtab2-coeffcalc",iotype="input",
+                                      timeout=5000)
+  sliderbenchmark <- app$waitForValue("reView-reViewtab2-benchmark",iotype="input")
+  sliderplots <- app$waitForValue("reView-reViewtab2-plotswin",iotype="input")
+  expect_equal(app$waitForValue("reView-menu",iotype="input"),"Modify")
+  expect_equal(slidercoeffcalc,c(2005,2015))
+  expect_equal(sliderbenchmark,c(2004,2018))
+  expect_equal(sliderplots,c(2000,2020))
+  
+  set_coeff <- app$waitForValue("reView-reViewtab2-setcoeff",iotype="input")
+  set_const <- app$waitForValue("reView-reViewtab2-setconst",iotype="input")
+
+  expect_equal(set_coeff,1)
+  expect_equal(set_const,0)
+  
+  set_coeff_button <- app$waitForValue("reView-reViewtab2-setcoeff_button",iotype="input")
+  set_const_button <- app$waitForValue("reView-reViewtab2-setconst_button",iotype="input")
+  
+  expect_equal(set_coeff_button,TRUE)
+  expect_equal(set_const_button,TRUE)
+  
+  # Back to first tab to check the summary table
+  app$setInputs(`reView-menu` = "Presets")
+  
+  app$waitForValue("reView-reViewtab1-model1_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model2_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model3_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model4_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model5_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model6_plot",iotype="output")
+  
+  app$setInputs(`reView-reViewtab1-firsttab_choice`="Summary table")
+  app$waitForValue("reView-reViewtab1-model1_actionlink")
+  app$waitForValue("reView-reViewtab1-model2_actionlink")
+  app$waitForValue("reView-reViewtab1-model3_actionlink")
+  app$waitForValue("reView-reViewtab1-model4_actionlink")
+  app$waitForValue("reView-reViewtab1-model5_actionlink")
+  app$waitForValue("reView-reViewtab1-model6_actionlink")
+  expect_true(grepl("distance",app$getSource(),fixed=TRUE))
+  app$click("reView-reViewtab1-model1_actionlink")
+  expect_equal(app$waitForValue("reView-menu"),"Modify")
+  expect_equal(as.ts(get_bn()),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       include.differenciation = TRUE,
+                                       start.coeff.calc = 2005,
+                                       end.coeff.calc = 2015,
+                                       start.benchmark = 2004,
+                                       end.benchmark = 2018,
+                                       start.domain = 1990,
+                                       end.domain = c(2030,12))))
+  
+  p <- app$.__enclos_env__$private$shinyProcess
+  p$interrupt()
+  p$wait()
+  # the previous code is to quit the shinyprocess for codecov to update
+})
+
+test_that("benchmarkCall NULL",{
+  expect_null(benchmarkCall(NULL,"a","b"))
+})
+
+test_that("link_if_in_shiny if not in shiny",{
+  expect_equal(link_if_in_shiny("id","label",NULL),"label")
 })
