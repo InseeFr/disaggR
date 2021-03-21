@@ -274,16 +274,16 @@ in_scatter.twoStepsBenchmark <- function(object) {
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
+  lfx <- aggregate_and_crop_hf_to_lf(X,y)
+  
   series <- cbind(y,
                   window(
-                    aggregate_and_crop_hf_to_lf(X,
-                                                y),
+                    lfx,
                     coeff_clean_win[1L],
                     coeff_clean_win[2L],
                     extend = TRUE),
                   window(
-                    aggregate_and_crop_hf_to_lf(X,
-                                                y),
+                    lfx,
                     benchmark_clean_win[1L],
                     benchmark_clean_win[2L],
                     extend = TRUE)

@@ -28,11 +28,12 @@ info_switch <- function(mainout_choice)
          "Scatter plot" = {
            HTML("These scatter plots display the relationship between both series",
                 "after aggregation and, eventually, differenciation.<br><br>",
-                "The regression line is computed with the coefficients of the benchmark.",
-                "The main arrows represent the values inside the coefficients",
-                "calculation window, when the secondary ones, dashed by default",
-                "stand for the points external to the regression, added through",
-                "the benchmark window.")
+                "The regression line is computed with the coefficients of the ",
+                "benchmark. The main arrows represent the values inside the ",
+                "coefficients calculation window, when the secondary ones, dashed ",
+                "by default, stand for the points that are external to the ",
+                "regression. These are eventually added through the benchmark ",
+                "window.")
          },
          "In-sample predictions" = {
            HTML("These plots display in-sample predictions produced with the",
@@ -47,11 +48,13 @@ info_switch <- function(mainout_choice)
            HTML("These plots compare the input high-frequency serie with the resulting",
                 "time-serie of the benchmark. These are intended to check that the",
                 "information of the input is preserved.<br><br>",
-                "If the indicator is a wrong one, its coefficients tends to zero,",
-                "then the benchmark tends to a simple smooth. If so, the contributions",
-                "of the smoothed part are high.<br><br>",
+                "If the indicator isn't correlated to the account, its ",
+                "coefficient tends to zero, and the benchmark to a simple ",
+                "smooth. If so, the contributions of the smoothed part become ",
+                "high.<br><br>",
                 "Denton benchmarks don't change with the level of their high-frequency",
-                "input series. <i>The level of the smoothed part is arbitrary</i>.",
+                "input series. Hence, the level of the smoothed part can be ",
+                "seen as arbitrary.",
                 "Hence it is omitted in these plots.")
          },
          "Revisions" = {
@@ -62,11 +65,12 @@ info_switch <- function(mainout_choice)
            HTML("Two-steps benchmarks bend a time-serie with a time-serie of",
                 "lower frequency. The procedure involved is a Prais-Winsten",
                 "regression, then an additive Denton benchmark.<br><br>",
-                "Therefore, it minimizes the sum of squares of the differences",
-                "while being strictly equal to the low-frequency serie afterthe",
-                "aggregation and the regression.<br><br>This plot displays both",
-                "the bending serie, disaggregated with an evenly distribution,",
-                "and the resulting time-serie of the benchmark.")
+                "Therefore, the resulting time-serie is the sum of a regression ",
+                "fit, eventually reintegrated, and of a smoothed part. The ",
+                "smoothed part minimizes the sum of squares of its differences.",
+                "<br><br>This plot displays both the bending serie, ",
+                "disaggregated with an evenly distribution, and the resulting ",
+                "time-serie of the benchmark.")
          },
          "Benchmark summary" = {
            HTML("The portmanteau test here is of lag 1. If the test is positive,",
