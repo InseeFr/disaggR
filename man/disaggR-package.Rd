@@ -25,7 +25,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Arnaud Feldmann \email{arnaud.feldmann@insee.fr}
+\strong{Maintainer}: Arnaud Feldmann \email{arnaud.feldmann@insee.fr} (\href{https://orcid.org/0000-0003-0109-7505}{ORCID})
 
 Other contributors:
 \itemize{

@@ -14,8 +14,8 @@
 \alias{twoStepsBenchmark-class}
 \title{Virtual Class "disaggR" Class of disaggregations}
 \description{
-The \code{disaggR} class is a class contained by the actual disaggregation classes
-in the disaggR package. It is a “virtual” class.  disaggR classes are
+The \code{"disaggR"} class is a class contained by the actual disaggregation
+classes in the disaggR package. It is a “virtual” class.  disaggR classes are
 minimalist S4 classes, containing disaggR and list. This allows Ops group
 generic double dispatch but most of the package rather uses S3 methods.
 }
