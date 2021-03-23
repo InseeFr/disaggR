@@ -180,4 +180,10 @@ test_that("errors",{
                regexp = "should divide")
   expect_error(threeRuleSmooth(ts(1:10,frequency=0.5),ts(1:10,frequency=0.25)),
                regexp = "integer")
+  expect_error(threeRuleSmooth(ts(rep(0,120),frequency=12,start=2000),construction),
+               "Every hfserie aggregation value is equal to zero")
+  hfserie <- turnover
+  hfserie[1L:12L] <- 0
+  expect_error(threeRuleSmooth(hfserie,construction),
+               "There is a zero")
 })

@@ -68,6 +68,17 @@ rate_extrap <- function(lfrate,delta_rate) {
   lfrate
 }
 
+control_zeros_lfrate_win <- function(lfrate_win,hfserie) {
+  if (any(is.nan(lfrate_win) | is.infinite(lfrate_win))) {
+    hfserie_aggreg <- aggregate_and_crop_hf_to_lf(hfserie,lfrate_win)
+    if (any(hfserie_aggreg == 0,na.rm = TRUE)) {
+      if (all(hfserie_aggreg == 0,na.rm = TRUE)) stop("Every hfserie aggregation value is equal to zero within the benchmark window", call. = FALSE)
+      stop("There is a zero to the hfserie aggregation within the benchmark window", call. = FALSE)
+    }
+  }
+  return()
+}
+
 calc_lfrate_win <- function(hfserie,lfserie,
                             start.benchmark,end.benchmark,
                             start.delta.rate,end.delta.rate,
@@ -85,6 +96,8 @@ calc_lfrate_win <- function(hfserie,lfserie,
                        start  = start.benchmark,
                        end    = end.benchmark,
                        extend = TRUE)
+  
+  control_zeros_lfrate_win(lfrate_win,hfserie)
   
   if ((tsp(lfrate_win)[2L] < start.domain.extended) ||
       ((tsp(lfrate_win)[1L]) > end.domain.extended)) {
