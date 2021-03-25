@@ -87,8 +87,7 @@ the rate time-serie. It is estimated as the mean value in the specified
 window.}
 \item{model.list}{a list containing all the arguments submitted to the
 function.}
-\item{call}{the matched call (either of twoStepsBenchmark or
-annualBenchmark).}
+\item{call}{the matched call.}
 }
 \description{
 threeRuleSmooth bends a time-serie with a time-serie of a lower

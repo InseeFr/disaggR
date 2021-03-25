@@ -2,16 +2,16 @@
 #' 
 #' @description 
 #'
-#' The twoStepsBenchmark() function and its wrappers allow you to disaggregate a
-#' low frequency time serie with time series of higher frequency, using the
-#' French National Accounts methodology. The aggregated sum of the resulting
-#' time-serie is strictly equal to the low-frequency serie within the
-#' benchmarking window. Typically, the low-frequency serie is an annual one,
-#' unknown for the last year, and the high frequency is either quarterly or
+#' The `twoStepsBenchmark()` and `threeRuleSmooth()` functions allow you to 
+#' disaggregate a low-frequency time-serie with time-series of higher frequency, 
+#' using the French National Accounts methodology. The aggregated sum of the 
+#' resulting time-serie is strictly equal to the low-frequency serie within the 
+#' benchmarking window. Typically, the low-frequency serie is an annual one, 
+#' unknown for the last year, and the high frequency one is either quarterly or 
 #' mensual.
 #' 
-#' See "Methodology of quarterly national accounts", Insee Méthodes N°126, by
-#' Insee (2012, ISBN:978-2-11-068613-8).
+#' See "Methodology of quarterly national accounts", Insee Méthodes 
+#' N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 #'
 #' @import stats graphics ggplot2 shiny
 #' @keywords internal

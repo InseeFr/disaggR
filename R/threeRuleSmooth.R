@@ -249,8 +249,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #'   window.}
 #'   \item{model.list}{a list containing all the arguments submitted to the
 #'   function.}
-#'   \item{call}{the matched call (either of twoStepsBenchmark or
-#'   annualBenchmark).}
+#'   \item{call}{the matched call.}
 #' @examples
 #' 
 #' ## How to use threeRuleSmooth
