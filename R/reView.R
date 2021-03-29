@@ -996,7 +996,7 @@ reView <- function(object,
 reView.character <- function(object,
                              hfserie_name = NULL,
                              lfserie_name = NULL,
-                             compare = TRUE, ...) {
+                             compare = TRUE) {
   reView(readRDS(object),hfserie_name,lfserie_name,compare)
 }
 
