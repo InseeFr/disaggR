@@ -598,14 +598,14 @@ reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn) 
   )
 }
 
-reView_server_tab1 <- function(id,old_bn) {
+reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter) {
   moduleServer(id,
                function(input,output,session) {
                  
                  presets_list <- reactive({
-                   m <- model.list(old_bn())
-                   presets_list_fun(hfserie(old_bn()),
-                                    lfserie(old_bn()),
+                   m <- model.list(new_bn_ext_setter())
+                   presets_list_fun(hfserie(new_bn_ext_setter()),
+                                    lfserie(new_bn_ext_setter()),
                                     start.coeff.calc=m$start.coeff.calc,
                                     end.coeff.calc=m$end.coeff.calc,
                                     start.benchmark=m$start.benchmark,
@@ -801,19 +801,19 @@ reView_server_tab2_switch <- function(input,output,new_bn,old_bn,ns,compare) {
 }
 
 reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
-                               old_bn,compare,
+                               old_bn,new_bn_external_setter,compare,
                                selected_preset,reset) {
   moduleServer(id,
                function(input,output,session) {
                  
-                 new_bn <- reactive(get_new_bn(input,hfserie_name,lfserie_name,old_bn))
+                 new_bn <- reactive(get_new_bn(input,hfserie_name,lfserie_name,new_bn_external_setter))
                  
                  exportTestValues(new_bn = new_bn())
                  
                  # Inputs initializers
                  
-                 observeEvent(c(reset(),old_bn()),
-                              set_inputs_to_default(session,old_bn),
+                 observeEvent(c(reset(),new_bn_external_setter()),
+                              set_inputs_to_default(session,new_bn_external_setter),
                               priority = 2L)
                  
                  observeEvent(selected_preset(),set_preset(session,selected_preset),
@@ -822,11 +822,11 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  # Input modifiers
                  
                  observeEvent(input$brush,
-                              set_plots_window_with_brush(session,input,old_bn),
+                              set_plots_window_with_brush(session,input,new_bn_external_setter),
                               ignoreNULL = TRUE, priority = 1L)
                  
                  observeEvent(input$click,
-                              updateSliderInput(session, "plotswin",value = get_maxwin(old_bn())),
+                              updateSliderInput(session, "plotswin",value = get_maxwin(new_bn_external_setter())),
                               ignoreNULL = TRUE,priority = 1L)
                  
                  observeEvent(compare(),{
@@ -894,14 +894,14 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                })
 }
 
-reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
+reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,lfserie_name,compare) {
   moduleServer(id,function(input, output, session) {
     
     output$titlenavbar <- renderText(paste("reView:", hfserie_name(),"on", lfserie_name()))
     
     # tab 1 : Presets
     
-    selected_preset <- reView_server_tab1("reViewtab1",old_bn)
+    selected_preset <- reView_server_tab1("reViewtab1",old_bn,new_bn_external_setter)
     observeEvent(selected_preset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
                  priority = 3L)
     
@@ -909,7 +909,7 @@ reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
     
     new_bn <- reView_server_tab2("reViewtab2",
                                  hfserie_name,lfserie_name,
-                                 old_bn,compare,
+                                 old_bn,new_bn_external_setter,compare,
                                  selected_preset,reset)
     
     # tab3 : Export
@@ -924,9 +924,12 @@ reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
 }
 reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
   function(input,output,session) {
-    reView_server_module("reView",reactive(old_bn),
-                         reactive(hfserie_name),reactive(lfserie_name),
-                         reactive(compare))
+    reView_server_module("reView",
+                         old_bn = reactive(old_bn),
+                         new_bn_external_setter = reactive(old_bn),
+                         hfserie_name = reactive(hfserie_name),
+                         lfserie_name = reactive(lfserie_name),
+                         compare = reactive(compare))
   }
 }
 
