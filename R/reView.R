@@ -161,6 +161,23 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                           "autocorrelated levels - without constant"
                 ))
 
+get_preset <- function(benchmark) {
+  m <- get_model(benchmark)
+  
+  match <- which(m$include.differenciation == presets$include.differenciation &
+                   m$include.rho == presets$include.rho &
+                   vapply(presets$set.const,
+                          function(x,y) if ((length(x) == 0 &&
+                                             length(y) == 0) ||
+                                            isTRUE(x == y)) TRUE else FALSE,
+                          m$set.const,
+                          FUN.VALUE = TRUE) &
+                   length(m$set.coeff) == 0)
+  
+  if (length(match) == 0) NULL else match
+  
+}
+
 presets_list_fun <- function(hfserie,lfserie,...) {
   lapply(1L:6L,function(type) {
     twoStepsBenchmark(hfserie,lfserie,
@@ -295,7 +312,7 @@ get_model <- function(benchmark) {
   model <- model.list(benchmark)
   model$set.coeff <- model$set.coefficients[names(model$set.coefficients) != "constant"]
   model$set.const <- model$set.coefficients[names(model$set.coefficients) == "constant"]
-  model$set.coefficents <- NULL
+  model$set.coefficients <- NULL
   model
 }
 

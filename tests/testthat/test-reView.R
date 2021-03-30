@@ -14,6 +14,24 @@ test_that("switch window", {
                    c(tspex[1L],2011.4))
 })
 
+test_that("get_preset", {
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)),1)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
+                                            set.const = 0)),2)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction)),3)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.rho = TRUE)),4)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,set.const = 0)),5)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,
+                                            include.rho = TRUE,
+                                            set.const = 0)),6)
+  
+  expect_length(get_preset(twoStepsBenchmark(turnover,construction,
+                                            include.rho = TRUE,include.differenciation = TRUE)),
+                0)
+  expect_length(get_preset(twoStepsBenchmark(turnover,construction,set.coeff = 1)),0)
+  expect_length(get_preset(twoStepsBenchmark(turnover,construction,set.const = 1)),0)
+})
+
 test_that("info switch",{
   expect_s3_class(info_switch("Benchmark plot"),"html")
   expect_s3_class(info_switch("Scatter plot"),"html")
