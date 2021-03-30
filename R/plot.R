@@ -35,6 +35,12 @@ default_lty_pal <- function(object) {
   else linetype_pal()
 }
 
+#' Default margins
+#' 
+#' The default margins for the graphics.
+#' 
+#' @keywords internal
+#' @export
 default_margins <- function(main, xlab, ylab) {
   c(
     if (is.null(xlab)) 1 else 2,

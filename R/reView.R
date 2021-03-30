@@ -161,6 +161,23 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                           "autocorrelated levels - without constant"
                 ))
 
+get_preset <- function(benchmark) {
+  m <- get_model(benchmark)
+  
+  match <- which(m$include.differenciation == presets$include.differenciation &
+                   m$include.rho == presets$include.rho &
+                   vapply(presets$set.const,
+                          function(x,y) if ((length(x) == 0 &&
+                                             length(y) == 0) ||
+                                            isTRUE(x == y)) TRUE else FALSE,
+                          m$set.const,
+                          FUN.VALUE = TRUE) &
+                   length(m$set.coeff) == 0)
+  
+  if (length(match) == 0) NA else match
+  
+}
+
 presets_list_fun <- function(hfserie,lfserie,...) {
   lapply(1L:6L,function(type) {
     twoStepsBenchmark(hfserie,lfserie,
@@ -278,11 +295,11 @@ set_plots_window_with_brush <- function(session,input,old_bn) {
   session$resetBrush("brush")
 }
 
-set_preset <- function(session,selected_preset) {
-  updateCheckboxInput(session,"dif",value = presets$include.differenciation[selected_preset()])
-  updateCheckboxInput(session,"rho",value = presets$include.rho[selected_preset()])
+set_preset <- function(session,selected_preset_tab1) {
+  updateCheckboxInput(session,"dif",value = presets$include.differenciation[selected_preset_tab1()])
+  updateCheckboxInput(session,"rho",value = presets$include.rho[selected_preset_tab1()])
   updateCheckboxInput(session,"setcoeff_button",value = FALSE)
-  setconst <- presets$set.const[[selected_preset()]]
+  setconst <- presets$set.const[[selected_preset_tab1()]]
   updateCheckboxInput(session,"setconst_button",value = !is.null(setconst))
   updateNumericInput(session,"setconst",value = setconst)
 }
@@ -295,7 +312,7 @@ get_model <- function(benchmark) {
   model <- model.list(benchmark)
   model$set.coeff <- model$set.coefficients[names(model$set.coefficients) != "constant"]
   model$set.const <- model$set.coefficients[names(model$set.coefficients) == "constant"]
-  model$set.coefficents <- NULL
+  model$set.coefficients <- NULL
   model
 }
 
@@ -466,25 +483,36 @@ format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
   HTML(do.call(paste,res))
 }
 
-link_if_in_shiny <- function(id,label,ns) {
+link_if_in_shiny <- function(id,label,ns,...) {
   if (is.null(ns)) label
-  else actionLink(ns(id),label)
+  else actionLink(ns(id),label,...)
 }
 
-summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL) {
+summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL,selected_preset_tab2 = NULL) {
   
   summ <- lapply(presets_list,summary)
   
   tags$table(
     tags$tr(
       tags$td(colspan = 2),
-      tags$th(link_if_in_shiny("model1_actionlink","Model 1",ns),style="text-align:center"),
-      tags$th(link_if_in_shiny("model2_actionlink","Model 2",ns),style="text-align:center"),
-      tags$th(link_if_in_shiny("model3_actionlink","Model 3",ns),style="text-align:center"),
-      tags$th(link_if_in_shiny("model4_actionlink","Model 4",ns),style="text-align:center"),
-      tags$th(link_if_in_shiny("model5_actionlink","Model 5",ns),style="text-align:center"),
-      tags$th(link_if_in_shiny("model6_actionlink","Model 6",ns),style="text-align:center"),
-    ),
+      tags$th(link_if_in_shiny("model1_actionlink","Model 1",ns,
+                               style = if (isTRUE(selected_preset_tab2() == 1)) "color:#FF0000;"),
+              style = "text-align:center"),
+      tags$th(link_if_in_shiny("model2_actionlink","Model 2",ns,
+                               style = if (isTRUE(selected_preset_tab2() == 2)) "color:#FF0000;"),
+              style = "text-align:center"),
+      tags$th(link_if_in_shiny("model3_actionlink","Model 3",ns,
+                               style = if (isTRUE(selected_preset_tab2() == 3)) "color:#FF0000;"),
+              style = "text-align:center"),
+      tags$th(link_if_in_shiny("model4_actionlink","Model 4",ns,
+                               style = if (isTRUE(selected_preset_tab2() == 4)) "color:#FF0000;"),
+              style = "text-align:center"),
+      tags$th(link_if_in_shiny("model5_actionlink","Model 5",ns,
+                               style = if (isTRUE(selected_preset_tab2() == 5)) "color:#FF0000;"),
+              style = "text-align:center"),
+      tags$th(link_if_in_shiny("model6_actionlink","Model 6",ns,
+                               style = if (isTRUE(selected_preset_tab2() == 6)) "color:#FF0000;"),
+              style = "text-align:center")),
     tags$tr(tags$th("Distance",
                     rowspan=if (is.null(old_bn)) 2 else 3),
             tags$th("In-sample predictions (lf changes)",
@@ -551,7 +579,7 @@ summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL) {
   )
 }
 
-reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn) {
+reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn,selected_preset_tab2) {
   
   ns <- session$ns
   
@@ -576,7 +604,8 @@ reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn) 
                                   old_bn(),
                                   if (!isTruthy(input$distance_p)) 2L
                                   else switch(input$distance_p,Manhattan=1L,Euclidean=2L,Max=Inf),
-                                  session$ns)
+                                  session$ns,
+                                  selected_preset_tab2)
                
              })),
              do.call(tags$table,
@@ -598,14 +627,14 @@ reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn) 
   )
 }
 
-reView_server_tab1 <- function(id,old_bn) {
+reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2) {
   moduleServer(id,
                function(input,output,session) {
                  
                  presets_list <- reactive({
-                   m <- model.list(old_bn())
-                   presets_list_fun(hfserie(old_bn()),
-                                    lfserie(old_bn()),
+                   m <- model.list(new_bn_ext_setter())
+                   presets_list_fun(hfserie(new_bn_ext_setter()),
+                                    lfserie(new_bn_ext_setter()),
                                     start.coeff.calc=m$start.coeff.calc,
                                     end.coeff.calc=m$end.coeff.calc,
                                     start.benchmark=m$start.benchmark,
@@ -615,31 +644,40 @@ reView_server_tab1 <- function(id,old_bn) {
                  })
                  
                  output$firstTabOutput <- renderUI({
-                   reView_server_tab1_switch(input,output,session,presets_list,old_bn)
+                   reView_server_tab1_switch(input,output,session,presets_list,old_bn,selected_preset_tab2)
                  })
                  
-                 selected_preset <- reactiveVal(NULL)
+                 selected_preset_tab1 <- reactiveVal(NULL)
                  
                  lapply(1L:6L, function(n) {
-                   output[[paste0("model",n,"_plot")]] <- renderPlot(plot(lapply(presets_list(),in_sample)[[n]],
-                                                                          main = paste0("Model ",n," (",presets$label[n],")")))
+                   output[[paste0("model",n,"_plot")]] <- renderPlot({
+                     plot(in_sample(presets_list()[[n]]),
+                          main = paste0("Model ",n," (",presets$label[n],")"),
+                          mar = c(1,1.3,1,0.2))
+                     if (isTRUE(selected_preset_tab2() == n)) {
+                       mar_save <- par("mar")
+                       on.exit(par(mar=mar_save))
+                       par(mar=c(0,0,0,0))
+                       box(col = "red")
+                     }
+                   })
                  })
                  
                  lapply(1L:6L,function(type) {
                    observeEvent(
                      input[[paste0("model",type,"_plotclick")]],
                      {
-                       selected_preset(NULL)
-                       selected_preset(type)
+                       selected_preset_tab1(NULL)
+                       selected_preset_tab1(type)
                      })
                    observeEvent(
                      input[[paste0("model",type,"_actionlink")]],
                      {
-                       selected_preset(NULL)
-                       selected_preset(type)
+                       selected_preset_tab1(NULL)
+                       selected_preset_tab1(type)
                      },ignoreInit = TRUE)
                  })
-                 selected_preset
+                 selected_preset_tab1
                })
 }
 
@@ -801,32 +839,32 @@ reView_server_tab2_switch <- function(input,output,new_bn,old_bn,ns,compare) {
 }
 
 reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
-                               old_bn,compare,
-                               selected_preset,reset) {
+                               old_bn,new_bn_external_setter,compare,
+                               selected_preset_tab1,reset) {
   moduleServer(id,
                function(input,output,session) {
                  
-                 new_bn <- reactive(get_new_bn(input,hfserie_name,lfserie_name,old_bn))
+                 new_bn <- reactive(get_new_bn(input,hfserie_name,lfserie_name,new_bn_external_setter))
                  
                  exportTestValues(new_bn = new_bn())
                  
                  # Inputs initializers
                  
-                 observeEvent(c(reset(),old_bn()),
-                              set_inputs_to_default(session,old_bn),
+                 observeEvent(c(reset(),new_bn_external_setter()),
+                              set_inputs_to_default(session,new_bn_external_setter),
                               priority = 2L)
                  
-                 observeEvent(selected_preset(),set_preset(session,selected_preset),
+                 observeEvent(selected_preset_tab1(),set_preset(session,selected_preset_tab1),
                               ignoreNULL = TRUE, priority = 2L)
                  
                  # Input modifiers
                  
                  observeEvent(input$brush,
-                              set_plots_window_with_brush(session,input,old_bn),
+                              set_plots_window_with_brush(session,input,new_bn_external_setter),
                               ignoreNULL = TRUE, priority = 1L)
                  
                  observeEvent(input$click,
-                              updateSliderInput(session, "plotswin",value = get_maxwin(old_bn())),
+                              updateSliderInput(session, "plotswin",value = get_maxwin(new_bn_external_setter())),
                               ignoreNULL = TRUE,priority = 1L)
                  
                  observeEvent(compare(),{
@@ -894,23 +932,24 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                })
 }
 
-reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
+reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,lfserie_name,compare) {
   moduleServer(id,function(input, output, session) {
     
     output$titlenavbar <- renderText(paste("reView:", hfserie_name(),"on", lfserie_name()))
     
     # tab 1 : Presets
     
-    selected_preset <- reView_server_tab1("reViewtab1",old_bn)
-    observeEvent(selected_preset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
+    selected_preset_tab1 <- reView_server_tab1("reViewtab1",old_bn,new_bn_external_setter,
+                                               reactive(get_preset(new_bn())))
+    observeEvent(selected_preset_tab1(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
                  priority = 3L)
     
     # tab 2 : Modify
     
     new_bn <- reView_server_tab2("reViewtab2",
                                  hfserie_name,lfserie_name,
-                                 old_bn,compare,
-                                 selected_preset,reset)
+                                 old_bn,new_bn_external_setter,compare,
+                                 selected_preset_tab1,reset)
     
     # tab3 : Export
     
@@ -924,9 +963,12 @@ reView_server_module <- function(id,old_bn,hfserie_name,lfserie_name,compare) {
 }
 reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
   function(input,output,session) {
-    reView_server_module("reView",reactive(old_bn),
-                         reactive(hfserie_name),reactive(lfserie_name),
-                         reactive(compare))
+    reView_server_module("reView",
+                         old_bn = reactive(old_bn),
+                         new_bn_external_setter = reactive(old_bn),
+                         hfserie_name = reactive(hfserie_name),
+                         lfserie_name = reactive(lfserie_name),
+                         compare = reactive(compare))
   }
 }
 

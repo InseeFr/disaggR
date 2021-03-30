@@ -14,6 +14,23 @@ test_that("switch window", {
                    c(tspex[1L],2011.4))
 })
 
+test_that("get_preset", {
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)),1)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
+                                            set.const = 0)),2)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction)),3)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.rho = TRUE)),4)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,set.const = 0)),5)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,
+                                            include.rho = TRUE,
+                                            set.const = 0)),6)
+  
+  expect_true(is.na(get_preset(twoStepsBenchmark(turnover,construction,
+                                                 include.rho = TRUE,include.differenciation = TRUE))))
+  expect_true(is.na(get_preset(twoStepsBenchmark(turnover,construction,set.coeff = 1))))
+  expect_true(is.na(get_preset(twoStepsBenchmark(turnover,construction,set.const = 1))))
+})
+
 test_that("info switch",{
   expect_s3_class(info_switch("Benchmark plot"),"html")
   expect_s3_class(info_switch("Scatter plot"),"html")
@@ -59,12 +76,12 @@ test_that("presets list fun",{
   produced <- presets_list_fun(turnover,construction)
   
   expected <- list(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE),
-                       twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
-                                         set.const = 0),
-                       twoStepsBenchmark(turnover,construction),
-                       twoStepsBenchmark(turnover,construction,include.rho = TRUE),
-                       twoStepsBenchmark(turnover,construction,set.const = 0),
-                       twoStepsBenchmark(turnover,construction,set.const = 0,include.rho = TRUE))
+                   twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
+                                     set.const = 0),
+                   twoStepsBenchmark(turnover,construction),
+                   twoStepsBenchmark(turnover,construction,include.rho = TRUE),
+                   twoStepsBenchmark(turnover,construction,set.const = 0),
+                   twoStepsBenchmark(turnover,construction,set.const = 0,include.rho = TRUE))
   
   expect_identical(lapply(produced,in_sample),lapply(expected,in_sample))
 })
@@ -397,7 +414,7 @@ test_that("reView-setcoefconst",{
   
   set_coeff <- app$waitForValue("reView-reViewtab2-setcoeff",iotype="input")
   set_const <- app$waitForValue("reView-reViewtab2-setconst",iotype="input")
-
+  
   expect_equal(set_coeff,1)
   expect_equal(set_const,0)
   
