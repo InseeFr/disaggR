@@ -111,20 +111,20 @@ get_clean_wins <- function(benchmark) {
        domain = win_domain)
 }
 
-get_maxwin <- function(old_bn) {
+get_maxwin <- function(benchmark) {
   
-  tsphf <- tsp(hfserie(old_bn))
-  tsplf <- tsp(lfserie(old_bn))
+  tsphf <- tsp(hfserie(benchmark))
+  tsplf <- tsp(lfserie(benchmark))
   
-  clean_wins_old_bn <- get_clean_wins(old_bn)
+  clean_wins_benchmark <- get_clean_wins(benchmark)
   
   startmin <- floor(min(tsphf[1L],tsplf[1L],
-                        clean_wins_old_bn$benchmark[1L],
-                        clean_wins_old_bn$coeff.calc[1L]))
+                        clean_wins_benchmark$benchmark[1L],
+                        clean_wins_benchmark$coeff.calc[1L]))
   
   endmax <- floor(max(tsphf[2L],tsplf[2L],
-                      clean_wins_old_bn$benchmark[2L],
-                      clean_wins_old_bn$coeff.calc[2L]))
+                      clean_wins_benchmark$benchmark[2L],
+                      clean_wins_benchmark$coeff.calc[2L]))
   
   c(startmin,endmax)
 }
@@ -231,9 +231,9 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                              end.domain_arg = end.domain)))
 }
 
-get_new_bn <- function(input,hfserie_name,lfserie_name,old_bn) {
+get_new_bn <- function(input,hfserie_name,lfserie_name,new_bn_external_setter) {
   make_new_bn(hfserie_name(),lfserie_name(),
-              hfserie(old_bn()),lfserie(old_bn()),
+              hfserie(new_bn_external_setter()),lfserie(new_bn_external_setter()),
               include.differenciation = input$dif,
               include.rho = input$rho,
               set.coeff = {
@@ -254,24 +254,24 @@ get_new_bn <- function(input,hfserie_name,lfserie_name,old_bn) {
               end.coeff.calc = input$coeffcalc[2],
               start.benchmark = input$benchmark[1],
               end.benchmark = input$benchmark[2],
-              start.domain = model.list(old_bn())$start.domain,
-              end.domain = model.list(old_bn())$end.domain)
+              start.domain = model.list(new_bn_external_setter())$start.domain,
+              end.domain = model.list(new_bn_external_setter())$end.domain)
 }
 
-set_inputs_to_default <- function(session,old_bn) {
-  tsplf <- tsp(lfserie(old_bn()))
-  model <- get_model(old_bn())
-  maxwin <- get_maxwin(old_bn())
-  clean_wins_old_bn <- get_clean_wins(old_bn())
+set_inputs_to_default <- function(session,new_bn_external_setter) {
+  tsplf <- tsp(lfserie(new_bn_external_setter()))
+  model <- get_model(new_bn_external_setter())
+  maxwin <- get_maxwin(new_bn_external_setter())
+  clean_wins_new_bn_external_setter <- get_clean_wins(new_bn_external_setter())
   updateCheckboxInput(session,"dif",value = model$include.differenciation)
   updateCheckboxInput(session,"rho",value = model$include.rho)
   updateSliderInput(session,"coeffcalc",
                     min = tsplf[1L],max = tsplf[2L],
-                    value = clean_wins_old_bn$coeff.calc,
+                    value = clean_wins_new_bn_external_setter$coeff.calc,
                     step = 1/tsplf[3L])
   updateSliderInput(session,"benchmark",
                     min = tsplf[1L],max = tsplf[2L],
-                    value = clean_wins_old_bn$benchmark,
+                    value = clean_wins_new_bn_external_setter$benchmark,
                     step = 1/tsplf[3L])
   updateSliderInput(session,"plotswin",
                     min = maxwin[1L],max = maxwin[2L],
@@ -850,7 +850,7 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  
                  # Inputs initializers
                  
-                 observeEvent(c(reset(),new_bn_external_setter()),
+                 observeEvent(c(reset(),new_bn_external_setter(),old_bn()),
                               set_inputs_to_default(session,new_bn_external_setter),
                               priority = 2L)
                  
@@ -860,11 +860,11 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                  # Input modifiers
                  
                  observeEvent(input$brush,
-                              set_plots_window_with_brush(session,input,new_bn_external_setter),
+                              set_plots_window_with_brush(session,input,old_bn),
                               ignoreNULL = TRUE, priority = 1L)
                  
                  observeEvent(input$click,
-                              updateSliderInput(session, "plotswin",value = get_maxwin(new_bn_external_setter())),
+                              updateSliderInput(session, "plotswin",value = get_maxwin(old_bn())),
                               ignoreNULL = TRUE,priority = 1L)
                  
                  observeEvent(compare(),{
