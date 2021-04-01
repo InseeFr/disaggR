@@ -96,7 +96,7 @@ in_disaggr <- function(object,type="changes") UseMethod("in_disaggr")
 #' @export
 in_disaggr.twoStepsBenchmark <- function(object,type="changes") {
   
-  hfserie <- hfserie(object)
+  hfserie <- na.omit(hfserie(object))
   
   benchmark <- na.omit(as.ts(object))
   
