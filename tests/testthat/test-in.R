@@ -6,6 +6,18 @@ test_that("in_disaggR levels rebased works if NA at first place",
             )
           })
 
+test_that("in_disaggR levels rebased works if 0 at first place",
+          {
+            turnover_modif <-
+              ts(c(rep(0,12),turnover),start=1999,frequency = 12)
+            expect_identical(
+              window(in_disaggr(twoStepsBenchmark(turnover,construction,start.domain=1999),type = "levels-rebased"),
+                     start=2000),
+              window(in_disaggr(twoStepsBenchmark(turnover_modif,construction),type = "levels-rebased"),
+                     start=2000)
+            )
+          })
+
 test_that("in_sample works with include.differenciation=TRUE", {
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,

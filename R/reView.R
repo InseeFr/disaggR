@@ -140,8 +140,12 @@ reViewOutput <- function(benchmark,benchmark_old,compare) {
 
 plotOutBrushAndRender <- function(object,plotswin,output,output_name,ns,
                                   is.brush=TRUE,height,...) {
-  output[[output_name]] <- renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L],
-                                           ...))
+  output[[output_name]] <- {
+    if (is.null(tryCatch(object(),error=function(e) NULL))) NULL
+    else renderPlot(plot(object(),start=plotswin()[1L],end=plotswin()[2L],
+                         ...))
+  }
+  
   plotOutput(ns(output_name),
              brush = if (is.brush) brushOpts(ns("brush"),
                                              direction = "x",
@@ -162,6 +166,9 @@ presets <- list(include.differenciation = c(TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
                 ))
 
 get_preset <- function(benchmark) {
+  
+  if (is.null(benchmark)) return(NA)
+  
   m <- get_model(benchmark)
   
   match <- which(m$include.differenciation == presets$include.differenciation &
@@ -232,30 +239,32 @@ make_new_bn <- function(hfserie_name,lfserie_name,
 }
 
 get_new_bn <- function(input,hfserie_name,lfserie_name,new_bn_external_setter) {
-  make_new_bn(hfserie_name(),lfserie_name(),
-              hfserie(new_bn_external_setter()),lfserie(new_bn_external_setter()),
-              include.differenciation = input$dif,
-              include.rho = input$rho,
-              set.coeff = {
-                if (input$setcoeff_button) {
-                  if (is.na(input$setcoeff)) 0
-                  else input$setcoeff
-                }
-                else NULL
-              },
-              set.const = {
-                if (input$setconst_button) {
-                  if (is.na(input$setconst)) 0
-                  else input$setconst
-                }
-                else NULL
-              },
-              start.coeff.calc = input$coeffcalc[1],
-              end.coeff.calc = input$coeffcalc[2],
-              start.benchmark = input$benchmark[1],
-              end.benchmark = input$benchmark[2],
-              start.domain = model.list(new_bn_external_setter())$start.domain,
-              end.domain = model.list(new_bn_external_setter())$end.domain)
+  tryCatch(
+    make_new_bn(hfserie_name(),lfserie_name(),
+                hfserie(new_bn_external_setter()),lfserie(new_bn_external_setter()),
+                include.differenciation = input$dif,
+                include.rho = input$rho,
+                set.coeff = {
+                  if (input$setcoeff_button) {
+                    if (is.na(input$setcoeff)) 0
+                    else input$setcoeff
+                  }
+                  else NULL
+                },
+                set.const = {
+                  if (input$setconst_button) {
+                    if (is.na(input$setconst)) 0
+                    else input$setconst
+                  }
+                  else NULL
+                },
+                start.coeff.calc = input$coeffcalc[1],
+                end.coeff.calc = input$coeffcalc[2],
+                start.benchmark = input$benchmark[1],
+                end.benchmark = input$benchmark[2],
+                start.domain = model.list(new_bn_external_setter())$start.domain,
+                end.domain = model.list(new_bn_external_setter())$end.domain),
+    error = function(e) NULL)
 }
 
 set_inputs_to_default <- function(session,new_bn_external_setter) {
@@ -946,8 +955,7 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
                                  hfserie_name,lfserie_name,
                                  old_bn,new_bn_external_setter,compare,
                                  selected_preset_tab1,reset)
-    selected_preset_tab2 <- reactive(tryCatch(get_preset(new_bn()),
-                                             error = function(e) NA))
+    selected_preset_tab2 <- reactive(get_preset(new_bn()))
     
     # tab3 : Export
     

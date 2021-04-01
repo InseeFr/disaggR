@@ -96,7 +96,7 @@ in_disaggr <- function(object,type="changes") UseMethod("in_disaggr")
 #' @export
 in_disaggr.twoStepsBenchmark <- function(object,type="changes") {
   
-  hfserie <- na.omit(hfserie(object))
+  hfserie <- hfserie(object)
   
   benchmark <- na.omit(as.ts(object))
   
@@ -104,7 +104,13 @@ in_disaggr.twoStepsBenchmark <- function(object,type="changes") {
   
   series <- switch(type,
                    levels = series,
-                   "levels-rebased" = ts(t(t(series)/series[1L,]) * 100,start=start(series),frequency=frequency(series)),
+                   "levels-rebased" =
+                     ts(
+                       t(t(series) /
+                           series[which(apply(!(series == 0) & !(is.na(series)),1L, all))[1L],]
+                         ) * 100,
+                       start=start(series),
+                       frequency=frequency(series)),
                    changes = (series/stats::lag(series,-1)-1)*100,
                    contributions = {
                      series_with_smoothed_part <-
