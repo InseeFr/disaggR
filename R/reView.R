@@ -653,13 +653,10 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2)
                    output[[paste0("model",n,"_plot")]] <- renderPlot({
                      plot(in_sample(presets_list()[[n]]),
                           main = paste0("Model ",n," (",presets$label[n],")"),
-                          mar = c(1,1.3,1,0.2))
-                     if (isTRUE(selected_preset_tab2() == n)) {
-                       mar_save <- par("mar")
-                       on.exit(par(mar=mar_save))
-                       par(mar=c(0,0,0,0))
-                       box(col = "red")
-                     }
+                          col.main = if (isTRUE(selected_preset_tab2() == n)) {
+                            "red"
+                          } else "black")
+                    
                    })
                  })
                  
