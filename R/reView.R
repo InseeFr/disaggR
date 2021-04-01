@@ -435,7 +435,7 @@ reView_ui_module <- function(id) {
              windowTitle = "reView",
              id = ns("menu"),
              selected = "Presets",
-             tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
+             header = tags$style(".section { font-family: 'Source Sans Pro', sans-serif; font-weight: 420; line-height: 20px; text-align: center;}"),
              tabPanel("Presets",
                       reView_ui_tab1(ns("reViewtab1")),
              ),
@@ -656,7 +656,7 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2)
                           col.main = if (isTRUE(selected_preset_tab2() == n)) {
                             "red"
                           } else "black")
-                    
+                     
                    })
                  })
                  
@@ -936,8 +936,7 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
     
     # tab 1 : Presets
     
-    selected_preset_tab1 <- reView_server_tab1("reViewtab1",old_bn,new_bn_external_setter,
-                                               reactive(get_preset(new_bn())))
+    selected_preset_tab1 <- reView_server_tab1("reViewtab1",old_bn,new_bn_external_setter,selected_preset_tab2)
     observeEvent(selected_preset_tab1(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
                  priority = 3L)
     
@@ -947,6 +946,8 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
                                  hfserie_name,lfserie_name,
                                  old_bn,new_bn_external_setter,compare,
                                  selected_preset_tab1,reset)
+    selected_preset_tab2 <- reactive(tryCatch(get_preset(new_bn()),
+                                             error = function(e) NA))
     
     # tab3 : Export
     
