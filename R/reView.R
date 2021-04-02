@@ -964,7 +964,9 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
                                 compare)
     
     observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
-                 priority = 3L)    
+                 priority = 3L)
+    
+    new_bn
   })
 }
 reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
