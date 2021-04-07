@@ -114,17 +114,10 @@ get_clean_wins <- function(benchmark) {
 get_maxwin <- function(benchmark) {
   
   tsphf <- tsp(hfserie(benchmark))
-  tsplf <- tsp(lfserie(benchmark))
   
-  clean_wins_benchmark <- get_clean_wins(benchmark)
+  startmin <- floor(tsphf[1L])
   
-  startmin <- floor(min(tsphf[1L],tsplf[1L],
-                        clean_wins_benchmark$benchmark[1L],
-                        clean_wins_benchmark$coeff.calc[1L]))
-  
-  endmax <- floor(max(tsphf[2L],tsplf[2L],
-                      clean_wins_benchmark$benchmark[2L],
-                      clean_wins_benchmark$coeff.calc[2L]))
+  endmax <- floor(tsphf[2L])
   
   c(startmin,endmax)
 }
@@ -475,17 +468,22 @@ format_table_row <- function(object,digits,hide=integer(),signif.stars = FALSE,
   }
   
   bckg.class <- vector("list",length(object))
+  is.bold <- rep(FALSE,length(object))
   
   if (!is.null(background.format)) {
     switch(background.format,
-           min.is.green = bckg.class[which.min(object)] <- "p-3 mb-2 bg-success text-white",
-           success.is.red = bckg.class[object <= 0.05 & !is.na(object)] <- "p-3 mb-2 bg-danger text-white",
-           fail.is.red = bckg.class[object > 0.05 & !is.na(object)] <- "p-3 mb-2 bg-danger text-white")
+           min.is.green = {
+             bckg.class[which(object<=1.05*min(object))] <- "bg-success text-white"
+             is.bold[which.min(object)] <- TRUE
+           },
+           success.is.red = bckg.class[object <= 0.05 & !is.na(object)] <- "bg-danger text-white",
+           fail.is.red = bckg.class[object > 0.05 & !is.na(object)] <- "bg-danger text-white")
   }
   
   res <- Map(tags$td,
              char_content,
-             class = bckg.class,style="text-align: right")
+             class = bckg.class,
+             style=paste(ifelse(is.bold,"font-weight: bold;",""),"text-align: right"))
   
   res[hide] <- rep(list(tags$td()),length(hide))
   
@@ -497,31 +495,19 @@ link_if_in_shiny <- function(id,label,ns,...) {
   else actionLink(ns(id),label,...)
 }
 
-summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL,selected_preset_tab2 = NULL) {
+summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL,selected_preset_tab2 = NULL, compare = NULL) {
   
   summ <- lapply(presets_list,summary)
   
   tags$table(
-    tags$tr(
-      tags$td(colspan = 2),
-      tags$th(link_if_in_shiny("model1_actionlink","Model 1",ns,
-                               style = if (isTRUE(selected_preset_tab2() == 1)) "color:#FF0000;"),
-              style = "text-align:center"),
-      tags$th(link_if_in_shiny("model2_actionlink","Model 2",ns,
-                               style = if (isTRUE(selected_preset_tab2() == 2)) "color:#FF0000;"),
-              style = "text-align:center"),
-      tags$th(link_if_in_shiny("model3_actionlink","Model 3",ns,
-                               style = if (isTRUE(selected_preset_tab2() == 3)) "color:#FF0000;"),
-              style = "text-align:center"),
-      tags$th(link_if_in_shiny("model4_actionlink","Model 4",ns,
-                               style = if (isTRUE(selected_preset_tab2() == 4)) "color:#FF0000;"),
-              style = "text-align:center"),
-      tags$th(link_if_in_shiny("model5_actionlink","Model 5",ns,
-                               style = if (isTRUE(selected_preset_tab2() == 5)) "color:#FF0000;"),
-              style = "text-align:center"),
-      tags$th(link_if_in_shiny("model6_actionlink","Model 6",ns,
-                               style = if (isTRUE(selected_preset_tab2() == 6)) "color:#FF0000;"),
-              style = "text-align:center")),
+    do.call(tags$tr,
+            c(list(tags$td(colspan = 2)),
+              lapply(1:6,function(n) tags$th(link_if_in_shiny(paste0("model",n,"_actionlink"),paste("Model",n),ns,
+                                                              style = paste(
+                                                                if (isTRUE(selected_preset_tab2 == n)) "color: #FF0000;",
+                                                                if (isTRUE(get_preset(old_bn) == n) && compare) "font-style: italic;")),
+                                             style = "text-align:center")))
+    ),
     tags$tr(tags$th("Distance",
                     rowspan=if (is.null(old_bn)) 2 else 3),
             tags$th("In-sample predictions (lf changes)",
@@ -588,7 +574,7 @@ summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL,selected_p
   )
 }
 
-reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn,selected_preset_tab2) {
+reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn,selected_preset_tab2,compare) {
   
   ns <- session$ns
   
@@ -614,7 +600,8 @@ reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn,s
                                   if (!isTruthy(input$distance_p)) 2L
                                   else switch(input$distance_p,Manhattan=1L,Euclidean=2L,Max=Inf),
                                   session$ns,
-                                  selected_preset_tab2)
+                                  selected_preset_tab2(),
+                                  compare())
                
              })),
              do.call(tags$table,
@@ -636,7 +623,7 @@ reView_server_tab1_switch <- function(input,output,session,presets_list,old_bn,s
   )
 }
 
-reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2) {
+reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2,compare) {
   moduleServer(id,
                function(input,output,session) {
                  
@@ -653,7 +640,8 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2)
                  })
                  
                  output$firstTabOutput <- renderUI({
-                   reView_server_tab1_switch(input,output,session,presets_list,old_bn,selected_preset_tab2)
+                   reView_server_tab1_switch(input,output,session,presets_list,old_bn,selected_preset_tab2,
+                                             compare)
                  })
                  
                  selected_preset_tab1 <- reactiveVal(NULL)
@@ -662,10 +650,10 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2)
                    output[[paste0("model",n,"_plot")]] <- renderPlot({
                      plot(in_sample(presets_list()[[n]]),
                           main = paste0("Model ",n," (",presets$label[n],")"),
-                          col.main = if (isTRUE(selected_preset_tab2() == n)) {
-                            "red"
-                          } else "black")
-                     
+                          col.main = if (isTRUE(selected_preset_tab2() == n)) "red"
+                          else "black",
+                          font.main = if (isTRUE(get_preset(old_bn()) == n) && compare()) 4
+                          else 2)
                    })
                  })
                  
@@ -931,7 +919,8 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                                  if (input$Copymade) "New model copied in the clipboard !"
                                  else "Sorry but the browser blocked the keyboard !",
                                  easyClose = TRUE,
-                                 footer = NULL))
+                                 footer = NULL),
+                     session)
                  })
                  
                  reactive(input$Reset)
@@ -945,7 +934,8 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
     
     # tab 1 : Presets
     
-    selected_preset_tab1 <- reView_server_tab1("reViewtab1",old_bn,new_bn_external_setter,selected_preset_tab2)
+    selected_preset_tab1 <- reView_server_tab1("reViewtab1",old_bn,new_bn_external_setter,selected_preset_tab2,
+                                               compare)
     observeEvent(selected_preset_tab1(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
                  priority = 3L)
     
