@@ -115,20 +115,21 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
               fitted.values = window(hfserie_fitted,start=tsp(hfserie_cropped)[1],end=tsp(hfserie_cropped)[2],extend = TRUE),
               regression = regresults,
               smoothed.part = smoothed_part,
-              model.list = list(hfserie = hfserie,
-                                lfserie = lfserie,
-                                include.rho = include.rho,
-                                include.differenciation = include.differenciation,
-                                set.coefficients = set_coefficients,
-                                start.coeff.calc = start.coeff.calc,
-                                end.coeff.calc = end.coeff.calc,
-                                start.benchmark = start.benchmark,
-                                end.benchmark = end.benchmark,
-                                start.domain = start.domain,
-                                end.domain = end.domain),
-              call = cl)
-  
-  new("twoStepsBenchmark",res)
+              model.list = c(list(hfserie = hfserie,
+                                  lfserie = lfserie,
+                                  include.rho = include.rho,
+                                  include.differenciation = include.differenciation,
+                                  set.coefficients = set_coefficients,
+                                  start.coeff.calc = start.coeff.calc,
+                                  end.coeff.calc = end.coeff.calc,
+                                  start.benchmark = start.benchmark,
+                                  end.benchmark = end.benchmark,
+                                  start.domain = start.domain,
+                                  end.domain = end.domain),
+                             if (!is.null(set.smoothed.part)) list(set.smoothed.part=set.smoothed.part)),
+                             call = cl)
+              
+              new("twoStepsBenchmark",res)
 }
 
 #' @title Regress and bends a time-serie with a lower frequency one

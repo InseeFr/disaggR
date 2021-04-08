@@ -9,6 +9,8 @@ the S3 class was named "insample".
 * the plot and autoplot methods now have xlab, ylab, start, end, col, lty, show.legend, main and mar arguments. The autoplot methods have also a theme argument.
 * removed the c++ code to improve readability
 * most of the stats methods for time-series now coerce twoStepsBenchmarks or rateSmooths into time-series
+* *reUseBenchmark* now induces a "set.smoothed.part" element in *model.list* if reeval.smoothed.part is
+`FALSE`.
 
 # disaggR 0.1.9
 * fixed the R check for old-release (3.6.3).

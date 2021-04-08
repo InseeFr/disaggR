@@ -364,6 +364,7 @@ test_that("reUseBenchmark works",{
   expect_identical(m1$end.benchmark,m2$end.benchmark)
   expect_identical(m1$start.domain,m2$start.domain)
   expect_identical(m1$end.domain,m2$end.domain)
+  expect_identical(smoothed.part(benchmark1),m2$set.smoothed.part)
   
   expect_false(identical(smoothed.part(benchmark3),smoothed.part(benchmark1)))
   expect_identical(coefficients(benchmark1),coefficients(benchmark3))
@@ -375,6 +376,8 @@ test_that("reUseBenchmark works",{
   expect_identical(m1$end.benchmark,m3$end.benchmark)
   expect_identical(m1$start.domain,m3$start.domain)
   expect_identical(m1$end.domain,m3$end.domain)
+  expect_null(m1$set.smoothed.part)
+  expect_null(m3$set.smoothed.part)
   
   expect_false(identical(as.ts(benchmark3),as.ts(benchmark2)))
   
