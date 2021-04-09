@@ -123,6 +123,7 @@ test_that("reView-withoutset",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_os("mac") # phantomjs bugs with macos
+  skip_on_cran() # no shinytest on cran
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-withoutset"))
@@ -374,6 +375,7 @@ test_that("reView-setcoefconst",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_os("mac") # phantomjs bugs with macos
+  skip_on_cran() # no shinytest on cran
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-setcoefconst"))

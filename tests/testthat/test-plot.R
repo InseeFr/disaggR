@@ -15,7 +15,8 @@ expect_doppelganger <- function(title, fig) {
 }
 
 test_that("plot works with twoStepsBenchmark", {
-  testthat::skip_if_not_installed("vdiffr")
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE,
@@ -168,7 +169,8 @@ test_that("plot works with twoStepsBenchmark", {
 })
 
 test_that("ggplot works", {
-  testthat::skip_if_not_installed("vdiffr")
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -292,7 +294,8 @@ test_that("ggplot works", {
 })
 
 test_that("show.legend=FALSE works", {
-  testthat::skip_if_not_installed("vdiffr")
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -368,8 +371,9 @@ test_that("show.legend=FALSE works", {
 })
 
 test_that("xlab and ylab works", {
-  testthat::skip_if_not_installed("vdiffr")
+  skip_if_not_installed("vdiffr")
   skip_on_os(c("mac","linux","solaris"))
+  skip_on_cran()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -388,7 +392,8 @@ test_that("xlab and ylab works", {
 })
 
 test_that("plot works with threeRuleSmooth", {
-  testthat::skip_if_not_installed("vdiffr")
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
   smooth <- threeRuleSmooth(hfserie = turnover,
                             lfserie = construction,
                             end.domain = c(2021,12))
@@ -491,7 +496,8 @@ test_that("plot works with threeRuleSmooth", {
 })
 
 test_that("ggplot works with threeRuleSmooth", {
-  testthat::skip_if_not_installed("vdiffr")
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
   smooth <- threeRuleSmooth(hfserie = turnover,
                             lfserie = construction,
                             end.domain = c(2021,12))
