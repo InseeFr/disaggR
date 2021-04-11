@@ -1,4 +1,4 @@
-# disaggR 0.2.0
+# disaggR 0.2
 * reView : a shiny reviewing application for twoStepsBenchmarks.
 * rePort : a rmarkdown html report for twoStepsBenchmark and reView outputs.
 * start.domain and end.domain know crops the hfserie *after* having calculated the coefficients. That way, it is possible to evaluate the coefficients on a full hfserie, cropping them for the application.
@@ -11,12 +11,7 @@ the S3 class was named "insample".
 * most of the stats methods for time-series now coerce twoStepsBenchmarks or rateSmooths into time-series
 * *reUseBenchmark* now induces a "set.smoothed.part" element in *model.list* if reeval.smoothed.part is
 `FALSE`.
-
-# disaggR 0.1.9
-* fixed the R check for old-release (3.6.3).
-
-# disaggR 0.1.8
-* fixed the R check for Solaris.
+* *threeRuleSmooth* makes it easier than bflSmooth to procede to a rate smooth.
 
 # disaggR 0.1.7
 * various optimizations including cache for bflSmooth, which is now much faster, and alternative internal methods for time-series
