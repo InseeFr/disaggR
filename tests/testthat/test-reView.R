@@ -87,6 +87,7 @@ test_that("presets list fun",{
 })
 
 test_that("rePort produces a report",{
+  skip_on_cran()
   browser <- options(browser=function(url) message(url))
   on.exit(options(browser))
   

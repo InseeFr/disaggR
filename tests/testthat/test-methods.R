@@ -184,6 +184,8 @@ test_that("diverse ts methods",{
 })
 
 test_that("monthplot ts method",{
+  skip_on_cran()
+  skip_if_not_installed("vdiffr")
   benchmark <- twoStepsBenchmark(turnover,construction)
   smooth <- threeRuleSmooth(turnover,construction)
   expect_doppelganger <- function(title, fig) {
@@ -191,7 +193,6 @@ test_that("monthplot ts method",{
                                 fig,
                                 path = if (R.version$major>=4 && R.version$minor>=1.0) "/plots-R-4-1/" else "/plots-R-4-0/")
   }
-  testthat::skip_if_not_installed("vdiffr")
   expect_doppelganger("monthplot-twoStepsBenchmark",
                       function() monthplot(benchmark))
   expect_doppelganger("monthplot-threeRuleSmooth",
