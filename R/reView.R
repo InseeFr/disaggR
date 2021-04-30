@@ -960,7 +960,7 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
     new_bn
   })
 }
-reView_server <- function(old_bn,hfserie_name,lfserie_name,compare,disable_update_navbar) {
+reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
   function(input,output,session) {
     reView_server_module("reView",
                          old_bn = reactive(old_bn),
