@@ -927,7 +927,8 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                })
 }
 
-reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,lfserie_name,compare) {
+reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,lfserie_name,compare,
+                                 disable_update_navbar) {
   moduleServer(id,function(input, output, session) {
     
     output$titlenavbar <- renderText(paste("reView:", hfserie_name(),"on", lfserie_name()))
@@ -936,8 +937,6 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
     
     selected_preset_tab1 <- reView_server_tab1("reViewtab1",old_bn,new_bn_external_setter,selected_preset_tab2,
                                                compare)
-    observeEvent(selected_preset_tab1(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
-                 priority = 3L)
     
     # tab 2 : Modify
     
@@ -953,20 +952,23 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
                                 hfserie_name,lfserie_name,
                                 compare)
     
-    observeEvent(reset(),updateNavbarPage(session,"menu","Modify"),ignoreInit = TRUE,
+    observeEvent(c(selected_preset_tab1(),reset()),
+                 if (!disable_update_navbar()) updateNavbarPage(session,"menu","Modify"),
+                 ignoreInit = TRUE,
                  priority = 3L)
     
     new_bn
   })
 }
-reView_server <- function(old_bn,hfserie_name,lfserie_name,compare) {
+reView_server <- function(old_bn,hfserie_name,lfserie_name,compare,disable_update_navbar) {
   function(input,output,session) {
     reView_server_module("reView",
                          old_bn = reactive(old_bn),
                          new_bn_external_setter = reactive(old_bn),
                          hfserie_name = reactive(hfserie_name),
                          lfserie_name = reactive(lfserie_name),
-                         compare = reactive(compare))
+                         compare = reactive(compare),
+                         disable_update_navbar = reactive(FALSE))
   }
 }
 
