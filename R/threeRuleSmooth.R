@@ -276,7 +276,7 @@ threeRuleSmooth <- function(hfserie,lfserie,
   
   maincl <- match.call()
   
-  threeRuleSmooth_impl(hfserie,lfserie,
+  threeRuleSmooth_impl(purify_ts(hfserie),purify_ts(lfserie),
                        start.benchmark,end.benchmark,
                        start.domain,end.domain,
                        start.delta.rate,end.delta.rate,

@@ -2,6 +2,12 @@ ts_from_tsp <- function(x,tspx) {
   ts(x, start=tspx[1L], frequency=tspx[3L])
 }
 
+purify_ts <- function(x) {
+  s <- start(x)
+  if (length(s) == 2L) ts(x,start = s, frequency = frequency(x))
+  else stop("Incorrect time-serie phase", call. = FALSE)
+}
+
 tsp_equal <- function(tspx,tspy) {
   
   ts.eps <- getOption("ts.eps")

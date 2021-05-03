@@ -292,6 +292,8 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   
   if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
   
+  if (length(start(hfserie)) == 1L)  stop("Incorrect time-serie phase", call. = FALSE)
+  
   hfserie <- ts(matrix(c(constant,hfserie),
                        nrow = NROW(hfserie),
                        ncol = NCOL(hfserie) + 1L),
@@ -299,8 +301,9 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                 frequency = frequency(hfserie),
                 names = c("constant",if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie)))
   
-  twoStepsBenchmark_impl(hfserie,
-                         lfserie,
+  lfserie <- purify_ts(lfserie)
+  
+  twoStepsBenchmark_impl(hfserie,lfserie,
                          include.differenciation,include.rho,
                          c(set.const,set.coeff),
                          start.coeff.calc,end.coeff.calc,

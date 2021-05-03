@@ -186,4 +186,40 @@ test_that("errors",{
   hfserie[1L:12L] <- 0
   expect_error(threeRuleSmooth(hfserie,construction),
                "There is a zero")
+  
+  set.seed(20)
+  expect_error(threeRuleSmooth(hfserie = ts(diffinv(rnorm(240,1,1)),start=2010.1,freq=12),
+                                 lfserie = ts(diffinv(rnorm(18,12,1)),start=2010,freq=1)),
+               "time-serie phase")
+  expect_error(threeRuleSmooth(hfserie = ts(diffinv(rnorm(240,1,1)),start=2010,freq=12),
+                                 lfserie = ts(diffinv(rnorm(18,12,1)),start=2010.1,freq=1)),
+               "time-serie phase")
+})
+
+test_that("ts eps",{
+  turnover_tspmodif <- turnover
+  tsp(turnover_tspmodif)[2L] <- tsp(turnover)[2L]+getOption("ts.eps")/24
+  tsp(turnover_tspmodif)[1L] <- tsp(turnover)[1L]-getOption("ts.eps")/24
+  construction_tspmodif <- disaggR::construction
+  tsp(construction_tspmodif)[2L] <- tsp(construction)[2L]+getOption("ts.eps")/24
+  tsp(construction_tspmodif)[1L] <- tsp(construction)[1L]-getOption("ts.eps")/24
+  expect_identical(as.ts(threeRuleSmooth(turnover_tspmodif,construction_tspmodif)),
+                   as.ts(threeRuleSmooth(turnover,construction)))
+  expect_identical(as.ts(threeRuleSmooth(turnover_tspmodif,construction)),
+                   as.ts(threeRuleSmooth(disaggR::turnover,disaggR::construction)))
+  expect_identical(as.ts(threeRuleSmooth(turnover,construction_tspmodif)),
+                   as.ts(threeRuleSmooth(disaggR::turnover,disaggR::construction)))
+  
+  turnover_tspmodif <- turnover
+  tsp(turnover_tspmodif)[2L] <- tsp(turnover)[2L]-getOption("ts.eps")/24
+  tsp(turnover_tspmodif)[1L] <- tsp(turnover)[1L]+getOption("ts.eps")/24
+  construction_tspmodif <- construction
+  tsp(construction_tspmodif)[2L] <- tsp(construction)[2L]-getOption("ts.eps")/24
+  tsp(construction_tspmodif)[1L] <- tsp(construction)[1L]+getOption("ts.eps")/24
+  expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction_tspmodif)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
+  expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
+  expect_identical(as.ts(twoStepsBenchmark(turnover,construction_tspmodif)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
 })

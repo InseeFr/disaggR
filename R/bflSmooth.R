@@ -12,7 +12,7 @@ weights_control <- function(weights,start,hf_length,hf_freq) {
   if (!is.null(dim(weights)) && dim(weights)[2L] != 1L) stop("The weights serie must be one-dimensional", call. = FALSE)
   tspw <- tsp(weights)
   if (tspw[3L] != hf_freq) stop("The frequency of the weights must be the same than the new frequency", call. = FALSE)
-  if (tspw[1L] != start) stop("The weights serie must have the same start than the expected high-frequency serie", call. = FALSE)
+  if (abs(tspw[1L] - start) > getOption("ts.eps")) stop("The weights serie must have the same start than the expected high-frequency serie", call. = FALSE)
   if (length(weights) != hf_length) stop("The weights serie must have the same end than the expected high-frequency serie", call. = FALSE)
   return()
 }
