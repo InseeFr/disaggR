@@ -1,3 +1,6 @@
+# disaggR 0.2.1
+* fixed some issues with inexact tsps
+
 # disaggR 0.2
 * reView : a shiny reviewing application for twoStepsBenchmarks.
 * rePort : a rmarkdown html report for twoStepsBenchmark and reView outputs.
