@@ -2,6 +2,17 @@ ts_from_tsp <- function(x,tspx) {
   ts(x, start=tspx[1L], frequency=tspx[3L])
 }
 
+tsp_equal <- function(tspx,tspy) {
+  
+  ts.eps <- getOption("ts.eps")
+  
+  tspx[c(1L,2L)] <- tspx[c(1L,2L)] * tspx[3L]
+  tspy[c(1L,2L)] <- tspy[c(1L,2L)] * tspy[3L]
+  
+  all(abs(tspx - tspy) < ts.eps)
+  
+}
+
 # This window is the smallest that is all around the domain of the hfserie
 # that is compatible with the low frequency.
 extend_tsp <- function(tsphf,lffreq) {

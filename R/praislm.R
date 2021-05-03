@@ -86,7 +86,7 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
                     set.coefficients=set_coefficients)
   if ( !is.ts(X) || !is.ts(y) ) stop("Not a ts object", call. = FALSE)
   if (is.null(dim(X))) stop("Not a matrix object", call. = FALSE)
-  if (any(tsp(X) != tsp(y))) stop("X and y should have the same windows and frequencies", call. = FALSE)
+  if (!tsp_equal(tsp(X),tsp(y))) stop("X and y should have the same windows and frequencies", call. = FALSE)
 
   tspx <- tsp(X)
   X <- matrix(as.numeric(X),nrow = nrow(X),ncol = ncol(X),dimnames = dimnames(X))
