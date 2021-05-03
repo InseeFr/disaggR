@@ -75,8 +75,9 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
   title(ylab = ylab, line= 1.3, cex.lab=0.8)
   
   if (abline.x) {
+    verysmall <- attr(abline.x,"verysmall")
     grid(nx = NA,ny=NULL,col = "grey")
-    abline(v = (floor(xmin)+1L):(ceiling(xmax)-1L),lty="dotted",lwd=1,col="grey")   
+    abline(v = (floor(xmin+verysmall)+1L):(ceiling(xmax-verysmall)-1L),lty="dotted",lwd=1,col="grey")   
   }
   else grid(nx = NULL,ny=NULL,col = "grey")
 }
@@ -90,7 +91,7 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
             # of deltat(x)/2 on the right
             ymin = min(x,na.rm = TRUE), ymax = max(x,na.rm = TRUE),
             xlab = xlab, ylab = ylab,
-            extend.x = FALSE, extend.y = TRUE, abline.x = TRUE,
+            extend.x = FALSE, extend.y = TRUE, abline.x = structure(TRUE,verysmall=getOption("ts.eps")/tspx[3L]),
             main = main, ...)
 }
 
@@ -174,22 +175,25 @@ draw_axes <- function(timex) {
     axis(side = 1L, tick = FALSE, line=-1.1, cex.axis=0.7)
   }
   else {
-    year <- floor(timex)
+    year <- floor(timex+getOption("ts.eps")/frequency(timex))
     axis(side = 1L, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
     axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.1, cex.axis=0.7)
   }
 }
 
 window_default <- function(x,start,end) {
+  
   timex <- time(x)
+  
+  verysmall <- getOption("ts.eps")/frequency(x)
   
   non_na_vals <- {
     if (NCOL(x) == 1L) !is.na(x)
     else apply(x,1L,function(x) !all(is.na(x)))
   }
   
-  start <- if (is.null(start)) floor(min(timex[non_na_vals])) else start
-  end <- if (is.null(end)) floor(max(timex[non_na_vals])) + 1 - deltat(x) else end
+  start <- if (is.null(start)) floor(min(timex[non_na_vals]) + verysmall) else start
+  end <- if (is.null(end)) floor(max(timex[non_na_vals]) + verysmall) + 1 - deltat(x) else end
   
   res <- window(x,start=start,end=end,extend=TRUE)
   
@@ -506,7 +510,7 @@ dftsforggplot <- function(object,series_names) {
 ggplotts <- function(object,...) UseMethod("ggplotts")
 
 ggplotts.data.frame <- function(object,show.legend, theme,type,
-                                xlab,ylab, group,lims,
+                                xlab,ylab, group,lims,verysmall,
                                 ...) {
   
   object <- object[!is.na(object$Values),]
@@ -526,7 +530,7 @@ ggplotts.data.frame <- function(object,show.legend, theme,type,
   ) +
     scale_x_continuous(
       limits = lims,
-      breaks = (floor(lims[1L])+1L):(ceiling(lims[2L])-1L),
+      breaks = (floor(lims[1L]+verysmall)+1L):(ceiling(lims[2L]-verysmall)-1L),
       minor_breaks = numeric(),
       expand=c(0,0)
     ) + 
@@ -544,8 +548,11 @@ ggplotts.ts <- function(object,show.legend, series_names,theme,type,
   # That x window is set to be able to translate x values
   # of deltat(x)/2 on the right like for base plot init
   
+  verysmall <- getOption("ts.eps")/frequency(object)
+  
   ggplotts(df,show.legend, theme,type,
            xlab,ylab, group = Variables,lims,
+           verysmall,
            ...)
 }
 
@@ -651,7 +658,9 @@ autoplot_with_lf <- function(object, xlab, ylab,
   ggplotts(object = rbind(hfdf,lfdf),show.legend = show.legend,
            theme = theme, type = "line",
            xlab = xlab, ylab = ylab, group = group,
-           lims = gglims(hfbench),...) +
+           lims = gglims(hfbench),
+           verysmall = getOption("ts.eps")/frequency(model$hfserie),
+           ...) +
     discrete_scale("colour","hue",col,na.translate = FALSE) +
     discrete_scale("linetype","hue",lty,na.translate = FALSE) +
     ggtitle(main)
