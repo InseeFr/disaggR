@@ -2,6 +2,19 @@ ts_from_tsp <- function(x,tspx) {
   ts(x, start=tspx[1L], frequency=tspx[3L])
 }
 
+# This window is the smallest that is all around the domain of the hfserie
+# that is compatible with the low frequency.
+extend_tsp <- function(tsphf,lffreq) {
+  
+  ts.eps <- getOption("ts.eps")
+  
+  if (is.null(tsphf) || is.null(lffreq)) return(NULL)
+  
+  c(floor(tsphf[1L]*lffreq+ts.eps)/lffreq,
+    ceiling((tsphf[2L]+1/tsphf[3L])*lffreq-ts.eps)/lffreq-1/tsphf[3L],
+    tsphf[3L])
+}
+
 aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
   tsplf <- tsp(lfserie)
   aggregate.ts(

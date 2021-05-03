@@ -60,17 +60,13 @@ regression_estimation <- function(hfserie,lfserie,
 }
 
 coefficients_application <- function(hfserie,lfserie,regcoefs) {
-  tsphf <- tsp(hfserie)
-  tsplf <- tsp(lfserie)
   
-  startdomain_extended <- floor(tsphf[1L]*tsplf[3L])/tsplf[3L]
-  enddomain_extended <- ceiling((tsphf[2L]+1/tsphf[3L])*tsplf[3L])/tsplf[3L]-1/tsphf[3L]
-  # This window is the smallest that is all around the domain of the hfserie
-  # that is compatible with the low frequency.
+  tsp_extended <- extend_tsp(tsp(hfserie),frequency(lfserie))
   
-  hfserie_win <- window(hfserie,start=startdomain_extended,end=enddomain_extended,extend = TRUE)
+  hfserie_win <- window(hfserie,start=tsp_extended[1L],end=tsp_extended[2L],extend = TRUE)
   
   ts_from_tsp(as.numeric(hfserie_win %*% regcoefs),tsp(hfserie_win))
+  
 }
 
 eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {

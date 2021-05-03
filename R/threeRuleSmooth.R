@@ -34,17 +34,11 @@ calc_hfserie_win <- function(hfserie,start.domain,end.domain,lffreq) {
   
   hfserie <- window(hfserie,start=start.domain,end=end.domain,extend=TRUE)
   
-  tsphf <- tsp(hfserie)
-  
-  startdomain_extended <- floor(tsphf[1L]*lffreq)/lffreq
-  enddomain_extended <- ceiling((tsphf[2L]+1/tsphf[3L])*lffreq)/lffreq-1/tsphf[3L]
-  
-  # This window is the smallest that is all around the domain of the hfserie
-  # that is compatible with the low frequency.
+  tsp_extended <- extend_tsp(tsp(hfserie),frequency(lfserie))
   
   hfserie_extrap(window(hfserie,
-                        start = startdomain_extended,
-                        end = enddomain_extended,extend = TRUE),
+                        start = tsp_extended[1L],
+                        end = tsp_extended[2L],extend = TRUE),
                  lffreq)
 }
 
