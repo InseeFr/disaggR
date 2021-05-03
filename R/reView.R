@@ -115,9 +115,11 @@ get_maxwin <- function(benchmark) {
   
   tsphf <- tsp(hfserie(benchmark))
   
-  startmin <- floor(tsphf[1L])
+  verysmall <- getOption("ts.eps")/tsphf[3L]
   
-  endmax <- floor(tsphf[2L])
+  startmin <- floor(tsphf[1L]+verysmall)
+  
+  endmax <- floor(tsphf[2L]+verysmall)
   
   c(startmin,endmax)
 }
