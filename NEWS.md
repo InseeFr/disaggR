@@ -1,5 +1,5 @@
 # disaggR 0.2.1
-* fixed some issues with inexact tsps
+* fixed some issues with ts.eps-delayed tsps.
 
 # disaggR 0.2
 * reView : a shiny reviewing application for twoStepsBenchmarks.
