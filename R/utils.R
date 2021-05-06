@@ -25,8 +25,6 @@ extend_tsp <- function(tsphf,lffreq) {
   
   ts.eps <- getOption("ts.eps")
   
-  if (is.null(tsphf) || is.null(lffreq)) return(NULL)
-  
   c(floor(tsphf[1L]*lffreq+ts.eps)/lffreq,
     ceiling((tsphf[2L]+1/tsphf[3L])*lffreq-ts.eps)/lffreq-1/tsphf[3L],
     tsphf[3L])
