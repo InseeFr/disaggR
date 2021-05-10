@@ -19,8 +19,16 @@ tsp_equal <- function(tspx,tspy) {
   
 }
 
-# This window is the smallest that is all around the domain of the hfserie
-# that is compatible with the low frequency.
+#' Extend tsp with lf
+#'
+#' This window is the smallest that is all around tsphf
+#' that is compatible with the low frequency.
+#' 
+#' @param tsphf a numeric of length 3, a tsp of high-frequency
+#' @param lffreq a numeric of length 1, the low frequency
+#' @return
+#' a numeric of length 3, a tsp of high-frequency.
+#' @keywords internal
 extend_tsp <- function(tsphf,lffreq) {
   
   ts.eps <- getOption("ts.eps")

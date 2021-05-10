@@ -1,3 +1,96 @@
+split_outlier_names <- function(outlier_strings) {
+  
+  str <- regmatches(outlier_strings,
+                    regexec("^(AO|LS)([0-9]+?)(?:T([0-9]+?))?$",
+                            outlier_strings))
+  
+  if (any(lengths(str) == 0L)) stop("The outlier names can't be interpreted",
+                                    call. = FALSE)
+  
+  lapply(str, function(x) list(type=x[2L],
+                               year=as.integer(x[3L]),
+                               cycle=if (identical(x[4L],"")) 1L else as.integer(x[4L])))
+}
+
+minmax_tsp <- function(ts_list) {
+  
+  tsp_list <- vapply(ts_list,tsp,FUN.VALUE = c(0,0,0))
+  
+  c(min(tsp_list[1L,]),
+    max(tsp_list[2L,]))
+  
+}
+
+cbind_outliers <- function(outliers_list,start,end) {
+  
+  minmax <- minmax_tsp(outliers_list)
+  minmax[1L] <- min(minmax[1L],start)
+  minmax[2L] <- max(minmax[2L],end)
+  
+  hffreq <- frequency(outliers_list[[1L]])
+  
+  res <- window(
+    ts(
+      vapply(
+        outliers_list,
+        function(serie) {
+          
+          tspser <- tsp(serie)
+          
+          c(rep(0,round((tspser[1L]-minmax[1L])*hffreq)),
+            as.numeric(serie),
+            rep(switch(attr(serie,"type"),
+                       AO = 0,
+                       LS = serie[length(serie)]),
+                round((minmax[2L]-tspser[2L])*hffreq)))
+          
+        },
+        FUN.VALUE = rep(0,round((minmax[2L]-minmax[1L])*hffreq)+1L)
+      ),
+      start = minmax[1L],
+      frequency = hffreq),
+    start = start,
+    end = end,
+    extend = TRUE)
+  
+  res
+}
+
+interpret_outliers <- function(outlier,lffreq,hfserie) {
+  if (is.null(names(outlier))) stop("The outlier lists must have names",
+                                    call. = FALSE)
+  
+  tsphf <- tsp(hfserie)
+  
+  ratio <- frequency(hfserie)/lffreq
+  
+  outliers_list <-
+    Map(
+      function(splitted_name,vect) {
+        if (length(vect) %% ratio != 0L) stop("The outlier vector must be of length k * hf/lf",
+                                              call. = FALSE)
+        
+        structure(
+          ts(as.numeric(vect),
+             start = splitted_name$year + (splitted_name$cycle - 1L) / lffreq,
+             frequency = tsphf[3L]),
+          type = splitted_name$type
+        )
+        
+      },
+      split_outlier_names(names(outlier)),
+      outlier)
+  
+  res <- cbind_outliers(
+    outliers_list,
+    start = tsphf[1L],
+    end = tsphf[2L]
+  )
+  
+  res
+  
+}
+
 residuals_extrap_sequence <- function(u0,u1,rho,n,include.differenciation) {
   if (include.differenciation) {
     if (rho == 1) u1 + (u1-u0) * (1:n)
@@ -123,9 +216,9 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                   start.domain = start.domain,
                                   end.domain = end.domain),
                              if (!is.null(set.smoothed.part)) list(set.smoothed.part=set.smoothed.part)),
-                             call = cl)
-              
-              new("twoStepsBenchmark",res)
+              call = cl)
+  
+  new("twoStepsBenchmark",res)
 }
 
 #' @title Regress and bends a time-serie with a lower frequency one
@@ -273,7 +366,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                                                  call. = FALSE)
   tsplf <- tsp(lfserie)
   if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
-  if  (!(frequency(hfserie) %% frequency(lfserie) == 0L)) stop("The low frequency should divide the higher one", call. = FALSE)
+  if (frequency(hfserie) %% frequency(lfserie) != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   
   maincl <- match.call()
