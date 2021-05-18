@@ -27,8 +27,11 @@ Description: The twoStepsBenchmark() and threeRuleSmooth() functions allow you t
   N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 Imports:
   ggplot2,
+  graphics,
+  methods,
 	rmarkdown,
 	scales,
+	stats,
 	shiny (>= 1.5.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -39,8 +42,7 @@ Suggests:
   testthat (>= 2.1.0),
 	vdiffr
 Depends: 
-  R (>= 2.10),
-  methods
+  R (>= 2.10)
 BugReports: https://github.com/InseeFr/disaggR/issues
 LazyData: yes
 Collate: 
