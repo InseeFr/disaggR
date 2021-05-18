@@ -86,10 +86,13 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
   
   tspx <- tsp(x)
   
+  finite_x_vals <- x[is.finite(x)]
+  
   plot_init(xmin = tspx[1L],xmax = tspx[2L]+deltat(x),
             # That x window is set to be able to translate x values
             # of deltat(x)/2 on the right
-            ymin = min(x,na.rm = TRUE), ymax = max(x,na.rm = TRUE),
+            ymin = min(finite_x_vals,na.rm = TRUE),
+            ymax = max(finite_x_vals,na.rm = TRUE),
             xlab = xlab, ylab = ylab,
             extend.x = FALSE, extend.y = TRUE, abline.x = structure(TRUE,verysmall=getOption("ts.eps")/tspx[3L]),
             main = main, ...)
