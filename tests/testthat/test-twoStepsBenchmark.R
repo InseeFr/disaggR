@@ -115,6 +115,11 @@ test_that("regression calculates the right coeffs", {
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
                                              lfserie = annualts,
                                              include.rho = TRUE,
+                                             set.coeff = c(constant=10)))),
+               c(10,0.06933153642))
+  expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,
+                                             lfserie = annualts,
+                                             include.rho = TRUE,
                                              set.coeff=-3))),
                c(2259.176133,-3))
   expect_equal(unname(coef(twoStepsBenchmark(hfserie = mensualts,

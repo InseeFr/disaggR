@@ -57,7 +57,10 @@ cbind_outliers <- function(outliers_list,start,end) {
 }
 
 interpret_outliers <- function(outlier,lffreq,hfserie) {
-  if (is.null(names(outlier))) stop("The outlier lists must have names",
+  
+  if (is.null(outlier)) return()
+  
+  if (is.null(names(outlier))) stop("The outliers list must have names",
                                     call. = FALSE)
   
   tsphf <- tsp(hfserie)
@@ -361,7 +364,8 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                               set.coeff=NULL,set.const=NULL,
                               start.coeff.calc=NULL,end.coeff.calc=NULL,
                               start.benchmark=NULL,end.benchmark=NULL,
-                              start.domain=NULL,end.domain=NULL,...) {
+                              start.domain=NULL,end.domain=NULL,
+                              outliers = NULL,...) {
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object",
                                                  call. = FALSE)
   tsplf <- tsp(lfserie)
@@ -381,18 +385,24 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   
   if (length(set.const) > 1L) stop("set.const must be of a single value", call. = FALSE)
   if (length(set.const) == 1L) names(set.const) <- "constant"
-  if ((NCOL(hfserie) == 1L) && (length(set.coeff) == 1L)) names(set.coeff) <- "hfserie"
+  
+  if ((NCOL(hfserie) == 1L) &&
+      length(set.coeff) == 1L &&
+      !(isTRUE(names(set.coeff) %in% c("constant",names(outliers))))) names(set.coeff) <- "hfserie"
   
   if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
   
   if (length(start(hfserie)) == 1L)  stop("Incorrect time-serie phase", call. = FALSE)
   
-  hfserie <- ts(matrix(c(constant,hfserie),
-                       nrow = NROW(hfserie),
-                       ncol = NCOL(hfserie) + 1L),
+  outliers <- interpret_outliers(outliers,frequency(lfserie),hfserie)
+  
+  hfserie <- ts(matrix(c(constant,hfserie,outliers),
+                       nrow = NROW(hfserie)),
                 start = start(hfserie),
                 frequency = frequency(hfserie),
-                names = c("constant",if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie)))
+                names = c("constant",
+                          if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie),
+                          colnames(outliers)))
   
   lfserie <- purify_ts(lfserie)
   
@@ -464,6 +474,7 @@ reUseBenchmark <- function(hfserie,benchmark,reeval.smoothed.part=FALSE) {
                     set.coeff,set.const,
                     m$start.coeff.calc,m$end.coeff.calc,
                     m$start.benchmark,m$end.benchmark,
-                    m$start.domain,m$end.domain,cl=match.call(),
-                    if (!reeval.smoothed.part) set.smoothed.part=smoothed.part(benchmark))
+                    m$start.domain,m$end.domain,
+                    outliers = NULL,cl=match.call(),
+                    set.smoothed.part = if (!reeval.smoothed.part) smoothed.part(benchmark))
 }
