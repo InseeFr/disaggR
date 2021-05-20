@@ -1,3 +1,5 @@
+outliers_pattern <- "^(AO|LS)([0-9]+?)(?:T([0-9]+?))?$"
+
 split_outlier_names <- function(outlier_strings) {
   
   str <- regmatches(outlier_strings,
