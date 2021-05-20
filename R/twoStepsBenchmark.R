@@ -7,9 +7,12 @@ split_outlier_names <- function(outlier_strings) {
   if (any(lengths(str) == 0L)) stop("The outlier names can't be interpreted",
                                     call. = FALSE)
   
-  lapply(str, function(x) list(type=x[2L],
-                               year=as.integer(x[3L]),
-                               cycle=if (identical(x[4L],"")) 1L else as.integer(x[4L])))
+  structure(
+    lapply(str, function(x) list(type=x[2L],
+                                 year=as.integer(x[3L]),
+                                 cycle=if (identical(x[4L],"")) 1L else as.integer(x[4L]))),
+    names = outlier_strings)
+  
 }
 
 minmax_tsp <- function(ts_list) {
