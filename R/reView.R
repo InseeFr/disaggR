@@ -1123,6 +1123,7 @@ rePort.twoStepsBenchmark <- function(object, output_file = NULL,
          ...)
 }
 
+#' @importFrom utils browseURL
 #' @export
 rePort.reViewOutput <- function(object, output_file = NULL,
                                 launch.browser = if (is.null(output_file)) TRUE else FALSE,
@@ -1144,12 +1145,12 @@ rePort.reViewOutput <- function(object, output_file = NULL,
                     quiet = TRUE,
                     ...)
   if (is.null(output_file))  {
-    if (launch.browser) utils::browseURL(temp_html)
+    if (launch.browser) browseURL(temp_html)
     invisible(temp_html)
   }
   else {
     file.copy(temp_html, output_file, overwrite = TRUE)
-    if (launch.browser) utils::browseURL(output_file)
+    if (launch.browser) browseURL(output_file)
     invisible(output_file)
   }
 }

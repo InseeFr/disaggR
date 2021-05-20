@@ -242,8 +242,8 @@ in_scatter <- function(object) UseMethod("in_scatter")
 in_scatter.praislm <- function(object) {
   m <- model.list(object)
   
-  X <- m$hfserie[,!grepl(outliers_pattern,colnames(m$hfserie)) &
-                   colnames(m$hfserie) != "constant",
+  X <- m$X[,!grepl(outliers_pattern,colnames(m$X)) &
+                   colnames(m$X) != "constant",
                  drop = FALSE]
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
