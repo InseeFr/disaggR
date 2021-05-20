@@ -24,18 +24,18 @@ minmax_tsp <- function(ts_list) {
   
 }
 
-cbind_outliers <- function(outliers_list,start,end) {
+cbind_outliers <- function(outliers_ts_list,start,end) {
   
-  minmax <- minmax_tsp(outliers_list)
+  minmax <- minmax_tsp(outliers_ts_list)
   minmax[1L] <- min(minmax[1L],start)
   minmax[2L] <- max(minmax[2L],end)
   
-  hffreq <- frequency(outliers_list[[1L]])
+  hffreq <- frequency(outliers_ts_list[[1L]])
   
   res <- window(
     ts(
       vapply(
-        outliers_list,
+        outliers_ts_list,
         function(serie) {
           
           tspser <- tsp(serie)
@@ -70,7 +70,7 @@ interpret_outliers <- function(outlier,lffreq,hfserie) {
   
   ratio <- frequency(hfserie)/lffreq
   
-  outliers_list <-
+  outliers_ts_list <-
     Map(
       function(splitted_name,vect) {
         if (length(vect) %% ratio != 0L) stop("The outlier vector must be of length k * hf/lf",
@@ -88,7 +88,7 @@ interpret_outliers <- function(outlier,lffreq,hfserie) {
       outlier)
   
   res <- cbind_outliers(
-    outliers_list,
+    outliers_ts_list,
     start = tsphf[1L],
     end = tsphf[2L]
   )

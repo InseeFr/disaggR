@@ -276,7 +276,8 @@ in_scatter.twoStepsBenchmark <- function(object) {
               max(coeff_clean_win[2L],benchmark_clean_win[2L]),
               extend = TRUE)
   
-  X <- m$hfserie[,colnames(m$hfserie) != "constant",drop = FALSE]
+  X <- m$hfserie[,!grepl("^(?:constant|(?:(?:AO|LS)(?:[0-9]+?)(?:T(?:[0-9]+?))?))$",
+                         colnames(m$hfserie)),drop = FALSE]
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
