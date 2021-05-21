@@ -108,7 +108,7 @@ in_disaggr.twoStepsBenchmark <- function(object,type="changes") {
                      ts(
                        t(t(series) /
                            series[which(apply(!(series == 0) & !(is.na(series)),1L, all))[1L],]
-                         ) * 100,
+                       ) * 100,
                        start=start(series),
                        frequency=frequency(series)),
                    changes = (series/stats::lag(series,-1)-1)*100,
@@ -242,9 +242,8 @@ in_scatter <- function(object) UseMethod("in_scatter")
 in_scatter.praislm <- function(object) {
   m <- model.list(object)
   
-  X <- m$X[,!grepl(outliers_pattern,colnames(m$X)) &
-                   colnames(m$X) != "constant",
-                 drop = FALSE]
+  X <- m$X[,neither_outlier_nor_constant(colnames(m$X)),
+           drop = FALSE]
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
@@ -278,8 +277,7 @@ in_scatter.twoStepsBenchmark <- function(object) {
               max(coeff_clean_win[2L],benchmark_clean_win[2L]),
               extend = TRUE)
   
-  X <- m$hfserie[,!grepl(outliers_pattern,colnames(m$hfserie)) &
-                   colnames(m$hfserie) != "constant",
+  X <- m$hfserie[,neither_outlier_nor_constant(colnames(m$hfserie)),
                  drop = FALSE]
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)

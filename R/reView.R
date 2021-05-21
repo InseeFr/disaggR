@@ -1076,7 +1076,7 @@ reView.twoStepsBenchmark <- function(object,
                                      compare = TRUE) {
   if (is.null(hfserie_name)) hfserie_name <- deparse(object$call$hfserie)
   if (is.null(lfserie_name)) lfserie_name <- deparse(object$call$lfserie)
-  if (length(coef(object)) > 2) stop("This reviewing application is only for univariate benchmarks.", call. = FALSE)
+  if (sum(neither_outlier_nor_constant(colnames(model.list(object)$hfserie))) > 1) stop("This reviewing application is only for univariate benchmarks.", call. = FALSE)
   runapp_reView(object,hfserie_name,lfserie_name,compare=compare)
 }
 
@@ -1118,6 +1118,7 @@ rePort.connection <- function(object, output_file = NULL,
 rePort.twoStepsBenchmark <- function(object, output_file = NULL,
                                      launch.browser = if (is.null(output_file)) TRUE else FALSE,
                                      ...) {
+  if (sum(neither_outlier_nor_constant(colnames(model.list(object)$hfserie))) > 1) stop("This reporting function is only for univariate benchmarks.", call. = FALSE)
   rePort(reViewOutput(object,benchmark_old=NULL,compare=FALSE),
          output_file,launch.browser,
          ...)

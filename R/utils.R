@@ -19,6 +19,11 @@ tsp_equal <- function(tspx,tspy) {
   
 }
 
+neither_outlier_nor_constant <- function(string) {
+  !grepl(outliers_pattern,string) &
+    string != "constant"
+}
+
 #' Extend tsp with lf
 #'
 #' This window is the smallest that is all around tsphf
