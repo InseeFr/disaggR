@@ -310,7 +310,7 @@ set_preset <- function(session,selected_preset_tab1) {
 
 display_vector <- function(x) {
   if (length(x) == 1L) as.character(x)
-  else paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")"))
+  else paste0("c(",do.call(paste,c(as.list(as.character(x)),sep=",")),")")
 }
 
 get_model <- function(benchmark) {
