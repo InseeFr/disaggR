@@ -373,9 +373,16 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                               outliers = NULL,...) {
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object",
                                                  call. = FALSE)
+  
+  if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
+  
+  hfserie <- clean_tsp(hfserie)
+  lfserie <- clean_tsp(lfserie)
+  
   tsplf <- tsp(lfserie)
-  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
-  if (frequency(hfserie) %% frequency(lfserie) != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
+  tsphf <- tsp(hfserie)
+  
+  if (tsphf[3L] %% tsplf[3L] != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   
   maincl <- match.call()
@@ -395,28 +402,22 @@ twoStepsBenchmark <- function(hfserie,lfserie,
       length(set.coeff) == 1L &&
       !(isTRUE(names(set.coeff) %in% c("constant",names(outliers))))) names(set.coeff) <- "hfserie"
   
-  if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
-  
-  if (length(start(hfserie)) == 1L || length(start(lfserie)) == 1L) stop("Incorrect time-serie phase", call. = FALSE)
-  
   outliers_mts <- interpret_outliers(outliers,frequency(lfserie),hfserie)
   
   hfserie <- ts(matrix(c(constant,hfserie,outliers_mts),
                        nrow = NROW(hfserie)),
-                start = start(hfserie),
-                frequency = frequency(hfserie),
+                start = tsphf[1L],
+                frequency = tsphf[3L],
                 names = c("constant",
                           if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie),
                           colnames(outliers_mts)))
   
-  structure(
-    twoStepsBenchmark_impl(hfserie,lfserie,
-                           include.differenciation,include.rho,
-                           c(set.const,set.coeff),
-                           start.coeff.calc,end.coeff.calc,
-                           start.benchmark,end.benchmark,
-                           start.domain,end.domain,maincl,...),
-    outliers = outliers)
+  twoStepsBenchmark_impl(hfserie,lfserie,
+                         include.differenciation,include.rho,
+                         c(set.const,set.coeff),
+                         start.coeff.calc,end.coeff.calc,
+                         start.benchmark,end.benchmark,
+                         start.domain,end.domain,maincl,...)
 }
 
 #' @export

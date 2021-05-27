@@ -23,6 +23,12 @@ boxstyle <- "padding: 6px 8px;
 lrmargins <- "margin-left: 3px;
               margin-right: 3px"
 
+lfserie <- function(benchmark) model.list(benchmark)$lfserie
+hfserie_and_outliers <- function(benchmark) {
+  res <- model.list(benchmark)$hfserie
+  if (is.mts(res)) res[,colnames(res) != "constant"] else res
+}
+
 info_switch <- function(mainout_choice)
   switch(mainout_choice,
          "Scatter plot" = {
@@ -113,7 +119,7 @@ get_clean_wins <- function(benchmark) {
 
 get_maxwin <- function(benchmark) {
   
-  tsphf <- tsp(hfserie(benchmark))
+  tsphf <- tsp(hfserie_and_outliers(benchmark))
   
   verysmall <- getOption("ts.eps")/tsphf[3L]
   
@@ -236,7 +242,7 @@ make_new_bn <- function(hfserie_name,lfserie_name,
 get_new_bn <- function(input,hfserie_name,lfserie_name,new_bn_external_setter) {
   tryCatch(
     make_new_bn(hfserie_name(),lfserie_name(),
-                hfserie(new_bn_external_setter()),lfserie(new_bn_external_setter()),
+                hfserie_and_outliers(new_bn_external_setter()),lfserie(new_bn_external_setter()),
                 include.differenciation = input$dif,
                 include.rho = input$rho,
                 set.coeff = {
@@ -631,7 +637,7 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2,
                  
                  presets_list <- reactive({
                    m <- model.list(new_bn_ext_setter())
-                   presets_list_fun(hfserie(new_bn_ext_setter()),
+                   presets_list_fun(hfserie_and_outliers(new_bn_ext_setter()),
                                     lfserie(new_bn_ext_setter()),
                                     start.coeff.calc=m$start.coeff.calc,
                                     end.coeff.calc=m$end.coeff.calc,
@@ -817,7 +823,7 @@ reView_server_tab2_switch <- function(input,output,new_bn,old_bn,ns,compare) {
   plotswin <- reactive(c(input$plotswin[1L],
                          input$plotswin[2L]+
                            deltat(lfserie(old_bn()))-
-                           deltat(hfserie(old_bn()))))
+                           deltat(hfserie_and_outliers(old_bn()))))
   
   mainout_choice <- input$mainout_choice
   

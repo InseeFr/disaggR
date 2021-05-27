@@ -13,8 +13,15 @@ tsp_equal <- function(tspx,tspy) {
   
 }
 
-neither_outlier_nor_constant <- function(string,benchmark) {
-  !string %in% names(attr(benchmark,"outliers")) &
+clean_tsp <- function(x) {
+  s <- start(x)
+  if (length(s) == 2L) ts(x,start = s, frequency = frequency(x))
+  else if (as.integer(frequency(x)) != frequency(x)) stop("The frequencies must be integers", call. = FALSE)
+  else stop("Incorrect time-serie phase", call. = FALSE)
+}
+
+neither_outlier_nor_constant <- function(string) {
+  !grepl(outliers_pattern,string) &
     string != "constant"
 }
 
@@ -65,11 +72,5 @@ switch_window <- function(start,end,init_tsp) {
                 end[1L] + (end[2L] - 1)/init_tsp[3L])
   }
   c(start,end)
-}
-
-lfserie <- function(benchmark) model.list(benchmark)$lfserie
-hfserie <- function(benchmark) {
-  res <- model.list(benchmark)$hfserie
-  if (is.mts(res)) res[,colnames(res) != "constant"] else res
 }
 

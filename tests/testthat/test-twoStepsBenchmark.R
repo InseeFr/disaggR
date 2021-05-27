@@ -356,138 +356,137 @@ test_that("errors",{
                                  include.differenciation = TRUE),
                "time-serie phase")
 })
+
+test_that("reUseBenchmark works",{
+  benchmark1 <- twoStepsBenchmark(turnover,construction,include.rho = TRUE,
+                                  start.coeff.calc=2001,end.coeff.calc=2015,
+                                  start.benchmark=2002,end.benchmark=2018,
+                                  start.domain = c(2000,2),end.domain=c(2020,12))
+  decompose(turnover,type = "multiplicative")
+  adjusted_turnover <- window(turnover/decompose(turnover)$seasonal,start=2006)
+  benchmark2 <- reUseBenchmark(adjusted_turnover,benchmark1)
+  benchmark3 <- reUseBenchmark(adjusted_turnover,benchmark1,reeval.smoothed.part = TRUE)
+  m1 <- model.list(benchmark1)
+  m2 <- model.list(benchmark2)
+  m3 <- model.list(benchmark3)
   
-  test_that("reUseBenchmark works",{
-    benchmark1 <- twoStepsBenchmark(turnover,construction,include.rho = TRUE,
-                                    start.coeff.calc=2001,end.coeff.calc=2015,
-                                    start.benchmark=2002,end.benchmark=2018,
-                                    start.domain = c(2000,2),end.domain=c(2020,12))
-    decompose(turnover,type = "multiplicative")
-    adjusted_turnover <- window(turnover/decompose(turnover)$seasonal,start=2006)
-    benchmark2 <- reUseBenchmark(adjusted_turnover,benchmark1)
-    benchmark3 <- reUseBenchmark(adjusted_turnover,benchmark1,reeval.smoothed.part = TRUE)
-    m1 <- model.list(benchmark1)
-    m2 <- model.list(benchmark2)
-    m3 <- model.list(benchmark3)
-    
-    expect_identical(smoothed.part(benchmark2),smoothed.part(benchmark1))
-    expect_identical(coefficients(benchmark1),coefficients(benchmark2))
-    expect_identical(m1$include.rho,m2$include.rho)
-    expect_identical(m1$include.differenciation,m2$include.differenciation)
-    expect_identical(m1$start.coeff.calc,m2$start.coeff.calc)
-    expect_identical(m1$end.coeff.calc,m2$end.coeff.calc)
-    expect_identical(m1$start.benchmark,m2$start.benchmark)
-    expect_identical(m1$end.benchmark,m2$end.benchmark)
-    expect_identical(m1$start.domain,m2$start.domain)
-    expect_identical(m1$end.domain,m2$end.domain)
-    expect_identical(smoothed.part(benchmark1),m2$set.smoothed.part)
-    
-    expect_false(identical(smoothed.part(benchmark3),smoothed.part(benchmark1)))
-    expect_identical(coefficients(benchmark1),coefficients(benchmark3))
-    expect_identical(m1$include.rho,m3$include.rho)
-    expect_identical(m1$include.differenciation,m3$include.differenciation)
-    expect_identical(m1$start.coeff.calc,m3$start.coeff.calc)
-    expect_identical(m1$end.coeff.calc,m3$end.coeff.calc)
-    expect_identical(m1$start.benchmark,m3$start.benchmark)
-    expect_identical(m1$end.benchmark,m3$end.benchmark)
-    expect_identical(m1$start.domain,m3$start.domain)
-    expect_identical(m1$end.domain,m3$end.domain)
-    expect_null(m1$set.smoothed.part)
-    expect_null(m3$set.smoothed.part)
-    
-    expect_false(identical(as.ts(benchmark3),as.ts(benchmark2)))
-    
-    benchmark <- twoStepsBenchmark(turnover,construction)
-    turnover_modif <- turnover
-    turnover_modif[1] <- turnover[1]+pi
-    benchmark2 <- reUseBenchmark(turnover_modif,benchmark)
-    
-    coefficients <- coef(benchmark)
-    expect_equal((as.ts(benchmark2)-as.ts(benchmark))[1],pi*coefficients[2],
-                 ignore_attr = TRUE)
-  })
+  expect_identical(smoothed.part(benchmark2),smoothed.part(benchmark1))
+  expect_identical(coefficients(benchmark1),coefficients(benchmark2))
+  expect_identical(m1$include.rho,m2$include.rho)
+  expect_identical(m1$include.differenciation,m2$include.differenciation)
+  expect_identical(m1$start.coeff.calc,m2$start.coeff.calc)
+  expect_identical(m1$end.coeff.calc,m2$end.coeff.calc)
+  expect_identical(m1$start.benchmark,m2$start.benchmark)
+  expect_identical(m1$end.benchmark,m2$end.benchmark)
+  expect_identical(m1$start.domain,m2$start.domain)
+  expect_identical(m1$end.domain,m2$end.domain)
+  expect_identical(smoothed.part(benchmark1),m2$set.smoothed.part)
   
-  test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenciation=TRUE",{
-    sequence <- residuals_extrap_sequence(1,3,1,10,TRUE)
-    expect_equal(sequence[-1]-sequence[-length(sequence)],rep(2,9))
-  })
+  expect_false(identical(smoothed.part(benchmark3),smoothed.part(benchmark1)))
+  expect_identical(coefficients(benchmark1),coefficients(benchmark3))
+  expect_identical(m1$include.rho,m3$include.rho)
+  expect_identical(m1$include.differenciation,m3$include.differenciation)
+  expect_identical(m1$start.coeff.calc,m3$start.coeff.calc)
+  expect_identical(m1$end.coeff.calc,m3$end.coeff.calc)
+  expect_identical(m1$start.benchmark,m3$start.benchmark)
+  expect_identical(m1$end.benchmark,m3$end.benchmark)
+  expect_identical(m1$start.domain,m3$start.domain)
+  expect_identical(m1$end.domain,m3$end.domain)
+  expect_null(m1$set.smoothed.part)
+  expect_null(m3$set.smoothed.part)
   
-  test_that("annualBenchmark",{
-    set.seed(27)
-    mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
-    trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
-    expect_error(annualBenchmark(mensualts,trimts),
-                 "annual time-serie")
-    expect_snapshot(annualBenchmark(turnover,construction,
-                                    end.coeff.calc = 2018),
-                    cran = TRUE)
-    expect_equal(as.ts(annualBenchmark(turnover,construction,
-                                       end.coeff.calc = 2018)),
-                 as.ts(twoStepsBenchmark(turnover,construction,
-                                         end.coeff.calc = 2018,
-                                         end.benchmark = 2019,
-                                         end.domain = c(2021,12))))
-    
-    set.seed(5)
-    mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
-    annualts <- ts(diffinv(rnorm(9,12,1)),start=2010,freq=1)
-    
-    expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                             lfserie = annualts,
-                                             include.differenciation = FALSE))),
-                 c(-4.42319837305,0.07996253268))
-    expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                             lfserie = annualts,
-                                             include.differenciation = FALSE,
-                                             set.const=-4.42319837305,set.coeff=0.07996253268))),
-                 c(-4.42319837305,0.07996253268))
-    expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                             lfserie = annualts,
-                                             include.differenciation = FALSE,
-                                             set.const=-3))),
-                 c(-3,0.07851836099))
-    expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                             lfserie = annualts,
-                                             include.differenciation = FALSE,
-                                             set.const=10))),
-                 c(10,0.06532678329))
-    expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
-                                             lfserie = annualts,
-                                             include.differenciation = FALSE,
-                                             set.coeff=-3))),
-                 c(2264.800948259,-3))
-    
-    expect_equal(as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = 2019)),
-                 as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = c(2019,1))))
-  })
+  expect_false(identical(as.ts(benchmark3),as.ts(benchmark2)))
   
-  test_that("ts eps",{
-    turnover_tspmodif <- turnover
-    tsp(turnover_tspmodif)[2L] <- tsp(turnover)[2L]+getOption("ts.eps")/24
-    tsp(turnover_tspmodif)[1L] <- tsp(turnover)[1L]-getOption("ts.eps")/24
-    construction_tspmodif <- construction
-    tsp(construction_tspmodif)[2L] <- tsp(construction)[2L]+getOption("ts.eps")/24
-    tsp(construction_tspmodif)[1L] <- tsp(construction)[1L]-getOption("ts.eps")/24
-    expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction_tspmodif)),
-                     as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
-    expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction)),
-                     as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
-    expect_identical(as.ts(twoStepsBenchmark(turnover,construction_tspmodif)),
-                     as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
-    
-    turnover_tspmodif <- turnover
-    tsp(turnover_tspmodif)[2L] <- tsp(turnover)[2L]-getOption("ts.eps")/24
-    tsp(turnover_tspmodif)[1L] <- tsp(turnover)[1L]+getOption("ts.eps")/24
-    construction_tspmodif <- construction
-    tsp(construction_tspmodif)[2L] <- tsp(construction)[2L]-getOption("ts.eps")/24
-    tsp(construction_tspmodif)[1L] <- tsp(construction)[1L]+getOption("ts.eps")/24
-    expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction_tspmodif)),
-                     as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
-    expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction)),
-                     as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
-    expect_identical(as.ts(twoStepsBenchmark(turnover,construction_tspmodif)),
-                     as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
-    
-  })
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  turnover_modif <- turnover
+  turnover_modif[1] <- turnover[1]+pi
+  benchmark2 <- reUseBenchmark(turnover_modif,benchmark)
   
+  coefficients <- coef(benchmark)
+  expect_equal((as.ts(benchmark2)-as.ts(benchmark))[1],pi*coefficients[2],
+               ignore_attr = TRUE)
+})
+
+test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenciation=TRUE",{
+  sequence <- residuals_extrap_sequence(1,3,1,10,TRUE)
+  expect_equal(sequence[-1]-sequence[-length(sequence)],rep(2,9))
+})
+
+test_that("annualBenchmark",{
+  set.seed(27)
+  mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+  trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
+  expect_error(annualBenchmark(mensualts,trimts),
+               "annual time-serie")
+  expect_snapshot(annualBenchmark(turnover,construction,
+                                  end.coeff.calc = 2018),
+                  cran = TRUE)
+  expect_equal(as.ts(annualBenchmark(turnover,construction,
+                                     end.coeff.calc = 2018)),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       end.coeff.calc = 2018,
+                                       end.benchmark = 2019,
+                                       end.domain = c(2021,12))))
   
+  set.seed(5)
+  mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+  annualts <- ts(diffinv(rnorm(9,12,1)),start=2010,freq=1)
+  
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE))),
+               c(-4.42319837305,0.07996253268))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=-4.42319837305,set.coeff=0.07996253268))),
+               c(-4.42319837305,0.07996253268))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=-3))),
+               c(-3,0.07851836099))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.const=10))),
+               c(10,0.06532678329))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
+                                           set.coeff=-3))),
+               c(2264.800948259,-3))
+  
+  expect_equal(as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = 2019)),
+               as.ts(annualBenchmark(mensualts,annualts,end.coeff.calc = c(2019,1))))
+})
+
+test_that("ts eps",{
+  turnover_tspmodif <- turnover
+  tsp(turnover_tspmodif)[2L] <- tsp(turnover)[2L]+getOption("ts.eps")/24
+  tsp(turnover_tspmodif)[1L] <- tsp(turnover)[1L]-getOption("ts.eps")/24
+  construction_tspmodif <- construction
+  tsp(construction_tspmodif)[2L] <- tsp(construction)[2L]+getOption("ts.eps")/24
+  tsp(construction_tspmodif)[1L] <- tsp(construction)[1L]-getOption("ts.eps")/24
+  expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction_tspmodif)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
+  expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
+  expect_identical(as.ts(twoStepsBenchmark(turnover,construction_tspmodif)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
+  
+  turnover_tspmodif <- turnover
+  tsp(turnover_tspmodif)[2L] <- tsp(turnover)[2L]-getOption("ts.eps")/24
+  tsp(turnover_tspmodif)[1L] <- tsp(turnover)[1L]+getOption("ts.eps")/24
+  construction_tspmodif <- construction
+  tsp(construction_tspmodif)[2L] <- tsp(construction)[2L]-getOption("ts.eps")/24
+  tsp(construction_tspmodif)[1L] <- tsp(construction)[1L]+getOption("ts.eps")/24
+  expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction_tspmodif)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
+  expect_identical(as.ts(twoStepsBenchmark(turnover_tspmodif,construction)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
+  expect_identical(as.ts(twoStepsBenchmark(turnover,construction_tspmodif)),
+                   as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
+  
+})
+
