@@ -191,7 +191,7 @@ presets_list_fun <- function(hfserie,lfserie,...) {
 }
 
 # The function make_new_bn is made for setting new_bn in shiny
-# while cleaning up its call argument
+# while cleaning up the call to evaluated args
 
 make_new_bn <- function(hfserie_name,lfserie_name,
                         hfserie,lfserie,
