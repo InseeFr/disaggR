@@ -397,26 +397,26 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   
   if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
   
-  if (length(start(hfserie)) == 1L)  stop("Incorrect time-serie phase", call. = FALSE)
+  if (length(start(hfserie)) == 1L || length(start(lfserie)) == 1L) stop("Incorrect time-serie phase", call. = FALSE)
   
-  outliers <- interpret_outliers(outliers,frequency(lfserie),hfserie)
+  outliers_mts <- interpret_outliers(outliers,frequency(lfserie),hfserie)
   
-  hfserie <- ts(matrix(c(constant,hfserie,outliers),
+  hfserie <- ts(matrix(c(constant,hfserie,outliers_mts),
                        nrow = NROW(hfserie)),
                 start = start(hfserie),
                 frequency = frequency(hfserie),
                 names = c("constant",
                           if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie),
-                          colnames(outliers)))
+                          colnames(outliers_mts)))
   
-  lfserie <- purify_ts(lfserie)
-  
-  twoStepsBenchmark_impl(hfserie,lfserie,
-                         include.differenciation,include.rho,
-                         c(set.const,set.coeff),
-                         start.coeff.calc,end.coeff.calc,
-                         start.benchmark,end.benchmark,
-                         start.domain,end.domain,maincl,...)
+  structure(
+    twoStepsBenchmark_impl(hfserie,lfserie,
+                           include.differenciation,include.rho,
+                           c(set.const,set.coeff),
+                           start.coeff.calc,end.coeff.calc,
+                           start.benchmark,end.benchmark,
+                           start.domain,end.domain,maincl,...),
+    outliers = outliers)
 }
 
 #' @export
