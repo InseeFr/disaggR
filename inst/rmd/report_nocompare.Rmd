@@ -97,7 +97,7 @@ plot(in_scatter(params$new_bn))
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,comment="\t"}
-cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_name))
+cat(disaggR:::get_benchmark_call(params$new_bn,params$hfserie_name,params$lfserie_name))
 ```
 
 ```{r echo=FALSE, fig.width=14}

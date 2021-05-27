@@ -412,12 +412,14 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                           if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie),
                           colnames(outliers_mts)))
   
-  twoStepsBenchmark_impl(hfserie,lfserie,
-                         include.differenciation,include.rho,
-                         c(set.const,set.coeff),
-                         start.coeff.calc,end.coeff.calc,
-                         start.benchmark,end.benchmark,
-                         start.domain,end.domain,maincl,...)
+  structure(
+    twoStepsBenchmark_impl(hfserie,lfserie,
+                           include.differenciation,include.rho,
+                           c(set.const,set.coeff),
+                           start.coeff.calc,end.coeff.calc,
+                           start.benchmark,end.benchmark,
+                           start.domain,end.domain,maincl,...),
+    outliers = outliers)
 }
 
 #' @export

@@ -151,9 +151,9 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
               delta.rate = lfrate_win$delta_rate,
               model.list = list(hfserie = structure(hfserie,
                                                     dim = c(length(hfserie),1L),
-                                                    dimnames = list(NULL,"hfserie")),
-                                # adding dims to be cohesive with twoStepsBenchmark
-                                # which always returns a mts
+                                                    dimnames = list(NULL,
+                                                                    if (is.null(colnames(hfserie))) "hfserie"
+                                                                    else colnames(hfserie))),
                                 lfserie = lfserie,
                                 start.benchmark = start.benchmark,
                                 end.benchmark = end.benchmark,
