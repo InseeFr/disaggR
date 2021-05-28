@@ -21,8 +21,9 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
   if (is.null(weights)) weights <- 1
   else {
     aggregated_weights <- aggregate.ts(weights,frequency(weights)/ratio)
-    weights <- weights/ts_expand(aggregated_weights,
-                                 frequency(weights),divide.by.ratio = FALSE)
+    weights <- fast_op_on_x(weights,
+                            ts_expand(aggregated_weights,frequency(weights),divide.by.ratio = FALSE),
+                            `/`)
   }
   
   MT <- t(apply(stairs_diagonal(lf_length,ratio,weights),1,function(x) rev(cumsum(rev(x)))))

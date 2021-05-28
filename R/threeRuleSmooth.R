@@ -30,7 +30,7 @@ hfserie_extrap <- function(hfserie,lffreq) {
   hfserie
 }
 
-calc_hfserie_win <- function(hfserie,start.domain,end.domain,lffreq) {
+calc_hfserie_as_weights <- function(hfserie,start.domain,end.domain,lffreq) {
   
   hfserie <- window(hfserie,start=start.domain,end=end.domain,extend=TRUE)
   
@@ -79,7 +79,9 @@ calc_lfrate_win <- function(hfserie,lfserie,
                             set.delta.rate,
                             start.domain.extended,end.domain.extended) {
   
-  lfrate <- lfserie / aggregate_and_crop_hf_to_lf(hfserie,lfserie)
+  lfrate <- fast_op_on_x(lfserie,
+                         aggregate_and_crop_hf_to_lf(hfserie,lfserie),
+                         `/`)
   
   delta_rate <- {
     if (is.null(set.delta.rate)) mean_delta(lfrate,start.delta.rate,end.delta.rate)
@@ -127,29 +129,35 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
   
   if (is.null(cl)) cl <- maincl
   
-  hfserie_win <- calc_hfserie_win(hfserie,
-                                  start.domain,end.domain,
-                                  frequency(lfserie))
+  hfserie_as_weights <- calc_hfserie_as_weights(hfserie,
+                                                start.domain,end.domain,
+                                                frequency(lfserie))
   
   lfrate_win <- calc_lfrate_win(hfserie,lfserie,
                                 start.benchmark,end.benchmark,
                                 start.delta.rate,end.delta.rate,
                                 set.delta.rate,
-                                tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
+                                tsp(hfserie_as_weights)[1L],tsp(hfserie_as_weights)[2L])
   
   hfrate <- bflSmooth(lfserie = lfrate_win$lfrate,
                       nfrequency = frequency(hfserie),
-                      weights = hfserie_win,
+                      weights = hfserie_as_weights,
                       lfserie.is.rate = TRUE)
   
-  rests <- hfrate * hfserie
+  rests <- fast_op_on_x(hfserie,
+                        hfrate,
+                        `*`)
   
   res <- list(benchmarked.serie = window(rests,start=start.domain,end=end.domain,extend = TRUE),
               lfrate = lfrate_win$lfrate,
               smoothed.rate = hfrate,
-              hfserie.as.weights = hfserie_win,
+              hfserie.as.weights = hfserie_as_weights,
               delta.rate = lfrate_win$delta_rate,
-              model.list = list(hfserie = hfserie,
+              model.list = list(hfserie = structure(hfserie,
+                                                    dim = c(length(hfserie),1L),
+                                                    dimnames = list(NULL,
+                                                                    if (is.null(colnames(hfserie))) "hfserie"
+                                                                    else colnames(hfserie))),
                                 lfserie = lfserie,
                                 start.benchmark = start.benchmark,
                                 end.benchmark = end.benchmark,
@@ -268,15 +276,20 @@ threeRuleSmooth <- function(hfserie,lfserie,
                             ...) {
   
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
+  
+  hfserie <- clean_tsp(hfserie)
+  lfserie <- clean_tsp(lfserie)
+  
   tsplf <- tsp(lfserie)
-  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
-  if  (!(frequency(hfserie) %% frequency(lfserie) == 0L)) stop("The low frequency should divide the higher one", call. = FALSE)
+  
+  if (frequency(hfserie) %% frequency(lfserie) != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   if (!is.null(dim(hfserie)) && dim(hfserie)[2L] != 1) stop("The high frequency serie must be one-dimensional", call. = FALSE)
+  if (length(start(hfserie)) == 1L || length(start(lfserie)) == 1L) stop("Incorrect time-serie phase", call. = FALSE)
   
   maincl <- match.call()
   
-  threeRuleSmooth_impl(purify_ts(hfserie),purify_ts(lfserie),
+  threeRuleSmooth_impl(hfserie,lfserie,
                        start.benchmark,end.benchmark,
                        start.domain,end.domain,
                        start.delta.rate,end.delta.rate,

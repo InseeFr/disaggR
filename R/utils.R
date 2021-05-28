@@ -2,12 +2,6 @@ ts_from_tsp <- function(x,tspx) {
   ts(x, start=tspx[1L], frequency=tspx[3L])
 }
 
-purify_ts <- function(x) {
-  s <- start(x)
-  if (length(s) == 2L) ts(x,start = s, frequency = frequency(x))
-  else stop("Incorrect time-serie phase", call. = FALSE)
-}
-
 tsp_equal <- function(tspx,tspy) {
   
   ts.eps <- getOption("ts.eps")
@@ -19,8 +13,42 @@ tsp_equal <- function(tspx,tspy) {
   
 }
 
-# This window is the smallest that is all around the domain of the hfserie
-# that is compatible with the low frequency.
+clean_tsp <- function(x) {
+  s <- start(x)
+  if (length(s) == 2L) ts(x,start = s, frequency = frequency(x))
+  else if (as.integer(frequency(x)) != frequency(x)) stop("The frequencies must be integers", call. = FALSE)
+  else stop("Incorrect time-serie phase", call. = FALSE)
+}
+
+drop_tsp <- function(x) {
+  attr(x,"tsp") <- NULL
+  class(x) <- setdiff(class(x),c("mts","ts"))
+  x
+}
+
+fast_op_on_x <- function(x,y,FUN) {
+  FUN <- match.fun(FUN)
+  tsp <- tsp(x)
+  ts_from_tsp(FUN(drop_tsp(x),
+                  drop_tsp(window(y,start=tsp[1L],end=tsp[2L],extend=TRUE))),
+              tspx = tsp)
+}
+
+neither_outlier_nor_constant <- function(string) {
+  !grepl(outliers_pattern,string) &
+    string != "constant"
+}
+
+#' Extend tsp with lf
+#'
+#' This window is the smallest that is all around tsphf
+#' that is compatible with the low frequency.
+#' 
+#' @param tsphf a numeric of length 3, a tsp of high-frequency
+#' @param lffreq a numeric of length 1, the low frequency
+#' @return
+#' a numeric of length 3, a tsp of high-frequency.
+#' @keywords internal
 extend_tsp <- function(tsphf,lffreq) {
   
   ts.eps <- getOption("ts.eps")
@@ -41,7 +69,7 @@ aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
 ts_expand <- function(x,nfrequency,divide.by.ratio=TRUE) {
   ratio <- nfrequency/frequency(x)
   res <- if (divide.by.ratio) x/ratio else x
-  ts(rep(res, each = ratio), start = tsp(x)[1], frequency = nfrequency)
+  ts(rep(res, each = ratio), start = tsp(x)[1L], frequency = nfrequency)
 }
 
 switch_window <- function(start,end,init_tsp) {
@@ -58,11 +86,5 @@ switch_window <- function(start,end,init_tsp) {
                 end[1L] + (end[2L] - 1)/init_tsp[3L])
   }
   c(start,end)
-}
-
-lfserie <- function(benchmark) model.list(benchmark)$lfserie
-hfserie <- function(benchmark) {
-  res <- model.list(benchmark)$hfserie
-  if (is.mts(res)) res[,colnames(res) != "constant"] else res
 }
 

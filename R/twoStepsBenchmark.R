@@ -1,3 +1,104 @@
+outliers_pattern <- "^(AO|LS)([0-9]+?)(?:T([0-9]+?))?$"
+
+split_outlier_names <- function(outlier_strings) {
+  
+  str <- regmatches(outlier_strings,
+                    regexec("^(AO|LS)([0-9]+?)(?:T([0-9]+?))?$",
+                            outlier_strings))
+  
+  if (any(lengths(str) == 0L)) stop("The outlier names can't be interpreted",
+                                    call. = FALSE)
+  
+  structure(
+    lapply(str, function(x) list(type=x[2L],
+                                 year=as.integer(x[3L]),
+                                 cycle=if (identical(x[4L],"")) 1L else as.integer(x[4L]))),
+    names = outlier_strings)
+  
+}
+
+minmax_tsp <- function(ts_list) {
+  
+  tsp_list <- vapply(ts_list,tsp,FUN.VALUE = c(0,0,0))
+  
+  c(min(tsp_list[1L,]),
+    max(tsp_list[2L,]))
+  
+}
+
+cbind_outliers <- function(outliers_ts_list,start,end) {
+  
+  minmax <- minmax_tsp(outliers_ts_list)
+  minmax[1L] <- min(minmax[1L],start)
+  minmax[2L] <- max(minmax[2L],end)
+  
+  hffreq <- frequency(outliers_ts_list[[1L]])
+  
+  res <- window(
+    ts(
+      vapply(
+        outliers_ts_list,
+        function(serie) {
+          
+          tspser <- tsp(serie)
+          
+          c(rep(0,round((tspser[1L]-minmax[1L])*hffreq)),
+            as.numeric(serie),
+            rep(switch(attr(serie,"type"),
+                       AO = 0,
+                       LS = serie[length(serie)]),
+                round((minmax[2L]-tspser[2L])*hffreq)))
+          
+        },
+        FUN.VALUE = rep(0,round((minmax[2L]-minmax[1L])*hffreq)+1L)
+      ),
+      start = minmax[1L],
+      frequency = hffreq),
+    start = start,
+    end = end,
+    extend = TRUE)
+  
+  res
+}
+
+interpret_outliers <- function(outlier,lffreq,hfserie) {
+  
+  if (is.null(outlier)) return()
+  
+  if (is.null(names(outlier))) stop("The outliers list must have names",
+                                    call. = FALSE)
+  
+  tsphf <- tsp(hfserie)
+  
+  ratio <- frequency(hfserie)/lffreq
+  
+  outliers_ts_list <-
+    Map(
+      function(splitted_name,vect) {
+        if (length(vect) %% ratio != 0L) stop("The outlier vector must be of length k * hf/lf",
+                                              call. = FALSE)
+        
+        structure(
+          ts(as.numeric(vect),
+             start = splitted_name$year + (splitted_name$cycle - 1L) / lffreq,
+             frequency = tsphf[3L]),
+          type = splitted_name$type
+        )
+        
+      },
+      split_outlier_names(names(outlier)),
+      outlier)
+  
+  res <- cbind_outliers(
+    outliers_ts_list,
+    start = tsphf[1L],
+    end = tsphf[2L]
+  )
+  
+  res
+  
+}
+
 residuals_extrap_sequence <- function(u0,u1,rho,n,include.differenciation) {
   if (include.differenciation) {
     if (rho == 1) u1 + (u1-u0) * (1:n)
@@ -72,7 +173,10 @@ coefficients_application <- function(hfserie,lfserie,regcoefs) {
 eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {
   if (is.null(set.smoothed.part)) {
     hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = frequency(lfserie))
-    lfresiduals <- window(lfserie,start=start(hfserie_fitted_aggreg),end=end(hfserie_fitted_aggreg),extend = TRUE) - hfserie_fitted_aggreg
+    lfresiduals <- fast_op_on_x(
+      hfserie_fitted_aggreg,
+      lfserie,
+      function(e1,e2) e2-e1)
     lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
     bflSmooth(lfresiduals,frequency(hfserie_fitted))
   }
@@ -105,10 +209,13 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   
   smoothed_part   <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
   
-  rests <- hfserie_fitted + window(smoothed_part,start=start(hfserie_fitted),end = end(hfserie_fitted),extend=TRUE)
+  rests <- fast_op_on_x(hfserie_fitted,
+                        smoothed_part,
+                        `+`)
   
-  res <- list(benchmarked.serie = window(rests,start=tsp(hfserie_cropped)[1],end=tsp(hfserie_cropped)[2],extend = TRUE),
-              fitted.values = window(hfserie_fitted,start=tsp(hfserie_cropped)[1],end=tsp(hfserie_cropped)[2],extend = TRUE),
+  tsp_cropped <- tsp(hfserie_cropped)
+  res <- list(benchmarked.serie = window(rests,start=tsp_cropped[1L],end=tsp_cropped[2L],extend = TRUE),
+              fitted.values = window(hfserie_fitted,start=tsp_cropped[1L],end=tsp_cropped[2L],extend = TRUE),
               regression = regresults,
               smoothed.part = smoothed_part,
               model.list = c(list(hfserie = hfserie,
@@ -123,9 +230,9 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                   start.domain = start.domain,
                                   end.domain = end.domain),
                              if (!is.null(set.smoothed.part)) list(set.smoothed.part=set.smoothed.part)),
-                             call = cl)
-              
-              new("twoStepsBenchmark",res)
+              call = cl)
+  
+  new("twoStepsBenchmark",res)
 }
 
 #' @title Regress and bends a time-serie with a lower frequency one
@@ -151,7 +258,8 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'                   set.coeff=NULL,set.const=NULL,
 #'                   start.coeff.calc=NULL,end.coeff.calc=NULL,
 #'                   start.benchmark=NULL,end.benchmark=NULL,
-#'                   start.domain=NULL,end.domain=NULL,...)
+#'                   start.domain=NULL,end.domain=NULL,outliers=NULL,
+#'                   ...)
 #'
 #'
 #' annualBenchmark(hfserie,lfserie,
@@ -162,7 +270,8 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'                 start.benchmark=start(lfserie)[1L],
 #'                 end.benchmark=end.coeff.calc[1L]+1L,
 #'                 start.domain=start(hfserie),
-#'                 end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)))
+#'                 end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)),
+#'                 outliers=NULL)
 #' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
@@ -209,6 +318,20 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' window.
 #' Should be a numeric of length 1 or 2, like a window for `hfserie`. If NULL,
 #' the start is defined by hfserie's window.
+#' @param outliers an optional named list of numeric vectors, whose pattern is
+#' like `list(AO2008T2=c(0,0,3,2),LS2002=c(0.1,0.1,0.1,0.1))` where :
+#' 
+#' * `"AO"` stands for additive outlier or `"LS"` for level shift
+#' * The integer that follows stands for the outlier starting year
+#' * an optional integer, preceded by the letter T, stands for the low-frequency
+#' cycle of the outlier start.
+#' * The numeric vector values stands for the disaggregated value of the outlier
+#' and must be a multiple of hf / lf
+#' 
+#' The outliers coefficients are evaluated though the regression process, like
+#' any coefficient. Therefore, if any outlier is external to the coefficient
+#' calculation window, it should be fixed using `set.coeff`.
+#' 
 #' @param \dots if the dots contain a cl item, its value overwrites the value of
 #' the returned call. This feature allows to build wrappers.
 #' @return
@@ -268,12 +391,21 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                               set.coeff=NULL,set.const=NULL,
                               start.coeff.calc=NULL,end.coeff.calc=NULL,
                               start.benchmark=NULL,end.benchmark=NULL,
-                              start.domain=NULL,end.domain=NULL,...) {
+                              start.domain=NULL,end.domain=NULL,
+                              outliers=NULL,...) {
+  
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object",
                                                  call. = FALSE)
+  
+  if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
+  
+  hfserie <- clean_tsp(hfserie)
+  lfserie <- clean_tsp(lfserie)
+  
   tsplf <- tsp(lfserie)
-  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
-  if  (!(frequency(hfserie) %% frequency(lfserie) == 0L)) stop("The low frequency should divide the higher one", call. = FALSE)
+  tsphf <- tsp(hfserie)
+  
+  if (tsphf[3L] %% tsplf[3L] != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   
   maincl <- match.call()
@@ -288,27 +420,29 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   
   if (length(set.const) > 1L) stop("set.const must be of a single value", call. = FALSE)
   if (length(set.const) == 1L) names(set.const) <- "constant"
-  if ((NCOL(hfserie) == 1L) && (length(set.coeff) == 1L)) names(set.coeff) <- "hfserie"
   
-  if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
+  if ((NCOL(hfserie) == 1L) &&
+      length(set.coeff) == 1L &&
+      !(isTRUE(names(set.coeff) %in% c("constant",names(outliers))))) names(set.coeff) <- "hfserie"
   
-  if (length(start(hfserie)) == 1L)  stop("Incorrect time-serie phase", call. = FALSE)
+  outliers_mts <- interpret_outliers(outliers,frequency(lfserie),hfserie)
   
-  hfserie <- ts(matrix(c(constant,hfserie),
-                       nrow = NROW(hfserie),
-                       ncol = NCOL(hfserie) + 1L),
-                start = start(hfserie),
-                frequency = frequency(hfserie),
-                names = c("constant",if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie)))
+  hfserie <- ts(matrix(c(constant,hfserie,outliers_mts),
+                       nrow = NROW(hfserie)),
+                start = tsphf[1L],
+                frequency = tsphf[3L],
+                names = c("constant",
+                          if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie),
+                          colnames(outliers_mts)))
   
-  lfserie <- purify_ts(lfserie)
-  
-  twoStepsBenchmark_impl(hfserie,lfserie,
-                         include.differenciation,include.rho,
-                         c(set.const,set.coeff),
-                         start.coeff.calc,end.coeff.calc,
-                         start.benchmark,end.benchmark,
-                         start.domain,end.domain,maincl,...)
+  structure(
+    twoStepsBenchmark_impl(hfserie,lfserie,
+                           include.differenciation,include.rho,
+                           c(set.const,set.coeff),
+                           start.coeff.calc,end.coeff.calc,
+                           start.benchmark,end.benchmark,
+                           start.domain,end.domain,maincl,...),
+    outliers = outliers)
 }
 
 #' @export
@@ -320,7 +454,8 @@ annualBenchmark <- function(hfserie,lfserie,
                             start.benchmark=start(lfserie)[1L],
                             end.benchmark=end.coeff.calc[1L]+1L,
                             start.domain=start(hfserie),
-                            end.domain=c(end.benchmark[1L]+2L,frequency(hfserie))) {
+                            end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)),
+                            outliers=NULL) {
   
   if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)
   twoStepsBenchmark(hfserie,lfserie,
@@ -328,7 +463,8 @@ annualBenchmark <- function(hfserie,lfserie,
                     set.coeff,set.const,
                     start.coeff.calc,end.coeff.calc,
                     start.benchmark,end.benchmark,
-                    start.domain,end.domain,cl=match.call())
+                    start.domain,end.domain,outliers,
+                    cl=match.call())
 }
 
 #' Using an estimated benchmark model on another time-serie
@@ -371,6 +507,7 @@ reUseBenchmark <- function(hfserie,benchmark,reeval.smoothed.part=FALSE) {
                     set.coeff,set.const,
                     m$start.coeff.calc,m$end.coeff.calc,
                     m$start.benchmark,m$end.benchmark,
-                    m$start.domain,m$end.domain,cl=match.call(),
-                    if (!reeval.smoothed.part) set.smoothed.part=smoothed.part(benchmark))
+                    m$start.domain,m$end.domain,
+                    outliers = NULL,cl=match.call(),
+                    set.smoothed.part = if (!reeval.smoothed.part) smoothed.part(benchmark))
 }

@@ -14,6 +14,13 @@ test_that("switch window", {
                    c(tspex[1L],2011.4))
 })
 
+test_that("display_vector", {
+  expect_identical(display_vector(rep(0.1,12)),
+                   "c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1)")
+  expect_identical(display_vector(2),
+                   "2")
+})
+
 test_that("get_preset", {
   expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)),1)
   expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
@@ -464,8 +471,8 @@ test_that("reView-setcoefconst",{
   # the previous code is to quit the shinyprocess for codecov to update
 })
 
-test_that("benchmarkCall NULL",{
-  expect_null(benchmarkCall(NULL,"a","b"))
+test_that("get_benchmark_call NULL",{
+  expect_null(get_benchmark_call(NULL,"a","b"))
 })
 
 test_that("link_if_in_shiny if not in shiny",{

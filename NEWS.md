@@ -1,3 +1,8 @@
+# disaggR 0.3
+* added support of outliers
+* for `twoStepsBenchmark`, the set.coeff names used to be ignored if `NCOL(hfserie) == 1L` and `length(set.coeff) == 1L`. This behavior was contradictory with the documentation for, by example, `c(constant=1L)`. Hence the ignore is now turned of if the name is in `c("constant",names(outliers))`.
+* as for the `in` time-series plots, the y window now ignores the infinite values
+
 # disaggR 0.2.1
 * fixed some issues with ts.eps-delayed tsps.
 

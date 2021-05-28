@@ -12,7 +12,7 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 knitr::opts_chunk$set(fig.height = 2.5,out.width = "100%")
 knitr::opts_knit$set(global.par = TRUE)
 hfserie <- model.list(params$new_bn)$hfserie
-hfserie <- hfserie[,colnames(hfserie) != "constant"]
+hfserie <- hfserie[,disaggR:::neither_outlier_nor_constant(colnames(hfserie))]
 
 presets_list <- disaggR:::presets_list_fun(hfserie,model.list(params$new_bn)$lfserie)
 ```
@@ -97,7 +97,7 @@ plot(in_scatter(params$new_bn))
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,comment="\t"}
-cat(disaggR:::benchmarkCall(params$new_bn,params$hfserie_name,params$lfserie_name))
+cat(disaggR:::get_benchmark_call(params$new_bn,params$hfserie_name,params$lfserie_name))
 ```
 
 ```{r echo=FALSE, fig.width=14}
