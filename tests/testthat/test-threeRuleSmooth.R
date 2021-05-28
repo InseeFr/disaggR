@@ -52,6 +52,8 @@ test_that("mean delta", {
 test_that("threeRuleSmooth works",{
   expect_snapshot(as.ts(threeRuleSmooth(turnover,construction)),
                   cran = TRUE)
+  expect_equal(attributes(model.list(threeRuleSmooth(turnover,construction))$hfserie)$dim,
+               c(245L,1L))
   expect_snapshot(as.ts(threeRuleSmooth(turnover,construction,
                                         start.benchmark = 2004,
                                         end.benchmark = 2017,
@@ -189,10 +191,10 @@ test_that("errors",{
   
   set.seed(20)
   expect_error(threeRuleSmooth(hfserie = ts(diffinv(rnorm(240,1,1)),start=2010.1,freq=12),
-                                 lfserie = ts(diffinv(rnorm(18,12,1)),start=2010,freq=1)),
+                               lfserie = ts(diffinv(rnorm(18,12,1)),start=2010,freq=1)),
                "time-serie phase")
   expect_error(threeRuleSmooth(hfserie = ts(diffinv(rnorm(240,1,1)),start=2010,freq=12),
-                                 lfserie = ts(diffinv(rnorm(18,12,1)),start=2010.1,freq=1)),
+                               lfserie = ts(diffinv(rnorm(18,12,1)),start=2010.1,freq=1)),
                "time-serie phase")
 })
 
