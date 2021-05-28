@@ -30,7 +30,7 @@ hfserie_extrap <- function(hfserie,lffreq) {
   hfserie
 }
 
-calc_hfserie_win <- function(hfserie,start.domain,end.domain,lffreq) {
+calc_hfserie_as_weights <- function(hfserie,start.domain,end.domain,lffreq) {
   
   hfserie <- window(hfserie,start=start.domain,end=end.domain,extend=TRUE)
   
@@ -79,7 +79,9 @@ calc_lfrate_win <- function(hfserie,lfserie,
                             set.delta.rate,
                             start.domain.extended,end.domain.extended) {
   
-  lfrate <- lfserie / aggregate_and_crop_hf_to_lf(hfserie,lfserie)
+  lfrate <- fast_op_on_x(lfserie,
+                         aggregate_and_crop_hf_to_lf(hfserie,lfserie),
+                         `/`)
   
   delta_rate <- {
     if (is.null(set.delta.rate)) mean_delta(lfrate,start.delta.rate,end.delta.rate)
@@ -127,27 +129,29 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
   
   if (is.null(cl)) cl <- maincl
   
-  hfserie_win <- calc_hfserie_win(hfserie,
-                                  start.domain,end.domain,
-                                  frequency(lfserie))
+  hfserie_as_weights <- calc_hfserie_as_weights(hfserie,
+                                                start.domain,end.domain,
+                                                frequency(lfserie))
   
   lfrate_win <- calc_lfrate_win(hfserie,lfserie,
                                 start.benchmark,end.benchmark,
                                 start.delta.rate,end.delta.rate,
                                 set.delta.rate,
-                                tsp(hfserie_win)[1L],tsp(hfserie_win)[2L])
+                                tsp(hfserie_as_weights)[1L],tsp(hfserie_as_weights)[2L])
   
   hfrate <- bflSmooth(lfserie = lfrate_win$lfrate,
                       nfrequency = frequency(hfserie),
-                      weights = hfserie_win,
+                      weights = hfserie_as_weights,
                       lfserie.is.rate = TRUE)
   
-  rests <- hfrate * hfserie
+  rests <- fast_op_on_x(hfserie,
+                        hfrate,
+                        `*`)
   
   res <- list(benchmarked.serie = window(rests,start=start.domain,end=end.domain,extend = TRUE),
               lfrate = lfrate_win$lfrate,
               smoothed.rate = hfrate,
-              hfserie.as.weights = hfserie_win,
+              hfserie.as.weights = hfserie_as_weights,
               delta.rate = lfrate_win$delta_rate,
               model.list = list(hfserie = structure(hfserie,
                                                     dim = c(length(hfserie),1L),

@@ -173,7 +173,10 @@ coefficients_application <- function(hfserie,lfserie,regcoefs) {
 eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {
   if (is.null(set.smoothed.part)) {
     hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = frequency(lfserie))
-    lfresiduals <- window(lfserie,start=start(hfserie_fitted_aggreg),end=end(hfserie_fitted_aggreg),extend = TRUE) - hfserie_fitted_aggreg
+    lfresiduals <- fast_op_on_x(
+      hfserie_fitted_aggreg,
+      lfserie,
+      function(e1,e2) e2-e1)
     lfresiduals <- residuals_extrap(lfresiduals,rho,include.differenciation)
     bflSmooth(lfresiduals,frequency(hfserie_fitted))
   }
@@ -206,10 +209,13 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   
   smoothed_part   <- eval_smoothed_part(hfserie_fitted,lfserie_cropped,include.differenciation,regresults$rho,set.smoothed.part)
   
-  rests <- hfserie_fitted + window(smoothed_part,start=start(hfserie_fitted),end = end(hfserie_fitted),extend=TRUE)
+  rests <- fast_op_on_x(hfserie_fitted,
+                        smoothed_part,
+                        `+`)
   
-  res <- list(benchmarked.serie = window(rests,start=tsp(hfserie_cropped)[1],end=tsp(hfserie_cropped)[2],extend = TRUE),
-              fitted.values = window(hfserie_fitted,start=tsp(hfserie_cropped)[1],end=tsp(hfserie_cropped)[2],extend = TRUE),
+  tsp_cropped <- tsp(hfserie_cropped)
+  res <- list(benchmarked.serie = window(rests,start=tsp_cropped[1L],end=tsp_cropped[2L],extend = TRUE),
+              fitted.values = window(hfserie_fitted,start=tsp_cropped[1L],end=tsp_cropped[2L],extend = TRUE),
               regression = regresults,
               smoothed.part = smoothed_part,
               model.list = c(list(hfserie = hfserie,
@@ -370,7 +376,8 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                               start.coeff.calc=NULL,end.coeff.calc=NULL,
                               start.benchmark=NULL,end.benchmark=NULL,
                               start.domain=NULL,end.domain=NULL,
-                              outliers = NULL,...) {
+                              outliers=NULL,...) {
+  
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object",
                                                  call. = FALSE)
   
@@ -431,7 +438,8 @@ annualBenchmark <- function(hfserie,lfserie,
                             start.benchmark=start(lfserie)[1L],
                             end.benchmark=end.coeff.calc[1L]+1L,
                             start.domain=start(hfserie),
-                            end.domain=c(end.benchmark[1L]+2L,frequency(hfserie))) {
+                            end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)),
+                            outliers=NULL) {
   
   if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)
   twoStepsBenchmark(hfserie,lfserie,
@@ -439,7 +447,8 @@ annualBenchmark <- function(hfserie,lfserie,
                     set.coeff,set.const,
                     start.coeff.calc,end.coeff.calc,
                     start.benchmark,end.benchmark,
-                    start.domain,end.domain,cl=match.call())
+                    start.domain,end.domain,outliers,
+                    cl=match.call())
 }
 
 #' Using an estimated benchmark model on another time-serie

@@ -20,6 +20,20 @@ clean_tsp <- function(x) {
   else stop("Incorrect time-serie phase", call. = FALSE)
 }
 
+drop_tsp <- function(x) {
+  attr(x,"tsp") <- NULL
+  class(x) <- setdiff(class(x),c("mts","ts"))
+  x
+}
+
+fast_op_on_x <- function(x,y,FUN) {
+  FUN <- match.fun(FUN)
+  tsp <- tsp(x)
+  ts_from_tsp(FUN(drop_tsp(x),
+                  drop_tsp(window(y,start=tsp[1L],end=tsp[2L],extend=TRUE))),
+              tspx = tsp)
+}
+
 neither_outlier_nor_constant <- function(string) {
   !grepl(outliers_pattern,string) &
     string != "constant"
@@ -55,7 +69,7 @@ aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
 ts_expand <- function(x,nfrequency,divide.by.ratio=TRUE) {
   ratio <- nfrequency/frequency(x)
   res <- if (divide.by.ratio) x/ratio else x
-  ts(rep(res, each = ratio), start = tsp(x)[1], frequency = nfrequency)
+  ts(rep(res, each = ratio), start = tsp(x)[1L], frequency = nfrequency)
 }
 
 switch_window <- function(start,end,init_tsp) {
