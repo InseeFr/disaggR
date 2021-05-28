@@ -258,7 +258,8 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'                   set.coeff=NULL,set.const=NULL,
 #'                   start.coeff.calc=NULL,end.coeff.calc=NULL,
 #'                   start.benchmark=NULL,end.benchmark=NULL,
-#'                   start.domain=NULL,end.domain=NULL,...)
+#'                   start.domain=NULL,end.domain=NULL,outliers=NULL,
+#'                   ...)
 #'
 #'
 #' annualBenchmark(hfserie,lfserie,
@@ -269,7 +270,8 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'                 start.benchmark=start(lfserie)[1L],
 #'                 end.benchmark=end.coeff.calc[1L]+1L,
 #'                 start.domain=start(hfserie),
-#'                 end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)))
+#'                 end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)),
+#'                 outliers=NULL)
 #' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
@@ -316,6 +318,20 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' window.
 #' Should be a numeric of length 1 or 2, like a window for `hfserie`. If NULL,
 #' the start is defined by hfserie's window.
+#' @param outliers an optional named list of numeric vectors, whose pattern is
+#' like `list(AO2008T2=c(0,0,3,2),LS2002=c(0.1,0.1,0.1,0.1))` where :
+#' 
+#' * `"AO"` stands for additive outlier or `"LS"` for level shift
+#' * The integer that follows stands for the outlier starting year
+#' * an optional integer, preceded by the letter T, stands for the low-frequency
+#' cycle of the outlier start.
+#' * The numeric vector values stands for the disaggregated value of the outlier
+#' and must be a multiple of hf / lf
+#' 
+#' The outliers coefficients are evaluated though the regression process, like
+#' any coefficient. Therefore, if any outlier is external to the coefficient
+#' calculation window, it should be fixed using `set.coeff`.
+#' 
 #' @param \dots if the dots contain a cl item, its value overwrites the value of
 #' the returned call. This feature allows to build wrappers.
 #' @return

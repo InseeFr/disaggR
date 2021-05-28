@@ -9,7 +9,8 @@ twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALS
                   set.coeff=NULL,set.const=NULL,
                   start.coeff.calc=NULL,end.coeff.calc=NULL,
                   start.benchmark=NULL,end.benchmark=NULL,
-                  start.domain=NULL,end.domain=NULL,...)
+                  start.domain=NULL,end.domain=NULL,outliers=NULL,
+                  ...)
 
 
 annualBenchmark(hfserie,lfserie,
@@ -20,7 +21,8 @@ annualBenchmark(hfserie,lfserie,
                 start.benchmark=start(lfserie)[1L],
                 end.benchmark=end.coeff.calc[1L]+1L,
                 start.domain=start(hfserie),
-                end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)))
+                end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)),
+                outliers=NULL)
 }
 \arguments{
 \item{hfserie}{the bended time-serie. It can be a matrix time-serie.}
@@ -79,6 +81,21 @@ smallest low-frequency window that is around the high-frequency domain
 window.
 Should be a numeric of length 1 or 2, like a window for \code{hfserie}. If NULL,
 the start is defined by hfserie's window.}
+
+\item{outliers}{an optional named list of numeric vectors, whose pattern is
+like \code{list(AO2008T2=c(0,0,3,2),LS2002=c(0.1,0.1,0.1,0.1))} where :
+\itemize{
+\item \code{"AO"} stands for additive outlier or \code{"LS"} for level shift
+\item The integer that follows stands for the outlier starting year
+\item an optional integer, preceded by the letter T, stands for the low-frequency
+cycle of the outlier start.
+\item The numeric vector values stands for the disaggregated value of the outlier
+and must be a multiple of hf / lf
+}
+
+The outliers coefficients are evaluated though the regression process, like
+any coefficient. Therefore, if any outlier is external to the coefficient
+calculation window, it should be fixed using \code{set.coeff}.}
 
 \item{\dots}{if the dots contain a cl item, its value overwrites the value of
 the returned call. This feature allows to build wrappers.}
