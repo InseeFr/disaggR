@@ -537,4 +537,25 @@ test_that("test outliers",
                              rep(0.1,12L),
                              rep(0,161)),start=c(2003,3),frequency=12)
             expect_equal(object,expected)
+            
+            object <- model.list(annualBenchmark(window(turnover,start=c(2003,3)),
+                                                   window(construction,start=2004),
+                                                   outliers=list(AO2006T1=rep(0.1,12))))$hfserie[,"AO2006T1"]
+            expected <- ts(c(rep(0,34L),
+                             rep(0.1,12L),
+                             rep(0,161)),start=c(2003,3),frequency=12)
+            expect_equal(object,expected)
+            
+            set.seed(27)
+            mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
+            trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
+            
+            object <- model.list(twoStepsBenchmark(mensualts,
+                                                   trimts,
+                                                   outliers=list(AO2011T2=rep(0.1,6L))))$hfserie[,"AO2011T2"]
+            expected <- ts(c(rep(0,15L),
+                             rep(0.1,6L),
+                             rep(0,100L)),start=2010,frequency=12)
+            expect_equal(object,expected)
+            
           })
