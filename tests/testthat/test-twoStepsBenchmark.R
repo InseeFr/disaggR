@@ -530,4 +530,11 @@ test_that("test outliers",
                                               set.coeff = c(AO2020=1)))
             expect_equal(expected,object)
             
+            object <- model.list(twoStepsBenchmark(window(turnover,start=c(2003,3)),
+                                                   window(construction,start=2004),
+                                                   outliers=list(AO2006T1=rep(0.1,12))))$hfserie[,"AO2006T1"]
+            expected <- ts(c(rep(0,34L),
+                             rep(0.1,12L),
+                             rep(0,161)),start=c(2003,3),frequency=12)
+            expect_equal(object,expected)
           })
