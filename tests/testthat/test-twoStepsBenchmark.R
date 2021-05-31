@@ -444,6 +444,11 @@ test_that("annualBenchmark",{
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
                                            lfserie = annualts,
                                            include.differenciation = FALSE,
+                                           set.coeff=c(hfserie=0.07996253268,constant=-4.42319837305)))),
+               c(-4.42319837305,0.07996253268))
+  expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
+                                           lfserie = annualts,
+                                           include.differenciation = FALSE,
                                            set.const=-3))),
                c(-3,0.07851836099))
   expect_equal(unname(coef(annualBenchmark(hfserie = mensualts,
