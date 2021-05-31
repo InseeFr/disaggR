@@ -490,3 +490,39 @@ test_that("ts eps",{
   
 })
 
+test_that("test outliers",
+          {
+            expect_error(twoStepsBenchmark(turnover,construction,outliers = list(AO2020 = rep(0.1,12))),
+                         "perfect rank")
+            expect_error(twoStepsBenchmark(turnover,construction,outliers = c(AO2008=rep(0.1,12))),
+                         "named list")
+            expect_error(twoStepsBenchmark(turnover,construction,outliers = list(rep(0.1,12))),
+                         "must have names")
+            expect_error(twoStepsBenchmark(turnover,construction,outliers = list(Aqdqsd = rep(0.1,12))),
+                         "be interpreted")
+            expect_error(twoStepsBenchmark(turnover,construction,outliers = list(AO2008 = rep(0.1,11))),
+                         "length")
+            expect_error(twoStepsBenchmark(turnover,construction,outliers = list(AO2008 = rep(0.1,13))),
+                         "length")
+            
+            expected <- as.ts(twoStepsBenchmark(cbind(turnover,
+                                                      ts(c(rep(0,96L),1:24,rep(0,125L)),start = 2000,frequency = 12),
+                                                      ts(c(rep(0,12L),12:1,rep(1,221L)),start = 2000,frequency = 12)),
+                                                construction))
+            object <- as.ts(twoStepsBenchmark(turnover,construction,
+                                              outliers = list(AO2008 = 1:24,
+                                                              LS2001 = 12:1)))
+            expect_equal(expected,object)
+            
+            expected <- as.ts(twoStepsBenchmark(`colnames<-`(cbind(turnover,
+                                                                   ts(c(rep(0,240L),rep(0.1,5L)),
+                                                                      start = 2000,
+                                                                      frequency = 12)),
+                                                             c("hfserie","outlier")),
+                                                construction,
+                                                set.coeff = c(outlier=1)))
+            object <- as.ts(twoStepsBenchmark(turnover,construction,outliers = list(AO2020 = rep(0.1,12)),
+                                              set.coeff = c(AO2020=1)))
+            expect_equal(expected,object)
+            
+          })
