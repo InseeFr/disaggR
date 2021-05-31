@@ -372,7 +372,6 @@ test_that("show.legend=FALSE works", {
 
 test_that("xlab and ylab works", {
   skip_if_not_installed("vdiffr")
-  skip_on_os(c("mac","linux","solaris"))
   skip_on_cran()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
