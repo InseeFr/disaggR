@@ -65,7 +65,7 @@ interpret_outliers <- function(outliers,lffreq,hfserie) {
   
   if (is.null(outliers)) return()
   
-  if (!inherits(outliers,"list")) stop("The outliers must be a named list",
+  if (!inherits(outliers,"list")) stop("The outliers must be a named list (see ?twoStepsBenchmark)",
                                       call. = FALSE)
   
   if (is.null(names(outliers))) stop("The outliers list must have names (see ?twoStepsBenchmark)",
