@@ -599,6 +599,36 @@ test_that("ggplot works with threeRuleSmooth", {
                                main="title scatter"))
 })
 
+test_that("plot outliers in_disaggr",{
+  
+  benchmark <- twoStepsBenchmark(turnover,construction,
+                                 outliers=list(LS2005=rep(0.1,12L)))
+  
+  expect_doppelganger("plot-indicator-levels-outlier",
+                      function() plot(in_disaggr(benchmark,type="levels")))
+  expect_doppelganger("plot-indicator-levels-rebased-outlier",
+                      function() plot(in_disaggr(benchmark,type="levels-rebased")))
+  expect_doppelganger("plot-indicator-changes-outlier",
+                      function() plot(in_disaggr(benchmark,type="changes")))
+  expect_doppelganger("plot-indicator-contributions-outlier",
+                      function() plot(in_disaggr(benchmark,type="contributions")))
+})
+
+test_that("ggplot outliers in_disaggr",{
+  
+  benchmark <- twoStepsBenchmark(turnover,construction,
+                                 outliers=list(LS2005=rep(0.1,12L)))
+  
+  expect_doppelganger("ggplot-indicator-levels-outlier",
+                      autoplot(in_disaggr(benchmark,type="levels")))
+  expect_doppelganger("ggplot-indicator-levels-rebased-outlier",
+                      autoplot(in_disaggr(benchmark,type="levels-rebased")))
+  expect_doppelganger("ggplot-indicator-changes-outlier",
+                      autoplot(in_disaggr(benchmark,type="changes")))
+  expect_doppelganger("ggplot-indicator-contributions-outlier",
+                      autoplot(in_disaggr(benchmark,type="contributions")))
+})
+
 test_that("eval_function_if_it_is_one works", {
   expect_identical(eval_function_if_it_is_one(seq_len,2L),c(1L,2L))
   expect_identical(eval_function_if_it_is_one(3L,2L),3L)

@@ -6,7 +6,7 @@ split_outlier_names <- function(outlier_strings) {
                     regexec("^(AO|LS)([0-9]+?)(?:T([0-9]+?))?$",
                             outlier_strings))
   
-  if (any(lengths(str) == 0L)) stop("The outlier names can't be interpreted",
+  if (any(lengths(str) == 0L)) stop("The outlier names can't be interpreted (see ?twoStepsBenchmark)",
                                     call. = FALSE)
   
   structure(
@@ -61,11 +61,14 @@ cbind_outliers <- function(outliers_ts_list,start,end) {
   res
 }
 
-interpret_outliers <- function(outlier,lffreq,hfserie) {
+interpret_outliers <- function(outliers,lffreq,hfserie) {
   
-  if (is.null(outlier)) return()
+  if (is.null(outliers)) return()
   
-  if (is.null(names(outlier))) stop("The outliers list must have names",
+  if (!inherits(outliers,"list")) stop("The outliers must be a named list (see ?twoStepsBenchmark)",
+                                      call. = FALSE)
+  
+  if (is.null(names(outliers))) stop("The outliers list must have names (see ?twoStepsBenchmark)",
                                     call. = FALSE)
   
   tsphf <- tsp(hfserie)
@@ -86,8 +89,8 @@ interpret_outliers <- function(outlier,lffreq,hfserie) {
         )
         
       },
-      split_outlier_names(names(outlier)),
-      outlier)
+      split_outlier_names(names(outliers)),
+      outliers)
   
   res <- cbind_outliers(
     outliers_ts_list,
@@ -329,7 +332,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' and must be a multiple of hf / lf
 #' 
 #' The outliers coefficients are evaluated though the regression process, like
-#' any coefficient. Therefore, if any outlier is external to the coefficient
+#' any coefficient. Therefore, if any outlier is outside to the coefficient
 #' calculation window, it should be fixed using `set.coeff`.
 #' 
 #' @param \dots if the dots contain a cl item, its value overwrites the value of

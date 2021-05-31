@@ -471,6 +471,58 @@ test_that("reView-setcoefconst",{
   # the previous code is to quit the shinyprocess for codecov to update
 })
 
+test_that("reView-outliers",{
+  
+  # important : the package should have been rebuilt for these tests
+  # (ie with installed and restart in R Studio not loaded with devtools)
+  # One has also have PhantomJS work with the firewall
+  
+  skip_on_os("mac") # phantomjs bugs with macos
+  skip_on_cran() # no shinytest on cran
+  testthat::skip_if_not_installed("shinytest")
+  
+  app <- shinytest::ShinyDriver$new(test_path("shiny-outliers"))
+  
+  expect_identical(app$getTitle(),"reView")
+  
+  get_bn <- function() app$getAllValues()$export$`reView-reViewtab2-new_bn`
+  
+  app$setWindowSize(800,600)
+  app$waitForValue("reView-reViewtab1-model1_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model2_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model3_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model4_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model5_plot",iotype="output")
+  app$waitForValue("reView-reViewtab1-model6_plot",iotype="output")
+  
+  expect_equal(as.ts(get_bn()),as.ts(twoStepsBenchmark(turnover,construction,
+                                                       outliers = list(AO2005 = rep(0.1,12L)))))
+  # Test in second tab if the sets are OK
+  app$setInputs(`reView-menu` = "Export")
+  expect_equal(app$waitForValue("reView-reViewtab3-newcall",iotype="output"),
+               paste("twoStepsBenchmark(",
+                     "hfserie = turnover,",
+                     "lfserie = construction,",
+                     "include.differenciation = FALSE,",
+                     "include.rho = FALSE,",
+                     "start.coeff.calc = 2000,",
+                     "end.coeff.calc = 2019,",
+                     "start.benchmark = 2000,",
+                     "end.benchmark = 2019,",
+                     "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
+  expect_equal(app$waitForValue("reView-reViewtab3-oldcall",iotype="output"),
+               paste("twoStepsBenchmark(",
+                     "hfserie = turnover,",
+                     "lfserie = construction,",
+                     "include.differenciation = FALSE,",
+                     "include.rho = FALSE,",
+                     "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
+  p <- app$.__enclos_env__$private$shinyProcess
+  p$interrupt()
+  p$wait()
+  # the previous code is to quit the shinyprocess for codecov to update
+})
+
 test_that("get_benchmark_call NULL",{
   expect_null(get_benchmark_call(NULL,"a","b"))
 })
