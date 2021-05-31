@@ -285,8 +285,6 @@ threeRuleSmooth <- function(hfserie,lfserie,
   if (frequency(hfserie) %% frequency(lfserie) != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
   if (!is.null(dim(hfserie)) && dim(hfserie)[2L] != 1) stop("The high frequency serie must be one-dimensional", call. = FALSE)
-  if (length(start(hfserie)) == 1L || length(start(lfserie)) == 1L) stop("Incorrect time-serie phase", call. = FALSE)
-  
   maincl <- match.call()
   
   threeRuleSmooth_impl(hfserie,lfserie,
