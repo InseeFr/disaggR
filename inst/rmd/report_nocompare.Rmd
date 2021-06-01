@@ -11,8 +11,7 @@ date: "`r format(Sys.time(), '%d %B %Y')`"
 ```{r include=F}
 knitr::opts_chunk$set(fig.height = 2.5,out.width = "100%")
 knitr::opts_knit$set(global.par = TRUE)
-hfserie <- model.list(params$new_bn)$hfserie
-hfserie <- hfserie[,disaggR:::neither_outlier_nor_constant(colnames(hfserie))]
+hfserie <- disaggR:::neither_outlier_nor_constant.twoStepsBenchmark(params$new_bn)
 
 presets_list <- disaggR:::presets_list_fun(hfserie,model.list(params$new_bn)$lfserie)
 ```

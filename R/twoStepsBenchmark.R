@@ -66,10 +66,10 @@ interpret_outliers <- function(outliers,lffreq,hfserie) {
   if (is.null(outliers)) return()
   
   if (!inherits(outliers,"list")) stop("The outliers must be a named list (see ?twoStepsBenchmark)",
-                                      call. = FALSE)
+                                       call. = FALSE)
   
   if (is.null(names(outliers))) stop("The outliers list must have names (see ?twoStepsBenchmark)",
-                                    call. = FALSE)
+                                     call. = FALSE)
   
   tsphf <- tsp(hfserie)
   
@@ -438,14 +438,18 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                           if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie),
                           colnames(outliers_mts)))
   
-  structure(
-    twoStepsBenchmark_impl(hfserie,lfserie,
-                           include.differenciation,include.rho,
-                           c(set.const,set.coeff),
-                           start.coeff.calc,end.coeff.calc,
-                           start.benchmark,end.benchmark,
-                           start.domain,end.domain,maincl,...),
-    outliers = outliers)
+  res <- twoStepsBenchmark_impl(hfserie,lfserie,
+                                include.differenciation,include.rho,
+                                c(set.const,set.coeff),
+                                start.coeff.calc,end.coeff.calc,
+                                start.benchmark,end.benchmark,
+                                start.domain,end.domain,maincl,...)
+  if (!is.null(outliers)) {
+    attr(res$model.list,"outliers") <- outliers
+    attr(res$regression$model.list,"outliers") <- outliers
+  }
+  
+  res
 }
 
 #' @export

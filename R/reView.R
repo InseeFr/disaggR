@@ -27,11 +27,9 @@ lfserie <- function(benchmark) model.list(benchmark)$lfserie
 hfserie_alone <- function(benchmark) {
   res <- model.list(benchmark)$hfserie
   if (is.mts(res)) res[,!(colnames(res) %in% c("constant",
-                                               names(get_outliers(benchmark))))]
+                                               names(outliers(benchmark))))]
   else res
 }
-
-get_outliers <- function(benchmark) attr(benchmark,"outliers")
 
 info_switch <- function(mainout_choice)
   switch(mainout_choice,
@@ -272,7 +270,7 @@ get_new_bn <- function(input,hfserie_name,lfserie_name,new_bn_external_setter) {
                 end.benchmark = input$benchmark[2],
                 start.domain = model.list(new_bn_external_setter())$start.domain,
                 end.domain = model.list(new_bn_external_setter())$end.domain,
-                outliers = get_outliers(new_bn_external_setter())),
+                outliers = outliers(new_bn_external_setter())),
     error = function(e) NULL)
 }
 
@@ -345,7 +343,7 @@ get_model <- function(benchmark) {
 get_benchmark_call <- function(benchmark,hfserie_name,lfserie_name) {
   if (is.null(benchmark)) return(NULL)
   model <- get_model(benchmark)
-  outliers <- get_outliers(benchmark)
+  outliers <- outliers(benchmark)
   
   paste0("twoStepsBenchmark(",
          "\n\thfserie = ",hfserie_name,
@@ -1100,7 +1098,7 @@ reView.twoStepsBenchmark <- function(object,
                                      compare = TRUE) {
   if (is.null(hfserie_name)) hfserie_name <- deparse(object$call$hfserie)
   if (is.null(lfserie_name)) lfserie_name <- deparse(object$call$lfserie)
-  if (sum(neither_outlier_nor_constant(colnames(model.list(object)$hfserie))) > 1) stop("This reviewing application is only for univariate benchmarks.", call. = FALSE)
+  if (NCOL(neither_outlier_nor_constant(object)) > 1) stop("This reviewing application is only for univariate benchmarks.", call. = FALSE)
   runapp_reView(object,hfserie_name,lfserie_name,compare=compare)
 }
 
@@ -1142,7 +1140,7 @@ rePort.connection <- function(object, output_file = NULL,
 rePort.twoStepsBenchmark <- function(object, output_file = NULL,
                                      launch.browser = if (is.null(output_file)) TRUE else FALSE,
                                      ...) {
-  if (sum(neither_outlier_nor_constant(colnames(model.list(object)$hfserie))) > 1) stop("This reporting function is only for univariate benchmarks.", call. = FALSE)
+  if (NCOL(neither_outlier_nor_constant(object)) > 1) stop("This reporting function is only for univariate benchmarks.", call. = FALSE)
   rePort(reViewOutput(object,benchmark_old=NULL,compare=FALSE),
          output_file,launch.browser,
          ...)

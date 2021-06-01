@@ -34,9 +34,24 @@ fast_op_on_x <- function(x,y,FUN) {
               tspx = tsp)
 }
 
-neither_outlier_nor_constant <- function(string) {
-  !grepl(outliers_pattern,string) &
-    string != "constant"
+neither_outlier_nor_constant <- function(object) UseMethod("neither_outlier_nor_constant")
+
+neither_outlier_nor_constant.twoStepsBenchmark <- function(object) {
+  hfserie <- model.list(object)$hfserie
+  hfserie[,!(colnames(hfserie) %in% c("constant",
+                                      names(outliers(object)))),
+          drop = FALSE]
+}
+
+neither_outlier_nor_constant.threeRuleSmooth <- function(object) {
+  model.list(object)$hfserie
+}
+
+neither_outlier_nor_constant.praislm <- function(object) {
+  hfserie <- model.list(object)$X
+  hfserie[,!(colnames(hfserie) %in% c("constant",
+                                      names(outliers(object)))),
+          drop = FALSE]
 }
 
 #' Extend tsp with lf

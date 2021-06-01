@@ -110,7 +110,7 @@ test_that("Ops group generic",{
   tsnewobject_a <- twoStepsBenchmark(turnover,construction)
   tsnewobject_b <- threeRuleSmooth(turnover,construction)
   tsnewobject_c <- turnover
-
+  
   expect_identical(tsnewobject_a+tsnewobject_a,
                    as.ts(tsnewobject_a)+as.ts(tsnewobject_a))
   expect_identical(tsnewobject_b+tsnewobject_b,
@@ -140,7 +140,7 @@ test_that("Ops group generic",{
   
   expect_identical(tsnewobject_c+tsnewobject_c,
                    2*tsnewobject_c)
-    # to ensure stats::Ops.ts has not been replaced
+  # to ensure stats::Ops.ts has not been replaced
 })
 
 test_that("diverse ts methods",{
@@ -197,4 +197,38 @@ test_that("monthplot ts method",{
                       function() monthplot(benchmark))
   expect_doppelganger("monthplot-threeRuleSmooth",
                       function() monthplot(smooth))
+})
+
+test_that("outliers",{
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  expect_null(outliers(benchmark))
+  expect_null(outliers(benchmark,as.ts = TRUE))
+  expect_null(outliers(prais(benchmark)))
+  expect_null(outliers(prais(benchmark),as.ts = TRUE))
+  
+  benchmark <- twoStepsBenchmark(turnover,construction,
+                                 outliers = list(AO2005T1=rep(0.1,12)))
+  expect_identical(outliers(benchmark),list(AO2005T1=rep(0.1,12)))
+  expect_equal(outliers(benchmark,as.ts = TRUE),
+                   structure(
+                     ts(c(rep(0,60L),
+                          rep(0.1,12L),
+                          rep(0,173L)),
+                        frequency = 12L,
+                        start = 2000),
+                     dim = c(245L,1L),
+                     dimnames = list(NULL,
+                                     c("AO2005T1"))))
+  
+  expect_identical(outliers(prais(benchmark)),list(AO2005T1=rep(0.1,12)))
+  expect_equal(outliers(prais(benchmark),as.ts = TRUE),
+                   structure(
+                     ts(c(rep(0,5L),
+                          1.2,
+                          rep(0,14L)),
+                        frequency = 1L,
+                        start = 2000),
+                     dim = c(20L,1L),
+                     dimnames = list(NULL,
+                                     c("AO2005T1"))))
 })

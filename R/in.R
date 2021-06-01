@@ -112,16 +112,14 @@ trend_is_last_col <- function(x) {
 #' @importFrom stats lag
 in_disaggr_notctb <- function(object,type) {
   
-  hfserie_user <- model.list(object)$hfserie
-  hfserie_user <- hfserie_user[,neither_outlier_nor_constant(colnames(hfserie_user)),
-                          drop = FALSE]
+  hfserie <- neither_outlier_nor_constant(object)
   
-  hfserie_user <- replace_colnames_with_labels(hfserie_user)
+  hfserie <- replace_colnames_with_labels(hfserie)
   
   benchmark <- na.omit(as.ts(object))
   
   series <- cbind(benchmark,
-                  hfserie_user)
+                  hfserie)
   
   series <- switch(type,
                    levels = series,
@@ -138,7 +136,7 @@ in_disaggr_notctb <- function(object,type) {
   
   structure(window(series,start=start(benchmark),end=end(benchmark),extend=TRUE),
             dimnames=list(NULL,
-                          c("Benchmark",colnames(hfserie_user))
+                          c("Benchmark",colnames(hfserie))
             ),
             type=type,
             func="in_disaggr",
@@ -285,8 +283,7 @@ in_scatter <- function(object) UseMethod("in_scatter")
 in_scatter.praislm <- function(object) {
   m <- model.list(object)
   
-  X <- m$X[,neither_outlier_nor_constant(colnames(m$X)),
-           drop = FALSE]
+  X <- neither_outlier_nor_constant(object)
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
@@ -320,8 +317,7 @@ in_scatter.twoStepsBenchmark <- function(object) {
               max(coeff_clean_win[2L],benchmark_clean_win[2L]),
               extend = TRUE)
   
-  X <- m$hfserie[,neither_outlier_nor_constant(colnames(m$hfserie)),
-                 drop = FALSE]
+  X <- neither_outlier_nor_constant(object)
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   

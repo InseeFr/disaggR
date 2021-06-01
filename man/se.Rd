@@ -15,7 +15,7 @@ If some coefficients are set by the user, they return \code{NA} as for
 their standard error.
 }
 \description{
-The function \code{se} returns the standard error the coefficients
+The function \code{se} returns the standard error of the coefficients
 from either a \link{praislm} or a \link{twoStepsBenchmark} object.
 }
 \keyword{internal}

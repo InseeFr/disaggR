@@ -30,7 +30,7 @@ model.list.praislm <- function(object) object$model.list
 
 #' Extracting the standard error
 #' 
-#' The function `se` returns the standard error the coefficients
+#' The function `se` returns the standard error of the coefficients
 #' from either a \link{praislm} or a \link{twoStepsBenchmark} object.
 #' @usage
 #' se(object)
@@ -405,3 +405,36 @@ na.omit.threeRuleSmooth <- na.omit.twoStepsBenchmark
 time.threeRuleSmooth <- time.twoStepsBenchmark
 #' @export
 window.threeRuleSmooth <- window.twoStepsBenchmark
+
+#' Extracting the standard error
+#' 
+#' The function `outliers` returns the outliers
+#' from either a \link{praislm} or a \link{twoStepsBenchmark} object.
+#' @param object a praislm or twoStepsBenchmark object.
+#' @param as.ts a boolean of length 1. If `TRUE`, the returned
+#' outliers are returned as a time-serie with (dim and colnames).
+#' If `FALSE`, the returned outliers is the named list that was
+#' submitted as a function argument.
+#' @return a named list or a time-serie, depending of the
+#' argument `"as.ts"`.
+#' @keywords internal
+#' @export
+outliers <- function(object,as.ts = FALSE) UseMethod("outliers")
+
+#' @export
+outliers.twoStepsBenchmark <- function(object,as.ts = FALSE) {
+  outliers <- attr(model.list(object),"outliers")
+  if (is.null(outliers)) NULL
+  else if (as.ts) model.list(object)$hfserie[,names(outliers),
+                                             drop = FALSE]
+  else outliers
+}
+
+#' @export
+outliers.praislm <- function(object,as.ts = FALSE) {
+  outliers <- attr(model.list(object),"outliers")
+  if (is.null(outliers)) NULL
+  else if (as.ts) model.list(object)$X[,names(outliers),
+                                       drop = FALSE]
+  else outliers
+}
