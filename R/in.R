@@ -105,8 +105,9 @@ replace_colnames_with_labels <- function(x) {
 trend_is_last_col <- function(x) {
   string <- colnames(x)
   constant_which <- which(string == "Trend")
-  x[,c(setdiff(seq_len(length(string)),constant_which),constant_which),
-    drop = FALSE]
+  if (length(constant_which) == 0L) x
+  else x[,c(setdiff(seq_len(length(string)),constant_which),constant_which),
+         drop = FALSE]
 }
 
 #' @importFrom stats lag
@@ -202,6 +203,46 @@ in_disaggr.threeRuleSmooth <- function(object,type="changes") {
   else in_disaggr_notctb(object,type)
 }
 
+safe_difference <- function(x,y) {
+  cnx <- colnames(x)
+  cny <- colnames(y)
+  
+  cnxlack <- setdiff(cny,cnx)
+  cnylack <- setdiff(cnx,cny)
+  
+  cnres <- c(intersect(cnx,cny),cnxlack,cnylack)
+  
+  x <- structure(cbind(x,
+                       if (!length(cnxlack) == 0L) {
+                         ts_from_tsp(matrix(0,
+                                            nrow = nrow(x),
+                                            ncol = length(cnxlack)),
+                                     tsp(x))
+                       }),
+                 dimnames = list(NULL,
+                                 c(cnx,cnxlack)))[,
+                                                  cnres,
+                                                  drop = FALSE]
+  
+  y <- structure(cbind(y,
+                       if (!length(cnylack) == 0L) {
+                         ts_from_tsp(matrix(0,
+                                            nrow = nrow(y),
+                                            ncol = length(cnylack)),
+                                     tsp(y))
+                       }),
+                 dimnames = list(NULL,
+                                 c(cny,cnylack)))[,
+                                                  cnres,
+                                                  drop = FALSE]
+  
+  res <- x-y
+  colnames(res) <- cnres
+  
+  res
+  
+}
+
 #' Comparing two disaggregations together
 #' 
 #' The function `in_revisions`takes two inputs, \link{twoStepsBenchmark} or a 
@@ -232,11 +273,14 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   if (!inherits(object_old,"twoStepsBenchmark") &&
       !inherits(object_old,"threeRuleSmooth")) stop("old_object must be a twoStepsBenchmark or a threeRuleSmooth", call. = FALSE)
   
+  
+  
   tryCatch({
-    indic_old <- in_disaggr(object_old,type)
-    indic_new <- in_disaggr(object,type)
-    series <- indic_new-indic_old
-    colnames(series) <- colnames(indic_new)
+    series <- 
+      trend_is_last_col(
+        safe_difference(in_disaggr(object,type),
+                      in_disaggr(object_old,type))
+      )
   },
   error=function(e) stop(gsub("in_disaggr","in_revisions",e$message), call.=FALSE))
   
