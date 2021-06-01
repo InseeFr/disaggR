@@ -405,6 +405,47 @@ test_that("reUseBenchmark works",{
   coefficients <- coef(benchmark)
   expect_equal((as.ts(benchmark2)-as.ts(benchmark))[1],pi*coefficients[2],
                ignore_attr = TRUE)
+  
+  benchmark1 <- twoStepsBenchmark(turnover,construction,
+                                  include.differenciation = TRUE,
+                                  outliers = list(LS2009 = 1:12))
+  decompose(turnover,type = "multiplicative")
+  adjusted_turnover <- window(turnover/decompose(turnover)$seasonal,start=2006)
+  benchmark2 <- reUseBenchmark(adjusted_turnover,benchmark1)
+  benchmark3 <- reUseBenchmark(adjusted_turnover,benchmark1,reeval.smoothed.part = TRUE)
+  m1 <- model.list(benchmark1)
+  m2 <- model.list(benchmark2)
+  m3 <- model.list(benchmark3)
+  
+  expect_identical(smoothed.part(benchmark2),smoothed.part(benchmark1))
+  expect_identical(coefficients(benchmark1),coefficients(benchmark2))
+  expect_identical(outliers(benchmark1),outliers(benchmark2))
+  expect_identical(m1$include.rho,m2$include.rho)
+  expect_identical(m1$include.differenciation,m2$include.differenciation)
+  expect_identical(m1$start.coeff.calc,m2$start.coeff.calc)
+  expect_identical(m1$end.coeff.calc,m2$end.coeff.calc)
+  expect_identical(m1$start.benchmark,m2$start.benchmark)
+  expect_identical(m1$end.benchmark,m2$end.benchmark)
+  expect_identical(m1$start.domain,m2$start.domain)
+  expect_identical(m1$end.domain,m2$end.domain)
+  expect_identical(smoothed.part(benchmark1),m2$set.smoothed.part)
+  
+  expect_false(identical(smoothed.part(benchmark3),smoothed.part(benchmark1)))
+  expect_identical(coefficients(benchmark1),coefficients(benchmark3))
+  expect_identical(outliers(benchmark1),outliers(benchmark3))
+  expect_identical(m1$include.rho,m3$include.rho)
+  expect_identical(m1$include.differenciation,m3$include.differenciation)
+  expect_identical(m1$start.coeff.calc,m3$start.coeff.calc)
+  expect_identical(m1$end.coeff.calc,m3$end.coeff.calc)
+  expect_identical(m1$start.benchmark,m3$start.benchmark)
+  expect_identical(m1$end.benchmark,m3$end.benchmark)
+  expect_identical(m1$start.domain,m3$start.domain)
+  expect_identical(m1$end.domain,m3$end.domain)
+  expect_null(m1$set.smoothed.part)
+  expect_null(m3$set.smoothed.part)
+  expect_false(identical(as.ts(benchmark3),as.ts(benchmark2)))
+  expect_snapshot(benchmark2,cran = FALSE)
+  expect_snapshot(benchmark3,cran = FALSE)
 })
 
 test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenciation=TRUE",{
