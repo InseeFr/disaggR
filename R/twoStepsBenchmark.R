@@ -515,6 +515,6 @@ reUseBenchmark <- function(hfserie,benchmark,reeval.smoothed.part=FALSE) {
                     m$start.coeff.calc,m$end.coeff.calc,
                     m$start.benchmark,m$end.benchmark,
                     m$start.domain,m$end.domain,
-                    outliers = NULL,cl=match.call(),
+                    outliers = outliers(benchmark),cl=match.call(),
                     set.smoothed.part = if (!reeval.smoothed.part) smoothed.part(benchmark))
 }
