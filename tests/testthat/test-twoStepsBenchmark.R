@@ -322,7 +322,9 @@ test_that("errors",{
                                  outliers = list(AO2000=rep(0.1,12),
                                                  AO2000=1:12)),
                regexp = "Invalid colnames")
-  expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction),
+  wrong_rank_mts <- cbind(turnover,turnover)
+  colnames(wrong_rank_mts) <- c("a","b")
+  expect_error(twoStepsBenchmark(wrong_rank_mts,construction),
                regexp = "perfect rank")
   expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction,set.coeff = c(a=1)),
                regexp = "names of the set coefficient")
