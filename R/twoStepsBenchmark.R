@@ -400,7 +400,9 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object",
                                                  call. = FALSE)
   
-  if (is.matrix(hfserie) && is.null(colnames(hfserie))) stop("The high-frequency mts must have column names", call. = FALSE)
+  if (is.matrix(hfserie) &&
+      is.null(colnames(hfserie)) &&
+      ncol(hfserie) != 1L) stop("The high-frequency mts must have column names", call. = FALSE)
   
   hfserie <- clean_tsp(hfserie)
   lfserie <- clean_tsp(lfserie)
@@ -437,6 +439,9 @@ twoStepsBenchmark <- function(hfserie,lfserie,
                 names = c("constant",
                           if (is.null(colnames(hfserie))) "hfserie" else colnames(hfserie),
                           colnames(outliers_mts)))
+  
+  if (anyDuplicated(colnames(hfserie))) stop("Invalid colnames for hfserie",
+                                             call. = FALSE)
   
   res <- twoStepsBenchmark_impl(hfserie,lfserie,
                                 include.differenciation,include.rho,

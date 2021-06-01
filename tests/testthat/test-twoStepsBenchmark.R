@@ -165,6 +165,15 @@ test_that("twoStepsBenchmark works",
                                               include.rho = TRUE),
                             cran = TRUE)
           })
+            
+test_that("colname is taken even with ncol = 1",
+          {
+            turnover_modif <- turnover
+            dim(turnover_modif) <- c(length(turnover),1L)
+            colnames(turnover_modif) <- "test"
+            expect_identical(names(coef(twoStepsBenchmark(turnover_modif,construction)))[2L],
+                             "test")
+          })
 test_that("standard errors are the same that the vcov diag",{
   set.seed(5)
   mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
@@ -301,6 +310,18 @@ test_that("windows and extraps works",{
 })
 
 test_that("errors",{
+  set.seed(5L)
+  wrong_name_mts <- structure(
+    ts(matrix(rnorm(500L),ncol = 2L),
+       frequency = 12, start=2000),
+    dimnames = list(NULL,c("test","constant"))
+  )
+  expect_error(twoStepsBenchmark(wrong_name_mts,construction),
+               regexp = "Invalid colnames")
+  expect_error(twoStepsBenchmark(turnover,construction,
+                                 outliers = list(AO2000=rep(0.1,12),
+                                                 AO2000=1:12)),
+               regexp = "Invalid colnames")
   expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction),
                regexp = "perfect rank")
   expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction,set.coeff = c(a=1)),
