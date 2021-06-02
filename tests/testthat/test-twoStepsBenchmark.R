@@ -165,7 +165,7 @@ test_that("twoStepsBenchmark works",
                                               include.rho = TRUE),
                             cran = TRUE)
           })
-            
+
 test_that("colname is taken even with ncol = 1",
           {
             turnover_modif <- turnover
@@ -326,9 +326,14 @@ test_that("errors",{
   colnames(wrong_rank_mts) <- c("a","b")
   expect_error(twoStepsBenchmark(wrong_rank_mts,construction),
                regexp = "perfect rank")
-  expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction,set.coeff = c(a=1)),
-               regexp = "names of the set coefficient")
-  expect_error(twoStepsBenchmark(cbind(turnover,turnover),construction,set.coeff = c(a=NA)),
+  set.seed(2L)
+  correct_names_mts <- ts(matrix(rnorm(900,0,100) ,ncol=3),
+                          start=c(2000,1),
+                          freq=12)
+  colnames(correct_names_mts) <- c("a","b","c")
+  expect_error(twoStepsBenchmark(correct_names_mts,construction,
+                                 set.coeff = c(test=1)))
+  expect_error(twoStepsBenchmark(correct_names_mts,construction,set.coeff = c(a=NA)),
                regexp = "be set to NA")
   expect_error(twoStepsBenchmark(1:10,construction),
                regexp = "Not a ts object")
@@ -603,8 +608,8 @@ test_that("test outliers",
             expect_equal(object,expected)
             
             object <- model.list(annualBenchmark(window(turnover,start=c(2003,3)),
-                                                   window(construction,start=2004),
-                                                   outliers=list(AO2006T1=rep(0.1,12))))$hfserie[,"AO2006T1"]
+                                                 window(construction,start=2004),
+                                                 outliers=list(AO2006T1=rep(0.1,12))))$hfserie[,"AO2006T1"]
             expected <- ts(c(rep(0,34L),
                              rep(0.1,12L),
                              rep(0,161)),start=c(2003,3),frequency=12)
