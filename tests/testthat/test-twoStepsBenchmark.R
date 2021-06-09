@@ -607,6 +607,15 @@ test_that("test outliers",
                              rep(0,161)),start=c(2003,3),frequency=12)
             expect_equal(object,expected)
             
+            object <- coefficients(twoStepsBenchmark(window(turnover,start=c(2003,3)),
+                                                     window(construction,start=2004),
+                                                     outliers=list(AO2020=rep(0.1,12)),
+                                                     set.coeff = c(hfserie = 1,
+                                                                   AO2020 = 2)))[c("hfserie","AO2020")]
+            expected <- c(hfserie = 1,
+                          AO2020 = 2)
+            expect_equal(object,expected)
+            
             object <- model.list(annualBenchmark(window(turnover,start=c(2003,3)),
                                                  window(construction,start=2004),
                                                  outliers=list(AO2006T1=rep(0.1,12))))$hfserie[,"AO2006T1"]

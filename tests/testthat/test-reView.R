@@ -599,6 +599,11 @@ test_that("reView-outlierssetcoef",{
   app$setInputs(`reView-menu` = "Modify")
   app$setInputs(`reView-reViewtab2-setcoeff_button` = TRUE)
   app$setInputs(`reView-reViewtab2-setcoeff` = 100)
+  expect_equal(as.ts(get_bn()),as.ts(twoStepsBenchmark(turnover,construction,
+                                                       outliers = list(AO2005 = rep(0.1,12L)),
+                                                       set.coeff = c(AO2005 = 1,
+                                                                     hfserie = 100))))
+  
   app$setInputs(`reView-menu` = "Export")
   expect_equal(app$waitForValue("reView-reViewtab3-newcall",iotype="output"),
                paste("twoStepsBenchmark(",

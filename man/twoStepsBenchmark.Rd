@@ -39,9 +39,12 @@ Prais-Winsten estimation.}
 \item{set.coeff}{an optional numeric, that allows the user to set the
 regression coefficients instead of evaluating them.
 If \code{hfserie} is a matrix, each column initializes a coefficient with the same
-name as the column name.
-Hence, \code{set.coeff} has to be a named numeric, which will optionally set some
-coefficients instead of evaluating them.}
+name as the column name. Hence, \code{set.coeff} has to be a named numeric, which will optionally set some
+coefficients instead of evaluating them.
+Each outlier set with the \code{outlier} arg initializes a coefficient with the
+same name. The default name for a non-matrix time-serie is then \code{"hfserie"},
+By example, a LS2003 and the time-serie can be set using
+\code{c(hfserie=3,LS2003=1)}.}
 
 \item{set.const}{an optional numeric of length 1, that sets the regression
 constant.
