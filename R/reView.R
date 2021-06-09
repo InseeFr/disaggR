@@ -244,24 +244,36 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                              outliers_arg = outliers)))
 }
 
+zero_if_na <- function(x) if (is.na(x)) 0 else x
+
+clean_set_coeff <- function(set_hfserie,new_bn_external_setter) {
+  
+  set_coeff <- model.list(new_bn_external_setter)$set.coefficients
+  set_coeff <- set_coeff[names(set_coeff) != "constant"]
+  
+  set_outliers <- set_coeff[intersect(names(set_coeff),
+                                      names(outliers(new_bn_external_setter)))]
+  
+  
+  if (length(set_outliers) == 0L) set_hfserie else {
+    if (!is.null(set_hfserie)) names(set_hfserie) <- "hfserie"
+    c(set_hfserie,set_outliers)
+  }
+}
+
 get_new_bn <- function(input,hfserie_name,lfserie_name,new_bn_external_setter) {
+  
   tryCatch(
     make_new_bn(hfserie_name(),lfserie_name(),
                 hfserie_alone(new_bn_external_setter()),lfserie(new_bn_external_setter()),
                 include.differenciation = input$dif,
                 include.rho = input$rho,
-                set.coeff = {
-                  if (input$setcoeff_button) {
-                    if (is.na(input$setcoeff)) 0
-                    else input$setcoeff
-                  }
-                  else NULL
-                },
+                set.coeff = clean_set_coeff(
+                  if (input$setcoeff_button) zero_if_na(input$setcoeff)
+                  else NULL,
+                  new_bn_external_setter()),
                 set.const = {
-                  if (input$setconst_button) {
-                    if (is.na(input$setconst)) 0
-                    else input$setconst
-                  }
+                  if (input$setconst_button) zero_if_na(input$setconst)
                   else NULL
                 },
                 start.coeff.calc = input$coeffcalc[1],
@@ -293,9 +305,16 @@ set_inputs_to_default <- function(session,new_bn_external_setter) {
                     min = maxwin[1L],max = maxwin[2L],
                     value = c(maxwin[1L],maxwin[2L]),
                     step = 1/tsplf[3L])
-  if (length(model$set.coeff) != 0) {
+  
+  set_coeff_wo_outliers <- model$set.coeff
+  if (!is.null(names(set_coeff_wo_outliers))) {
+    set_coeff_wo_outliers <-
+      set_coeff_wo_outliers[names(set_coeff_wo_outliers) == "hfserie"]
+  }
+  
+  if (length(set_coeff_wo_outliers) != 0) {
     updateCheckboxInput(session,"setcoeff_button",value = TRUE)
-    updateNumericInput(session,"setcoeff",value = as.numeric(model$set.coeff))
+    updateNumericInput(session,"setcoeff",value = as.numeric(set_coeff_wo_outliers))
   } else updateCheckboxInput(session,"setcoeff_button",value = FALSE)
   if (length(model$set.const) != 0) {
     updateCheckboxInput(session,"setconst_button",value = TRUE)
@@ -321,21 +340,30 @@ set_preset <- function(session,selected_preset_tab1) {
 }
 
 display_vector <- function(x) {
-  if (length(x) == 1L) as.character(x)
+  if (!is.null(names(x))) paste0("c(",
+                                 paste(Map(paste0,names(x),"=",as.character(x)),collapse=","),
+                                 ")")
+  else if (length(x) == 1L) as.character(x)
   else paste0("c(",paste(as.character(x),collapse=","),")")
 }
 
 display_outliers <- function(x) {
   paste0("list(",
-         Map(paste0,names(x),"=",lapply(x,display_vector)),
-         ")",
-         collapse=",")
+         paste(Map(paste0,names(x),"=",lapply(x,display_vector)),collapse=","),
+         ")")
 }
 
 get_model <- function(benchmark) {
   model <- model.list(benchmark)
   model$set.coeff <- model$set.coefficients[names(model$set.coefficients) != "constant"]
-  model$set.const <- model$set.coefficients[names(model$set.coefficients) == "constant"]
+  
+  if (ncol(model$hfserie)-length(outliers(benchmark)) == 2L &&
+      length(model$set.coeff) == 1L &&
+      !(names(model$set.coeff) %in% names(outliers(benchmark)))) {
+    model$set.coeff <- unname(model$set.coeff)
+  }
+  
+  model$set.const <- unname(model$set.coefficients[names(model$set.coefficients) == "constant"])
   model$set.coefficients <- NULL
   model
 }
