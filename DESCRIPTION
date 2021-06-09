@@ -40,8 +40,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
   shinytest,
-  testthat (>= 2.1.0),
-	vdiffr
+  testthat (>= 3.0.0),
+	vdiffr (>= 1.0.0)
 Depends: 
   R (>= 2.10)
 BugReports: https://github.com/InseeFr/disaggR/issues

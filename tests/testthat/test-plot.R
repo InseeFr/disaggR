@@ -8,11 +8,7 @@ test_that("function_if_it_isnt_one works", {
                    lapply(1:20,function(n) rep("Hey",n)))
 })
 
-expect_doppelganger <- function(title, fig) {
-  vdiffr::expect_doppelganger(title,
-                              fig,
-                              path = if (R.version$major>=4 && R.version$minor>=1.0) "/plots-R-4-1/" else "/plots-R-4-0/")
-}
+expect_doppelganger <- vdiffr::expect_doppelganger
 
 test_that("plot works with twoStepsBenchmark", {
   skip_if_not_installed("vdiffr")
