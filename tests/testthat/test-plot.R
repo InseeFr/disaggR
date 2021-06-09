@@ -595,7 +595,8 @@ test_that("ggplot works with threeRuleSmooth", {
 })
 
 test_that("plot outliers in_disaggr",{
-  
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
   benchmark <- twoStepsBenchmark(turnover,construction,
                                  outliers=list(LS2005=rep(0.1,12L)))
   
@@ -610,7 +611,8 @@ test_that("plot outliers in_disaggr",{
 })
 
 test_that("ggplot outliers in_disaggr",{
-  
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
   benchmark <- twoStepsBenchmark(turnover,construction,
                                  outliers=list(LS2005=rep(0.1,12L)))
   
