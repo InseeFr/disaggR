@@ -332,7 +332,8 @@ test_that("errors",{
                           freq=12)
   colnames(correct_names_mts) <- c("a","b","c")
   expect_error(twoStepsBenchmark(correct_names_mts,construction,
-                                 set.coeff = c(test=1)))
+                                 set.coeff = c(test=1)),
+               "These names of the set.coeff argument are not found : test")
   expect_error(twoStepsBenchmark(correct_names_mts,construction,set.coeff = c(a=NA)),
                regexp = "be set to NA")
   expect_error(twoStepsBenchmark(1:10,construction),

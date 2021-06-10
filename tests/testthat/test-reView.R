@@ -41,6 +41,22 @@ test_that("get_preset", {
                                             include.rho = TRUE,
                                             set.const = 0)),6)
   
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,
+                                            outliers = list(LS2003=rep(0.1,12)),
+                                            include.differenciation = TRUE)),1)
+  expect_true(is.na(get_preset(twoStepsBenchmark(turnover,construction,
+                                            outliers = list(LS2003=rep(0.1,12)),
+                                            set.coeff = c(LS2003=1),
+                                            include.differenciation = TRUE))))
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
+                                            set.const = 0)),2)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction)),3)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.rho = TRUE)),4)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,set.const = 0)),5)
+  expect_equal(get_preset(twoStepsBenchmark(turnover,construction,
+                                            include.rho = TRUE,
+                                            set.const = 0)),6)
+  
   expect_true(is.na(get_preset(twoStepsBenchmark(turnover,construction,
                                                  include.rho = TRUE,include.differenciation = TRUE))))
   expect_true(is.na(get_preset(twoStepsBenchmark(turnover,construction,set.coeff = 1))))
@@ -142,7 +158,8 @@ test_that("reView-withoutset",{
   skip_on_cran() # no shinytest on cran
   testthat::skip_if_not_installed("shinytest")
   
-  app <- shinytest::ShinyDriver$new(test_path("shiny-withoutset"))
+  app <- shinytest::ShinyDriver$new(test_path("shiny-withoutset"),
+                                    loadTimeout = 15000)
   
   expect_identical(app$getTitle(),"reView")
   
@@ -393,7 +410,8 @@ test_that("reView-setcoefconst",{
   skip_on_cran() # no shinytest on cran
   testthat::skip_if_not_installed("shinytest")
   
-  app <- shinytest::ShinyDriver$new(test_path("shiny-setcoefconst"))
+  app <- shinytest::ShinyDriver$new(test_path("shiny-setcoefconst"),
+                                    loadTimeout = 15000)
   
   expect_identical(app$getTitle(),"reView")
   
@@ -487,7 +505,8 @@ test_that("reView-outliers",{
   skip_on_cran() # no shinytest on cran
   testthat::skip_if_not_installed("shinytest")
   
-  app <- shinytest::ShinyDriver$new(test_path("shiny-outliers"))
+  app <- shinytest::ShinyDriver$new(test_path("shiny-outliers"),
+                                    loadTimeout = 15000)
   
   expect_identical(app$getTitle(),"reView")
   
@@ -556,7 +575,8 @@ test_that("reView-outlierssetcoef",{
   skip_on_cran() # no shinytest on cran
   testthat::skip_if_not_installed("shinytest")
   
-  app <- shinytest::ShinyDriver$new(test_path("shiny-outlierssetcoef"))
+  app <- shinytest::ShinyDriver$new(test_path("shiny-outlierssetcoef"),
+                                    loadTimeout = 15000)
   
   expect_identical(app$getTitle(),"reView")
   
@@ -637,7 +657,7 @@ test_that("clean set coeff", {
     clean_set_coeff(0,
                     twoStepsBenchmark(turnover,construction,
                                       outliers = list(AO2005 = rep(0.1,12L)),
-                                                      set.coeff = c(AO2005 = 1))),
+                                      set.coeff = c(AO2005 = 1))),
     c(hfserie = 0, AO2005 = 1))
   expect_equal(
     clean_set_coeff(NULL,twoStepsBenchmark(turnover,construction,outliers = list(AO2005 = rep(0.1,12L)),set.coeff = c(AO2005 = 1))),
@@ -651,4 +671,3 @@ test_that("clean set coeff", {
     0)
   
 })
-          

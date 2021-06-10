@@ -108,7 +108,8 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   
   match_set <- match(names(set_coefficients),colnames(X))
   if (any(is.na(set_coefficients))) stop("A coefficient can't be set to NA", call. = FALSE)
-  if (any(is.na(match_set))) stop("The names of the set coefficients must be a column name of hfserie", call. = FALSE)
+  if (any(is.na(match_set))) stop("These names of the set.coeff argument are not found : ",
+                                  paste(names(set_coefficients)[is.na(match_set)]), call. = FALSE)
   coefficients[match_set] <- set_coefficients
   match_notset <- which(is.na(coefficients))
   
