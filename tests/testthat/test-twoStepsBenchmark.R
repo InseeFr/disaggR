@@ -355,6 +355,16 @@ test_that("errors",{
                                  construction,
                                  set.coeff=1:4),
                regexp = "empty or have names")
+  expect_error(twoStepsBenchmark(turnover,construction,
+                                 outlier=list(AO2006=ts(rep(0.1,12),start=c(2005,1),frequency=12))),
+               "windows or frequencies")
+  expect_error(twoStepsBenchmark(turnover,construction,
+                                 outlier=list(AO2006=ts(rep(0.1,12),start=c(2006,1),frequency=4))),
+               "windows or frequencies")
+  expect_equal(as.ts(twoStepsBenchmark(turnover,construction,
+                                       outlier=list(AO2006=ts(rep(0.1,12),start=c(2006,1),frequency=12)))),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       outlier=list(AO2006=rep(0.1,12)))))
   expect_error(twoStepsBenchmark_impl(turnover,construction,
                                       start.coeff.calc = 2000,
                                       end.coeff.calc = 2010,

@@ -81,12 +81,18 @@ interpret_outliers <- function(outliers,lffreq,hfserie) {
         if (length(vect) %% ratio != 0L) stop("The outlier vector must be of length k * hf/lf",
                                               call. = FALSE)
         
-        structure(
+        res <- structure(
           ts(as.numeric(vect),
              start = splitted_name$year + (splitted_name$cycle - 1L) / lffreq,
              frequency = tsphf[3L]),
           type = splitted_name$type
         )
+        
+        if (is.ts(vect) && !tsp_equal(tsp(vect),tsp(res)))
+          stop("The outlier list contains time-series whose windows or frequencies are inconsistent",
+               call. = FALSE)
+        
+        res
         
       },
       split_outlier_names(names(outliers)),
@@ -433,7 +439,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   if ((NCOL(hfserie) == 1L) &&
       length(set.coeff) == 1L &&
       is.null(names(set.coeff)))
-        names(set.coeff) <- "hfserie"
+    names(set.coeff) <- "hfserie"
   
   outliers_mts <- interpret_outliers(outliers,frequency(lfserie),hfserie)
   
