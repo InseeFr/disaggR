@@ -1,4 +1,4 @@
-# disaggR 0.3
+# disaggR 1.0
 * added support of outliers.
 * In `twoStepsBenchmark`, the set.coeff names used to be replaced by `"hfserie"` if `NCOL(hfserie) == 1L` and `length(set.coeff) == 1L`. This behavior was contradictory with the documentation if `set.coeff=c(constant=1L)`. As for now, set.coeff names will never be replaced. Then, it makes the controls stricter because `set.coeff=c(x.name.herited.from.anywhere=1)` will lead to an error.
 * as for the `in` time-series plots, the y window now ignores the infinite values.
