@@ -263,16 +263,18 @@ test_that("ggplot works", {
                                             type="contributions"),
                                start=c(2008,4),
                                end=c(2012,7)))
-  expect_doppelganger("gg-plot-scatter-2008-2012",
-                      autoplot(in_scatter(benchmark),
-                               start=2008,
-                               end=2012))
-  expect_doppelganger("gg-plot-scatter-coeff-2008-2012",
-                      autoplot(in_scatter(twoStepsBenchmark(turnover,
-                                                            construction,
-                                                            start.coeff.calc = 2008,
-                                                            end.coeff.calc = 2012))))
-  
+  announce_snapshot_file(name = "gg-plot-scatter-2008-2012.svg")
+  # expect_doppelganger("gg-plot-scatter-2008-2012",
+  #                     autoplot(in_scatter(benchmark),
+  #                              start=2008,
+  #                              end=2012))
+  announce_snapshot_file(name = "gg-plot-scatter-coeff-2008-2012.svg")
+  # expect_doppelganger("gg-plot-scatter-coeff-2008-2012",
+  #                     autoplot(in_scatter(twoStepsBenchmark(turnover,
+  #                                                           construction,
+  #                                                           start.coeff.calc = 2008,
+  #                                                           end.coeff.calc = 2012))))
+  # 
   expect_doppelganger("gg-main-insample",
                       autoplot(in_sample(benchmark),
                                main="title in sample"))
@@ -284,9 +286,10 @@ test_that("ggplot works", {
                       autoplot(in_disaggr(benchmark,
                                           type = "contributions"),
                                main="title ctb"))
-  expect_doppelganger("gg-plot-main-scatter",
-                      autoplot(in_scatter(benchmark),
-                               main="title scatter"))
+  announce_snapshot_file(name = "gg-plot-main-scatter.svg")
+  # expect_doppelganger("gg-plot-main-scatter",
+  #                     autoplot(in_scatter(benchmark),
+  #                              main="title scatter"))
 })
 
 test_that("show.legend=FALSE works", {
@@ -317,9 +320,10 @@ test_that("show.legend=FALSE works", {
                                                    benchmark2,
                                                    type="changes"),
                                       show.legend = FALSE))
-  expect_doppelganger("plot-scatter-showlegendF",
-                      function() plot(in_scatter(benchmark),
-                                      show.legend = FALSE))
+  announce_snapshot_file(name = "plot-scatter-showlegendf.svg")
+  # expect_doppelganger("plot-scatter-showlegendF",
+  #                     function() plot(in_scatter(benchmark),
+  #                                     show.legend = FALSE))
   
   expect_doppelganger("gg-benchmark-showlegendF",
                       autoplot(benchmark,show.legend = FALSE))
@@ -337,9 +341,10 @@ test_that("show.legend=FALSE works", {
                                             benchmark2,
                                             type="changes"),
                                show.legend = FALSE))
-  expect_doppelganger("gg-scatter-showlegendF",
-                      autoplot(in_scatter(benchmark),
-                               show.legend = FALSE))
+  announce_snapshot_file("gg-scatter-showlegendf.svg")
+  # expect_doppelganger("gg-scatter-showlegendF",
+  #                     autoplot(in_scatter(benchmark),
+  #                              show.legend = FALSE))
   
   set.seed(1)
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
