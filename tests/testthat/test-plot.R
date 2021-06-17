@@ -8,7 +8,13 @@ test_that("function_if_it_isnt_one works", {
                    lapply(1:20,function(n) rep("Hey",n)))
 })
 
-expect_doppelganger <- vdiffr::expect_doppelganger
+expect_doppelganger <- function (title, fig) {
+  withCallingHandlers({
+    vdiffr::expect_doppelganger(title, fig)
+  }, warning = function(w) if (inherits(w,"warning") &&
+                               grepl("expect_snapshot_file",w$message))
+    tryInvokeRestart("muffleWarning"))
+}
 
 test_that("plot works with twoStepsBenchmark", {
   skip_if_not_installed("vdiffr")

@@ -186,7 +186,13 @@ test_that("diverse ts methods",{
 test_that("monthplot ts method",{
   skip_on_cran()
   skip_if_not_installed("vdiffr")
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  expect_doppelganger <- function (title, fig) {
+    withCallingHandlers({
+      vdiffr::expect_doppelganger(title, fig)
+    }, warning = function(w) if (inherits(w,"warning") &&
+                                 grepl("expect_snapshot_file",w$message))
+      tryInvokeRestart("muffleWarning"))
+  }
   benchmark <- twoStepsBenchmark(turnover,construction)
   smooth <- threeRuleSmooth(turnover,construction)
   expect_doppelganger("monthplot-twoStepsBenchmark",
