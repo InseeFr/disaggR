@@ -358,10 +358,13 @@ test_that("show.legend=FALSE works", {
                                             benchmark2,
                                             type="changes"),
                                show.legend = FALSE))
+  
   announce_snapshot_file("gg-scatter-showlegendf.svg")
-  # expect_doppelganger("gg-scatter-showlegendF",
-  #                     autoplot(in_scatter(benchmark),
-  #                              show.legend = FALSE))
+  if (packageVersion("ggplot2") != "3.3.4") {
+  expect_doppelganger("gg-scatter-showlegendF",
+                      autoplot(in_scatter(benchmark),
+                               show.legend = FALSE))
+  }
   
   set.seed(1)
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
