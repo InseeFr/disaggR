@@ -340,7 +340,8 @@ in_scatter.praislm <- function(object) {
             func="in_scatter",
             class=c("tscomparison",class(series)),
             dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie (regression)")),
-            coefficients=coefficients(object))
+            abline=c(constant=as.numeric(coefficients(object)["constant"]),
+                     slope=as.numeric(coefficients(object)[colnames(X)])))
 }
 
 #' @export
@@ -389,7 +390,8 @@ in_scatter.twoStepsBenchmark <- function(object) {
             dimnames=list(NULL,c("Low-frequency serie",
                                  "High-frequency serie (regression)",
                                  "High-frequency serie (benchmark)")),
-            coefficients=coefficients(object))
+            abline=c(constant=as.numeric(coefficients(object)["constant"]),
+                     slope=as.numeric(coefficients(object)[colnames(X)])))
 }
 
 #' @export
@@ -421,8 +423,7 @@ in_scatter.threeRuleSmooth <- function(object) {
             func="in_scatter",
             class=c("tscomparison",class(series)),
             dimnames=list(NULL,c("Low-frequency serie",
-                                 "High-frequency serie (benchmark)")),
-            coefficients=coefficients(object))
+                                 "High-frequency serie (benchmark)")))
 }
 
 #' @export
@@ -436,7 +437,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
   
   attr(x,"type")         <- NULL
   attr(x,"func")         <- NULL
-  attr(x,"coefficients") <- NULL
+  attr(x,"abline") <- NULL
   
   print(.preformat.ts(x, any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
         quote = FALSE, right = TRUE,digits = digits,
