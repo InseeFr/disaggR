@@ -200,7 +200,7 @@ window_default <- function(x,start,end) {
   
   res <- window(x,start=start,end=end,extend=TRUE)
   
-  attr(res,"coefficients") <- attr(x,"coefficients")
+  attr(res,"abline") <- attr(x,"abline")
   attr(res,"func") <- attr(x,"func")
   
   res
@@ -266,9 +266,9 @@ plotts <- function(x,show.legend,col,lty,
                      extend.x = TRUE, extend.y = TRUE,
                      abline.x=FALSE, main = main, ...)
            
-           if (!is.null(attr(x,"coefficients"))) {
-             abline(a = attr(x,"coefficients")["constant"],
-                    b = attr(x,"coefficients")[names(attr(x,"coefficients")) != "constant"],
+           if (!is.null(attr(x,"abline"))) {
+             abline(a = attr(x,"abline")["constant"],
+                    b = attr(x,"abline")["slope"],
                     col = "red",
                     lwd = 2)
            }
@@ -592,9 +592,9 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
   
   g <- ggplot(show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab)
   
-  if (!is.null(attr(object,"coefficients"))) {
-    g <- g + geom_abline(intercept = attr(object,"coefficients")["constant"],
-                         slope = attr(object,"coefficients")[names(attr(object,"coefficients")) != "constant"],
+  if (!is.null(attr(object,"abline"))) {
+    g <- g + geom_abline(intercept = attr(object,"abline")["constant"],
+                         slope = attr(object,"abline")["slope"],
                          lty = "solid", colour = "red", size = 1)
   }
   

@@ -218,7 +218,8 @@ test_that("in scatter works",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
-  attr(expected,"coefficients") <- coefficients(benchmark)
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
   expect_identical(in_scatter(benchmark),expected)
   
   
@@ -232,7 +233,8 @@ test_that("in scatter works",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
-  attr(expected,"coefficients") <- coefficients(reg)
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(reg)["constant"]),
+                               slope=as.numeric(coefficients(reg)["hfserie"]))
   expect_identical(in_scatter(reg),expected)
   
   
@@ -248,7 +250,6 @@ test_that("in scatter works",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
-  attr(expected,"coefficients") <- coefficients(benchmark)
   expect_identical(in_scatter(benchmark),expected)
   
   
@@ -271,7 +272,8 @@ test_that("in scatter works",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "differences"
   attr(expected,"func") <- "in_scatter"
-  attr(expected,"coefficients") <- coefficients(benchmark)
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
   expect_identical(in_scatter(benchmark),expected)
   
   
@@ -285,7 +287,8 @@ test_that("in scatter works",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "differences"
   attr(expected,"func") <- "in_scatter"
-  attr(expected,"coefficients") <- coefficients(reg)
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(reg)["constant"]),
+                               slope=as.numeric(coefficients(reg)["hfserie"]))
   expect_identical(in_scatter(reg),expected)
 })
 
@@ -437,7 +440,8 @@ test_that("outliers",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
-  attr(expected,"coefficients") <- coefficients(benchmark)
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
   expect_identical(in_scatter(benchmark),expected)
   
   
@@ -451,7 +455,8 @@ test_that("outliers",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
-  attr(expected,"coefficients") <- coefficients(reg)
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(reg)["constant"]),
+                               slope=as.numeric(coefficients(reg)["hfserie"]))
   expect_identical(in_scatter(reg),expected)
   
   benchmark <- twoStepsBenchmark(hfserie = turnover,
@@ -473,7 +478,8 @@ test_that("outliers",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "differences"
   attr(expected,"func") <- "in_scatter"
-  attr(expected,"coefficients") <- coefficients(benchmark)
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
   expect_identical(in_scatter(benchmark),expected)
 })
 
