@@ -8,13 +8,7 @@ test_that("function_if_it_isnt_one works", {
                    lapply(1:20,function(n) rep("Hey",n)))
 })
 
-expect_doppelganger <- function (title, fig) {
-  withCallingHandlers({
-    vdiffr::expect_doppelganger(title, fig)
-  }, warning = function(w) if (inherits(w,"warning") &&
-                               grepl("expect_snapshot_file",w$message))
-    tryInvokeRestart("muffleWarning"))
-}
+expect_doppelganger <- vdiffr::expect_doppelganger
 
 test_that("plot works with twoStepsBenchmark", {
   skip_if_not_installed("vdiffr")
@@ -269,24 +263,18 @@ test_that("ggplot works", {
                                             type="contributions"),
                                start=c(2008,4),
                                end=c(2012,7)))
-  
   announce_snapshot_file(name = "gg-plot-scatter-2008-2012.svg")
-  if (packageVersion("ggplot2") != "3.3.4") {
-    expect_doppelganger("gg-plot-scatter-2008-2012",
-                        autoplot(in_scatter(benchmark),
-                                 start=2008,
-                                 end=2012))
-  }
-  
+  # expect_doppelganger("gg-plot-scatter-2008-2012",
+  #                     autoplot(in_scatter(benchmark),
+  #                              start=2008,
+  #                              end=2012))
   announce_snapshot_file(name = "gg-plot-scatter-coeff-2008-2012.svg")
-  if (packageVersion("ggplot2") != "3.3.4") {
-    expect_doppelganger("gg-plot-scatter-coeff-2008-2012",
-                        autoplot(in_scatter(twoStepsBenchmark(turnover,
-                                                              construction,
-                                                              start.coeff.calc = 2008,
-                                                              end.coeff.calc = 2012))))
-  }
-  
+  # expect_doppelganger("gg-plot-scatter-coeff-2008-2012",
+  #                     autoplot(in_scatter(twoStepsBenchmark(turnover,
+  #                                                           construction,
+  #                                                           start.coeff.calc = 2008,
+  #                                                           end.coeff.calc = 2012))))
+  # 
   expect_doppelganger("gg-main-insample",
                       autoplot(in_sample(benchmark),
                                main="title in sample"))
@@ -299,11 +287,9 @@ test_that("ggplot works", {
                                           type = "contributions"),
                                main="title ctb"))
   announce_snapshot_file(name = "gg-plot-main-scatter.svg")
-  if (packageVersion("ggplot2") != "3.3.4") {
-  expect_doppelganger("gg-plot-main-scatter",
-                      autoplot(in_scatter(benchmark),
-                               main="title scatter"))
-  }
+  # expect_doppelganger("gg-plot-main-scatter",
+  #                     autoplot(in_scatter(benchmark),
+  #                              main="title scatter"))
 })
 
 test_that("show.legend=FALSE works", {
@@ -334,13 +320,10 @@ test_that("show.legend=FALSE works", {
                                                    benchmark2,
                                                    type="changes"),
                                       show.legend = FALSE))
-  
   announce_snapshot_file(name = "plot-scatter-showlegendf.svg")
-  if (packageVersion("ggplot2") != "3.3.4") {
-  expect_doppelganger("plot-scatter-showlegendF",
-                      function() plot(in_scatter(benchmark),
-                                      show.legend = FALSE))
-  }
+  # expect_doppelganger("plot-scatter-showlegendF",
+  #                     function() plot(in_scatter(benchmark),
+  #                                     show.legend = FALSE))
   
   expect_doppelganger("gg-benchmark-showlegendF",
                       autoplot(benchmark,show.legend = FALSE))
