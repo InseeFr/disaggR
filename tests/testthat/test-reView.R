@@ -156,6 +156,7 @@ test_that("reView-withoutset",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest on cran
+  skip_on_os("mac") # shinytest ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-withoutset"),
@@ -408,6 +409,7 @@ test_that("reView-setcoefconst",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest on cran
+  skip_on_os("mac") # shinytest ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-setcoefconst"),
@@ -503,6 +505,7 @@ test_that("reView-outliers",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest on cran
+  skip_on_os("mac") # shinytest ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-outliers"),
@@ -573,6 +576,7 @@ test_that("reView-outlierssetcoef",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest on cran
+  skip_on_os("mac") # shinytest ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-outlierssetcoef"),
