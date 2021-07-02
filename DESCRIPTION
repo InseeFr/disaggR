@@ -26,11 +26,11 @@ Description: The twoStepsBenchmark() and threeRuleSmooth() functions allow you t
   mensual. See "Methodology of quarterly national accounts", Insee Méthodes 
   N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 Imports:
-  ggplot2,
+  ggplot2 (>= 3.0.0),
   graphics,
   methods,
-	rmarkdown,
-	scales,
+	rmarkdown (>= 2.0.0),
+	scales (>= 0.5.0),
 	stats,
 	shiny (>= 1.5.0),
 	utils
