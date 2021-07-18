@@ -26,7 +26,6 @@ Description: The twoStepsBenchmark() and threeRuleSmooth() functions allow you t
   mensual. See "Methodology of quarterly national accounts", Insee Méthodes 
   N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 Imports:
-  ggplot2 (>= 3.0.0),
   graphics,
   methods,
 	rmarkdown (>= 2.0.0),
@@ -38,6 +37,7 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
+  ggplot2 (>= 3.0.0),
 	shiny (>= 1.5.0),
   shinytest (>= 1.4.0),
   testthat (>= 3.0.0),
