@@ -13,7 +13,7 @@
 #' See "Methodology of quarterly national accounts", Insee Méthodes 
 #' N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 #'
-#' @import stats graphics ggplot2 shiny
+#' @import stats graphics ggplot2
 #' @keywords internal
 "_PACKAGE"
 
