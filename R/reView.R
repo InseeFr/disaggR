@@ -943,7 +943,6 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                         new_bn})
 }
 
-#' @importFrom rmarkdown render
 reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compare) {
   shiny::moduleServer(id,
                       function(input,output,session) {
@@ -1188,11 +1187,17 @@ rePort.twoStepsBenchmark <- function(object, output_file = NULL,
          ...)
 }
 
-#' @importFrom utils browseURL
+#' @importFrom utils browseURL packageVersion
 #' @export
 rePort.reViewOutput <- function(object, output_file = NULL,
                                 launch.browser = if (is.null(output_file)) TRUE else FALSE,
                                 ...) {
+  if (!requireNamespace("rmarkdown", quietly = TRUE) ||
+      packageVersion("rmarkdown") < 2.0) {
+    stop("In order to use the rePort function, rmarkdown >= 2.0.0 is needed.\n",
+         "Please run install.packages(\"rmarkdown\",dependencies = TRUE)",
+         call. = FALSE)
+  }
   temp_dir <- tempdir()
   temp_rmd <- file.path(temp_dir, "report.Rmd")
   temp_html <- tempfile("report",temp_dir,".html")
