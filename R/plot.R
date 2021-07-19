@@ -422,7 +422,11 @@ plot.threeRuleSmooth <- function(x, xlab = NULL, ylab = NULL,
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(benchmark)
 #' plot(in_sample(benchmark))
-#' autoplot(in_disaggr(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
+#' if(require("ggplot2")) {
+#'   autoplot(in_disaggr(benchmark,type="changes"),
+#'            start=c(2015,1),
+#'            end=c(2020,12))
+#' }
 #' plot(in_scatter(benchmark),xlab="title x",ylab="title y")
 #' @export
 plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = NULL,
@@ -486,16 +490,19 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
 #' @keywords internal
 #' @export
 default_theme_ggplot <- function(show.legend,xlab,ylab,mar) {
-  classic <- theme_classic()
-  classic %+replace%
-    theme(axis.title.x = if (is.null(xlab)) element_blank() else classic$axis.title.x,
-          axis.title.y = if (is.null(ylab)) element_blank() else classic$axis.title.y,
-          plot.margin =  if (is.null(mar)) classic$plot.margin else margin(mar[3L],mar[4L],
-                                                                           mar[1L],mar[2L],
-                                                                           unit="pt"),
-          panel.grid.major = element_line(colour = "#cccccc"),
-          legend.position = if (show.legend) "bottom" else "none"
+  classic <- ggplot2::theme_classic()
+  
+  ggplot2::`%+replace%`(
+    classic,
+    ggplot2::theme(axis.title.x = if (is.null(xlab)) ggplot2::element_blank() else classic$axis.title.x,
+                   axis.title.y = if (is.null(ylab)) ggplot2::element_blank() else classic$axis.title.y,
+                   plot.margin =  if (is.null(mar)) classic$plot.margin else ggplot2::margin(mar[3L],mar[4L],
+                                                                                             mar[1L],mar[2L],
+                                                                                             unit="pt"),
+                   panel.grid.major = ggplot2::element_line(colour = "#cccccc"),
+                   legend.position = if (show.legend) "bottom" else "none"
     )
+  )
 }
 
 gglims <- function(object) c(tsp(object)[1L],tsp(object)[2L] + deltat(object))
@@ -518,20 +525,20 @@ ggplotts.data.frame <- function(object,show.legend, theme,type,
   
   object <- object[!is.na(object$Values),]
   
-  group <- enquo(group)
+  group <- ggplot2::enquo(group)
   
-  g <- ggplot(object,aes(x=Date,y=Values),show.legend = show.legend,...) +
-    xlab(xlab) + ylab(ylab)
+  g <- ggplot2::ggplot(object,ggplot2::aes(x=Date,y=Values),show.legend = show.legend,...) +
+    ggplot2::xlab(xlab) + ggplot2::ylab(ylab)
   switch(type,
-         line = g + geom_line(aes(colour=Variables,linetype=Variables,group=!!group),
-                              na.rm = TRUE),
-         bar = g + geom_bar(aes(fill=Variables,group=!!group),stat="identity") +
-           stat_summary(fun = sum, geom="line", colour = "black",
-                        size = 0.5, alpha=1,na.rm = TRUE),
-         segment = g + geom_segment(aes(xend=Date,colour=Variables,group=!!group),
-                                    yend=0)
+         line = g + ggplot2::geom_line(ggplot2::aes(colour=Variables,linetype=Variables,group=!!group),
+                                       na.rm = TRUE),
+         bar = g + ggplot2::geom_bar(ggplot2::aes(fill=Variables,group=!!group),stat="identity") +
+           ggplot2::stat_summary(fun = sum, geom="line", colour = "black",
+                                 size = 0.5, alpha=1,na.rm = TRUE),
+         segment = g + ggplot2::geom_segment(ggplot2::aes(xend=Date,colour=Variables,group=!!group),
+                                             yend=0)
   ) +
-    scale_x_continuous(
+    ggplot2::scale_x_continuous(
       limits = lims,
       breaks = (floor(lims[1L]+verysmall)+1L):(ceiling(lims[2L]-verysmall)-1L),
       minor_breaks = numeric(),
@@ -569,16 +576,16 @@ geom_path_scatter <- function(object,i,lty) {
                    xend = object[-1L,2L],
                    yend = object[-1L,1L], check.names = FALSE)
   
-  geom_segment(data=df,
-               aes(x = `High-frequency serie`, y = `Low-frequency serie`,
-                   xend = xend, yend = yend,
-                   colour = Time, group = i),
-               linetype = lty,
-               arrow=arrow(angle = 15,
-                           ends = "last",
-                           type = "closed",
-                           length = unit(0.1,"inches")),
-               na.rm = TRUE)
+  ggplot2::geom_segment(data=df,
+                        ggplot2::aes(x = `High-frequency serie`, y = `Low-frequency serie`,
+                                     xend = xend, yend = yend,
+                                     colour = Time, group = i),
+                        linetype = lty,
+                        arrow=ggplot2::arrow(angle = 15,
+                                             ends = "last",
+                                             type = "closed",
+                                             length = ggplot2::unit(0.1,"inches")),
+                        na.rm = TRUE)
 }
 
 ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
@@ -590,12 +597,12 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
   
   lty <- lty(ncol(object)-1L)
   
-  g <- ggplot(show.legend = show.legend, ...) + xlab(xlab) + ylab(ylab)
+  g <- ggplot2::ggplot(show.legend = show.legend, ...) + ggplot2::xlab(xlab) + ggplot2::ylab(ylab)
   
   if (!is.null(attr(object,"abline"))) {
-    g <- g + geom_abline(intercept = attr(object,"abline")["constant"],
-                         slope = attr(object,"abline")["slope"],
-                         lty = "solid", colour = "red", size = 1)
+    g <- g + ggplot2::geom_abline(intercept = attr(object,"abline")["constant"],
+                                  slope = attr(object,"abline")["slope"],
+                                  lty = "solid", colour = "red", size = 1)
   }
   
   g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L])
@@ -617,13 +624,13 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
     
     # These are the parts before and after the coefficients calc window
   }
-  g <- g + continuous_scale("colour","gradient",function(x) col(length(x)),
-                            limits = lims,
-                            breaks = break_arrows(as.numeric(time(object)[-1])),
-                            minor_breaks = numeric(),
-                            expand=c(0,0)) +
+  g <- g + ggplot2::continuous_scale("colour","gradient",function(x) col(length(x)),
+                                     limits = lims,
+                                     breaks = break_arrows(as.numeric(time(object)[-1])),
+                                     minor_breaks = numeric(),
+                                     expand=c(0,0)) +
     theme +
-    guides(colour=guide_legend(override.aes = list(arrow = NULL)))
+    ggplot2::guides(colour=ggplot2::guide_legend(override.aes = list(arrow = NULL)))
   g
 }
 
@@ -633,9 +640,6 @@ function_if_it_isnt_one <- function(f) {
     else eval(bquote(function(n) .(f)[1L:n]))
   }
 }
-
-#' @export
-ggplot2::autoplot
 
 autoplot_with_lf <- function(object, xlab, ylab,
                              start, end, col, lty,
@@ -664,12 +668,11 @@ autoplot_with_lf <- function(object, xlab, ylab,
            lims = gglims(hfbench),
            verysmall = getOption("ts.eps")/frequency(model$hfserie),
            ...) +
-    discrete_scale("colour","hue",col,na.translate = FALSE) +
-    discrete_scale("linetype","hue",lty,na.translate = FALSE) +
-    ggtitle(main)
+    ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
+    ggplot2::discrete_scale("linetype","hue",lty,na.translate = FALSE) +
+    ggplot2::ggtitle(main)
 }
 
-#' @export
 #' @rdname plot.tscomparison
 autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                        start=NULL,end=NULL,
@@ -689,7 +692,6 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                    ...)
 }
 
-#' @export
 #' @rdname plot.tscomparison
 autoplot.threeRuleSmooth <- function(object, xlab = NULL, ylab = NULL,
                                      start=NULL,end=NULL,
@@ -709,7 +711,6 @@ autoplot.threeRuleSmooth <- function(object, xlab = NULL, ylab = NULL,
                    ...)
 }
 
-#' @export
 #' @rdname plot.tscomparison
 autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                                   start=NULL,end=NULL,
@@ -734,9 +735,9 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
              type = "bar", series_names = colnames(object), theme = theme,
              start = start, end = end,
              xlab = xlab, ylab = ylab, ...) +
-      labs(fill=type_label) +
-      discrete_scale("fill","hue",col,na.translate = FALSE) +
-      ggtitle(main)
+      ggplot2::labs(fill=type_label) +
+      ggplot2::discrete_scale("fill","hue",col,na.translate = FALSE) +
+      ggplot2::ggtitle(main)
   }
   else switch(attr(object,"func"),
               in_revisions = {
@@ -744,25 +745,25 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                          type="segment", series_names = colnames(object),theme = theme,
                          start = start, end = end,
                          xlab = xlab, ylab = ylab, ...) +
-                  labs(colour=type_label) +
-                  discrete_scale("colour","hue",col,na.translate = FALSE) +
-                  ggtitle(main)
+                  ggplot2::labs(colour=type_label) +
+                  ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
+                  ggplot2::ggtitle(main)
               },
               in_scatter = {
                 ggscatter(object = object, show.legend = show.legend,
                           theme = theme, start = start, end = end,
                           xlab = xlab, ylab = ylab,
                           col = col, lty = lty,...) +
-                  ggtitle(main)
+                  ggplot2::ggtitle(main)
               },
               ggplotts(object = object, show.legend = show.legend,
                        type="line",series_names = colnames(object), theme = theme,
                        start = start, end = end,
                        xlab = xlab, ylab = ylab, ...) +
-                labs(linetype=type_label) +
-                labs(colour=type_label) +
-                discrete_scale("colour","hue",col,na.translate = FALSE) +
-                discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
-                ggtitle(main)
+                ggplot2::labs(linetype=type_label) +
+                ggplot2::labs(colour=type_label) +
+                ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
+                ggplot2::discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
+                ggplot2::ggtitle(main)
   )
 }

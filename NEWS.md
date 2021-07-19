@@ -1,4 +1,7 @@
-# disaggR 1.0
+# disaggR 1.0.1
+* Switched ggplot2, rmarkdown and shiny from imports to suggests. disaggR can now be installed with far less dependencies. Hence, the autoplot `generic` is not rexported anymore. ggplot2 has to be attached to allow the use of `autoplot` without the `ggplot2::` prefix, by example with `library(ggplot2)`.
+
+# disaggR 1.0.0
 * added support of outliers.
 * In `twoStepsBenchmark`, the set.coeff names used to be replaced by `"hfserie"` if `NCOL(hfserie) == 1L` and `length(set.coeff) == 1L`. This behavior was contradictory with the documentation if `set.coeff=c(constant=1L)`. As for now, set.coeff names will never be replaced. Then, it makes the controls stricter because `set.coeff=c(x.name.herited.from.anywhere=1)` will lead to an error.
 * as for the `in` time-series plots, the y window now ignores the infinite values.
@@ -6,7 +9,7 @@
 # disaggR 0.2.1
 * fixed some issues with ts.eps-delayed tsps.
 
-# disaggR 0.2
+# disaggR 0.2.0
 * reView : a shiny reviewing application for twoStepsBenchmarks.
 * rePort : a rmarkdown html report for twoStepsBenchmark and reView outputs.
 * start.domain and end.domain know crops the hfserie *after* having calculated the coefficients. That way, it is possible to evaluate the coefficients on a full hfserie, cropping them for the application.

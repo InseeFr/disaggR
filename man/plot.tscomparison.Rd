@@ -51,7 +51,7 @@
   ...
 )
 
-\method{autoplot}{twoStepsBenchmark}(
+autoplot.twoStepsBenchmark(
   object,
   xlab = NULL,
   ylab = NULL,
@@ -66,7 +66,7 @@
   ...
 )
 
-\method{autoplot}{threeRuleSmooth}(
+autoplot.threeRuleSmooth(
   object,
   xlab = NULL,
   ylab = NULL,
@@ -81,7 +81,7 @@
   ...
 )
 
-\method{autoplot}{tscomparison}(
+autoplot.tscomparison(
   object,
   xlab = NULL,
   ylab = NULL,
@@ -149,6 +149,10 @@ Objects of class \code{tscomparison} can be produced with the functions
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 plot(benchmark)
 plot(in_sample(benchmark))
-autoplot(in_disaggr(benchmark,type="changes"),start=c(2015,1),end=c(2020,12))
+if(require("ggplot2")) {
+  autoplot(in_disaggr(benchmark,type="changes"),
+           start=c(2015,1),
+           end=c(2020,12))
+}
 plot(in_scatter(benchmark),xlab="title x",ylab="title y")
 }

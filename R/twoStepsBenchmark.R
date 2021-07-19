@@ -195,7 +195,7 @@ eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rh
   }
 }
 
-#' @include s4declaration.R
+#' @include s3s4register.R
 twoStepsBenchmark_impl <- function(hfserie,lfserie,
                                    include.differenciation,include.rho,
                                    set_coefficients,
