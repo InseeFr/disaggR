@@ -7,7 +7,12 @@
 default_lty_pal(object)
 }
 \description{
-The default palette for the graphics. \code{linetype_pal} is imported from the
-package \pkg{scales}.
+The default color palette for the graphics. The palette for the objects with
+another class than \code{"in_scatter"} is, as seen in \code{linetype_pal} from the
+package \pkg{scales}, based on a set supplied by Richard Pearson, University
+of Manchester.
+}
+\details{
+Palettes from scales can be used as alternatives.
 }
 \keyword{internal}

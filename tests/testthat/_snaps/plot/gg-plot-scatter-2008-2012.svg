@@ -37,12 +37,12 @@
 <polyline points='316.86,518.51 316.86,5.48 ' style='stroke-width: 1.07; stroke: #CCCCCC; stroke-linecap: butt;' />
 <polyline points='537.11,518.51 537.11,5.48 ' style='stroke-width: 1.07; stroke: #CCCCCC; stroke-linecap: butt;' />
 <line x1='-668.26' y1='929.26' x2='1405.91' y2='-513.72' style='stroke-width: 2.13; stroke: #FF0000; stroke-linecap: butt;' />
-<line x1='683.09' y1='30.62' x2='54.56' y2='495.19' style='stroke-width: 1.07; stroke: #2B6788; stroke-linecap: butt;' />
-<polygon points='59.04,489.56 54.56,495.19 61.26,492.55 ' style='stroke-width: 1.07; stroke: #2B6788; stroke-linecap: butt; fill: #2B6788;' />
+<line x1='683.09' y1='30.62' x2='54.56' y2='495.19' style='stroke-width: 1.07; stroke: #2B6687; stroke-linecap: butt;' />
+<polygon points='59.04,489.56 54.56,495.19 61.26,492.55 ' style='stroke-width: 1.07; stroke: #2B6687; stroke-linecap: butt; fill: #2B6687;' />
 <line x1='54.56' y1='495.19' x2='271.78' y2='249.24' style='stroke-width: 1.07; stroke: #99A8B4; stroke-linecap: butt;' />
 <polygon points='268.58,255.69 271.78,249.24 265.78,253.22 ' style='stroke-width: 1.07; stroke: #99A8B4; stroke-linecap: butt; fill: #99A8B4;' />
-<line x1='271.78' y1='249.24' x2='622.84' y2='28.80' style='stroke-width: 1.07; stroke: #BBA19A; stroke-linecap: butt;' />
-<polygon points='617.94,34.08 622.84,28.80 615.96,30.92 ' style='stroke-width: 1.07; stroke: #BBA19A; stroke-linecap: butt; fill: #BBA19A;' />
+<line x1='271.78' y1='249.24' x2='622.84' y2='28.80' style='stroke-width: 1.07; stroke: #BAA099; stroke-linecap: butt;' />
+<polygon points='617.94,34.08 622.84,28.80 615.96,30.92 ' style='stroke-width: 1.07; stroke: #BAA099; stroke-linecap: butt; fill: #BAA099;' />
 <line x1='622.84' y1='28.80' x2='410.12' y2='229.20' style='stroke-width: 1.07; stroke: #90503F; stroke-linecap: butt;' />
 <polygon points='413.91,223.08 410.12,229.20 416.46,225.79 ' style='stroke-width: 1.07; stroke: #90503F; stroke-linecap: butt; fill: #90503F;' />
 </g>
@@ -69,12 +69,12 @@
 <text x='537.11' y='529.50' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>50</text>
 <rect x='255.49' y='542.28' width='226.67' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='260.97' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='24.45px' lengthAdjust='spacingAndGlyphs'>Time</text>
-<line x1='292.62' y1='556.40' x2='306.45' y2='556.40' style='stroke-width: 1.07; stroke: #2B6788; stroke-linecap: butt;' />
-<polygon points='299.49,558.26 306.45,556.40 299.49,554.54 ' style='stroke-width: 1.07; stroke: #2B6788; stroke-linecap: butt; fill: #2B6788;' />
+<line x1='292.62' y1='556.40' x2='306.45' y2='556.40' style='stroke-width: 1.07; stroke: #2B6687; stroke-linecap: butt;' />
+<polygon points='299.49,558.26 306.45,556.40 299.49,554.54 ' style='stroke-width: 1.07; stroke: #2B6687; stroke-linecap: butt; fill: #2B6687;' />
 <line x1='340.44' y1='556.40' x2='354.26' y2='556.40' style='stroke-width: 1.07; stroke: #99A8B4; stroke-linecap: butt;' />
 <polygon points='347.31,558.26 354.26,556.40 347.31,554.54 ' style='stroke-width: 1.07; stroke: #99A8B4; stroke-linecap: butt; fill: #99A8B4;' />
-<line x1='388.26' y1='556.40' x2='402.08' y2='556.40' style='stroke-width: 1.07; stroke: #BBA19A; stroke-linecap: butt;' />
-<polygon points='395.13,558.26 402.08,556.40 395.13,554.54 ' style='stroke-width: 1.07; stroke: #BBA19A; stroke-linecap: butt; fill: #BBA19A;' />
+<line x1='388.26' y1='556.40' x2='402.08' y2='556.40' style='stroke-width: 1.07; stroke: #BAA099; stroke-linecap: butt;' />
+<polygon points='395.13,558.26 402.08,556.40 395.13,554.54 ' style='stroke-width: 1.07; stroke: #BAA099; stroke-linecap: butt; fill: #BAA099;' />
 <line x1='436.07' y1='556.40' x2='449.90' y2='556.40' style='stroke-width: 1.07; stroke: #90503F; stroke-linecap: butt;' />
 <polygon points='442.94,558.26 449.90,556.40 442.94,554.54 ' style='stroke-width: 1.07; stroke: #90503F; stroke-linecap: butt; fill: #90503F;' />
 <text x='313.65' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>2009</text>

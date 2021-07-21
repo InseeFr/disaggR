@@ -10,29 +10,40 @@ type_label <- function(object) {
 
 #' Default color palette
 #' 
-#' The default color palette for the graphics, imported from the package
-#' \pkg{scales}. The chosen palette function depends on the input object.
+#' The default color palette for the graphics, inspired from the package
+#' \pkg{scales} whose scales can also be used as alternatives.
 #' 
 #' @keywords internal
 #' @export
-#' @importFrom scales brewer_pal div_gradient_pal
+#' @importFrom grDevices colorRampPalette
+#' @importFrom RColorBrewer brewer.pal
 default_col_pal <- function(object) {
-  if (identical(attr(object,"type"),"contributions")) brewer_pal(type = "qual",palette = 7L)
-  else if (identical(attr(object,"func"),"in_scatter")) function(n) div_gradient_pal()(seq(0, 1, length.out = n))
-  else brewer_pal(type = "qual",palette = 6L)
+  if (identical(attr(object,"type"),"contributions")) function(n) suppressWarnings(brewer.pal(n,"Set2"))[seq_len(n)]
+  else if (identical(attr(object,"func"),"in_scatter")) colorRampPalette(colors = c("#2B6788","#CBCBCB","#90503F"),space = "Lab")
+  else function(n) suppressWarnings(brewer.pal(n,"Set1"))[seq_len(n)]
 }
 
 #' Default color palette
 #' 
-#' The default palette for the graphics. `linetype_pal` is imported from the
-#' package \pkg{scales}.
+#' The default color palette for the graphics. The palette for the objects with
+#' another class than `"in_scatter"` is, as seen in `linetype_pal` from the
+#' package \pkg{scales}, based on a set supplied by Richard Pearson, University
+#' of Manchester.
+#' 
+#' Palettes from scales can be used as alternatives.
 #' 
 #' @keywords internal
 #' @export
-#' @importFrom scales linetype_pal
 default_lty_pal <- function(object) {
   if (identical(attr(object,"func"),"in_scatter")) seq_len
-  else linetype_pal()
+  else {
+    types <- c("solid", "22", "42", "44", 
+               "13", "1343", "73", "2262", "12223242", 
+               "F282", "F4448444", "224282F2", "F1")
+    function(n) {
+      types[seq_len(n)]
+    }
+  }
 }
 
 #' Default margins

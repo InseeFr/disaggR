@@ -27,8 +27,9 @@ Description: The twoStepsBenchmark() and threeRuleSmooth() functions allow you t
     N°126, by Insee (2012, ISBN:978-2-11-068613-8).
 Imports:
     graphics,
+    grDevices,
     methods,
-    scales (>= 0.5.0),
+    RColorBrewer (>= 1.1-2),
     stats,
     utils
 License: MIT + file LICENSE
