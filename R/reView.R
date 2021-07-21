@@ -1038,7 +1038,7 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
   if (!requireNamespace("shiny", quietly = TRUE) ||
       packageVersion("shiny") < 1.5) {
     stop("In order to use the reView shiny app, shiny >= 1.5.0 is needed.\n",
-         "Please run install.packages(\"shiny\",dependencies = TRUE)",
+         "Please run install.packages(\"shiny\")",
          call. = FALSE)
   }
   shinyreturn <- shiny::runApp(
@@ -1195,7 +1195,7 @@ rePort.reViewOutput <- function(object, output_file = NULL,
   if (!requireNamespace("rmarkdown", quietly = TRUE) ||
       packageVersion("rmarkdown") < 2.0) {
     stop("In order to use the rePort function, rmarkdown >= 2.0.0 is needed.\n",
-         "Please run install.packages(\"rmarkdown\",dependencies = TRUE)",
+         "Please run install.packages(\"rmarkdown\")",
          call. = FALSE)
   }
   temp_dir <- tempdir()
