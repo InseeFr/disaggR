@@ -119,7 +119,7 @@ calc_lfrate_win <- function(hfserie,lfserie,
     delta_rate = delta_rate)
 }
 
-#' @include s3s4register.R
+#' @include s4register.R
 threeRuleSmooth_impl <- function(hfserie,lfserie,
                                  start.benchmark,end.benchmark,
                                  start.domain,end.domain,

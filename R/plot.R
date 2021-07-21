@@ -682,6 +682,7 @@ autoplot_with_lf <- function(object, xlab, ylab,
     ggplot2::ggtitle(main)
 }
 
+#' @exportS3Method ggplot2::autoplot
 #' @rdname plot.tscomparison
 autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                        start=NULL,end=NULL,
@@ -701,6 +702,7 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                    ...)
 }
 
+#' @exportS3Method ggplot2::autoplot
 #' @rdname plot.tscomparison
 autoplot.threeRuleSmooth <- function(object, xlab = NULL, ylab = NULL,
                                      start=NULL,end=NULL,
@@ -720,6 +722,7 @@ autoplot.threeRuleSmooth <- function(object, xlab = NULL, ylab = NULL,
                    ...)
 }
 
+#' @exportS3Method ggplot2::autoplot
 #' @rdname plot.tscomparison
 autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                                   start=NULL,end=NULL,

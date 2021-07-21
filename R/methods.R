@@ -331,7 +331,7 @@ Math.twoStepsBenchmark <- function(x, ...) get(.Generic)(as.ts(x))
 #' @export
 Math.threeRuleSmooth <- Math.twoStepsBenchmark
 
-#' @include s3s4register.R
+#' @include s4register.R
 #' @export
 setMethod("Ops",signature = c("disaggR","vector"),
           function(e1,e2) callGeneric(as.ts(e1),e2))
@@ -355,12 +355,12 @@ setAs("twoStepsBenchmark","ts",function(from) as.ts(from))
 #' @export
 setAs("threeRuleSmooth","ts",function(from) as.ts(from))
 
-#' @include s3s4register.R
+#' @include s4register.R
 #' @export
 setMethod("Math2","disaggR",
           function(x,digits = 0) callGeneric(as.ts(x),digits))
 
-#' @include s3s4register.R
+#' @include s4register.R
 #' @export
 setMethod("show","disaggR",
           function(object) print(object))

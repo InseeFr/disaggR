@@ -44,7 +44,7 @@ Suggests:
     testthat (>= 3.0.0),
     vdiffr (>= 1.0.0)
 Depends: 
-    R (>= 3.4.0)
+    R (>= 3.6.0)
 BugReports: https://github.com/InseeFr/disaggR/issues
 LazyData: yes
 Collate: 
@@ -52,7 +52,7 @@ Collate:
     'data.R'
     'disaggR.R'
     'in.R'
-    's3s4register.R'
+    's4register.R'
     'twoStepsBenchmark.R'
     'methods.R'
     'plot.R'
