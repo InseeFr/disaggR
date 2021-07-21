@@ -1,5 +1,5 @@
 # disaggR 1.0.1
-* Switched ggplot2, rmarkdown and shiny from imports to suggests. disaggR can now be installed with far less dependencies. Hence, the autoplot `generic` is not rexported anymore. ggplot2 has to be attached to allow the use of `autoplot` without the `ggplot2::` prefix, by example with `library(ggplot2)`.
+* Switched ggplot2, rmarkdown and shiny from imports to suggests. RColorBrewer has replaced scales as an import. disaggR can now be installed with far less dependencies. Hence, the `autoplot` generic is not reexported anymore. ggplot2 has to be attached to allow the use of `autoplot` without the `ggplot2::` prefix, by example with `library(ggplot2)`.
 
 # disaggR 1.0.0
 * added support of outliers.
