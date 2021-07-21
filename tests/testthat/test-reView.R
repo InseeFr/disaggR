@@ -120,6 +120,7 @@ test_that("presets list fun",{
 
 test_that("rePort produces a report",{
   skip_on_cran()
+  testthat::skip_if_not_installed("rmarkdown")
   browser <- options(browser=function(url) message(url))
   on.exit(options(browser))
   
@@ -157,6 +158,7 @@ test_that("reView-withoutset",{
   
   skip_on_cran() # no shinytest on cran
   skip_on_os("mac") # shinytest ci on macos is unstable for some reason
+  testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-withoutset"),
@@ -410,6 +412,7 @@ test_that("reView-setcoefconst",{
   
   skip_on_cran() # no shinytest on cran
   skip_on_os("mac") # shinytest ci on macos is unstable for some reason
+  testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-setcoefconst"),
@@ -506,6 +509,7 @@ test_that("reView-outliers",{
   
   skip_on_cran() # no shinytest on cran
   skip_on_os("mac") # shinytest ci on macos is unstable for some reason
+  testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-outliers"),
@@ -577,6 +581,7 @@ test_that("reView-outlierssetcoef",{
   
   skip_on_cran() # no shinytest on cran
   skip_on_os("mac") # shinytest ci on macos is unstable for some reason
+  testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest")
   
   app <- shinytest::ShinyDriver$new(test_path("shiny-outlierssetcoef"),
