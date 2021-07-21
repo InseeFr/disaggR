@@ -2,17 +2,14 @@
 % Please edit documentation in R/plot.R
 \name{default_lty_pal}
 \alias{default_lty_pal}
-\title{Default color palette}
+\title{Default linetype palette}
 \usage{
 default_lty_pal(object)
 }
 \description{
-The default color palette for the graphics. The palette for the objects with
-another class than \code{"in_scatter"} is, as seen in \code{linetype_pal} from the
-package \pkg{scales}, based on a set supplied by Richard Pearson, University
-of Manchester.
-}
-\details{
-Palettes from scales can be used as alternatives.
+The default linetype palette for the graphics. The palette for the objects
+with another class than \code{"in_scatter"} is taken from \code{linetype_pal} as seen
+in the package \pkg{scales}. Hence it is based on a set supplied by Richard
+Pearson, University of Manchester.
 }
 \keyword{internal}

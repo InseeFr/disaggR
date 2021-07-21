@@ -23,14 +23,12 @@ default_col_pal <- function(object) {
   else function(n) suppressWarnings(brewer.pal(n,"Set1"))[seq_len(n)]
 }
 
-#' Default color palette
+#' Default linetype palette
 #' 
-#' The default color palette for the graphics. The palette for the objects with
-#' another class than `"in_scatter"` is, as seen in `linetype_pal` from the
-#' package \pkg{scales}, based on a set supplied by Richard Pearson, University
-#' of Manchester.
-#' 
-#' Palettes from scales can be used as alternatives.
+#' The default linetype palette for the graphics. The palette for the objects
+#' with another class than `"in_scatter"` is taken from `linetype_pal` as seen
+#' in the package \pkg{scales}. Hence it is based on a set supplied by Richard
+#' Pearson, University of Manchester.
 #' 
 #' @keywords internal
 #' @export
