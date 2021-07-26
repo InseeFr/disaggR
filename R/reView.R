@@ -26,9 +26,8 @@ lrmargins <- "margin-left: 3px;
 lfserie <- function(benchmark) model.list(benchmark)$lfserie
 hfserie_alone <- function(benchmark) {
   res <- model.list(benchmark)$hfserie
-  if (is.mts(res)) res[,!(colnames(res) %in% c("constant",
-                                               names(outliers(benchmark))))]
-  else res
+  res[,!(colnames(res) %in% c("constant",
+                              names(outliers(benchmark))))]
 }
 
 info_switch <- function(mainout_choice)

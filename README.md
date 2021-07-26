@@ -24,7 +24,7 @@ You can install the **stable** version from
 [CRAN](https://cran.r-project.org/package=disaggR).
 
 ``` r
-install.packages('disaggR', dependencies = TRUE)
+install.packages("disaggR")
 ```
 
 You can install the **development** version from
