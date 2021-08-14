@@ -124,14 +124,14 @@ components :
 benchmark. It is equal to \code{fitted.values + smoothed.part}.}
 \item{fitted.values}{a time-serie, that is the high-frequency serie as it
 is after having applied the regression coefficients. Compared to the fitted
-values of the regression, which can be retrieved in the regression
+values of the regression, which can be retrieved inside the regression
 component, it has a high-frequency time-serie and can eventually be
-integrated if \code{include.differenciation == TRUE}.}
+integrated if \code{include.differenciation} is \code{TRUE}.}
 \item{regression}{an object of class praislm, it is the regression on which
 relies the benchmark. It can be extracted with the function \link{prais}}
 \item{smoothed.part}{the smoothed part of the two-steps benchmark. It is a
-smoothed residual, eventually integrated if \code{include.differenciation=TRUE},
-and eventually extrapolated if the domain window is larger than the
+smoothed residual, eventually integrated if \code{include.differenciation} is
+\code{TRUE}, and eventually extrapolated if the domain window is larger than the
 benchmark window.}
 \item{model.list}{a list containing all the arguments submitted to the
 function.}
