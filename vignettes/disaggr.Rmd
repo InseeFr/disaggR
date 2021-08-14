@@ -1,0 +1,81 @@
+---
+title: "Introduction to disaggR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to disaggR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(disaggR)
+```
+
+The  French quarterly  accounts  are  constructed  using  an  indirect  method,  based  on  two  major  data  series:  the annual national accounts, and the short-term outlook data compiled from various sources. Hence, a temporal disaggregation methodology is needed.
+
+*disaggR* isn't the only package on the CRAN providing such methods. [tempdisagg](https://cran.r-project.org/package=tempdisagg) relies on a formula interface, supports most time-series classes and provides compatibility with irregular disaggregation setting (e.g. months to days).
+
+disaggR has different goals:
+
+* implementing the french national accounts methodology for production use, on time-series of the class `"ts"`
+* having a simple syntax that relies on standard evaluation and functions
+* being fast enough to deal with multiple series without using Rcpp (for readability)
+
+For more details about the french national accounts methodology, see [Methodology of quarterly national accounts](https://www.insee.fr/en/information/2579410).
+
+*Within that vignette, for each matrix time-serie, like in R, rows stand for the time and columns for the different variables.*
+
+# Two-Steps Benchmarks
+
+```{r, eval=FALSE}
+twoStepsBenchmark(turnover,construction)
+```
+
+The two-steps benchmarks, provided by the `twoStepsBenchmark` function, rely on this global formula :
+
+$$
+C =  I * a + u
+$$
+Where :
+
+* $C$, an univariate time-serie, is the high-frequency account
+* $I$, a matrix time-serie, combines the columns of the indicators, the outliers and the constant. If `include.differenciation` is `TRUE`, the constant is actually a trend.
+* $a$, a vector, stands for the coefficients to be applied.
+* $u$, an univariate time-serie, is the smoothed part of the benchmark.
+
+The **coefficients are estimated in low-frequency**, within the coeff.calc window, after a differenciation if `include.differenciation` is `TRUE`:
+
+$$
+C' =  I' * a + u'
+$$
+If `include.rho` is `TRUE`, u' is an AR1 process with an autocorrelation parameter, and $a$ is estimated through a Prais-Winsten process. Otherwise, an ordinary least square process is used.
+
+These **coefficients are applied in high-frequency**, to obtain the fitted values of the benchmark:
+
+$$
+\text{fitted.values}=I * a
+$$
+
+Note that, especially when `include.differenciation` is `TRUE`, the levels of the fitted values are arbitrary: a constant is *chosen* to zero during the implicit reintegration. The choice of this constant, however, has no implication on the benchmarked serie.
+
+**u is smoothed**:
+
+$$
+u = C - \text{fitted.values}
+$$
+As the low-frequency values of C are known, the aggregated values of u are also known. 
+If needed, low-frequency extrapolations are made to fill all the domain window.
+
+These extrapolations are defined with:
+
+* $u(n+1)-u(n) = rho*(u(n)-u(n-1))$ if `include.differenciation` is `TRUE`
+* $u(n+1) = rho * u(n)$ if `include.differenciation` is `FALSE`
+
+The Boot, Feibes and Lisman process, through the `bflSmooth` function, is then used to get the high-frequency values of u on all the domain window.

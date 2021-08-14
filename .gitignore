@@ -2,10 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-R/RcppExports.R
-src/*.o
-src/*.so
-src/*.dll
-src/Makevars
-src/Makevars.win
-src/RcppExports.cpp
+inst/doc
+/doc/
+/Meta/
