@@ -121,14 +121,18 @@ the returned value.
 An object of class "\code{twoStepsBenchmark}" is a list containing the following
 components :
 \item{benchmarked.serie}{a time-serie, that is the result of the
-benchmark.}
+benchmark. It is equal to \code{fitted.values + smoothed.part}.}
 \item{fitted.values}{a time-serie, that is the high-frequency serie as it
-is after having applied the regression coefficients.
-The difference \code{benchmarked.serie} - \code{fitted.values} is then a smoothed
-residual, eventually integrated if \code{include.differenciation=TRUE}.}
+is after having applied the regression coefficients. Compared to the fitted
+values of the regression, which can be retrieved in the regression
+component, it has a high-frequency time-serie and can eventually be
+integrated if \code{include.differenciation == TRUE}.}
 \item{regression}{an object of class praislm, it is the regression on which
 relies the benchmark. It can be extracted with the function \link{prais}}
-\item{smoothed.part}{the smoothed part of the two-steps benchmark.}
+\item{smoothed.part}{the smoothed part of the two-steps benchmark. It is a
+smoothed residual, eventually integrated if \code{include.differenciation=TRUE},
+and eventually extrapolated if the domain window is larger than the
+benchmark window.}
 \item{model.list}{a list containing all the arguments submitted to the
 function.}
 \item{call}{the matched call (either of twoStepsBenchmark or
@@ -139,9 +143,9 @@ twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
 The procedure involved is a Prais-Winsten regression, then an additive
 Denton benchmark.
 
-Therefore, the resulting time-serie is the sum of a regression fit, eventually
-reintegrated, and of a smoothed part. The smoothed part minimizes the sum of squares
-of its differences.
+Therefore, the resulting time-serie is the sum of a regression fit and of a
+smoothed part. The smoothed part minimizes the sum of squares of its
+differences.
 
 The resulting time-serie is equal to the low-frequency serie after aggregation
 within the benchmark window.
