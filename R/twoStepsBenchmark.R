@@ -372,10 +372,8 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #'   integrated if `include.differenciation` is `TRUE`.}
 #'   \item{regression}{an object of class praislm, it is the regression on which
 #'   relies the benchmark. It can be extracted with the function \link{prais}}
-#'   \item{smoothed.part}{the smoothed part of the two-steps benchmark. It is a
-#'   smoothed residual, eventually integrated if `include.differenciation` is
-#'   `TRUE`, and eventually extrapolated if the domain window is larger than the
-#'   benchmark window.}
+#'   \item{smoothed.part}{the smoothed part of the two-steps benchmark. It is
+#'   the smoothed difference between the `fitted.values` and lfserie.}
 #'   \item{model.list}{a list containing all the arguments submitted to the
 #'   function.}
 #'   \item{call}{the matched call (either of twoStepsBenchmark or
