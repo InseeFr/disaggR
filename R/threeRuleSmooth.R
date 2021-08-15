@@ -177,7 +177,8 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' frequency. The procedure involved is a proportional Denton benchmark.
 #' 
 #' Therefore, the resulting time-serie is the product of the high-frequency input
-#' with a smoothed rate. This latter is extrapolated using an arithmetic sequence.
+#' with a smoothed rate. This latter is extrapolated through an arithmetic
+#' sequence.
 #' 
 #' The resulting time-serie is equal to the low-frequency serie after aggregation
 #' within the benchmark window.
@@ -188,9 +189,6 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' * only the full cycles are kept
 #' * the first and last full cycles are replicated respectively backwards and
 #' forwards to fill the domain window.
-#' 
-#' Therefore, the weighted means of the smoothed rate are equal to the
-#' low-frequency rate.
 #' 
 #' @param hfserie the bended time-serie. It can be a matrix time-serie.
 #' @param lfserie a time-serie whose frequency divides the frequency of
@@ -213,12 +211,14 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' The low-frequency residuals will be extrapolated until they contain the
 #' smallest low-frequency window that is around the high-frequency domain
 #' window.
-#' @param start.delta.rate an optional start for the mean of the rate difference
-#' required for the arithmetical extrapolation of the rate.
+#' @param start.delta.rate an optional start for the mean of the rate difference.
+#' It is required as a common difference for the arithmetical extrapolation of
+#' the rate.
 #' Should be a numeric of length 1 or 2, like a window for `lfserie`. If NULL,
 #' the start is defined by lfserie's window.
-#' @param end.delta.rate an optional end for the mean of the rate difference
-#' required for the arithmetical extrapolation of the rate.
+#' @param end.delta.rate an optional end for the mean of the rate difference.
+#' It is required as a common difference for the arithmetical extrapolation of
+#' the rate.
 #' Should be a numeric of length 1 or 2, like a window for `lfserie`. If NULL,
 #' the end is defined by lfserie's window.
 #' @param set.delta.rate  an optional double, that allows the user to set the
@@ -247,8 +247,8 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #'   \item{hfserie.as.weights}{the modified and extrapolated hfserie (see
 #'   details).}
 #'   \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
-#'   the rate time-serie. It is estimated as the mean value in the specified
-#'   window.}
+#'   the low-frequenccy rate time-serie. It is estimated as the mean value in
+#'   the specified window.}
 #'   \item{model.list}{a list containing all the arguments submitted to the
 #'   function.}
 #'   \item{call}{the matched call.}

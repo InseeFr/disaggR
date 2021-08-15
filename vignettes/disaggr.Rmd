@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r,echo=FALSE}
 library(disaggR)
 ```
 
@@ -50,10 +50,10 @@ Where :
 * $a$, a vector, stands for the coefficients to be applied.
 * $u$, an univariate time-serie, is the smoothed part of the benchmark.
 
-The **coefficients are estimated in low-frequency**, within the coeff.calc window, after a differenciation if `include.differenciation` is `TRUE`:
+The **coefficients are estimated in low-frequency**, within the coeff.calc window, eventually after a differenciation if `include.differenciation` is `TRUE`:
 
 $$
-C' =  I' * a + u'
+C_{aggregated}' =  I_{aggregated}' * a + u'
 $$
 If `include.rho` is `TRUE`, u' is an AR1 process with an autocorrelation parameter, and $a$ is estimated through a Prais-Winsten process. Otherwise, an ordinary least square process is used.
 
@@ -63,14 +63,14 @@ $$
 \text{fitted.values}=I * a
 $$
 
-Note that, especially when `include.differenciation` is `TRUE`, the levels of the fitted values are arbitrary: a constant is *chosen* to zero during the implicit reintegration. The choice of this constant, however, has no implication on the benchmarked serie.
+Note that, especially when `include.differenciation` is `TRUE`, the level of the fitted values is arbitrary: a constant is *chosen* to zero during the implicit reintegration. The choice of this constant, however, has no implication on the benchmarked serie.
 
 **u is smoothed**:
 
 $$
-u = C - \text{fitted.values}
+u = smooth(extrapolation(C_{aggregated} - \text{fitted.values}_{aggregated}))
 $$
-As the low-frequency values of C are known, the aggregated values of u are also known. 
+As the low-frequency values of $C$ are known, the aggregated values of $u$ are also known.
 If needed, low-frequency extrapolations are made to fill all the domain window.
 
 These extrapolations are defined with:
@@ -79,3 +79,51 @@ These extrapolations are defined with:
 * $u(n+1) = rho * u(n)$ if `include.differenciation` is `FALSE`
 
 The Boot, Feibes and Lisman process, through the `bflSmooth` function, is then used to get the high-frequency values of u on all the domain window.
+
+# Proportional Denton Benchmark
+
+```{r, eval=FALSE}
+threeRuleSmooth(turnover,construction)
+```
+
+
+The Proportional Denton Benchmarks, provided by the `threeRuleSmooth` function, rely on this global formula :
+
+$$
+C =  I * a
+$$
+Where :
+
+* $C$, an univariate time-serie, is the high-frequency account
+* $I$, an **univariate time-serie**, the indicator
+* $a$, an **univariate time-serie**, the coefficient to be applied, which is to be smoothed.
+
+Proportional Denton benchmarks share some similarities with univariate two-steps benchmarks without constants. There are some differencies:
+
+* The coefficient **$a$ is not a constant**
+* There is no need of a "smoothed part", as $I * a$ is already equal to $C$ after aggregation
+
+In order to smooth the rate, a few steps are required.
+
+An **alternate version of I is computed**, that is only used for the smoothing:
+
+$$
+I' = replication(crop(I))
+$$
+Only the full cycles are kept, then the first and last full cycles are replicated respectively backwards and forwards to fill the domain window.
+
+The low-frequency rate, is equal to  $C/I$ where this operation is defined.
+
+$$
+a_{aggregated}' = extrapolation(C_{aggregated}/I_{aggregated})
+$$
+
+Such an extrapolation is a bit more problematic than the *natural* extrapolations provided by `twoStepsBenchmark`. Indeed, the proportional Denton doesn't involve any hypothesis on A, continuity excepted. As continuity is a bit too light, and that proportional Denton are generally used with rates that have a trend, these are extrapolated using an arithmetic sequence. Its common difference is given by the mean of the rate differences within the delta rate window.
+
+The high frequency rate can then be computed with the help of a weighted Boot, Feibes and Lisman process:
+
+$$
+a = smooth(a_{aggregated}',weights=I')
+$$
+
+# Plotting
