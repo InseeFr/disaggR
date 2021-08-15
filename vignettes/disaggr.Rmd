@@ -107,7 +107,7 @@ Where :
 Proportional Denton benchmarks share some similarities with univariate two-steps benchmarks without constants. There are some differencies:
 
 * The coefficient **$a$ is not a constant**
-* There is **no smoothed part**, as $I * a$ is already equal to $C$ after aggregation
+* There is **no smoothed part**, as $a$ is already smoothed and $I * a$ is equal to $C$ after aggregation
 
 In order to smooth the rate, a few steps are required.
 
