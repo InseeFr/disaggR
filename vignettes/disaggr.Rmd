@@ -25,11 +25,12 @@ library(disaggR)
 
 The  French quarterly  accounts  are  constructed  using  an  indirect  method,  based  on  two  major  data  series:  the annual national accounts, and the short-term outlook data compiled from various sources. Hence, a temporal disaggregation methodology is needed.
 
-*disaggR* isn't the only package on the CRAN providing such methods. [tempdisagg](https://cran.r-project.org/package=tempdisagg) relies on a formula interface, supports most time-series classes and provides compatibility with irregular disaggregation setting (e.g. months to days).
+**disaggR** isn't the only package on the CRAN providing such methods. [tempdisagg](https://cran.r-project.org/package=tempdisagg) relies on a formula interface, supports most time-series classes and provides compatibility with irregular disaggregation setting (e.g. months to days).
 
 disaggR has different goals:
 
-* implementing the french national accounts methodology for production use, on time-series of the class `"ts"`
+* implementing the french national accounts methodology for production use, on time-series of the class `"ts"` only
+* providing some tools that allows this kind of use
 * having a simple syntax that relies on standard evaluation and functions
 * being fast enough to deal with multiple series without using Rcpp (for readability)
 
@@ -123,9 +124,9 @@ $$
 a_{aggregated}' = extrapolation(C_{aggregated}/I_{aggregated})
 $$
 
-Such an extrapolation is a bit more problematic than the *natural* extrapolations provided by `twoStepsBenchmark`. Indeed, the proportional Denton doesn't involve any hypothesis on A, continuity excepted. As continuity is a bit too light, and that proportional Denton are generally used with rates that have a trend, these are extrapolated using an arithmetic sequence. Its common difference is given by the mean of the rate differences within the delta rate window.
+Such an extrapolation is a bit more problematic than the *natural* extrapolations provided by `twoStepsBenchmark`. Indeed, the proportional Denton doesn't involve any hypothesis on $a$, continuity excepted. As continuity is a bit too light, and that proportional Denton benchmarks are mainly used for rates that have a trend, those rates are extrapolated using an arithmetic sequence. The common difference of this sequence is given by the mean of the rate differences within the delta rate window, but can also be set using `set.delta.rate`.
 
-The high frequency rate can then be computed with the help of a weighted Boot, Feibes and Lisman process:
+The high-frequency rate can then be computed with the help of a weighted Boot, Feibes and Lisman process:
 
 $$
 a = smooth(a_{aggregated}',weights=I')
@@ -181,4 +182,4 @@ smoothed.rate(smooth)
 summary(benchmark)
 ```
 
-Additionally, most of the methods for time-series, from the package stats, automatically coerce these objects into time-series with `as.ts`.
+Additionally, most of the methods for time-series, from the package stats, automatically coerce these objects into time-series using `as.ts`.
