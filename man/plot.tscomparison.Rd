@@ -109,10 +109,10 @@ threeRuleSmooth.}
 \item{end}{a numeric of length 1 or 2. The end of the plot.}
 
 \item{col}{the color scale applied on the plot. Could be a vector of colors,
-or a function from n to colors.}
+or a function from n to a color vector of size n.}
 
 \item{lty}{the linetype scales applied on the plot. Could be a vector of
-linetypes, or a function from n to linetypes.}
+linetypes, or a function from n to a linetypes vector of size n.}
 
 \item{show.legend}{\code{TRUE} or \code{FALSE}. Should an automatic legend be added to
 the plot.}
