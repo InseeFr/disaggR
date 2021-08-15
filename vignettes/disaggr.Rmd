@@ -102,7 +102,7 @@ Where :
 
 * $C$, an univariate time-serie, is the high-frequency account
 * $I$, an **univariate time-serie**, the indicator
-* $a$, an **univariate time-serie**, the coefficient to be applied, which is to be smoothed.
+* $a$, an **univariate time-serie**, the coefficient to be applied, which is a rate to be smoothed.
 
 Proportional Denton benchmarks share some similarities with univariate two-steps benchmarks without constants. There are some differencies:
 
