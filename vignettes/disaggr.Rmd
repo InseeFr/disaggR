@@ -10,7 +10,12 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.show="hold",
+  fig.width = 7,
+  fig.height = 3,
+  out.width = "98%",
+  dpi = 96
 )
 ```
 
@@ -80,7 +85,7 @@ These extrapolations are defined with:
 
 The Boot, Feibes and Lisman process, through the `bflSmooth` function, is then used to get the high-frequency values of u on all the domain window.
 
-# Proportional Denton Benchmark
+# Proportional Denton Benchmarks
 
 ```{r, eval=FALSE}
 threeRuleSmooth(turnover,construction)
@@ -101,7 +106,7 @@ Where :
 Proportional Denton benchmarks share some similarities with univariate two-steps benchmarks without constants. There are some differencies:
 
 * The coefficient **$a$ is not a constant**
-* There is no need of a "smoothed part", as $I * a$ is already equal to $C$ after aggregation
+* There is **no smoothed part**, as $I * a$ is already equal to $C$ after aggregation
 
 In order to smooth the rate, a few steps are required.
 
@@ -126,4 +131,54 @@ $$
 a = smooth(a_{aggregated}',weights=I')
 $$
 
-# Plotting
+# Plots
+
+disaggR provides some tools for plotting its results. In particular, functions starting with `"in_"` generate objects of class `"tscomparison"`. Each object of class `"tscomparison"`, `"twoStepsBenchmark"` or `"threeRuleSmooth"` can be plotted with either the base `plot` or the ggplot2 `autoplot` method. These methods all share similar arguments:
+
+* **x** (or **object** for the autoplot method) a tscomparison, a twoStepsBenchmark or a threeRuleSmooth
+* **xlab**, the title for the x axis
+* **ylab**, the title for the y axis
+* **start**, a numeric of length 1 or 2. The start of the plot
+* **end**, a numeric of length 1 or 2. The end of the plot
+* **col**, the color scale applied on the plot. Could be a vector of colors, or a function from n to a color vector of size n.
+* **lty**, the linetype scales applied on the plot. Could be a vector of linetypes, or a function from n to a linetypes vector of size n.
+* **show.legend**, `TRUE` or `FALSE`. Should an automatic legend be added to the plot.
+* **main**, a character of length 1, the title of the plot
+* **mar**, a numeric of length 4, the margins of the plot specified in the form c(bottom, left, top, right).
+* **theme**, a ggplot theme object to replace the default one (only for autoplot methods)
+* **...**, other arguments passed either to ggplot or plot
+
+```{r}
+plot(in_sample(twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = TRUE)),
+     start=c(2010,1),end=c(2017,1))
+library(ggplot2)
+autoplot(in_disaggr(threeRuleSmooth(hfserie = turnover,
+                                    lfserie = construction)),
+         start=2007,end=2014)
+```
+
+# Other methods
+
+Various methods can be applied on objects of class `"twoStepsBenchmark"` and/or `"threeRuleSmooth"`.
+
+`as.ts`, `coef`, `residuals`, `fitted`, `model.list`
+```{r}
+benchmark <- twoStepsBenchmark(turnover,construction)
+smooth <- threeRuleSmooth(turnover,construction)
+as.ts(benchmark);as.ts(smooth)
+as.list(benchmark);as.list(smooth)
+coef(benchmark)
+residuals(benchmark)
+vcov(benchmark)
+fitted(benchmark)
+model.list(benchmark);model.list(smooth)
+se(benchmark)
+rho(benchmark)
+outliers(benchmark)
+smoothed.rate(smooth)
+summary(benchmark)
+```
+
+Additionally, most of the methods for time-series, from the package stats, automatically coerce these objects into time-series with `as.ts`.
