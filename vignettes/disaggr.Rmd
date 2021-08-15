@@ -164,7 +164,7 @@ autoplot(in_disaggr(threeRuleSmooth(hfserie = turnover,
 Various methods can be applied on objects of class `"twoStepsBenchmark"` and/or `"threeRuleSmooth"`.
 
 `as.ts`, `coef`, `residuals`, `fitted`, `model.list`
-```{r}
+```{r, eval=FALSE}
 benchmark <- twoStepsBenchmark(turnover,construction)
 smooth <- threeRuleSmooth(turnover,construction)
 as.ts(benchmark);as.ts(smooth)
