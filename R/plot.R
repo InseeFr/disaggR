@@ -414,9 +414,9 @@ plot.threeRuleSmooth <- function(x, xlab = NULL, ylab = NULL,
 #' @param start a numeric of length 1 or 2. The start of the plot.
 #' @param end a numeric of length 1 or 2. The end of the plot.
 #' @param col the color scale applied on the plot. Could be a vector of colors,
-#' or a function from n to colors.
+#' or a function from n to a color vector of size n.
 #' @param lty the linetype scales applied on the plot. Could be a vector of
-#' linetypes, or a function from n to linetypes.
+#' linetypes, or a function from n to a linetypes vector of size n.
 #' @param show.legend `TRUE` or `FALSE`. Should an automatic legend be added to
 #' the plot.
 #' @param main a character of length 1, the title of the plot

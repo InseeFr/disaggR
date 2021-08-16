@@ -132,7 +132,7 @@ in_disaggr_notctb <- function(object,type) {
                        start=start(series),
                        frequency=frequency(series)),
                    changes = (series/lag(series,-1)-1)*100,
-                   stop("The type argument of in_disaggr should be either \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
+                   stop("The type argument of in_disaggr should be either \"contributions\", \"levels\", \"levels-rebased\" or \"changes\".",call. = FALSE)
   )
   
   structure(window(series,start=start(benchmark),end=end(benchmark),extend=TRUE),
