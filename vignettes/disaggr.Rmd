@@ -43,11 +43,12 @@ For further details about the french national accounts methodology, see [Methodo
 twoStepsBenchmark(turnover,construction)
 ```
 
-The two-steps benchmarks, provided by the `twoStepsBenchmark` function, rely on this global formula :
+The two-steps benchmarks, provided by the `twoStepsBenchmark` function, rely on this high-frequency formula:
 
 $$
 C =  I * a + u
 $$
+
 Where:
 
 * $C$, an univariate time-serie, is the high-frequency account.
@@ -60,6 +61,7 @@ The **coefficients are estimated at low-frequency**, within the coeff.calc windo
 $$
 C_{aggregated}' =  I_{aggregated}' * a + u'
 $$
+
 If `include.rho` is `TRUE`, $u'$ is an AR1 process with an autocorrelation parameter, and $a$ is estimated through a Prais-Winsten process. Otherwise, an ordinary least squares process is used.
 
 These **coefficients are applied at high-frequency**, to obtain the fitted values of the benchmark:
@@ -75,6 +77,7 @@ Note that, especially when `include.differenciation` is `TRUE`, the level of the
 $$
 u = smooth(extrapolation(C_{aggregated} - \text{fitted.values}_{aggregated}))
 $$
+
 As the low-frequency values of $C$ have been set from the beginning, and that the fitted values have just been computed, the aggregated values of $u$ are known.
 If these values aren't defined all across the domain window, these are extrapolated as follow:
 
@@ -89,11 +92,12 @@ The Boot, Feibes and Lisman process, through the `bflSmooth` function, is then u
 threeRuleSmooth(turnover,construction)
 ```
 
-The Proportional Denton Benchmarks, provided by the `threeRuleSmooth` function, rely on this global formula :
+The Proportional Denton Benchmarks, provided by the `threeRuleSmooth` function, rely on this high-frequency formula:
 
 $$
 C =  I \odot a
 $$
+
 Where:
 
 * $C$, an **univariate time-serie**, is the high-frequency account
@@ -102,8 +106,8 @@ Where:
 
 Proportional Denton benchmarks share some similarities with univariate two-steps benchmarks without constants. There are some differencies:
 
-* The coefficient **$a$ is not a constant**
-* There is **no smoothed part**, as $a$ is already smoothed and $I \odot a$ is equal to $C$ after aggregation
+* The coefficient **$a$ is not a constant**.
+* There is **no smoothed part**, as $a$ is already smoothed and $I \odot a$ is equal to $C$ after aggregation.
 
 In order to smooth the rate, a few steps are required.
 
@@ -112,6 +116,7 @@ An **alternate version of I is computed**, that is only used for the smoothing:
 $$
 I' = replication(crop(I))
 $$
+
 Only the full cycles of I are kept, then the first and last full cycles are replicated respectively backwards and forwards to fill the domain window.
 
 The low-frequency rate is already known where $C \oslash I$ is defined. This rate is then extrapolated to fill the domain window:
