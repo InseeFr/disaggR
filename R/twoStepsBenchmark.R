@@ -342,7 +342,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 #' and must be a multiple of hf / lf
 #' 
 #' The outliers coefficients are evaluated though the regression process, like
-#' any coefficient. Therefore, if any outlier is outside to the coefficient
+#' any coefficient. Therefore, if any outlier is outside of the coefficient
 #' calculation window, it should be fixed using `set.coeff`.
 #' 
 #' @param \dots if the dots contain a cl item, its value overwrites the value of
