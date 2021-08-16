@@ -29,12 +29,11 @@ The  French quarterly  accounts  are  constructed  using  an  indirect  method, 
 
 disaggR has different goals:
 
-* implementing the french national accounts methodology for production use, on time-series of the class `"ts"` only
-* providing some tools that allows this kind of use
-* having a simple syntax that relies on standard evaluation and functions
-* being fast enough to deal with multiple series without using Rcpp (for readability)
+* implementing the french national accounts methodology on time-series of the class `"ts"`
+* providing a simple syntax that relies on standard evaluation and functions
+* being fast enough to deal with the production of multiple series without linking to Rcpp (for readability purposes)
 
-For more details about the french national accounts methodology, see [Methodology of quarterly national accounts](https://www.insee.fr/en/information/2579410).
+For further details about the french national accounts methodology, see [Methodology of quarterly national accounts](https://www.insee.fr/en/information/2579410).
 
 *Within that vignette, for each matrix time-serie, like in R, rows stand for the time and columns for the different variables.*
 
@@ -49,42 +48,40 @@ The two-steps benchmarks, provided by the `twoStepsBenchmark` function, rely on 
 $$
 C =  I * a + u
 $$
-Where :
+Where:
 
-* $C$, an univariate time-serie, is the high-frequency account
+* $C$, an univariate time-serie, is the high-frequency account.
 * $I$, a matrix time-serie, combines the columns of the indicators, the outliers and the constant. If `include.differenciation` is `TRUE`, the constant is actually a trend.
 * $a$, a vector, stands for the coefficients to be applied.
 * $u$, an univariate time-serie, is the smoothed part of the benchmark.
 
-The **coefficients are estimated in low-frequency**, within the coeff.calc window, eventually after a differenciation if `include.differenciation` is `TRUE`:
+The **coefficients are estimated at low-frequency**, within the coeff.calc window, eventually after a differenciation if `include.differenciation` is `TRUE`:
 
 $$
 C_{aggregated}' =  I_{aggregated}' * a + u'
 $$
-If `include.rho` is `TRUE`, u' is an AR1 process with an autocorrelation parameter, and $a$ is estimated through a Prais-Winsten process. Otherwise, an ordinary least square process is used.
+If `include.rho` is `TRUE`, $u'$ is an AR1 process with an autocorrelation parameter, and $a$ is estimated through a Prais-Winsten process. Otherwise, an ordinary least squares process is used.
 
-These **coefficients are applied in high-frequency**, to obtain the fitted values of the benchmark:
+These **coefficients are applied at high-frequency**, to obtain the fitted values of the benchmark:
 
 $$
 \text{fitted.values}=I * a
 $$
 
-Note that, especially when `include.differenciation` is `TRUE`, the level of the fitted values is arbitrary: a constant is *chosen* to zero during the implicit reintegration. The choice of this constant, however, has no implication on the benchmarked serie.
+Note that, especially when `include.differenciation` is `TRUE`, the level of the fitted values is arbitrary: a constant is *chosen* to zero during the implicit reintegration. The choice of this constant, however, doesn't impact the benchmarked serie.
 
 **u is smoothed**:
 
 $$
 u = smooth(extrapolation(C_{aggregated} - \text{fitted.values}_{aggregated}))
 $$
-As the low-frequency values of $C$ are known, the aggregated values of $u$ are also known.
-If needed, low-frequency extrapolations are made to fill all the domain window.
-
-These extrapolations are defined with:
+As the low-frequency values of $C$ have been set from the beginning, and that the fitted values have just been computed, the aggregated values of $u$ are known.
+If these values aren't defined all across the domain window, these are extrapolated as follow:
 
 * $u(n+1)-u(n) = rho*(u(n)-u(n-1))$ if `include.differenciation` is `TRUE`
 * $u(n+1) = rho * u(n)$ if `include.differenciation` is `FALSE`
 
-The Boot, Feibes and Lisman process, through the `bflSmooth` function, is then used to get the high-frequency values of u on all the domain window.
+The Boot, Feibes and Lisman process, through the `bflSmooth` function, is then used to get the high-frequency values of u across the domain window.
 
 # Proportional Denton Benchmarks
 
@@ -92,13 +89,12 @@ The Boot, Feibes and Lisman process, through the `bflSmooth` function, is then u
 threeRuleSmooth(turnover,construction)
 ```
 
-
 The Proportional Denton Benchmarks, provided by the `threeRuleSmooth` function, rely on this global formula :
 
 $$
 C =  I * a
 $$
-Where :
+Where:
 
 * $C$, an univariate time-serie, is the high-frequency account
 * $I$, an **univariate time-serie**, the indicator
@@ -116,15 +112,15 @@ An **alternate version of I is computed**, that is only used for the smoothing:
 $$
 I' = replication(crop(I))
 $$
-Only the full cycles are kept, then the first and last full cycles are replicated respectively backwards and forwards to fill the domain window.
+Only the full cycles of I are kept, then the first and last full cycles are replicated respectively backwards and forwards to fill the domain window.
 
-The low-frequency rate, is equal to  $C/I$ where this operation is defined.
+The low-frequency rate is already known where $C/I$ is defined. This rate is then extrapolated to fill the domain window:
 
 $$
 a_{aggregated}' = extrapolation(C_{aggregated}/I_{aggregated})
 $$
 
-Such an extrapolation is a bit more problematic than the *natural* extrapolations provided by `twoStepsBenchmark`. Indeed, the proportional Denton doesn't involve any hypothesis on $a$, continuity excepted. As continuity is a bit too light, and that proportional Denton benchmarks are mainly used for rates that have a trend, those rates are extrapolated using an arithmetic sequence. The common difference of this sequence is given by the mean of the rate differences within the delta rate window, but can also be set using `set.delta.rate`.
+Such an extrapolation is a bit more problematic than the *natural* extrapolations provided by `twoStepsBenchmark`. Indeed, the proportional Denton benchmarks don't involve any hypothesis on $a$, other than continuity. As continuity isn't enough, and that proportional Denton benchmarks are mainly used for rates that have a trend, those rates are extrapolated using an arithmetic sequence. By default, the common difference of this sequence is given by the mean of the rate differences within the delta rate window.
 
 The high-frequency rate can then be computed with the help of a weighted Boot, Feibes and Lisman process:
 
