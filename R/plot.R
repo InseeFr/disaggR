@@ -188,8 +188,10 @@ draw_axes <- function(timex) {
   }
   else {
     year <- floor(timex+getOption("ts.eps")/frequency(timex))
-    axis(side = 1L, at = c(year,year[length(year)]+1L), labels = NA, tick = TRUE)
-    axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.1, cex.axis=0.7)
+    lastyear <- year[length(year)]
+    m <- min(1/strwidth(lastyear),0.875)
+    axis(side = 1L, at = c(year,lastyear+1L), labels = NA, tick = TRUE)
+    axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.7+m*0.7, cex.axis=0.8*m)
   }
 }
 
