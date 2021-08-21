@@ -653,26 +653,52 @@ test_that("plot method accessibility of graphical parameters",{
   skip_on_cran()
   benchmark <- twoStepsBenchmark(turnover,construction)
   
-  expect_doppelganger("plot-cexmain-cexlab",
-                      function() plot(benchmark,main="title",cex.main=0.2,
-                                      xlab="foo",ylab="bar",cex.lab=0.2))
-  expect_doppelganger("plot-inscatter-cexmain-cexlab",
-                      function() plot(in_scatter(benchmark),main="title",
-                                      cex.main=0.2,
-                                      xlab="foo",ylab="bar",cex.lab=0.2))
-  expect_doppelganger("plot-inscatter-xlim-ylim",
-                      function() plot(in_scatter(benchmark),
-                                      xlim=c(600,1700),ylim=c(100,270)))
-  expect_doppelganger("plot-insample-xlim-ylim",
-                      function() plot(in_sample(benchmark),
-                                      xlim=c(1999,2030),
-                                      ylim=c(-10,20)))
-  expect_doppelganger("plot-cexaxis",
+  expect_doppelganger("plot-par-benchmark",
                       function() plot(benchmark,
-                                      cex.axis=1.1))
-  expect_doppelganger("plot-indisaggr-cexaxis-smooth",
-                      function() plot(in_disaggr(threeRuleSmooth(turnover,construction)),
-                                      cex.axis=1.1))
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(2000,2014),
+                                      ylim=c(14,18)
+                                      ))
+  expect_doppelganger("plot-inscatter-par-benchmark",
+                      function() plot(in_scatter(benchmark),
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(600,1700),
+                                      ylim=c(100,270)
+                      ))
+  expect_doppelganger("plot-indisaggr-par-benchmark-ctb",
+                      function() plot(in_disaggr(benchmark,type = "contributions"),
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(2008,2015.5),
+                                      ylim=c(-10,10)
+                      ))
+  expect_doppelganger("plot-indisaggr-par-benchmark",
+                      function() plot(in_disaggr(benchmark),
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(2008,2015.5),
+                                      ylim=c(-5,5)
+                      ))
+  
+  expect_doppelganger("plot-insample-par-benchmark",
+                      function() plot(in_sample(benchmark),
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(2008,2015.5),
+                                      ylim=c(-5,5)
+                      ))
 })
 
 test_that("eval_function_if_it_is_one works", {
