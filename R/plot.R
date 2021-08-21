@@ -63,30 +63,33 @@ default_margins <- function(main, xlab, ylab) {
 
 plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
                       extend.x,extend.y,abline.x,
-                      main, ...) {
-  
-  if (is.null(xlab)) xlab <- ""
-  if (is.null(ylab)) ylab <- ""
-  
-  sizey <- ymax-ymin
+                      main, xlim = NULL, ylim = NULL,
+                      cex.main = NULL, cex.lab = NULL,
+                      ...) {
   
   plot(x = c(xmin,xmax), y = c(ymin,ymax),
-       xlim = c(xmin,xmax) + if (extend.x) 0.02 * (xmax-xmin) * c(-1,1) else c(0,0),
-       ylim = c(ymin,ymax) + if (extend.y) 0.02 * (ymax-ymin) * c(-1,1) else c(0,0),
+       xlim = xlim %||% (
+         c(xmin,xmax) + if (extend.x) 0.02 * (xmax-xmin) * c(-1,1) else c(0,0)
+       ),
+       ylim = ylim %||% (
+         c(ymin,ymax) + if (extend.y) 0.02 * (ymax-ymin) * c(-1,1) else c(0,0)
+       ),
        type = "n",
        xaxs = "i", xaxt = "n",
        yaxs = "i", yaxt = "n",
-       cex.main = 0.8,
+       cex.main = cex.main %||% 0.8,
        main = main, ...)
   
-  title(xlab = xlab, line= 0.8, cex.lab=0.8)
+  title(xlab = xlab %||% "", line= 0.8, cex.lab = cex.lab %||% 0.8)
   
-  title(ylab = ylab, line= 1.3, cex.lab=0.8)
+  title(ylab = ylab %||% "", line= 1.3, cex.lab = cex.lab %||% 0.8)
   
   if (abline.x) {
     verysmall <- attr(abline.x,"verysmall")
     grid(nx = NA,ny=NULL,col = "grey")
-    abline(v = (floor(xmin+verysmall)+1L):(ceiling(xmax-verysmall)-1L),lty="dotted",lwd=1,col="grey")   
+    abline(v = (floor(xlim[1L] %||% xmin+verysmall)+1L):
+             (ceiling(xlim[2L] %||% xmax-verysmall)-1L),
+           lty="dotted",lwd=1,col="grey")   
   }
   else grid(nx = NULL,ny=NULL,col = "grey")
 }
@@ -178,20 +181,22 @@ scatterplot_ts <- function(x,col,lty) {
   arrows_heads(x0,y0,x1,y1,col = col)
 }
 
-draw_axes <- function(timex) {
+draw_axes <- function(timex,cex.axis) {
   axis(side = 2L, labels=NA, tick = TRUE)
-  axis(side = 2L, tick = FALSE, line=-0.5, cex.axis=0.7)
+  axis(side = 2L, tick = FALSE, line=-0.5,
+       cex.axis = cex.axis %||% 0.7)
   
   if (is.null(timex)) {
     axis(side = 1L, labels=NA, tick = TRUE, tck=-0.011)
-    axis(side = 1L, tick = FALSE, line=-1.1, cex.axis=0.7)
+    axis(side = 1L, tick = FALSE, line=-1.1, cex.axis = cex.axis %||% 0.7)
   }
   else {
     year <- floor(timex+getOption("ts.eps")/frequency(timex))
     lastyear <- year[length(year)]
     m <- min(1/strwidth(lastyear),0.875)
     axis(side = 1L, at = c(year,lastyear+1L), labels = NA, tick = TRUE)
-    axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE, line = -1.7+m*0.7, cex.axis=0.8*m)
+    axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE,
+         line = -1.7+m*0.7, cex.axis = cex.axis %||% (0.8*m))
   }
 }
 
@@ -206,8 +211,8 @@ window_default <- function(x,start,end) {
     else apply(x,1L,function(x) !all(is.na(x)))
   }
   
-  start <- if (is.null(start)) floor(min(timex[non_na_vals]) + verysmall) else start
-  end <- if (is.null(end)) floor(max(timex[non_na_vals]) + verysmall) + 1 - deltat(x) else end
+  start <- start %||% floor(min(timex[non_na_vals]) + verysmall)
+  end <- end %||% (floor(max(timex[non_na_vals]) + verysmall) + 1 - deltat(x))
   
   res <- window(x,start=start,end=end,extend=TRUE)
   
@@ -222,7 +227,7 @@ eval_function_if_it_is_one <- function(f,arg) if (is.function(f)) f(arg) else f
 plotts <- function(x,show.legend,col,lty,
                    series_names,type="line",
                    start,end,
-                   xlab,ylab, main,
+                   xlab,ylab, main, cex.axis = NULL,
                    ...) {
   
   x <- window_default(x,start,end)
@@ -317,7 +322,8 @@ plotts <- function(x,show.legend,col,lty,
          }
   )
   
-  draw_axes(if (identical(attr(x,"func"),"in_scatter")) NULL else timex_win)
+  draw_axes(if (identical(attr(x,"func"),"in_scatter")) NULL else timex_win,
+            cex.axis)
   
   invisible()
 }

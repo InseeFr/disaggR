@@ -648,6 +648,59 @@ test_that("ggplot outliers in_disaggr",{
                       ggplot2::autoplot(in_disaggr(benchmark,type="contributions")))
 })
 
+test_that("plot method accessibility of graphical parameters",{
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  
+  expect_doppelganger("plot-par-benchmark",
+                      function() plot(benchmark,
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(2000,2014),
+                                      ylim=c(14,18)
+                                      ))
+  expect_doppelganger("plot-inscatter-par-benchmark",
+                      function() plot(in_scatter(benchmark),
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(600,1700),
+                                      ylim=c(100,270)
+                      ))
+  expect_doppelganger("plot-indisaggr-par-benchmark-ctb",
+                      function() plot(in_disaggr(benchmark,type = "contributions"),
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(2008,2015.5),
+                                      ylim=c(-10,10)
+                      ))
+  expect_doppelganger("plot-indisaggr-par-benchmark",
+                      function() plot(in_disaggr(benchmark),
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(2008,2015.5),
+                                      ylim=c(-5,5)
+                      ))
+  
+  expect_doppelganger("plot-insample-par-benchmark",
+                      function() plot(in_sample(benchmark),
+                                      main="title",
+                                      cex.main=0.5,
+                                      xlab="foo",ylab="bar",cex.lab=0.3,
+                                      cex.axis = 1.1,
+                                      xlim=c(2008,2015.5),
+                                      ylim=c(-5,5)
+                      ))
+})
+
 test_that("eval_function_if_it_is_one works", {
   expect_identical(eval_function_if_it_is_one(seq_len,2L),c(1L,2L))
   expect_identical(eval_function_if_it_is_one(3L,2L),3L)
