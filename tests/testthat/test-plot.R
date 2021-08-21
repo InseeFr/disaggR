@@ -648,6 +648,33 @@ test_that("ggplot outliers in_disaggr",{
                       ggplot2::autoplot(in_disaggr(benchmark,type="contributions")))
 })
 
+test_that("plot method accessibility of graphical parameters",{
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  
+  expect_doppelganger("plot-cexmain-cexlab",
+                      function() plot(benchmark,main="title",cex.main=0.2,
+                                      xlab="foo",ylab="bar",cex.lab=0.2))
+  expect_doppelganger("plot-inscatter-cexmain-cexlab",
+                      function() plot(in_scatter(benchmark),main="title",
+                                      cex.main=0.2,
+                                      xlab="foo",ylab="bar",cex.lab=0.2))
+  expect_doppelganger("plot-inscatter-xlim-ylim",
+                      function() plot(in_scatter(benchmark),
+                                      xlim=c(600,1700),ylim=c(100,270)))
+  expect_doppelganger("plot-insample-xlim-ylim",
+                      function() plot(in_sample(benchmark),
+                                      xlim=c(1999,2030),
+                                      ylim=c(-10,20)))
+  expect_doppelganger("plot-cexaxis",
+                      function() plot(benchmark,
+                                      cex.axis=1.1))
+  expect_doppelganger("plot-indisaggr-cexaxis-smooth",
+                      function() plot(in_disaggr(threeRuleSmooth(turnover,construction)),
+                                      cex.axis=1.1))
+})
+
 test_that("eval_function_if_it_is_one works", {
   expect_identical(eval_function_if_it_is_one(seq_len,2L),c(1L,2L))
   expect_identical(eval_function_if_it_is_one(3L,2L),3L)

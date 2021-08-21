@@ -88,18 +88,15 @@ ts_expand <- function(x,nfrequency,divide.by.ratio=TRUE) {
 }
 
 switch_window <- function(start,end,init_tsp) {
-  start <- {
-    if (is.null(start)) init_tsp[1L]
-    else switch(length(start),
-                start,
-                start[1L] + (start[2L] - 1)/init_tsp[3L])
-  }
-  end <- {
-    if (is.null(end)) init_tsp[2L]
-    else switch(length(end),
-                end,
-                end[1L] + (end[2L] - 1)/init_tsp[3L])
-  }
-  c(start,end)
+  c(switch(length(start),
+           start,
+           start[1L] + (start[2L] - 1)/init_tsp[3L]) %||%
+      init_tsp[1L],
+    switch(length(end),
+           end,
+           end[1L] + (end[2L] - 1)/init_tsp[3L]) %||%
+      init_tsp[2L]
+  )
 }
 
+`%||%` <- function(x,y) if (is.null(x)) y else x
