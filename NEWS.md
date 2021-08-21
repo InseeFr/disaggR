@@ -1,7 +1,7 @@
 # disaggR 1.0.2
 * New vignette : Introduction to disaggR
-* The stop error of `in_disaggR` for wrong type arguments has been changed, because it didn't include "contributions".
-* `cex.axis`, `xlim`, `ylim`, `cex.lab` and `cex.main` parameters now overwrite the default if used inside `plot(...)` dots.
+* The error of `in_disaggR` for wrong `type` arguments has been changed, because it didn't include "contributions".
+* `cex.axis`, `xlim`, `ylim`, `cex.lab` and `cex.main` parameters now overwrite their default if used inside `plot(...)` dots.
 * As for the `plot` method, by default, `cex.axis` is automatically set to be smaller if needed.
 
 # disaggR 1.0.1
