@@ -506,6 +506,7 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
 #' This is the default theme for the ggplot graphics produced with autoplot
 #' 
 #' @keywords internal
+#' @importFrom grDevices dev.size
 #' @export
 default_theme_ggplot <- function(object,start,end,show.legend,xlab,ylab,mar) {
   
