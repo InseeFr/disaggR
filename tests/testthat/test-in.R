@@ -502,16 +502,18 @@ test_that("in_revisions with different outliers",{
                rev)
   expect_snapshot(res,cran = FALSE)
   
-  benchmarka <- twoStepsBenchmark(turnover,construction,
+  benchmarka <- twoStepsBenchmark(window(turnover,start=2005),
+                                  window(construction,start=2005),
                                   outliers = list(LS2010=rep(1,24L)))
-  benchmarkb <- twoStepsBenchmark(turnover,construction,
+  benchmarkb <- twoStepsBenchmark(window(turnover,start=2005),
+                                  window(construction,start=2005),
                                   outliers = list(AO2006=rep(0.1,12)))
   
   eva <- unname(na.omit((as.ts(benchmarka)/
                            stats::lag(as.ts(benchmarka),-1)-1)*100))
   evb <- unname(na.omit((as.ts(benchmarkb)/
                            stats::lag(as.ts(benchmarkb),-1)-1)*100))
-  rev <- window(eva-evb,start=2000,extend = TRUE)
+  rev <- window(eva-evb,start=2005,extend = TRUE)
   
   res <- in_revisions(benchmarka,
                       benchmarkb,
