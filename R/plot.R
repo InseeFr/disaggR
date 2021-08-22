@@ -197,7 +197,8 @@ draw_axes <- function(timex,cex.axis) {
     m <- min(1/strwidth(lastyear),0.875)
     axis(side = 1L, at = c(year,lastyear+1L), labels = NA, tick = TRUE)
     axis(side = 1L, at = year + 0.5, labels = year, tick = FALSE,
-         line = -1.7+m*0.7, cex.axis = cex.axis %||% (0.8*m))
+         line = -1.7+m*0.7, cex.axis = cex.axis %||% (0.8*m),
+         gap.axis = 1.5)
   }
 }
 
