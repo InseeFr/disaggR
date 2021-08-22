@@ -229,7 +229,13 @@ plotts <- function(x,show.legend,col,lty,
                    series_names,type="line",
                    start,end,
                    xlab,ylab, main, cex.axis = NULL,
+                   xlim = NULL,
                    ...) {
+  
+  if (type != "scatter" && !is.null(xlim)) {
+    start <- start %||% xlim[1L]
+    end <- end %||% xlim[2L]
+  }
   
   x <- window_default(x,start,end)
   
@@ -281,7 +287,8 @@ plotts <- function(x,show.legend,col,lty,
                      ymax = max(x[,1L],na.rm = TRUE),
                      xlab = xlab, ylab = ylab,
                      extend.x = TRUE, extend.y = TRUE,
-                     abline.x=FALSE, main = main, ...)
+                     abline.x=FALSE, main = main, xlim = xlim,
+                     ...)
            
            if (!is.null(attr(x,"abline"))) {
              abline(a = attr(x,"abline")["constant"],

@@ -662,6 +662,11 @@ test_that("plot method accessibility of graphical parameters",{
                                       xlim=c(2000,2014),
                                       ylim=c(14,18)
                                       ))
+  
+  expect_doppelganger("plot-par-benchmark-outside",
+                      function() plot(benchmark,
+                                      xlim=c(1995,2025.1)
+                      ))
   expect_doppelganger("plot-inscatter-par-benchmark",
                       function() plot(in_scatter(benchmark),
                                       main="title",
