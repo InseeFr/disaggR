@@ -2,7 +2,7 @@
 * New vignette : Introduction to disaggR
 * The error of `in_disaggR` for wrong `type` arguments has been changed, because it didn't include "contributions".
 * `cex.axis`, `xlim`, `ylim`, `cex.lab` and `cex.main` parameters now overwrite their default if used inside `plot(...)` dots.
-* As for the `plot` method, by default, `cex.axis` is automatically set to be smaller if needed.
+* By default, in the `plot` and `autoplot` methods, the axis annotations are now automatically set to be smaller if needed.
 
 # disaggR 1.0.1
 * Switched ggplot2, rmarkdown and shiny from imports to suggests. RColorBrewer has replaced scales as an import. disaggR can now be installed with far less dependencies. Hence, the `autoplot` generic is not reexported anymore. ggplot2 has to be attached to allow the use of `autoplot` without the `ggplot2::` prefix, by example with `library(ggplot2)`.

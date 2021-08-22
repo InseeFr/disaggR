@@ -62,7 +62,7 @@
   show.legend = TRUE,
   main = NULL,
   mar = NULL,
-  theme = default_theme_ggplot(show.legend, xlab, ylab, mar),
+  theme = default_theme_ggplot(object, start, end, show.legend, xlab, ylab, mar),
   ...
 )
 
@@ -77,7 +77,7 @@
   show.legend = TRUE,
   main = NULL,
   mar = NULL,
-  theme = default_theme_ggplot(show.legend, xlab, ylab, mar),
+  theme = default_theme_ggplot(object, start, end, show.legend, xlab, ylab, mar),
   ...
 )
 
@@ -92,7 +92,7 @@
   show.legend = TRUE,
   main = NULL,
   mar = NULL,
-  theme = default_theme_ggplot(show.legend, xlab, ylab, mar),
+  theme = default_theme_ggplot(object, start, end, show.legend, xlab, ylab, mar),
   ...
 )
 }
