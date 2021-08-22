@@ -106,7 +106,8 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
             ymin = min(finite_x_vals,na.rm = TRUE),
             ymax = max(finite_x_vals,na.rm = TRUE),
             xlab = xlab, ylab = ylab,
-            extend.x = FALSE, extend.y = TRUE, abline.x = structure(TRUE,verysmall=getOption("ts.eps")/tspx[3L]),
+            extend.x = FALSE, extend.y = TRUE,
+            abline.x = structure(TRUE,verysmall=getOption("ts.eps")/tspx[3L]),
             main = main, ...)
 }
 
@@ -506,7 +507,14 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
 #' 
 #' @keywords internal
 #' @export
-default_theme_ggplot <- function(show.legend,xlab,ylab,mar) {
+default_theme_ggplot <- function(object,start,end,show.legend,xlab,ylab,mar) {
+  
+  tspfloor <- floor(tsp(window_default(object,start = start, end = end))[c(1L,2L)]+
+                      getOption("ts.eps")/frequency(object))
+  
+  xchar_size <- min(dev.size("in")[1L]/(tspfloor[2L]-tspfloor[1L]+1) /
+                      nchar(tspfloor[2L],type = "width") * 72.27 * 1.36,10)
+  
   classic <- ggplot2::theme_classic()
   
   ggplot2::`%+replace%`(
@@ -517,8 +525,8 @@ default_theme_ggplot <- function(show.legend,xlab,ylab,mar) {
                                                                                              mar[1L],mar[2L],
                                                                                              unit="pt"),
                    panel.grid.major = ggplot2::element_line(colour = "#cccccc"),
-                   legend.position = if (show.legend) "bottom" else "none"
-    )
+                   legend.position = if (show.legend) "bottom" else "none",
+                   axis.text.x = ggplot2::element_text(size=xchar_size,vjust = 0.1))
   )
 }
 
@@ -699,7 +707,9 @@ autoplot.twoStepsBenchmark <- function(object, xlab = NULL, ylab = NULL,
                                        show.legend = TRUE,
                                        main = NULL,
                                        mar = NULL,
-                                       theme = default_theme_ggplot(show.legend,
+                                       theme = default_theme_ggplot(object,
+                                                                    start,end,
+                                                                    show.legend,
                                                                     xlab, ylab,
                                                                     mar),
                                        ...) {
@@ -719,7 +729,9 @@ autoplot.threeRuleSmooth <- function(object, xlab = NULL, ylab = NULL,
                                      show.legend = TRUE,
                                      main = NULL,
                                      mar = NULL,
-                                     theme = default_theme_ggplot(show.legend,
+                                     theme = default_theme_ggplot(object,
+                                                                  start,end,
+                                                                  show.legend,
                                                                   xlab, ylab,
                                                                   mar),
                                      ...) {
@@ -739,7 +751,9 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                                   show.legend = TRUE,
                                   main = NULL,
                                   mar = NULL,
-                                  theme = default_theme_ggplot(show.legend,
+                                  theme = default_theme_ggplot(object,
+                                                               start,end,
+                                                               show.legend,
                                                                xlab, ylab,mar),
                                   ...) {
   
