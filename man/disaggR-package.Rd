@@ -25,7 +25,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Arnaud Feldmann \email{arnaud.feldmann@insee.fr} (\href{https://orcid.org/0000-0003-0109-7505}{ORCID})
+\strong{Maintainer}: Thomas Laurent \email{thomas.laurent@insee.fr}
+
+Authors:
+\itemize{
+  \item Arnaud Feldmann \email{arnaud.feldmann@gmail.com} (\href{https://orcid.org/0000-0003-0109-7505}{ORCID}) (Author, creator and maintener of the package until the version 1.0.2)
+}
 
 Other contributors:
 \itemize{
