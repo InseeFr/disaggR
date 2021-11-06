@@ -3,6 +3,7 @@
 \docType{class}
 \name{disaggR-class}
 \alias{disaggR-class}
+\alias{Ops,disaggR,missing-method}
 \alias{Ops,disaggR,vector-method}
 \alias{Ops,vector,disaggR-method}
 \alias{Ops,disaggR,ts-method}

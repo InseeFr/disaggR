@@ -2,7 +2,6 @@ Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks for Time Series Disaggregation
 Version: 1.0.2
-Date: 2021-08-23
 Authors@R: 
     c(person(given = "Arnaud",
              family = "Feldmann",
@@ -39,7 +38,7 @@ Imports:
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     knitr,
     ggplot2 (>= 3.0.0),

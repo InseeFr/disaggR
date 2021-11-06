@@ -4,11 +4,12 @@
 #' classes in the disaggR package. It is a “virtual” class.  disaggR classes are
 #' minimalist S4 classes, containing disaggR and list. This allows Ops group
 #' generic double dispatch but most of the package rather uses S3 methods.
-#' 
+#'
 #' @seealso
 #' the functions \link{twoStepsBenchmark} and \link{threeRuleSmooth}.
-#' 
-#' @aliases 
+#'
+#' @aliases
+#' Ops,disaggR,missing-method
 #' Ops,disaggR,vector-method Ops,vector,disaggR-method
 #' Ops,disaggR,ts-method Ops,ts,disaggR-method
 #' Ops,disaggR,disaggR-method
@@ -23,9 +24,9 @@ setClass("disaggR", contains = "VIRTUAL")
 #' @import methods
 #' @keywords internal
 #' @export
-setClass("threeRuleSmooth",contains = c("disaggR","list"))
+setClass("threeRuleSmooth", contains = c("disaggR", "list"))
 
 #' @import methods
 #' @keywords internal
 #' @export
-setClass("twoStepsBenchmark",contains = c("disaggR","list"))
+setClass("twoStepsBenchmark", contains = c("disaggR", "list"))
