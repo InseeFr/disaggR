@@ -34,6 +34,25 @@ fast_op_on_x <- function(x,y,FUN) {
               tspx = tsp)
 }
 
+fast_aggregate <- function(x,nfrequency) {
+  dimx <- dim(x)
+  tspx <- tsp(x)
+  
+  res <- colSums(
+    matrix(as.numeric(x),nrow = tspx[3L]/nfrequency))
+  
+  if (is.null(dimx)) {
+    ts(res,
+       start = tspx[1L],
+       frequency = nfrequency)
+  } else {
+    ts(matrix(res,ncol = dimx[2L]),
+       start = tspx[1L],
+       frequency = nfrequency,
+       names = colnames(x))
+  }
+}
+
 neither_outlier_nor_constant <- function(object) UseMethod("neither_outlier_nor_constant")
 
 neither_outlier_nor_constant.twoStepsBenchmark <- function(object) {
@@ -75,7 +94,7 @@ extend_tsp <- function(tsphf,lffreq) {
 
 aggregate_and_crop_hf_to_lf <- function(hfserie,lfserie) {
   tsplf <- tsp(lfserie)
-  aggregate.ts(
+  fast_aggregate(
     window(hfserie,tsplf[1L],tsplf[2L]+1/tsplf[3L]-1/frequency(hfserie),extend = TRUE),
     nfrequency = tsplf[3L]
   )
