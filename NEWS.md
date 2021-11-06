@@ -1,3 +1,6 @@
+# disaggR 1.0.3
+* Added the signature `c("disaggR","missing")` for Ops group generic.
+
 # disaggR 1.0.2
 * New vignette : Introduction to disaggR
 * The error of `in_disaggR` for wrong `type` arguments has been changed, because it didn't include "contributions".
