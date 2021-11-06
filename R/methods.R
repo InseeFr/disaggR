@@ -339,6 +339,9 @@ setMethod("Ops",signature = c("disaggR","vector"),
 setMethod("Ops",signature = c("vector","disaggR"),
           function(e1,e2) callGeneric(e1,as.ts(e2)))
 #' @export
+setMethod("Ops",signature = c("disaggR","missing"),
+          function(e1,e2) callGeneric(as.ts(e1)))
+#' @export
 setMethod("Ops",signature = c("ts","disaggR"),
           function(e1,e2) callGeneric(e1,as.ts(e2)))
 #' @export

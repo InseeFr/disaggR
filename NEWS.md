@@ -1,5 +1,8 @@
+# disaggR 1.0.3
+* Added the signature `c("disaggR","missing")` for Ops group generic. (#54)
+
 # disaggR 1.0.2
-* New vignette : Introduction to disaggR
+* New vignette : Introduction to disaggR.
 * The error of `in_disaggR` for wrong `type` arguments has been changed, because it didn't include "contributions".
 * `cex.axis`, `xlim`, `ylim`, `cex.lab` and `cex.main` parameters now overwrite their default if used inside `plot(...)` dots.
 * By default, in the `plot` and `autoplot` methods, the axis annotations are now automatically set to be smaller if needed.
@@ -24,13 +27,13 @@ the S3 class was named "insample".
 * the new functions `in_scatter`, `in_benchmark` and `in_revisions` also produce tscomparisons, with plot and autoplot methods.
 * the graphics are prettier thanks to the package scales.
 * the plot and autoplot methods now have xlab, ylab, start, end, col, lty, show.legend, main and mar arguments. The autoplot methods have also a theme argument.
-* removed the c++ code to improve readability
-* most of the stats methods for time-series now coerce twoStepsBenchmarks or rateSmooths into time-series
+* removed the c++ code to improve readability.
+* most of the stats methods for time-series now coerce twoStepsBenchmarks or rateSmooths into time-series.
 * `reUseBenchmark` now induces a `set.smoothed.part` element in model.list if `reeval.smoothed.part` is
 `FALSE`.
 * `threeRuleSmooth` makes it easier than bflSmooth to procede to a rate smooth.
 
 # disaggR 0.1.7
-* various optimizations including cache for bflSmooth, which is now much faster, and alternative internal methods for time-series
-* added a weights arg to bflSmooth, that reproduces the *lissage en taux* methodology
-* the praislm and twoStepsBenchmark summaries now print some disclaimer to tell if the regression includes a differenciation
+* various optimizations including cache for bflSmooth, which is now much faster, and alternative internal methods for time-series.
+* added a weights arg to bflSmooth, that reproduces the *lissage en taux* methodology.
+* the praislm and twoStepsBenchmark summaries now print some disclaimer to tell if the regression includes a differenciation.
