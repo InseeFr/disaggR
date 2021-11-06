@@ -129,6 +129,8 @@ test_that("Ops group generic",{
   expect_identical(tsnewobject_b+tsnewobject_c,
                    as.ts(tsnewobject_b)+tsnewobject_c)
   
+  expect_identical(-tsnewobject_a,
+                   -as.ts(tsnewobject_a))
   expect_identical(tsnewobject_a+1,
                    as.ts(tsnewobject_a)+1)
   expect_identical(tsnewobject_b+1,
