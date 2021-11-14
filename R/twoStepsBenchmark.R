@@ -181,7 +181,7 @@ coefficients_application <- function(hfserie,lfserie,regcoefs) {
 
 eval_smoothed_part <- function(hfserie_fitted,lfserie,include.differenciation,rho,set.smoothed.part) {
   if (is.null(set.smoothed.part)) {
-    hfserie_fitted_aggreg <- aggregate.ts(hfserie_fitted,nfrequency = frequency(lfserie))
+    hfserie_fitted_aggreg <- fast_aggregate(hfserie_fitted,nfrequency = frequency(lfserie))
     lfresiduals <- fast_op_on_x(
       hfserie_fitted_aggreg,
       lfserie,

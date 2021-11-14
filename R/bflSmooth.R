@@ -20,7 +20,7 @@ weights_control <- function(weights,start,hf_length,hf_freq) {
 bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
   if (is.null(weights)) weights <- 1
   else {
-    aggregated_weights <- aggregate.ts(weights,frequency(weights)/ratio)
+    aggregated_weights <- fast_aggregate(weights,frequency(weights)/ratio)
     weights <- fast_op_on_x(weights,
                             ts_expand(aggregated_weights,frequency(weights),divide.by.ratio = FALSE),
                             `/`)
