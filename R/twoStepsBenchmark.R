@@ -435,7 +435,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,
     else                         rep(frequency(lfserie)/frequency(hfserie),NROW(hfserie))
   }
   
-  if (length(set.const) > 1L) stop("set.const must be of a single value", call. = FALSE)
+  if (length(set.const) > 1L) stop("set.const must be a single value", call. = FALSE)
   if (length(set.const) == 1L) names(set.const) <- "constant"
   
   if ((NCOL(hfserie) == 1L) &&
