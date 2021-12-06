@@ -150,6 +150,25 @@ test_that("rePort produces a report",{
   unlink(url)
 })
 
+test_that("rePort produces a report when time boundaries are set",{
+  skip_on_cran()
+  testthat::skip_if_not_installed("rmarkdown")
+  browser <- options(browser=function(url) message(url))
+  on.exit(options(browser))
+  
+  turnover_2001 <- window(turnover, start = 2001)
+  benchmark <- twoStepsBenchmark(turnover_2001, construction,
+                                 start.domain = 2001,
+                                 start.coeff.calc = 2001,
+                                 start.benchmark = 2001)
+  
+  temp_dir <- tempdir()
+  temp_html <- tempfile("test",temp_dir,".html")
+  expect_message(rePort(benchmark,output_file = temp_html, launch.browser = TRUE))
+  expect_true(file.exists(temp_html))
+  unlink(temp_html)
+})
+
 test_that("reView-withoutset",{
   
   # important : the package should have been rebuilt for these tests
