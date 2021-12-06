@@ -15,7 +15,8 @@ unknown for the last year, and the high frequency one is either quarterly or
 monthly.
 
 See "Methodology of quarterly national accounts", Insee Méthodes
-N°126, by Insee (2012, ISBN:978-2-11-068613-8).
+N°126, by Insee (2012, ISBN:978-2-11-068613-8,
+https://www.insee.fr/en/information/2579410).
 }
 \seealso{
 Useful links:
