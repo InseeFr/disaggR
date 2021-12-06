@@ -616,16 +616,20 @@ summary_table_html <- function(presets_list,old_bn,distance_p,ns=NULL,selected_p
                                            function(x) x$coefficients["constant","p.value"],0),
                                     digits=3L,hide=c(2L,5L,6L),signif.stars = TRUE,
                                     background.format = "fail.is.red")),
-    shiny::tags$tr(shiny::tags$th("Indicator",rowspan=2),
-                   shiny::tags$th("Value"),
-                   format_table_row(vapply(summ,
-                                           function(x) x$coefficients[rownames(x$coefficients) != "constant","Estimate"],0),
-                                    digits=2L)),
-    shiny::tags$tr(shiny::tags$th("p-value"),
-                   format_table_row(vapply(summ,
-                                           function(x) x$coefficients[rownames(x$coefficients) != "constant","p.value"],0),
-                                    digits=3L,signif.stars = TRUE,
-                                    background.format = "fail.is.red")),
+    lapply(rownames(summ[[1]]$coefficients)[rownames(summ[[1]]$coefficients) != "constant"],function(n){
+      shiny::tags$tr(
+        shiny::tags$tr(shiny::tags$th(n,rowspan=2),
+                       shiny::tags$th("Value"),
+                       format_table_row(vapply(summ,
+                                               function(x) x$coefficients[n,"Estimate"],0),
+                                        digits=2L)),
+        shiny::tags$tr(shiny::tags$th("p-value"),
+                       format_table_row(vapply(summ,
+                                               function(x) x$coefficients[n,"p.value"],0),
+                                        digits=3L,signif.stars = TRUE,
+                                        background.format = "fail.is.red"))
+      )}
+    ),
     shiny::tags$tr(shiny::tags$th("Rho",colspan=2),
                    format_table_row(vapply(summ,function(x) x$rho,0),
                                     digits=2L,hide=c(1L,2L,3L,5L))),
@@ -695,7 +699,8 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2,
                                            start.benchmark=m$start.benchmark,
                                            end.benchmark=m$end.benchmark,
                                            start.domain=m$start.domain,
-                                           end.domain=m$end.domain)
+                                           end.domain=m$end.domain,
+                                           outliers = outliers(new_bn_ext_setter()))
                         })
                         
                         output$firstTabOutput <- shiny::renderUI({

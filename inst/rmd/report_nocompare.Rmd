@@ -13,11 +13,15 @@ knitr::opts_chunk$set(fig.height = 2.5,out.width = "100%")
 knitr::opts_knit$set(global.par = TRUE)
 hfserie <- disaggR:::neither_outlier_nor_constant.twoStepsBenchmark(params$new_bn)
 
-list_args <- c(list(hfserie= hfserie),  # the parameters not affected by preset models are kept (i.e. time series and time boundaries)
+# the parameters not affected by preset models are kept (i.e. time series, outliers and time boundaries)
+
+list_args <- c(list(hfserie= hfserie,
+                    outliers = outliers(params$new_bn)),  
                model.list(params$new_bn)[c("lfserie",
-                                "start.coeff.calc","end.coeff.calc",
-                                "start.benchmark","end.benchmark",
-                                "start.domain","end.domain")])
+                                           "start.coeff.calc","end.coeff.calc",
+                                           "start.benchmark","end.benchmark",
+                                           "start.domain","end.domain")]
+)
 
 presets_list <- do.call(disaggR:::presets_list_fun, list_args)
 ```
