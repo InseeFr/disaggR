@@ -78,7 +78,10 @@ plot_init <- function(xmin,xmax,ymin,ymax,xlab,ylab,
        xaxs = "i", xaxt = "n",
        yaxs = "i", yaxt = "n",
        cex.main = cex.main %||% 0.8,
-       main = main, ...)
+       main = main,
+       xlab = "",
+       ylab = "",
+       ...)
   
   title(xlab = xlab %||% "", line= 0.8, cex.lab = cex.lab %||% 0.8)
   

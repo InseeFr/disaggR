@@ -712,3 +712,10 @@ test_that("eval_function_if_it_is_one works", {
   expect_identical(eval_function_if_it_is_one(1L:10L,2L),1L:10L)
   expect_identical(eval_function_if_it_is_one("Hey",2L),"Hey")
 })
+
+test_that("no labels outside margins", {
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
+  expect_doppelganger("no-labels-outside-plot-margins",
+                      function() plot(in_sample(twoStepsBenchmark(turnover,construction)),mar = c(5,5,5,5)))
+})

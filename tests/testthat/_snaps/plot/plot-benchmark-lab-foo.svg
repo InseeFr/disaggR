@@ -19,8 +19,6 @@
 </defs>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <polygon points='18.72,547.20 720.00,547.20 720.00,0.00 18.72,0.00 ' style='stroke-width: 0.75; fill: none;' />
-<text x='369.36' y='601.92' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='74.69px' lengthAdjust='spacingAndGlyphs'>c(xmin, xmax)</text>
-<text transform='translate(-27.36,273.60) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: sans;' textLength='74.69px' lengthAdjust='spacingAndGlyphs'>c(ymin, ymax)</text>
 <text x='369.36' y='570.24' text-anchor='middle' style='font-size: 9.60px; font-family: sans;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'>foo</text>
 </g>
 <defs>
