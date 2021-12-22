@@ -1,7 +1,7 @@
 # disaggR 1.0.3
 * Added the signature `c("disaggR","missing")` for Ops group generic. (#54)
 * Inner calls to aggregate are now redirected to a faster non-exported function. (#55)
-* Estimation spans and outliers are now handled in preset models in rePort and reView (#57) 
+* Estimation spans and outliers are now handled in preset models in rePort and reView (#57)
 
 # disaggR 1.0.2
 * New vignette : Introduction to disaggR.
