@@ -95,7 +95,7 @@ htmltools::HTML(
 **Before**
 
 ```{r echo=FALSE,fig.height=5}
-plot(in_scatter(params$old_bn),
+plot(in_scatter(params$old_bn, substract.outliers = TRUE),
      xlab = "High-frequency serie",
      ylab = "Low-frequency serie")
 ```
