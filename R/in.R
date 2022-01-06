@@ -321,13 +321,13 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_scatter(benchmark))
 #' @export
-in_scatter <- function(object) UseMethod("in_scatter")
+in_scatter <- function(object, substract.outliers = FALSE) UseMethod("in_scatter")
 
 #' @export
-in_scatter.praislm <- function(object) {
+in_scatter.praislm <- function(object, substract.outliers = FALSE) {
   m <- model.list(object)
   
-  X <- neither_outlier_nor_constant(object)
+  X <- neither_outlier_nor_constant(object, substract.outliers)
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
@@ -345,7 +345,7 @@ in_scatter.praislm <- function(object) {
 }
 
 #' @export
-in_scatter.twoStepsBenchmark <- function(object) {
+in_scatter.twoStepsBenchmark <- function(object, substract.outliers = FALSE) {
   
   m <- model.list(object)
   
@@ -362,7 +362,7 @@ in_scatter.twoStepsBenchmark <- function(object) {
               max(coeff_clean_win[2L],benchmark_clean_win[2L]),
               extend = TRUE)
   
-  X <- neither_outlier_nor_constant(object)
+  X <- neither_outlier_nor_constant(object, substract.outliers)
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
@@ -395,7 +395,10 @@ in_scatter.twoStepsBenchmark <- function(object) {
 }
 
 #' @export
-in_scatter.threeRuleSmooth <- function(object) {
+in_scatter.threeRuleSmooth <- function(object, substract.outliers = FALSE) {
+  
+  if (substract.outliers) warning("object is a threeRuleSmooth. Ignoring substract.outliers", call. = FALSE)
+  
   m <- model.list(object)
   
   benchmark_clean_win <- switch_window(m$start.benchmark,
