@@ -418,11 +418,19 @@ reView_ui_tab2 <- function(id) {
   shiny::sidebarLayout(
     shiny::sidebarPanel(
       width = 2,
+      shiny::tags$script(
+        paste0(
+          "var has_outlier;",
+          "Shiny.addCustomMessageHandler('",ns("has_outlier"),"', has_outlier_set );\n\n",
+          "function has_outlier_set(text) {
+            has_outlier = text == 'TRUE'
+          }")
+      ),
       shiny::div("Include",class="section"),
       shiny::checkboxInput(ns("dif"),"Differenciation"),
       shiny::checkboxInput(ns("rho"),"Rho"),
       shiny::div("Set",class="section"),
-      shiny::checkboxInput(ns("setcoeff_button"),"Coefficient",),
+      shiny::checkboxInput(ns("setcoeff_button"),"Coefficient"),
       shiny::conditionalPanel("input.setcoeff_button",shiny::numericInput(ns("setcoeff"),NULL,1),ns = ns),
       shiny::checkboxInput(ns("setconst_button"),"Constant"),
       shiny::conditionalPanel("input.setconst_button",shiny::numericInput(ns("setconst"),NULL,0),ns = ns),
@@ -430,6 +438,12 @@ reView_ui_tab2 <- function(id) {
       shiny::sliderInput(ns("coeffcalc"),"Coefficients:",0,1,c(0,1),sep=" ",ticks = FALSE),
       shiny::sliderInput(ns("benchmark"),"Benchmark:",0,1,c(0,1),sep=" ",ticks = FALSE),
       shiny::sliderInput(ns("plotswin"),"Plots:",0,1,c(0,1),sep=" ",ticks = FALSE),
+      shiny::conditionalPanel(
+        "input.mainout_choice == 'Scatter plot' && has_outlier",
+        shiny::div("Scatter plot",class="section"),
+        shiny::checkboxInput(ns("substractoutliers_button"),"Substract outliers"),
+        ns = ns
+      ),
       style="padding-top: 5px;
              padding-bottom: 0px;
              margin-top: 0px;
@@ -739,7 +753,8 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2,
                       })
 }
 
-reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,output,old_or_new,ns,old_bn = NULL) {
+reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,output,
+                                           old_or_new,scatter_sub_outlier,ns,old_bn = NULL) {
   
   switch(old_or_new,
          old={
@@ -773,7 +788,8 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
              shiny::column(12,
                            title,
                            shiny::div(
-                             plotOutBrushAndRender(shiny::reactive(in_scatter(benchmark())),
+                             plotOutBrushAndRender(shiny::reactive(in_scatter(benchmark(),
+                                                                              substract.outliers = scatter_sub_outlier)),
                                                    plotswin,
                                                    output,
                                                    paste0(old_or_new,"plot"),
@@ -882,17 +898,18 @@ reView_server_tab2_switch <- function(input,output,new_bn,old_bn,ns,compare) {
                                   deltat(hfserie_alone(old_bn()))))
   
   mainout_choice <- input$mainout_choice
+  scatter_sub_outlier <- input$substractoutliers_button
   
   if (compare && !(mainout_choice %in% c("Comparison benchmark/input","Revisions"))) {
     shiny::fluidRow(
-      shiny::column(6,shiny::fluidRow(shiny::column(12,reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",ns),
+      shiny::column(6,shiny::fluidRow(shiny::column(12,reView_server_tab2_switch_impl(old_bn,mainout_choice,plotswin,output,"old",scatter_sub_outlier,ns),
                                                     style=boxstyle),style=lrmargins)),
       shiny::column(6,shiny::fluidRow(shiny::column(12,
-                                                    reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",ns),
+                                                    reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"new",scatter_sub_outlier,ns),
                                                     style=boxstyle),style="margin-right: 6px"))
     )
   }
-  else shiny::fluidRow(shiny::column(12,reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"mono",ns,old_bn),
+  else shiny::fluidRow(shiny::column(12,reView_server_tab2_switch_impl(new_bn,mainout_choice,plotswin,output,"mono",scatter_sub_outlier,ns,old_bn),
                                      style=boxstyle),style=lrmargins)
 }
 
@@ -933,6 +950,10 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                                                     inline = TRUE)
                         },priority = 1L)
                         
+                        shiny::observeEvent(new_bn(),
+                                            session$sendCustomMessage(session$ns("has_outlier"),as.character(!is.null(outliers(new_bn())))),
+                                            ignoreNULL = TRUE, priority = 1L)
+                        
                         # Outputs
                         
                         shiny::observeEvent(input$infobtn,
@@ -941,8 +962,7 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                         output$mainOutput <- shiny::renderUI({
                           reView_server_tab2_switch(input,output,
                                                     new_bn,old_bn,
-                                                    session$ns,compare())
-                        })
+                                                    session$ns,compare())})
                         
                         new_bn})
 }
