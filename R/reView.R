@@ -441,7 +441,8 @@ reView_ui_tab2 <- function(id) {
       shiny::conditionalPanel(
         "input.mainout_choice == 'Scatter plot' && has_outlier",
         shiny::div("Scatter plot",class="section"),
-        shiny::checkboxInput(ns("substractoutliers_button"),"Substract outliers"),
+        shiny::checkboxInput(ns("substractoutliers_button"),"Substract outliers",
+                             value = TRUE),
         ns = ns
       ),
       style="padding-top: 5px;
