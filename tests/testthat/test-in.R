@@ -270,7 +270,7 @@ test_that("in scatter works",{
                       start=2000,frequency=1))
   
   class(expected) <- c("tscomparison","mts","ts","matrix")
-  attr(expected,"type") <- "differences"
+  attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
@@ -285,7 +285,7 @@ test_that("in scatter works",{
                       start=2005,frequency=1))
   
   class(expected) <- c("tscomparison","mts","ts","matrix")
-  attr(expected,"type") <- "differences"
+  attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(reg)["constant"]),
                                slope=as.numeric(coefficients(reg)["hfserie"]))
@@ -476,7 +476,7 @@ test_that("outliers",{
                       start=2000,frequency=1))
   
   class(expected) <- c("tscomparison","mts","ts","matrix")
-  attr(expected,"type") <- "differences"
+  attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))

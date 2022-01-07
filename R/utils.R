@@ -53,34 +53,24 @@ fast_aggregate <- function(x,nfrequency) {
   }
 }
 
-neither_outlier_nor_constant_impl <- function(hfserie, object, substract.outliers) {
-  res <- hfserie[,!(colnames(hfserie) %in% c("constant",
+neither_outlier_nor_constant_impl <- function(hfserie, object) {
+  hfserie[,!(colnames(hfserie) %in% c("constant",
                                              names(outliers(object)))),
                  drop = FALSE]
-  
-  if (substract.outliers && length(names(outliers(object))) != 0) {
-    res <- res -
-      ts_from_tsp(hfserie[,names(outliers(object)), drop = FALSE] %*%
-                    coef(object)[names(outliers(object))],
-                  tsp(hfserie))
-    colnames(res) <- "hfserie"
-  }
-  
-  res
 }
 
-neither_outlier_nor_constant <- function(object, ...) UseMethod("neither_outlier_nor_constant")
+neither_outlier_nor_constant <- function(object) UseMethod("neither_outlier_nor_constant")
 
-neither_outlier_nor_constant.twoStepsBenchmark <- function(object, substract.outliers = FALSE) {
-  neither_outlier_nor_constant_impl(model.list(object)$hfserie, object, substract.outliers)
+neither_outlier_nor_constant.twoStepsBenchmark <- function(object) {
+  neither_outlier_nor_constant_impl(model.list(object)$hfserie, object)
 }
 
-neither_outlier_nor_constant.threeRuleSmooth <- function(object, ...) {
+neither_outlier_nor_constant.threeRuleSmooth <- function(object) {
   model.list(object)$hfserie
 }
 
-neither_outlier_nor_constant.praislm <- function(object, substract.outliers = FALSE) {
-  neither_outlier_nor_constant_impl(model.list(object)$X, object, substract.outliers)
+neither_outlier_nor_constant.praislm <- function(object) {
+  neither_outlier_nor_constant_impl(model.list(object)$X, object)
 }
 
 #' Extend tsp with lf

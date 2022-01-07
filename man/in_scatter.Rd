@@ -4,11 +4,22 @@
 \alias{in_scatter}
 \title{Comparing the inputs of a praislm regression}
 \usage{
-in_scatter(object)
+in_scatter(
+  object,
+  type = if (model.list(object)$include.differenciation) "changes" else "levels",
+  substract.outliers = FALSE
+)
 }
 \arguments{
 \item{object}{an object of class \code{"praislm"}, \code{"twoStepsBenchmark"}
 or \code{"threeRuleSmooth"}.}
+
+\item{type}{\code{"levels"} or \code{"changes"}.
+This defines the type of output. A differencied model can't have a scatterplot
+in levels.}
+
+\item{substract.outliers}{a boolean. If \code{TRUE}, the outliers contributions
+are substracted from the high-frequency serie}
 }
 \value{
 a named matrix time-serie of two columns, one for the low-frequency serie
