@@ -54,8 +54,8 @@ default_margins <- function(main, xlab, ylab) {
   c(
     if (is.null(xlab)) 1 else 2,
     if (is.null(ylab)) 1.3 else 2.3,
-    if (is.null(main)) 0 else 1,
-    0
+    if (is.null(main)) 0.001 else 1,
+    0.001
   )
 }
 
