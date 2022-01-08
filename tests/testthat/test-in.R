@@ -553,3 +553,33 @@ test_that("in_scatter type argument",{
   expect_error(in_scatter(benchmark,type = "not_exists"),
                "type argument of in_scatter")
 })
+
+test_that("in_scatter substract outliers",{
+  construction_out <- construction
+  construction_out[5] <- 2
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction_out,
+                                 outliers = list(AO2004 = rep(0.1,12)))
+  construction_out_corr <-
+    construction_out -
+    window(aggregate(coefficients(benchmark)["AO2004"] *
+                       model.list(benchmark)$hfserie[,"AO2004"], nfrequency = 1),
+           start = start(construction_out),
+           end = end(construction_out))
+  expect_true(all((construction_out_corr-construction)[-5] < 10^-6)) # only to check the outlier consistency
+  
+  expected <- ts(matrix(c(construction_out_corr,
+                          window(aggregate(turnover),end=2019,extend=TRUE),
+                          window(aggregate(turnover),end=2019,extend=TRUE)),
+                        ncol=3,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)",
+                                                      "High-frequency serie (benchmark)"))),
+                 start=2000,frequency=1)
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
+  expect_identical(in_scatter(benchmark,substract.outliers = TRUE),expected)
+})
+
