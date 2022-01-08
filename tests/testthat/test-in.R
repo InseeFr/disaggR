@@ -559,6 +559,10 @@ test_that("in_scatter substract outliers",{
   construction_out[5] <- 2
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction_out,
+                                 start.coeff.calc = 2002,
+                                 end.coeff.calc = 2014,
+                                 start.benchmark = 2007,
+                                 end.benchmark = 2019,
                                  outliers = list(AO2004 = rep(0.1,12)))
   construction_out_corr <-
     construction_out -
@@ -568,19 +572,34 @@ test_that("in_scatter substract outliers",{
            end = end(construction_out))
   expect_true(all((construction_out_corr-construction)[-5] < 10^-6)) # only to check the outlier consistency
   
-  expected <- ts(matrix(c(construction_out_corr,
-                          window(aggregate(turnover),end=2019,extend=TRUE),
-                          window(aggregate(turnover),end=2019,extend=TRUE)),
+  expected <- ts(matrix(c(window(construction_out_corr, start = 2002, end = 2019, extend = TRUE),
+                          window(window(aggregate(turnover),start = 2002, end=2014,extend=TRUE),
+                                 start = 2002,end = 2019, extend = TRUE),
+                          window(window(aggregate(turnover),start = 2007, end=2019,extend=TRUE),
+                                 start = 2002,end = 2019, extend = TRUE)),
                         ncol=3,dimnames = list(NULL,c("Low-frequency serie",
                                                       "High-frequency serie (regression)",
                                                       "High-frequency serie (benchmark)"))),
-                 start=2000,frequency=1)
+                 start=2002,frequency=1)
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
   expect_identical(in_scatter(benchmark,substract.outliers = TRUE),expected)
+  
+  expected <- ts(matrix(c(window(construction_out_corr, start = 2002, end = 2014, extend = TRUE),
+                          window(window(aggregate(turnover),start = 2002, end=2014,extend=TRUE),
+                                 start = 2002,end = 2014, extend = TRUE)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)"))),
+                 start=2002,frequency=1)
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
+  expect_identical(in_scatter(prais(benchmark),substract.outliers = TRUE),expected)
 })
 
 test_that("in_scatter outlier LS",{
@@ -590,7 +609,7 @@ test_that("in_scatter outlier LS",{
                                  lfserie = construction_out,
                                  outliers = list(LS2004 = rep(0.1,12)))
   
-  # Case 1 : with substract outliers everything is ok
+  # Case 1 : with substract outliers everything is normal
   
   construction_out_corr <-
     construction_out -
@@ -612,4 +631,39 @@ test_that("in_scatter outlier LS",{
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
   expect_identical(in_scatter(benchmark,substract.outliers = TRUE),expected)
+  
+  expected <- ts(matrix(c(construction_out_corr,
+                          window(aggregate(turnover),end=2019,extend=TRUE)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)"))),
+                 start=2000,frequency=1)
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
+  
+  expect_identical(in_scatter(prais(benchmark),substract.outliers = TRUE),expected)
+  
+  # Case 2 : without substract outliers, there is no abline
+  expected <- ts(matrix(c(construction_out,
+                          window(aggregate(turnover),end=2019,extend=TRUE),
+                          window(aggregate(turnover),end=2019,extend=TRUE)),
+                        ncol=3,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)",
+                                                      "High-frequency serie (benchmark)"))),
+                 start=2000,frequency=1)
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  expect_identical(in_scatter(benchmark),expected)
+  
+  expected <- ts(matrix(c(construction_out,
+                          window(aggregate(turnover),end=2019,extend=TRUE)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)"))),
+                 start=2000,frequency=1)
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
 })
