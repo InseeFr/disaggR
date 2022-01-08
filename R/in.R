@@ -330,58 +330,73 @@ in_scatter <- function(object,
                        type = if (model.list(object)$include.differenciation) "changes" else "levels",
                        substract.outliers = FALSE) UseMethod("in_scatter")
 
-outliers_ctb <- function(object, lfserie) {
+outliers_ctb <- function(object) {
+  outliers <- outliers(object, as.ts = TRUE)
+  if (is.null(outliers)) NULL
+  else ts_from_tsp(outliers %*%
+                     coefficients(object)[colnames(outliers)],
+                   tsp(outliers))
   
-  hfserie_agg <- aggregate_and_crop_hf_to_lf({
-    if (class(object) == "twoStepsBenchmark") model.list(object)$hfserie
-    else model.list(object)$X
-  },lfserie)
-  
-  ts_from_tsp(hfserie_agg[,names(outliers(object)), drop = FALSE] %*%
-                coef(object)[names(outliers(object))],
-              tsp(hfserie_agg)) 
 }
 
-#' @export
-in_scatter.praislm <- function(object,
-                               type = if (model.list(object)$include.differenciation) "changes" else "levels",
-                               substract.outliers = FALSE) {
+has_any_ls <- function(object) any(substr(names(outliers(object)),1,2) == "LS")
+
+clean_wins <- function(m) {
+  list(
+    coeff     = switch_window(m$start.coeff.calc,
+                              m$end.coeff.calc,
+                              tsp(m$lfserie)),
+    benchmark = switch_window(m$start.benchmark,
+                              m$end.benchmark,
+                              tsp(m$lfserie))
+  )
+}
+
+get_y_in_scatter <- function(m, is.twoStepsBenchmark) {
+  if (is.twoStepsBenchmark) {
+    clean_wins <- clean_wins(m)
+    
+    window(m$lfserie,
+           min(clean_wins$coeff[1L],clean_wins$benchmark[1L]),
+           max(clean_wins$coeff[2L],clean_wins$benchmark[2L]),
+           extend = TRUE)
+  }
+  else m$y
+}
+
+get_series_in_scatter <- function(X, m, is.twoStepsBenchmark, ctb_outliers_to_sub) {
   
-  m <- model.list(object)
+  y <- get_y_in_scatter(m, is.twoStepsBenchmark)
   
-  if (type == "levels" && m$include.differenciation) stop("The model is differencied hence the scatterplot should be in changes",
-                                                          call. = FALSE)
-  
-  X <- neither_outlier_nor_constant(object)
-  
-  if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
-  
-  y <- m$y
-  
-  if (substract.outliers && length(outliers(object)) != 0) {
-    y <- y - outliers_ctb(object,y)
+  if (!is.null(ctb_outliers_to_sub)) {
+    y <- y - aggregate_and_crop_hf_to_lf(ctb_outliers_to_sub,y)
   }
   
-  series <- cbind(y,X)
-  
-  if  (type == "changes") series <- diff(series)
-  
-  structure(series,
-            type=type,
-            func="in_scatter",
-            class=c("tscomparison",class(series)),
-            dimnames=list(NULL,c("Low-frequency serie", "High-frequency serie (regression)")),
-            abline=c(constant={
-              if (! m$include.differenciation && type == "changes") 0
-              else  as.numeric(coefficients(object)["constant"])
-            },
-            slope=as.numeric(coefficients(object)[colnames(X)])))
+  if (is.twoStepsBenchmark) {
+    clean_wins <- clean_wins(m)
+    lfx <- aggregate_and_crop_hf_to_lf(X,y)
+    `colnames<-`(cbind(y,
+                       window(
+                         lfx,
+                         clean_wins$coeff[1L],
+                         clean_wins$coeff[2L],
+                         extend = TRUE),
+                       window(
+                         lfx,
+                         clean_wins$benchmark[1L],
+                         clean_wins$benchmark[2L],
+                         extend = TRUE)),
+                 c("Low-frequency serie",
+                   "High-frequency serie (regression)",
+                   "High-frequency serie (benchmark)"))
+  }
+  else `colnames<-`(cbind(y,X),c("Low-frequency serie",
+                                 "High-frequency serie (regression)"))
 }
 
-#' @export
-in_scatter.twoStepsBenchmark <- function(object,
-                                         type = if (model.list(object)$include.differenciation) "changes" else "levels",
-                                         substract.outliers = FALSE) {
+in_scatter_impl <- function(object, type, substract.outliers) {
+  
+  is.twoStepsBenchmark <- class(object) == "twoStepsBenchmark"
   
   m <- model.list(object)
   
@@ -389,42 +404,14 @@ in_scatter.twoStepsBenchmark <- function(object,
   if (type == "levels" && m$include.differenciation) stop("The model is differencied hence the scatterplot should be in changes",
                                                           call. = FALSE)
   
-  coeff_clean_win <- switch_window(m$start.coeff.calc,
-                                   m$end.coeff.calc,
-                                   tsp(m$lfserie))
-  
-  benchmark_clean_win <- switch_window(m$start.benchmark,
-                                       m$end.benchmark,
-                                       tsp(m$lfserie))
-  
-  y <- window(m$lfserie,
-              min(coeff_clean_win[1L],benchmark_clean_win[1L]),
-              max(coeff_clean_win[2L],benchmark_clean_win[2L]),
-              extend = TRUE)
-  
-  
-  if (substract.outliers && length(outliers(object)) != 0) {
-    y <- y - outliers_ctb(object,y)
-  }
-  
   X <- neither_outlier_nor_constant(object)
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
-  lfx <- aggregate_and_crop_hf_to_lf(X,y)
-  
-  series <- cbind(y,
-                  window(
-                    lfx,
-                    coeff_clean_win[1L],
-                    coeff_clean_win[2L],
-                    extend = TRUE),
-                  window(
-                    lfx,
-                    benchmark_clean_win[1L],
-                    benchmark_clean_win[2L],
-                    extend = TRUE)
-  )
+  series <- get_series_in_scatter(X, m, is.twoStepsBenchmark,
+                                  if (substract.outliers) {
+                                    outliers_ctb(object)
+                                  })
   
   if  (type == "changes") series <- diff(series)
   
@@ -432,15 +419,30 @@ in_scatter.twoStepsBenchmark <- function(object,
             type=type,
             func="in_scatter",
             class=c("tscomparison",class(series)),
-            dimnames=list(NULL,c("Low-frequency serie",
-                                 "High-frequency serie (regression)",
-                                 "High-frequency serie (benchmark)")),
-            abline=c(
-              constant = {
-                if (! m$include.differenciation && type == "changes") 0
-                else  as.numeric(coefficients(object)["constant"])
-              },
-              slope=as.numeric(coefficients(object)[colnames(X)])))
+            abline={
+              if (! substract.outliers && has_any_ls(object)) NULL
+              else c(
+                constant = {
+                  if (! m$include.differenciation && type == "changes") 0
+                  else  as.numeric(coefficients(object)["constant"])
+                },
+                slope=as.numeric(coefficients(object)[colnames(X)])
+              )
+            })
+}
+
+#' @export
+in_scatter.praislm <- function(object,
+                               type = if (model.list(object)$include.differenciation) "changes" else "levels",
+                               substract.outliers = FALSE) {
+  in_scatter_impl(object, type, substract.outliers)
+}
+
+#' @export
+in_scatter.twoStepsBenchmark <- function(object,
+                                         type = if (model.list(object)$include.differenciation) "changes" else "levels",
+                                         substract.outliers = FALSE) {
+  in_scatter_impl(object, type, substract.outliers)
 }
 
 #' @export
