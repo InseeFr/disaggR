@@ -951,10 +951,10 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                                                     inline = TRUE)
                         },priority = 1L)
                         
-                        has_outliers <- reactive(as.character(!is.null(old_bn()) &&
-                                                                !is.null(new_bn()) &&
-                                                                !is.null(outliers(old_bn())) &&
-                                                                !is.null(outliers(new_bn()))))
+                        has_outliers <- shiny::reactive(as.character(!is.null(old_bn()) &&
+                                                                       !is.null(new_bn()) &&
+                                                                       !is.null(outliers(old_bn())) &&
+                                                                       !is.null(outliers(new_bn()))))
                         shiny::observeEvent(has_outliers(),
                                             session$sendCustomMessage(
                                               session$ns("has_outlier"),{
