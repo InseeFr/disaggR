@@ -523,3 +523,33 @@ test_that("in_revisions with different outliers",{
                rev)
   expect_snapshot(res,cran = FALSE)
 })
+
+test_that("in_scatter type argument",{
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = FALSE,
+                                 start.coeff.calc = 2005,
+                                 end.coeff.calc = 2017,
+                                 end.benchmark = 2019)
+  expected <- diff(ts(matrix(c(construction,
+                               window(window(aggregate(turnover),start=2005,end=2017,extend=TRUE),
+                                      start=2000,end=2019,extend=TRUE),
+                               window(aggregate(turnover),end=2019,extend=TRUE)),
+                             ncol=3,dimnames = list(NULL,c("Low-frequency serie",
+                                                           "High-frequency serie (regression)",
+                                                           "High-frequency serie (benchmark)"))),
+                      start=2000,frequency=1))
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "changes"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"abline") <- c(constant=0,
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
+  expect_identical(in_scatter(benchmark,type = "changes"),expected)
+  expect_error(in_scatter(benchmark,type = "not_exists"),
+               "type argument of in_scatter")
+  benchmark <- twoStepsBenchmark(turnover,construction, include.differenciation = TRUE)
+  expect_error(in_scatter(benchmark, type = "levels"),
+               "should be in changes")
+  expect_error(in_scatter(benchmark,type = "not_exists"),
+               "type argument of in_scatter")
+})
