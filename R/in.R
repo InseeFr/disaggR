@@ -449,6 +449,7 @@ in_scatter.twoStepsBenchmark <- function(object,
 in_scatter.threeRuleSmooth <- function(object, type = "levels", substract.outliers = FALSE) {
   
   if (substract.outliers) warning("object is a threeRuleSmooth. Ignoring substract.outliers", call. = FALSE)
+  if (! type %in% c("levels", "changes")) stop("The type argument of in_scatter should be either \"levels\" or \"changes\".",call. = FALSE)
   
   m <- model.list(object)
   

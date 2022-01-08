@@ -600,6 +600,9 @@ test_that("in_scatter substract outliers",{
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
   expect_identical(in_scatter(prais(benchmark),substract.outliers = TRUE),expected)
+  
+  expect_warning(in_scatter(threeRuleSmooth(turnover,construction),substract.outliers = TRUE),
+                 "Ignoring substract.outliers")
 })
 
 test_that("in_scatter outlier LS",{
@@ -666,4 +669,20 @@ test_that("in_scatter outlier LS",{
   class(expected) <- c("tscomparison","mts","ts","matrix")
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
+})
+
+test_that("threeRuleSmooth type",{
+  benchmark <- threeRuleSmooth(turnover,construction)
+  
+  expected <- diff(
+    ts(matrix(c(construction,
+                window(aggregate(turnover),end=2019,extend=TRUE)),
+              ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                            "High-frequency serie (benchmark)"))),
+       start=2000,frequency=1)
+  )
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "changes"
+  attr(expected,"func") <- "in_scatter"
+  expect_identical(in_scatter(benchmark,type = "changes"),expected)
 })
