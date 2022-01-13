@@ -92,7 +92,7 @@ htmltools::HTML(
 ::: {.column width="100%"}
 
 ```{r echo=FALSE}
-plot(in_scatter(params$new_bn, substract.outliers = TRUE))
+plot(in_scatter(params$new_bn))
 ```
 
 :::

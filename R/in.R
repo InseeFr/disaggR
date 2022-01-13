@@ -313,8 +313,6 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' @param type `"levels"` or `"changes"`.
 #' This defines the type of output. A differencied model can't have a scatterplot
 #' in levels.
-#' @param substract.outliers a boolean. If `TRUE`, the outliers contributions
-#' are substracted from the high-frequency serie
 #' @return
 #' a named matrix time-serie of two columns, one for the low-frequency serie
 #' and the other for the high-frequency-serie (eventually differencied if
@@ -325,18 +323,22 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_scatter(benchmark))
+#' @include utils.R
 #' @export
 in_scatter <- function(object,
-                       type = if (model.list(object)$include.differenciation) "changes" else "levels",
-                       substract.outliers = FALSE) UseMethod("in_scatter")
+                       type = if (model.list(object)$include.differenciation) "changes" else "levels") UseMethod("in_scatter")
+
+warning_news_outlier_in_scatter <- warning_news_factory("The in_scatter function now substracts the outliers contributions. See NEWS. This warning is displayed once in each R session.")
 
 outliers_ctb <- function(object) {
   outliers <- outliers(object, as.ts = TRUE)
   if (is.null(outliers)) NULL
-  else ts_from_tsp(outliers %*%
+  else {
+    warning_news_outlier_in_scatter()
+    ts_from_tsp(outliers %*%
                      coefficients(object)[colnames(outliers)],
                    tsp(outliers))
-  
+  }
 }
 
 has_any_ls <- function(object) any(substr(names(outliers(object)),1,2) == "LS")
@@ -394,7 +396,7 @@ get_series_in_scatter <- function(X, m, is.twoStepsBenchmark, ctb_outliers_to_su
                                  "High-frequency serie (regression)"))
 }
 
-in_scatter_impl <- function(object, type, substract.outliers) {
+in_scatter_impl <- function(object, type) {
   
   is.twoStepsBenchmark <- class(object) == "twoStepsBenchmark"
   
@@ -408,10 +410,7 @@ in_scatter_impl <- function(object, type, substract.outliers) {
   
   if (ncol(X) != 1L) stop("This in_scatter method only supports univariate benchmarks", call. = FALSE)
   
-  series <- get_series_in_scatter(X, m, is.twoStepsBenchmark,
-                                  if (substract.outliers) {
-                                    outliers_ctb(object)
-                                  })
+  series <- get_series_in_scatter(X, m, is.twoStepsBenchmark,outliers_ctb(object))
   
   if  (type == "changes") series <- diff(series)
   
@@ -419,36 +418,31 @@ in_scatter_impl <- function(object, type, substract.outliers) {
             type=type,
             func="in_scatter",
             class=c("tscomparison",class(series)),
-            abline={
-              if (! substract.outliers && has_any_ls(object)) NULL
-              else c(
+            abline=
+              c(
                 constant = {
                   if (! m$include.differenciation && type == "changes") 0
                   else  as.numeric(coefficients(object)["constant"])
                 },
                 slope=as.numeric(coefficients(object)[colnames(X)])
-              )
-            })
+              ))
 }
 
 #' @export
 in_scatter.praislm <- function(object,
-                               type = if (model.list(object)$include.differenciation) "changes" else "levels",
-                               substract.outliers = FALSE) {
-  in_scatter_impl(object, type, substract.outliers)
+                               type = if (model.list(object)$include.differenciation) "changes" else "levels") {
+  in_scatter_impl(object, type)
 }
 
 #' @export
 in_scatter.twoStepsBenchmark <- function(object,
-                                         type = if (model.list(object)$include.differenciation) "changes" else "levels",
-                                         substract.outliers = FALSE) {
-  in_scatter_impl(object, type, substract.outliers)
+                                         type = if (model.list(object)$include.differenciation) "changes" else "levels") {
+  in_scatter_impl(object, type)
 }
 
 #' @export
-in_scatter.threeRuleSmooth <- function(object, type = "levels", substract.outliers = FALSE) {
+in_scatter.threeRuleSmooth <- function(object, type = "levels") {
   
-  if (substract.outliers) warning("object is a threeRuleSmooth. Ignoring substract.outliers", call. = FALSE)
   if (! type %in% c("levels", "changes")) stop("The type argument of in_scatter should be either \"levels\" or \"changes\".",call. = FALSE)
   
   m <- model.list(object)

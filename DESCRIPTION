@@ -55,6 +55,7 @@ Collate:
     'bflSmooth.R'
     'data.R'
     'disaggR.R'
+    'utils.R'
     'in.R'
     's4register.R'
     'twoStepsBenchmark.R'
@@ -63,6 +64,5 @@ Collate:
     'praislm.R'
     'reView.R'
     'threeRuleSmooth.R'
-    'utils.R'
 Config/testthat/edition: 3
 VignetteBuilder: knitr

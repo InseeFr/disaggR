@@ -55,8 +55,8 @@ fast_aggregate <- function(x,nfrequency) {
 
 neither_outlier_nor_constant_impl <- function(hfserie, object) {
   hfserie[,!(colnames(hfserie) %in% c("constant",
-                                             names(outliers(object)))),
-                 drop = FALSE]
+                                      names(outliers(object)))),
+          drop = FALSE]
 }
 
 neither_outlier_nor_constant <- function(object) UseMethod("neither_outlier_nor_constant")
@@ -71,6 +71,18 @@ neither_outlier_nor_constant.threeRuleSmooth <- function(object) {
 
 neither_outlier_nor_constant.praislm <- function(object) {
   neither_outlier_nor_constant_impl(model.list(object)$X, object)
+}
+
+warning_news_factory <- function(message) {
+  force(message)
+  thrown <- FALSE
+  function() {
+    if (thrown == FALSE) {
+      warning(message, call. = FALSE)
+    }
+    thrown <<- TRUE
+    invisible(message)
+  }
 }
 
 #' Extend tsp with lf

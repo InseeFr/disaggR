@@ -3,7 +3,8 @@
 * Inner calls to aggregate are now redirected to a faster non-exported function. (PR #55)
 * Estimation spans and outliers are now handled in preset models in rePort and reView (PR #57)
 * NULL labels are now removed even outside the plot margins (PR #59)
-* The `in_scatter` has now two additional arguments : `type` (as every in_ function) and `substract.outliers`. For now, the only use for the type argument is to allow changes scatterplots for levels models. As for substract.outliers, the arg is boolean that removes the outliers contributions from the low-frequency serie before computing the in_scatter comparison. If `substract.outliers == FALSE` and if there is a level shift outlier, the regression line is hidden. (PR #63)
+* The `in_scatter` function now substracts the outliers contributions from the low-frequency serie before computing the in_scatter comparison. (PR #63)
+* The `in_scatter` has now an additional arguments : `type` (as every in_ function). For now, the only use for the type argument is to allow changes scatterplots for levels models. (PR #63)
 
 # disaggR 1.0.2
 * New vignette : Introduction to disaggR.
