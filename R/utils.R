@@ -37,9 +37,9 @@ fast_op_on_x <- function(x,y,FUN) {
 fast_aggregate <- function(x,nfrequency) {
   dimx <- dim(x)
   tspx <- tsp(x)
+  ratio <- tspx[3L]/nfrequency
   
-  res <- colSums(
-    matrix(as.numeric(x),nrow = tspx[3L]/nfrequency))
+  res <- .colSums(as.numeric(x),n = length(x)/ratio,m = ratio)
   
   if (is.null(dimx)) {
     ts(res,
@@ -53,13 +53,16 @@ fast_aggregate <- function(x,nfrequency) {
   }
 }
 
-neither_outlier_nor_constant <- function(object) UseMethod("neither_outlier_nor_constant")
-
-neither_outlier_nor_constant.twoStepsBenchmark <- function(object) {
-  hfserie <- model.list(object)$hfserie
+neither_outlier_nor_constant_impl <- function(hfserie, object) {
   hfserie[,!(colnames(hfserie) %in% c("constant",
                                       names(outliers(object)))),
           drop = FALSE]
+}
+
+neither_outlier_nor_constant <- function(object) UseMethod("neither_outlier_nor_constant")
+
+neither_outlier_nor_constant.twoStepsBenchmark <- function(object) {
+  neither_outlier_nor_constant_impl(model.list(object)$hfserie, object)
 }
 
 neither_outlier_nor_constant.threeRuleSmooth <- function(object) {
@@ -67,10 +70,19 @@ neither_outlier_nor_constant.threeRuleSmooth <- function(object) {
 }
 
 neither_outlier_nor_constant.praislm <- function(object) {
-  hfserie <- model.list(object)$X
-  hfserie[,!(colnames(hfserie) %in% c("constant",
-                                      names(outliers(object)))),
-          drop = FALSE]
+  neither_outlier_nor_constant_impl(model.list(object)$X, object)
+}
+
+warning_news_factory <- function(message) {
+  force(message)
+  thrown <- FALSE
+  function() {
+    if (thrown == FALSE) {
+      warning(message, call. = FALSE)
+    }
+    thrown <<- TRUE
+    invisible(message)
+  }
 }
 
 #' Extend tsp with lf

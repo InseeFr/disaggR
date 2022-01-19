@@ -270,7 +270,7 @@ test_that("in scatter works",{
                       start=2000,frequency=1))
   
   class(expected) <- c("tscomparison","mts","ts","matrix")
-  attr(expected,"type") <- "differences"
+  attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
@@ -285,7 +285,7 @@ test_that("in scatter works",{
                       start=2005,frequency=1))
   
   class(expected) <- c("tscomparison","mts","ts","matrix")
-  attr(expected,"type") <- "differences"
+  attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(reg)["constant"]),
                                slope=as.numeric(coefficients(reg)["hfserie"]))
@@ -428,7 +428,15 @@ test_that("outliers",{
                                  end.coeff.calc = 2017,
                                  end.benchmark = 2019,
                                  outliers = list(AO2007=rep(0.1,12L)))
-  expected <- ts(matrix(c(construction,
+  
+  construction_corr <-
+    construction -
+    window(aggregate(coefficients(benchmark)["AO2007"] *
+                       model.list(benchmark)$hfserie[,"AO2007"], nfrequency = 1),
+           start = start(construction),
+           end = end(construction))
+  
+  expected <- ts(matrix(c(construction_corr,
                           window(window(aggregate(turnover),start=2005,end=2017,extend=TRUE),
                                  start=2000,end=2019,extend=TRUE),
                           window(aggregate(turnover),end=2019,extend=TRUE)),
@@ -442,11 +450,12 @@ test_that("outliers",{
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
+  expect_warning(in_scatter(benchmark),"once in each R session")
   expect_identical(in_scatter(benchmark),expected)
   
   
   reg <- prais(benchmark)
-  expected <- ts(matrix(c(window(reg$model.list$y,start=2005,end=2017,extend=TRUE),
+  expected <- ts(matrix(c(window(construction_corr,start=2005,end=2017,extend=TRUE),
                           window(aggregate(turnover),start=2005,end=2017,extend=TRUE)),
                         ncol=2,dimnames = list(NULL,c("Low-frequency serie",
                                                       "High-frequency serie (regression)"))),
@@ -466,7 +475,13 @@ test_that("outliers",{
                                  end.coeff.calc = 2017,
                                  end.benchmark = 2019,
                                  outliers = list(AO2007=rep(0.1,12L)))
-  expected <- diff(ts(matrix(c(construction,
+  construction_corr <-
+    construction -
+    window(aggregate(coefficients(benchmark)["AO2007"] *
+                       model.list(benchmark)$hfserie[,"AO2007"], nfrequency = 1),
+           start = start(construction),
+           end = end(construction))
+  expected <- diff(ts(matrix(c(construction_corr,
                                window(window(aggregate(turnover),start=2005,end=2017,extend=TRUE),
                                       start=2000,end=2019,extend=TRUE),
                                window(aggregate(turnover),end=2019,extend=TRUE)),
@@ -476,11 +491,57 @@ test_that("outliers",{
                       start=2000,frequency=1))
   
   class(expected) <- c("tscomparison","mts","ts","matrix")
-  attr(expected,"type") <- "differences"
+  attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
   expect_identical(in_scatter(benchmark),expected)
+  
+  construction_out <- construction
+  construction_out[5] <- 2
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction_out,
+                                 start.coeff.calc = 2002,
+                                 end.coeff.calc = 2014,
+                                 start.benchmark = 2007,
+                                 end.benchmark = 2019,
+                                 outliers = list(AO2004 = rep(0.1,12)))
+  construction_out_corr <-
+    construction_out -
+    window(aggregate(coefficients(benchmark)["AO2004"] *
+                       model.list(benchmark)$hfserie[,"AO2004"], nfrequency = 1),
+           start = start(construction_out),
+           end = end(construction_out))
+  expect_true(all((construction_out_corr-construction)[-5] < 10^-6)) # only to check the outlier consistency
+  
+  expected <- ts(matrix(c(window(construction_out_corr, start = 2002, end = 2019, extend = TRUE),
+                          window(window(aggregate(turnover),start = 2002, end=2014,extend=TRUE),
+                                 start = 2002,end = 2019, extend = TRUE),
+                          window(window(aggregate(turnover),start = 2007, end=2019,extend=TRUE),
+                                 start = 2002,end = 2019, extend = TRUE)),
+                        ncol=3,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)",
+                                                      "High-frequency serie (benchmark)"))),
+                 start=2002,frequency=1)
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
+  expect_identical(in_scatter(benchmark),expected)
+  
+  expected <- ts(matrix(c(window(construction_out_corr, start = 2002, end = 2014, extend = TRUE),
+                          window(window(aggregate(turnover),start = 2002, end=2014,extend=TRUE),
+                                 start = 2002,end = 2014, extend = TRUE)),
+                        ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                                      "High-frequency serie (regression)"))),
+                 start=2002,frequency=1)
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "levels"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
+  expect_identical(in_scatter(prais(benchmark)),expected)
 })
 
 test_that("in_revisions with different outliers",{
@@ -522,4 +583,50 @@ test_that("in_revisions with different outliers",{
   expect_equal(ts_from_tsp(rowSums(res),tsp(res)),
                rev)
   expect_snapshot(res,cran = FALSE)
+})
+
+test_that("in_scatter type argument",{
+  benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                 lfserie = construction,
+                                 include.differenciation = FALSE,
+                                 start.coeff.calc = 2005,
+                                 end.coeff.calc = 2017,
+                                 end.benchmark = 2019)
+  expected <- diff(ts(matrix(c(construction,
+                               window(window(aggregate(turnover),start=2005,end=2017,extend=TRUE),
+                                      start=2000,end=2019,extend=TRUE),
+                               window(aggregate(turnover),end=2019,extend=TRUE)),
+                             ncol=3,dimnames = list(NULL,c("Low-frequency serie",
+                                                           "High-frequency serie (regression)",
+                                                           "High-frequency serie (benchmark)"))),
+                      start=2000,frequency=1))
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "changes"
+  attr(expected,"func") <- "in_scatter"
+  attr(expected,"abline") <- c(constant=0,
+                               slope=as.numeric(coefficients(benchmark)["hfserie"]))
+  expect_identical(in_scatter(benchmark,type = "changes"),expected)
+  expect_error(in_scatter(benchmark,type = "not_exists"),
+               "type argument of in_scatter")
+  benchmark <- twoStepsBenchmark(turnover,construction, include.differenciation = TRUE)
+  expect_error(in_scatter(benchmark, type = "levels"),
+               "should be in changes")
+  expect_error(in_scatter(benchmark,type = "not_exists"),
+               "type argument of in_scatter")
+})
+
+test_that("threeRuleSmooth type",{
+  benchmark <- threeRuleSmooth(turnover,construction)
+  
+  expected <- diff(
+    ts(matrix(c(construction,
+                window(aggregate(turnover),end=2019,extend=TRUE)),
+              ncol=2,dimnames = list(NULL,c("Low-frequency serie",
+                                            "High-frequency serie (benchmark)"))),
+       start=2000,frequency=1)
+  )
+  class(expected) <- c("tscomparison","mts","ts","matrix")
+  attr(expected,"type") <- "changes"
+  attr(expected,"func") <- "in_scatter"
+  expect_identical(in_scatter(benchmark,type = "changes"),expected)
 })

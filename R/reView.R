@@ -41,7 +41,10 @@ info_switch <- function(mainout_choice)
                        "window, when the secondary ones, dashed by default,",
                        "stand for the points that are external to the",
                        "regression. These are eventually added through the",
-                       "benchmark window.")
+                       "benchmark window.<br><br>The X coordinates are the",
+                       "aggregated high-frequency serie and the Y coordinates are",
+                       "the low-frequency serie minus the estimated outliers",
+                       "effects, if any.")
          },
          "In-sample predictions" = {
            shiny::HTML("These plots display in-sample predictions produced with",

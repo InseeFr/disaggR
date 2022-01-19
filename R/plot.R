@@ -3,8 +3,7 @@ type_label <- function(object) {
          levels="Levels",
          `levels-rebased`="Rebased levels",
          changes="Changes",
-         contributions="Contributions",
-         differences="Differences"
+         contributions="Contributions"
   )
 }
 

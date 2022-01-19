@@ -1,8 +1,10 @@
 # disaggR 1.0.3
-* Added the signature `c("disaggR","missing")` for Ops group generic. (#54)
-* Inner calls to aggregate are now redirected to a faster non-exported function. (#55)
-* Estimation spans and outliers are now handled in preset models in rePort and reView (#57)
-* NULL labels are now removed even outside the plot margins (#59)
+* Added the signature `c("disaggR","missing")` for Ops group generic. (PR #54)
+* Inner calls to aggregate are now redirected to a faster non-exported function. (PR #55)
+* Estimation spans and outliers are now handled in preset models in rePort and reView (PR #57)
+* NULL labels are now removed even outside the plot margins (PR #59)
+* The `in_scatter` function now substracts the outliers contributions from the low-frequency serie before computing the in_scatter comparison. (PR #63)
+* The `in_scatter` has now an additional arguments : `type` (as every in_ function). For now, the only use for the type argument is to allow changes scatterplots for levels models. (PR #63)
 
 # disaggR 1.0.2
 * New vignette : Introduction to disaggR.

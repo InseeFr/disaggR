@@ -4,17 +4,30 @@
 \alias{in_scatter}
 \title{Comparing the inputs of a praislm regression}
 \usage{
-in_scatter(object)
+in_scatter(
+  object,
+  type = if (model.list(object)$include.differenciation) "changes" else "levels"
+)
 }
 \arguments{
 \item{object}{an object of class \code{"praislm"}, \code{"twoStepsBenchmark"}
 or \code{"threeRuleSmooth"}.}
+
+\item{type}{\code{"levels"} or \code{"changes"}.
+This defines the type of output. A differencied model can't have a scatterplot
+in levels.}
 }
 \value{
-a named matrix time-serie of two columns, one for the low-frequency serie
-and the other for the high-frequency-serie (eventually differencied if
+a named matrix time-serie of two or three columns, one for the low-frequency serie
+and the others for the high-frequency-serie (eventually differencied if
 \code{include.differenciation} is \code{TRUE}).
 A \code{tscomparison} class is added to the object.
+For a \code{twoStepsBenchmark} object, this matrix has three columns,
+for the low-frequency serie, the high-frequency on the regression span and
+the high-frequency serie on the benchmark span.
+
+If outlier effects are estimated, the contributions of the outliers are
+substracted from the low-frequency serie.
 }
 \description{
 The function \code{in_scatter} returns low-frequency comparisons of the inputs from
