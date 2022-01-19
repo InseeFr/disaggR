@@ -42,7 +42,7 @@ info_switch <- function(mainout_choice)
                        "stand for the points that are external to the",
                        "regression. These are eventually added through the",
                        "benchmark window.<br><br>The X coordinates are the",
-                       "agregated high-frequency serie and the Y coordinates are",
+                       "aggregated high-frequency serie and the Y coordinates are",
                        "the low-frequency serie minus the estimated outliers",
                        "effects, if any.")
          },

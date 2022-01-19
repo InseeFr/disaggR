@@ -314,17 +314,17 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' This defines the type of output. A differencied model can't have a scatterplot
 #' in levels.
 #' @return
-#' a named matrix time-serie of two columns, one for the low-frequency serie
-#' and the other for the high-frequency-serie (eventually differencied if
+#' a named matrix time-serie of two columns or three columns, one for the low-frequency serie
+#' and the others for the high-frequency-serie (eventually differencied if
 #' `include.differenciation` is `TRUE`).
 #' A `tscomparison` class is added to the object.
+#' For a `twoStepsBenchmark` object, this matrix has three columns,
+#' for the low-frequency serie, the high-frequency on the regression span and
+#' the high-frequency serie on the benchmark span.
 #'  
-#' For a `twoStepsBenchmark` object, if outlier effects are estimated, 
-#' the contributions of the outliers are substracted from the low-frequency serie.
-
+#' If outlier effects are estimated, the contributions of the outliers are
+#' substracted from the low-frequency serie.
 #' 
-#' For a `twoStepsBenchmark` object, the matrix has three columns, for the low-frequency serie, 
-#' the high-frequency on the regression span and the high-frequency serie on the benchmark span.
 #' 
 #' @seealso \link{in_sample} \link{in_disaggr} \link{in_revisions}
 #' \link{plot.tscomparison}
