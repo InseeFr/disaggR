@@ -318,6 +318,14 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' and the other for the high-frequency-serie (eventually differencied if
 #' `include.differenciation` is `TRUE`).
 #' A `tscomparison` class is added to the object.
+#'  
+#' For a `twoStepsBenchmark` object, if outlier effects are estimated, 
+#' the contributions of the outliers are substracted from the low-frequency serie.
+
+#' 
+#' For a `twoStepsBenchmark` object, the matrix has three columns, for the low-frequency serie, 
+#' the high-frequency on the regression span and the high-frequency serie on the benchmark span.
+#' 
 #' @seealso \link{in_sample} \link{in_disaggr} \link{in_revisions}
 #' \link{plot.tscomparison}
 #' @examples
@@ -328,7 +336,7 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 in_scatter <- function(object,
                        type = if (model.list(object)$include.differenciation) "changes" else "levels") UseMethod("in_scatter")
 
-warning_news_outlier_in_scatter <- warning_news_factory("The in_scatter function now substracts the outliers contributions. See NEWS. This warning is displayed once in each R session.")
+warning_news_outlier_in_scatter <- warning_news_factory("The in_scatter function now substracts the outlier contributions from the low-frequency serie. See NEWS. This warning is displayed once in each R session.")
 
 outliers_ctb <- function(object) {
   outliers <- outliers(object, as.ts = TRUE)

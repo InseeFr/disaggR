@@ -21,7 +21,13 @@ in levels.}
 a named matrix time-serie of two columns, one for the low-frequency serie
 and the other for the high-frequency-serie (eventually differencied if
 \code{include.differenciation} is \code{TRUE}).
+
+For a \code{twoStepsBenchmark} object, if outlier effects are estimated,
+the contributions of the outliers are substracted from the low-frequency serie.
 A \code{tscomparison} class is added to the object.
+
+For a \code{twoStepsBenchmark} object, the matrix has three columns, for the low-frequency serie,
+the high-frequency on the regression span and the high-frequency serie on the benchmark span.
 }
 \description{
 The function \code{in_scatter} returns low-frequency comparisons of the inputs from
