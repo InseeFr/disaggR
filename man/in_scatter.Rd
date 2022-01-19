@@ -18,7 +18,7 @@ This defines the type of output. A differencied model can't have a scatterplot
 in levels.}
 }
 \value{
-a named matrix time-serie of two columns or three columns, one for the low-frequency serie
+a named matrix time-serie of two or three columns, one for the low-frequency serie
 and the others for the high-frequency-serie (eventually differencied if
 \code{include.differenciation} is \code{TRUE}).
 A \code{tscomparison} class is added to the object.

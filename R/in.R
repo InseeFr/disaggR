@@ -314,7 +314,7 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' This defines the type of output. A differencied model can't have a scatterplot
 #' in levels.
 #' @return
-#' a named matrix time-serie of two columns or three columns, one for the low-frequency serie
+#' a named matrix time-serie of two or three columns, one for the low-frequency serie
 #' and the others for the high-frequency-serie (eventually differencied if
 #' `include.differenciation` is `TRUE`).
 #' A `tscomparison` class is added to the object.
