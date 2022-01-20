@@ -78,7 +78,7 @@ $$
 u = smooth(extrapolation(C_{aggregated} - \text{fitted.values}_{aggregated}))
 $$
 
-As the low-frequency values of $C$ have been set from the beginning, and that the fitted values have just been computed, the aggregated values of $u$ are known.
+As the low-frequency values of $C$ have been set from the beginning, and the fitted values have just been computed, the aggregated values of $u$ are known.
 If these values aren't defined all across the domain window, these are extrapolated as follow:
 
 * $u(n+1)-u(n) = rho*(u(n)-u(n-1))$ if `include.differenciation` is `TRUE`

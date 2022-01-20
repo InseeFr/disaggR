@@ -349,8 +349,6 @@ outliers_ctb <- function(object) {
   }
 }
 
-has_any_ls <- function(object) any(substr(names(outliers(object)),1,2) == "LS")
-
 clean_wins <- function(m) {
   list(
     coeff     = switch_window(m$start.coeff.calc,
