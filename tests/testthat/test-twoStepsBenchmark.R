@@ -674,7 +674,7 @@ test_that("smooted.part is based at 0 in 2000 if include.differenciation = TRUE"
   set.seed(2L)
   mensualts <- ts(rnorm(240),frequency=12,start=c(1993,4))
   annualts <- ts(rnorm(10L),frequency=1,start=1995)
-  bn <- twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE)
+  bn <- twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE)
   expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2000,end=c(2000,12)),nfrequency = 1),
                0,
                tolerance = 10^-6,
