@@ -244,10 +244,11 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   new("twoStepsBenchmark",res)
 }
 
-# The arbitrary constant is only intended to set a common start for the
-# integrated smoothed part. It doesn't impact the results, as Denton
-# Benchmark values are the same no matter the constant. Through, it allows
-# reUseBenchmark to work with series starting at different points
+# The arbitrary constant is only intended to set a common zero for the
+# integrated constant between the different benchmarks. This constant doesn't
+# impact the benchmarks, as the results are the same no matter the constant.
+# Through, it allows reUseBenchmark to work with series starting at different
+# times
 get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfserie) {
   if (include.differenciation) {
     arbitrary_constant <- ((2*(start.hfserie - 2000)*lf-1)*hf/lf-1)/2
