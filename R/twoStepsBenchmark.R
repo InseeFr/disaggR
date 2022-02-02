@@ -250,7 +250,7 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 # reUseBenchmark to work with series starting at different points
 get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfserie) {
   if (include.differenciation) {
-    arbitrary_constant <- ((2*(start.hfserie - 2000)-1)*hf/lf-1)/2
+    arbitrary_constant <- ((2*(start.hfserie - 2000)*lf-1)*hf/lf-1)/2
     (arbitrary_constant + seq_len(nrow)) * (lf/hf)^2
   }
   else rep(lf/hf,nrow)

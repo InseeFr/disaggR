@@ -662,3 +662,21 @@ test_that("test outliers",
             expect_equal(object,expected)
             
           })
+
+test_that("smooted.part is based at 0 in 2000 if include.differenciation = TRUE",{
+  mensualts <- ts(diffinv(rnorm(300,1,1)),start=c(1999,2),freq=12)
+  trimts <- ts(diffinv(rnorm(2,12,1)),start=2011,freq=4)
+  bn <- twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE)
+  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2000,end=c(2000,3)),nfrequency = 4),
+               0,
+               tolerance = 10^-6,
+               ignore_attr = TRUE)
+  set.seed(2L)
+  mensualts <- ts(rnorm(240),frequency=12,start=c(1993,4))
+  annualts <- ts(rnorm(10L),frequency=1,start=1995)
+  bn <- twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE)
+  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2000,end=c(2000,12)),nfrequency = 1),
+               0,
+               tolerance = 10^-6,
+               ignore_attr = TRUE)
+})
