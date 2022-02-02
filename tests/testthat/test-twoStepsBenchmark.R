@@ -680,7 +680,7 @@ test_that("smooted.part is based at 0 in 2000 if include.differenciation = TRUE"
                tolerance = 10^-6,
                ignore_attr = TRUE)
   
-  bn <- twoStepsBenchmark(window(turnover,start=2001),window(construction,start=2001),include.differenciation = TRUE,)
+  bn <- twoStepsBenchmark(window(turnover,start=2001),window(construction,start=2001),include.differenciation = TRUE)
   expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2001,end=c(2001,12)),nfrequency = 1),
                1,
                tolerance = 10^-6,
