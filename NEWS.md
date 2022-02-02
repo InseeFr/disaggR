@@ -5,7 +5,7 @@
 * NULL labels are now removed even outside the plot margins (PR #59)
 * The `in_scatter` function now substracts the outliers contributions from the low-frequency serie before computing the in_scatter comparison. (PR #63)
 * The `in_scatter` has now an additional arguments : `type` (as every in_ function). For now, the only use for the type argument is to allow changes scatterplots for levels models. (PR #63)
-* The smoothed.part has been set to a new base (its aggregated value is 0 in 2000). That way, `reUseBenchmark` is fixed if used on high-frequency series that have a different start than the previous one. (PR #65)
+* The smoothed.part, for differencied benchmarks, has been set to a new base (its aggregated value is 0 in 2000). That way, `reUseBenchmark` is fixed if used on high-frequency series that have a different start than the previous one. This has no impact on the benchmarked serie. (PR #65)
 
 # disaggR 1.0.2
 * New vignette : Introduction to disaggR.
