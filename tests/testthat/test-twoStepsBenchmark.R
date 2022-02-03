@@ -665,9 +665,9 @@ test_that("test outliers",
 
 test_that("smooted.part is based at 0 in 2000 if include.differenciation = TRUE",{
   mensualts <- ts(diffinv(rnorm(300,1,1)),start=c(1999,2),freq=12)
-  trimts <- ts(diffinv(rnorm(2,12,1)),start=c(2011,2),freq=4)
+  trimts <- ts(diffinv(rnorm(2,12,1)),start=2011,freq=4)
   bn <- twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE)
-  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=c(2011,4),end=c(2011,6)),nfrequency = 4),
+  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2000,end=c(2000,3)),nfrequency = 4),
                0,
                tolerance = 10^-6,
                ignore_attr = TRUE)
@@ -675,22 +675,14 @@ test_that("smooted.part is based at 0 in 2000 if include.differenciation = TRUE"
   mensualts <- ts(rnorm(240),frequency=12,start=c(1993,4))
   annualts <- ts(rnorm(10L),frequency=1,start=1995)
   bn <- twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE)
-  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=1995,end=c(1995,12)),nfrequency = 1),
+  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2000,end=c(2000,12)),nfrequency = 1),
                0,
                tolerance = 10^-6,
                ignore_attr = TRUE)
   
   bn <- twoStepsBenchmark(window(turnover,start=2001),window(construction,start=2001),include.differenciation = TRUE)
   expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2001,end=c(2001,12)),nfrequency = 1),
-               0,
-               tolerance = 10^-6,
-               ignore_attr = TRUE)
-  
-  bn <- twoStepsBenchmark(turnover,construction,
-                          include.differenciation = TRUE,
-                          start.benchmark = 2008)
-  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2008,end=c(2008,12)),nfrequency = 1),
-               0,
+               1,
                tolerance = 10^-6,
                ignore_attr = TRUE)
 })

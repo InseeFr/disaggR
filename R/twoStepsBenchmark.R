@@ -249,15 +249,9 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
 # impact the benchmarks, as the results are the same no matter the constant.
 # Through, it allows reUseBenchmark to work with series starting at different
 # times
-get_constant_indic <- function(nrow, hf, lf, include.differenciation,
-                               start.hfserie, start.benchmark) {
+get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfserie) {
   if (include.differenciation) {
-    start.benchmark <- {
-      if (length(start.benchmark) == 1L) start.benchmark
-      else start.benchmark[1L] + (start.benchmark[2L] - 1)/lf
-    }
-    start.benchmark <- floor(start.benchmark*lf+getOption("ts.eps"))/lf
-    arbitrary_constant <- ((2*(start.hfserie - start.benchmark )*lf-1)*hf/lf-1)/2
+    arbitrary_constant <- ((2*(start.hfserie - 2000)*lf-1)*hf/lf-1)/2
     (arbitrary_constant + seq_len(nrow)) * (lf/hf)^2
   }
   else rep(lf/hf,nrow)
@@ -450,8 +444,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   if (is.null(set.const)) set.const <- numeric()
   
   constant <- get_constant_indic(NROW(hfserie), tsphf[3L], tsplf[3L],
-                                 include.differenciation, tsphf[1L],
-                                 start.benchmark %||% tsplf[1L])
+                                 include.differenciation, tsphf[1L])
   
   if (length(set.const) > 1L) stop("set.const must be a single value", call. = FALSE)
   if (length(set.const) == 1L) names(set.const) <- "constant"
