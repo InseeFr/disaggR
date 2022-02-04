@@ -244,6 +244,19 @@ twoStepsBenchmark_impl <- function(hfserie,lfserie,
   new("twoStepsBenchmark",res)
 }
 
+# The arbitrary constant is only intended to set a common zero for the
+# integrated constant between the different benchmarks. This constant doesn't
+# impact the benchmarks, as the results are the same no matter the constant.
+# Through, it allows reUseBenchmark to work with series starting at different
+# times
+get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfserie) {
+  if (include.differenciation) {
+    arbitrary_constant <- ((2*(start.hfserie - 2000)*lf-1)*hf/lf-1)/2
+    (arbitrary_constant + seq_len(nrow)) * (lf/hf)^2
+  }
+  else rep(lf/hf,nrow)
+}
+
 #' @title Regress and bends a time-serie with a lower frequency one
 #' 
 #' @description twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
@@ -430,10 +443,8 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   if (is.null(set.coeff)) set.coeff <- numeric()
   if (is.null(set.const)) set.const <- numeric()
   
-  constant <- {
-    if (include.differenciation) 1L:NROW(hfserie)*(frequency(lfserie)/frequency(hfserie))^2
-    else                         rep(frequency(lfserie)/frequency(hfserie),NROW(hfserie))
-  }
+  constant <- get_constant_indic(NROW(hfserie), tsphf[3L], tsplf[3L],
+                                 include.differenciation, tsphf[1L])
   
   if (length(set.const) > 1L) stop("set.const must be a single value", call. = FALSE)
   if (length(set.const) == 1L) names(set.const) <- "constant"

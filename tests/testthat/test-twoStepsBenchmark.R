@@ -401,14 +401,21 @@ test_that("reUseBenchmark works",{
                                   start.coeff.calc=2001,end.coeff.calc=2015,
                                   start.benchmark=2002,end.benchmark=2018,
                                   start.domain = c(2000,2),end.domain=c(2020,12))
-  decompose(turnover,type = "multiplicative")
-  adjusted_turnover <- window(turnover/decompose(turnover)$seasonal,start=2006)
+  adjusted_turnover <- window(turnover-decompose(turnover,type = "additive")$seasonal,start=2006)
+  adjusted_turnover <- adjusted_turnover + ts_expand(aggregate(turnover-adjusted_turnover),nfrequency = 12)
   benchmark2 <- reUseBenchmark(adjusted_turnover,benchmark1)
   benchmark3 <- reUseBenchmark(adjusted_turnover,benchmark1,reeval.smoothed.part = TRUE)
   m1 <- model.list(benchmark1)
   m2 <- model.list(benchmark2)
   m3 <- model.list(benchmark3)
-  
+  expect_equal(window(aggregate(window(benchmark2,start=2006,extend = TRUE)),end=2018),
+               window(construction,start=2006,end = 2018),
+               ignore_attr = TRUE,
+               tolerance = 10^-6)
+  expect_equal(m2$hfserie[,"constant"],
+               window(m1$hfserie[,"constant"],start=2006,end = c(2019,12)),
+               ignore_attr = TRUE,
+               tolerance = 10^-6)
   expect_identical(smoothed.part(benchmark2),smoothed.part(benchmark1))
   expect_identical(coefficients(benchmark1),coefficients(benchmark2))
   expect_identical(m1$include.rho,m2$include.rho)
@@ -448,14 +455,21 @@ test_that("reUseBenchmark works",{
   benchmark1 <- twoStepsBenchmark(turnover,construction,
                                   include.differenciation = TRUE,
                                   outliers = list(LS2009 = 1:12))
-  decompose(turnover,type = "multiplicative")
-  adjusted_turnover <- window(turnover/decompose(turnover)$seasonal,start=2006)
+  adjusted_turnover <- window(turnover-decompose(turnover,type = "additive")$seasonal,start=2006)
+  adjusted_turnover <- adjusted_turnover + ts_expand(aggregate(turnover-adjusted_turnover),nfrequency = 12)
   benchmark2 <- reUseBenchmark(adjusted_turnover,benchmark1)
   benchmark3 <- reUseBenchmark(adjusted_turnover,benchmark1,reeval.smoothed.part = TRUE)
   m1 <- model.list(benchmark1)
   m2 <- model.list(benchmark2)
   m3 <- model.list(benchmark3)
-  
+  expect_equal(window(aggregate(window(benchmark2,start=2006,extend = TRUE)),end=2018),
+               window(construction,start=2006,end = 2018),
+               ignore_attr = TRUE,
+               tolerance = 10^-6)
+  expect_equal(m2$hfserie[,"constant"],
+               window(m1$hfserie[,"constant"],start=2006,end = c(2019,12)),
+               ignore_attr = TRUE,
+               tolerance = 10^-6)
   expect_identical(smoothed.part(benchmark2),smoothed.part(benchmark1))
   expect_identical(coefficients(benchmark1),coefficients(benchmark2))
   expect_identical(outliers(benchmark1),outliers(benchmark2))
@@ -648,3 +662,27 @@ test_that("test outliers",
             expect_equal(object,expected)
             
           })
+
+test_that("smooted.part is based at 0 in 2000 if include.differenciation = TRUE",{
+  mensualts <- ts(diffinv(rnorm(300,1,1)),start=c(1999,2),freq=12)
+  trimts <- ts(diffinv(rnorm(2,12,1)),start=2011,freq=4)
+  bn <- twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE)
+  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2000,end=c(2000,3)),nfrequency = 4),
+               0,
+               tolerance = 10^-6,
+               ignore_attr = TRUE)
+  set.seed(2L)
+  mensualts <- ts(rnorm(240),frequency=12,start=c(1993,4))
+  annualts <- ts(rnorm(10L),frequency=1,start=1995)
+  bn <- twoStepsBenchmark(mensualts,annualts,include.differenciation = TRUE)
+  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2000,end=c(2000,12)),nfrequency = 1),
+               0,
+               tolerance = 10^-6,
+               ignore_attr = TRUE)
+  
+  bn <- twoStepsBenchmark(window(turnover,start=2001),window(construction,start=2001),include.differenciation = TRUE)
+  expect_equal(aggregate(window(model.list(bn)$hfserie[,"constant"],start=2001,end=c(2001,12)),nfrequency = 1),
+               1,
+               tolerance = 10^-6,
+               ignore_attr = TRUE)
+})
