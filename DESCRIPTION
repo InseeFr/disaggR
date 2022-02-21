@@ -1,7 +1,7 @@
 Package: disaggR
 Type: Package
 Title: Two-Steps Benchmarks for Time Series Disaggregation
-Version: 1.0.3.99
+Version: 1.0.3
 Authors@R: 
     c(person(given = "Arnaud",
              family = "Feldmann",
@@ -27,7 +27,7 @@ Description: The twoStepsBenchmark() and threeRuleSmooth() functions allow you t
     benchmarking window. Typically, the low-frequency serie is an annual one, 
     unknown for the last year, and the high frequency one is either quarterly or 
     monthly. See "Methodology of quarterly national accounts", Insee Méthodes 
-    N°126, by Insee (2012, ISBN:978-2-11-068613-8, https://www.insee.fr/en/information/2579410).
+    N°126, by Insee (2012, ISBN:978-2-11-068613-8, <https://www.insee.fr/en/information/2579410>).
 Imports:
     graphics,
     grDevices,
