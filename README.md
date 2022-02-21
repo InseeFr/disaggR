@@ -6,7 +6,7 @@
 status](https://www.r-pkg.org/badges/version/disaggR)](https://cran.r-project.org/package=disaggR)
 [![R build
 status](https://github.com/InseeFr/disaggR/workflows/R-CMD-check/badge.svg)](https://github.com/InseeFr/disaggR/actions)
-[![codecov](https://codecov.io/gh/InseeFr/disaggR/branch/master/graph/badge.svg)](https://codecov.io/gh/InseeFr/disaggR)
+[![codecov](https://codecov.io/gh/InseeFr/disaggR/branch/master/graph/badge.svg)](https://app.codecov.io/gh/InseeFr/disaggR)
 [![Downloads](https://cranlogs.r-pkg.org/badges/disaggR)](https://cran.r-project.org/package=disaggR)
 
 <!-- badges: end -->
