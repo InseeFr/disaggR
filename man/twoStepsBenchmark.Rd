@@ -3,7 +3,7 @@
 \name{twoStepsBenchmark}
 \alias{twoStepsBenchmark}
 \alias{annualBenchmark}
-\title{Regress and bends a time-serie with a lower frequency one}
+\title{Regress and bends a time series with a lower frequency one}
 \usage{
 twoStepsBenchmark(hfserie,lfserie,include.differenciation=FALSE,include.rho=FALSE,
                   set.coeff=NULL,set.const=NULL,
@@ -25,12 +25,12 @@ annualBenchmark(hfserie,lfserie,
                 outliers=NULL)
 }
 \arguments{
-\item{hfserie}{the bended time-serie. It can be a matrix time-serie.}
+\item{hfserie}{the bended time series. It can be a matrix time series.}
 
-\item{lfserie}{a time-serie whose frequency divides the frequency of \code{hfserie}.}
+\item{lfserie}{a time series whose frequency divides the frequency of \code{hfserie}.}
 
 \item{include.differenciation}{a boolean of length 1. If \code{TRUE}, \code{lfserie} and
-\code{hfserie} are differenced before the estimation of the regression.}
+\code{hfserie} are differentiated before the estimation of the regression.}
 
 \item{include.rho}{a boolean of length 1. If \code{TRUE}, the regression includes
 an autocorrelation parameter for the residuals. The applied procedure is a
@@ -43,8 +43,8 @@ Otherwise, \code{set.coeff} has to be a named numeric, which will set the
 corresponding coefficients instead of evaluating them.
 Each column name of hfserie and each outlier set with the \code{outlier} arg
 initialize a coefficient with the same name, that can be set through set.coeff.
-The default name for a non-matrix time-serie is then \code{"hfserie"},
-By example, a LS2003 and the time-serie can be set using
+The default name for a non-matrix time series is then \code{"hfserie"},
+By example, a LS2003 and the time series can be set using
 \code{set.coeff=c(hfserie=3,LS2003=1)}.}
 
 \item{set.const}{an optional numeric of length 1, that sets the regression
@@ -70,7 +70,7 @@ the start is defined by lfserie's window.}
 Should be a numeric of length 1 or 2, like a window for \code{lfserie}. If NULL,
 the start is defined by lfserie's window.}
 
-\item{start.domain}{an optional for the output high-frequency serie. It also
+\item{start.domain}{an optional for the output high-frequency series. It also
 defines the smoothing window :
 The low-frequency residuals will be extrapolated until they contain the
 smallest low-frequency window that is around the high-frequency domain
@@ -78,7 +78,7 @@ window.
 Should be a numeric of length 1 or 2, like a window for \code{hfserie}. If NULL,
 the start is defined by hfserie's window.}
 
-\item{end.domain}{an optional end for the output high-frequency serie. It
+\item{end.domain}{an optional end for the output high-frequency series. It
 also defines the smoothing window :
 The low-frequency residuals will be extrapolated until they contain the
 smallest low-frequency window that is around the high-frequency domain
@@ -120,12 +120,12 @@ the returned value.
 
 An object of class "\code{twoStepsBenchmark}" is a list containing the following
 components :
-\item{benchmarked.serie}{a time-serie, that is the result of the
+\item{benchmarked.serie}{a time series, that is the result of the
 benchmark. It is equal to \code{fitted.values + smoothed.part}.}
-\item{fitted.values}{a time-serie, that is the high-frequency serie as it
+\item{fitted.values}{a time series, that is the high-frequency series as it
 is after having applied the regression coefficients. Compared to the fitted
 values of the regression, which can be retrieved inside the regression
-component, it has a high-frequency time-serie and can eventually be
+component, it has a high-frequency time series and can eventually be
 integrated if \code{include.differenciation} is \code{TRUE}.}
 \item{regression}{an object of class praislm, it is the regression on which
 relies the benchmark. It can be extracted with the function \link{prais}}
@@ -137,15 +137,15 @@ function.}
 annualBenchmark)}
 }
 \description{
-twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
+twoStepsBenchmark bends a time series with a time series of a lower frequency.
 The procedure involved is a Prais-Winsten regression, then an additive
 Denton benchmark.
 
-Therefore, the resulting time-serie is the sum of a regression fit and of a
+Therefore, the resulting time series is the sum of a regression fit and of a
 smoothed part. The smoothed part minimizes the sum of squares of its
 differences.
 
-The resulting time-serie is equal to the low-frequency serie after aggregation
+The resulting time series is equal to the low-frequency series after aggregation
 within the benchmark window.
 }
 \details{

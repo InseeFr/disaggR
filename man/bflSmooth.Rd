@@ -2,27 +2,27 @@
 % Please edit documentation in R/bflSmooth.R
 \name{bflSmooth}
 \alias{bflSmooth}
-\title{Smooth a time serie}
+\title{Smooth a time series}
 \usage{
 bflSmooth(lfserie, nfrequency, weights = NULL, lfserie.is.rate = FALSE)
 }
 \arguments{
-\item{lfserie}{a time-serie to be smoothed}
+\item{lfserie}{a time series to be smoothed}
 
 \item{nfrequency}{the new high frequency. It must be a multiple of the low
 frequency.}
 
-\item{weights}{NULL or a time-serie of the same size than the expected
+\item{weights}{NULL or a time series of the same size than the expected
 high-frequency serie.}
 
-\item{lfserie.is.rate}{TRUE or FALSE. only means a thing if weights isn't
+\item{lfserie.is.rate}{TRUE or FALSE. Only taken into account if weights isn't
 NULL.}
 }
 \value{
-A time serie of frequency nfrequency
+A time series of frequency nfrequency
 }
 \description{
-bflSmooth smoothes a time-serie into a time serie of a higher frequency that
+bflSmooth smoothes a time series into a time series of a higher frequency that
 exactly aggregates into the higher one. The process followed is Boot, Feibes
 and Lisman, which minimizes the squares of the variations.
 }

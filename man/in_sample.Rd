@@ -13,7 +13,7 @@ in_sample(object, type = "changes")
 in changes or in levels.}
 }
 \value{
-a named matrix time-serie of two columns, one for the response and the other
+a named matrix time series of two columns, one for the response and the other
 for the predicted value.
 A \code{"tscomparison"} class is added to the object.
 }

@@ -25,7 +25,7 @@ library(disaggR)
 
 The  French quarterly  accounts  are  constructed  using  an  indirect  method,  based  on  two  major  data  series:  the annual national accounts, and the short-term outlook data compiled from various sources. Hence, a temporal disaggregation methodology is needed.
 
-**disaggR** isn't the only package on the CRAN providing such methods. [tempdisagg](https://cran.r-project.org/package=tempdisagg) relies on a formula interface, supports most time-series classes and provides compatibility with irregular disaggregation setting (e.g. months to days).
+**disaggR** isn't the only package on the CRAN providing such methods. [tempdisagg](https://cran.r-project.org/package=tempdisagg) relies on a formula interface, supports most time series classes and provides compatibility with irregular disaggregation setting (e.g. months to days).
 
 disaggR has different goals:
 
@@ -35,7 +35,7 @@ disaggR has different goals:
 
 For further details about the french national accounts methodology, see [Methodology of quarterly national accounts](https://www.insee.fr/en/information/2579410).
 
-*Within that vignette, for each matrix time-serie, like in R, rows stand for the time and columns for the different variables. As for the operations,* $*$ *stands for the standard product,* $\odot$ *for the element-wise multiplication, and* $\oslash$ *for the element-wise division.*
+*Within that vignette, for each matrix time series, like in R, rows stand for the time and columns for the different variables. As for the operations,* $*$ *stands for the standard product,* $\odot$ *for the element-wise multiplication, and* $\oslash$ *for the element-wise division.*
 
 # Two-Steps Benchmarks
 
@@ -51,12 +51,12 @@ $$
 
 Where:
 
-* $C$, an univariate time-serie, is the high-frequency account.
-* $I$, a matrix time-serie, combines the columns of the indicators, the outliers and the constant. If `include.differenciation` is `TRUE`, the constant is actually a trend.
+* $C$, an univariate time series, is the high-frequency account.
+* $I$, a matrix time series, combines the columns of the indicators, the outliers and the constant. If `include.differenciation` is `TRUE`, the constant is actually a trend.
 * $a$, a numeric vector, stands for the coefficients to be applied.
-* $u$, an univariate time-serie, is the smoothed part of the benchmark.
+* $u$, an univariate time series, is the smoothed part of the benchmark.
 
-The **coefficients are estimated at low-frequency**, within the coeff.calc window, eventually after a differenciation if `include.differenciation` is `TRUE`:
+The **coefficients are estimated at low-frequency**, within the coeff.calc window, eventually after a differentiation if `include.differenciation` is `TRUE`:
 
 $$
 C_{aggregated}' =  I_{aggregated}' * a + u'
@@ -70,7 +70,7 @@ $$
 \text{fitted.values} = I * a
 $$
 
-Note that, especially when `include.differenciation` is `TRUE`, the level of the fitted values is arbitrary: a constant is *chosen* to zero during the implicit reintegration. The choice of this constant, however, doesn't impact the benchmarked serie.
+Note that, especially when `include.differenciation` is `TRUE`, the level of the fitted values is arbitrary: a constant is *chosen* to zero during the implicit reintegration. The choice of this constant, however, doesn't impact the benchmarked series.
 
 **u is smoothed**:
 
@@ -100,9 +100,9 @@ $$
 
 Where:
 
-* $C$, an univariate time-serie, is the high-frequency account
-* $I$, an *univariate* time-serie, the indicator
-* $a$, an *univariate time-serie*, the coefficient to be applied, which is a rate to be smoothed.
+* $C$, an univariate time series, is the high-frequency account
+* $I$, an *univariate* time series, the indicator
+* $a$, an *univariate time series*, the coefficient to be applied, which is a rate to be smoothed.
 
 Proportional Denton benchmarks share some similarities with univariate two-steps benchmarks without constants. There are some differences:
 
@@ -191,4 +191,4 @@ smoothed.rate(smooth)
 summary(benchmark)
 ```
 
-Additionally, most of the methods for time-series, from the package stats, automatically coerce these objects into time-series using `as.ts()`.
+Additionally, most of the methods for time series, from the package stats, automatically coerce these objects into time-series using `as.ts()`.

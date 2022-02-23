@@ -24,7 +24,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-The R package disaggR is an implementation of the French Quarterly National Accounts method for temporal disaggregation of time-series. `twoStepsBenchmark()` and `threeRuleSmooth()` bend a time-serie with another one of a lower frequency.
+The R package disaggR is an implementation of the French Quarterly National Accounts method for temporal disaggregation of time series. `twoStepsBenchmark()` and `threeRuleSmooth()` bend a time series with another one of a lower frequency.
 
 ## Installation
 

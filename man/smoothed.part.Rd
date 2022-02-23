@@ -10,7 +10,7 @@ smoothed.part(object)
 \item{object}{a twoStepsBenchmark object.}
 }
 \value{
-a time-serie
+a time series
 }
 \description{
 The function \code{smoothed.part} returns the smoothed part of a

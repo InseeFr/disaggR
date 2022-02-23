@@ -8,12 +8,12 @@ stairs_diagonal <- function(A,ratio,weights=1) {
 
 weights_control <- function(weights,start,hf_length,hf_freq) {
   if (is.null(weights)) return()
-  if (!inherits(weights,"ts")) stop("The weights must be either NULL or a one-dimensional ts with the same window than the expected high-frequency serie", call. = FALSE)
-  if (!is.null(dim(weights)) && dim(weights)[2L] != 1L) stop("The weights serie must be one-dimensional", call. = FALSE)
+  if (!inherits(weights,"ts")) stop("The weights must be either NULL or a one-dimensional ts with the same window than the expected high-frequency series", call. = FALSE)
+  if (!is.null(dim(weights)) && dim(weights)[2L] != 1L) stop("The weights series must be one-dimensional", call. = FALSE)
   tspw <- tsp(weights)
   if (tspw[3L] != hf_freq) stop("The frequency of the weights must be the same than the new frequency", call. = FALSE)
-  if (abs(tspw[1L] - start) > getOption("ts.eps")) stop("The weights serie must have the same start than the expected high-frequency serie", call. = FALSE)
-  if (length(weights) != hf_length) stop("The weights serie must have the same end than the expected high-frequency serie", call. = FALSE)
+  if (abs(tspw[1L] - start) > getOption("ts.eps")) stop("The weights series must have the same start than the expected high-frequency series", call. = FALSE)
+  if (length(weights) != hf_length) stop("The weights series must have the same end than the expected high-frequency series", call. = FALSE)
   return()
 }
 
@@ -51,7 +51,7 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
 #' 
 #' This *function factory* returns a clone of bflSmooth_matrices_impl that gives
 #' the same results than the original function but uses cache, which is useful
-#' considering people would often use a lot of similar calls.
+#' when making a large number of similar calls, like with the same hfserie but different lfserie.
 #' 
 #' bflSmooth_matrices_factory is only run at build time.
 #' 
@@ -75,9 +75,9 @@ bflSmooth_matrices_factory <- function(cache_size=100L) {
 
 bflSmooth_matrices <- bflSmooth_matrices_factory()
 
-#' Smooth a time serie
+#' Smooth a time series
 #' 
-#' bflSmooth smoothes a time-serie into a time serie of a higher frequency that
+#' bflSmooth smoothes a time series into a time series of a higher frequency that
 #' exactly aggregates into the higher one. The process followed is Boot, Feibes
 #' and Lisman, which minimizes the squares of the variations.
 #' 
@@ -89,24 +89,24 @@ bflSmooth_matrices <- bflSmooth_matrices_factory()
 #' that the low-frequency weighted means of the output are equal to
 #' lfserie.
 #' 
-#' @param lfserie a time-serie to be smoothed
+#' @param lfserie a time series to be smoothed
 #' @param nfrequency the new high frequency. It must be a multiple of the low
 #' frequency.
-#' @param weights NULL or a time-serie of the same size than the expected
+#' @param weights NULL or a time series of the same size than the expected
 #' high-frequency serie.
-#' @param lfserie.is.rate TRUE or FALSE. only means a thing if weights isn't
+#' @param lfserie.is.rate TRUE or FALSE. Only taken into account if weights isn't
 #' NULL.
 #' 
-#' @return A time serie of frequency nfrequency
+#' @return A time series of frequency nfrequency
 #' 
 #' @export
 bflSmooth <- function(lfserie,nfrequency,weights=NULL,lfserie.is.rate=FALSE) {
   if (!inherits(lfserie,"ts")) stop("Not a ts object", call. = FALSE)
   tsplf <- tsp(lfserie)
-  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed serie must be an integer", call. = FALSE)
+  if (as.integer(tsplf[3L]) != tsplf[3L]) stop("The frequency of the smoothed series must be an integer", call. = FALSE)
   if (nfrequency == 0) stop("The new frequency must be strictly positive", call. = FALSE)
   if (nfrequency %% tsplf[3L] != 0L) stop("The new frequency must be a multiple of the lower one", call. = FALSE)
-  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency series must be one-dimensional", call. = FALSE)
   if (is.null(weights) && lfserie.is.rate) {
     warning("weights is NULL. Ignoring lfserie.is.rate",call. = FALSE)
     lfserie.is.rate <- FALSE

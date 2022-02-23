@@ -19,13 +19,13 @@ The functions that can be used on that class are almost the same than
 for the class \code{twoStepsBenchmark}.
 \code{summary}, \code{coefficients}, \code{residuals} will return the same values.
 However, as for \code{fitted.values}, the accessor returns the fitted values
-of the regression, not the high-frequency, eventually integrated, time-serie
+of the regression, not the high-frequency, eventually integrated, time series
 contained in a twoStepsBenchmark.
 
 An object of class \code{"praislm"} is a list containing the following components :
 \item{coefficients}{a named vector of coefficients.}
 \item{residuals}{the residuals, that is response minus fitted values.}
-\item{fitted.values}{a time-serie, the fitted mean values}
+\item{fitted.values}{a time series, the fitted mean values}
 \item{se}{a named vector of standard errors.}
 \item{df.residuals}{the residual degrees of freedom.}
 \item{rho}{the autocorrelation coefficients of the residuals. It

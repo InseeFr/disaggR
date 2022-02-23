@@ -89,7 +89,7 @@ interpret_outliers <- function(outliers,lffreq,hfserie) {
         )
         
         if (is.ts(vect) && !tsp_equal(tsp(vect),tsp(res)))
-          stop("The outlier list contains time-series whose windows or frequencies are inconsistent",
+          stop("The outlier list contains time series whose windows or frequencies are inconsistent",
                call. = FALSE)
         
         res
@@ -257,17 +257,17 @@ get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfse
   else rep(lf/hf,nrow)
 }
 
-#' @title Regress and bends a time-serie with a lower frequency one
+#' @title Regress and bends a time series with a lower frequency one
 #' 
-#' @description twoStepsBenchmark bends a time-serie with a time-serie of a lower frequency.
+#' @description twoStepsBenchmark bends a time series with a time series of a lower frequency.
 #' The procedure involved is a Prais-Winsten regression, then an additive
 #' Denton benchmark.
 #' 
-#' Therefore, the resulting time-serie is the sum of a regression fit and of a
+#' Therefore, the resulting time series is the sum of a regression fit and of a
 #' smoothed part. The smoothed part minimizes the sum of squares of its
 #' differences.
 #' 
-#' The resulting time-serie is equal to the low-frequency serie after aggregation
+#' The resulting time series is equal to the low-frequency series after aggregation
 #' within the benchmark window.
 #'
 #' @details annualBenchmark is a wrapper of the main function, that applies more specifically
@@ -295,10 +295,10 @@ get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfse
 #'                 end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)),
 #'                 outliers=NULL)
 #' 
-#' @param hfserie the bended time-serie. It can be a matrix time-serie.
-#' @param lfserie a time-serie whose frequency divides the frequency of `hfserie`.
+#' @param hfserie the bended time series. It can be a matrix time series.
+#' @param lfserie a time series whose frequency divides the frequency of `hfserie`.
 #' @param include.differenciation a boolean of length 1. If `TRUE`, `lfserie` and
-#' `hfserie` are differenced before the estimation of the regression.
+#' `hfserie` are differentiated before the estimation of the regression.
 #' @param include.rho a boolean of length 1. If `TRUE`, the regression includes
 #' an autocorrelation parameter for the residuals. The applied procedure is a
 #' Prais-Winsten estimation.
@@ -309,8 +309,8 @@ get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfse
 #' corresponding coefficients instead of evaluating them.
 #' Each column name of hfserie and each outlier set with the `outlier` arg
 #' initialize a coefficient with the same name, that can be set through set.coeff.
-#' The default name for a non-matrix time-serie is then `"hfserie"`,
-#' By example, a LS2003 and the time-serie can be set using
+#' The default name for a non-matrix time series is then `"hfserie"`,
+#' By example, a LS2003 and the time series can be set using
 #' `set.coeff=c(hfserie=3,LS2003=1)`.
 #' @param set.const an optional numeric of length 1, that sets the regression
 #' constant.
@@ -330,14 +330,14 @@ get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfse
 #' @param end.benchmark an optional end for `lfserie` to bend `hfserie`.
 #' Should be a numeric of length 1 or 2, like a window for `lfserie`. If NULL,
 #' the start is defined by lfserie's window.
-#' @param start.domain an optional for the output high-frequency serie. It also
+#' @param start.domain an optional for the output high-frequency series. It also
 #' defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the
 #' smallest low-frequency window that is around the high-frequency domain
 #' window.
 #' Should be a numeric of length 1 or 2, like a window for `hfserie`. If NULL,
 #' the start is defined by hfserie's window.
-#' @param end.domain an optional end for the output high-frequency serie. It
+#' @param end.domain an optional end for the output high-frequency series. It
 #' also defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the
 #' smallest low-frequency window that is around the high-frequency domain
@@ -376,12 +376,12 @@ get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfse
 #' 
 #' An object of class "`twoStepsBenchmark`" is a list containing the following
 #' components :
-#'   \item{benchmarked.serie}{a time-serie, that is the result of the
+#'   \item{benchmarked.serie}{a time series, that is the result of the
 #'   benchmark. It is equal to `fitted.values + smoothed.part`.}
-#'   \item{fitted.values}{a time-serie, that is the high-frequency serie as it
+#'   \item{fitted.values}{a time series, that is the high-frequency series as it
 #'   is after having applied the regression coefficients. Compared to the fitted
 #'   values of the regression, which can be retrieved inside the regression
-#'   component, it has a high-frequency time-serie and can eventually be
+#'   component, it has a high-frequency time series and can eventually be
 #'   integrated if `include.differenciation` is `TRUE`.}
 #'   \item{regression}{an object of class praislm, it is the regression on which
 #'   relies the benchmark. It can be extracted with the function \link{prais}}
@@ -436,7 +436,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,
   tsphf <- tsp(hfserie)
   
   if (tsphf[3L] %% tsplf[3L] != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
-  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency series must be one-dimensional", call. = FALSE)
   
   maincl <- match.call()
   
@@ -493,7 +493,7 @@ annualBenchmark <- function(hfserie,lfserie,
                             end.domain=c(end.benchmark[1L]+2L,frequency(hfserie)),
                             outliers=NULL) {
   
-  if (frequency(lfserie) != 1) stop("Not an annual time-serie", call. = FALSE)
+  if (frequency(lfserie) != 1) stop("Not an annual time series", call. = FALSE)
   twoStepsBenchmark(hfserie,lfserie,
                     include.differenciation,include.rho,
                     set.coeff,set.const,
@@ -503,27 +503,27 @@ annualBenchmark <- function(hfserie,lfserie,
                     cl=match.call())
 }
 
-#' Using an estimated benchmark model on another time-serie
+#' Using an estimated benchmark model on another time series
 #' 
 #' This function reapplies the coefficients and parameters of a benchmark on new
-#' time-serie.
+#' time series.
 #'
-#' `reUseBenchmark` is primarily meant to be used on a serie that is derived
+#' `reUseBenchmark` is primarily meant to be used on a series that is derived
 #' from the previous one, after some modifications that would bias the
 #' estimation otherwise. Working-day adjustment is a good example. Hence, by
 #' default, the smoothed part of the first model isn't reevaluated ; the
-#' aggregated benchmarked serie isn't equal to the low-frequency serie.
+#' aggregated benchmarked series isn't equal to the low-frequency series.
 #' 
 #' @usage
 #' reUseBenchmark(hfserie,benchmark,reeval.smoothed.part=FALSE)
 #' 
-#' @param hfserie the bended time-serie. If it is a matrix time-serie, it has to
+#' @param hfserie the bended time series. If it is a matrix time series, it has to
 #' have the same column names than the `hfserie` used for the benchmark.
 #' @param benchmark a twoStepsBenchmark object, from which the parameters and
 #' coefficients are taken.
 #' @param reeval.smoothed.part a boolean of length 1. If `TRUE`, the smoothed
-#' part is reevaluated, hence the aggregated benchmarked serie is equal to the
-#' low-frequency serie.
+#' part is reevaluated, hence the aggregated benchmarked series is equal to the
+#' low-frequency series.
 #' @return `reUseBenchmark` returns an object of class \link{twoStepsBenchmark}.
 #' @examples 
 #' benchmark <- twoStepsBenchmark(turnover,construction) 

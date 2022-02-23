@@ -15,7 +15,7 @@ in_revisions(object, object_old, type = "changes")
 This defines the type of output.}
 }
 \value{
-a named matrix time-serie of two columns, one for the response and the other
+a named matrix time series of two columns, one for the response and the other
 for the predicted value.
 A \code{tscomparison} class is added to the object.
 }

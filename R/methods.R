@@ -175,13 +175,13 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
 #' for the class `twoStepsBenchmark`.
 #' `summary`, `coefficients`, `residuals` will return the same values.
 #' However, as for `fitted.values`, the accessor returns the fitted values
-#' of the regression, not the high-frequency, eventually integrated, time-serie
+#' of the regression, not the high-frequency, eventually integrated, time series
 #' contained in a twoStepsBenchmark.
 #' 
 #' An object of class `"praislm"` is a list containing the following components :
 #'   \item{coefficients}{a named vector of coefficients.}
 #'   \item{residuals}{the residuals, that is response minus fitted values.}
-#'   \item{fitted.values}{a time-serie, the fitted mean values}
+#'   \item{fitted.values}{a time series, the fitted mean values}
 #'   \item{se}{a named vector of standard errors.}
 #'   \item{df.residuals}{the residual degrees of freedom.}
 #'   \item{rho}{the autocorrelation coefficients of the residuals. It
@@ -258,7 +258,7 @@ model.list.twoStepsBenchmark <- function(object) object$model.list
 #' smoothed.part(object)
 #' @param object a twoStepsBenchmark object.
 #' @return
-#' a time-serie
+#' a time series
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction); smoothed.part(benchmark)
 #'
@@ -415,10 +415,10 @@ window.threeRuleSmooth <- window.twoStepsBenchmark
 #' from either a \link{praislm} or a \link{twoStepsBenchmark} object.
 #' @param object a praislm or twoStepsBenchmark object.
 #' @param as.ts a boolean of length 1. If `TRUE`, the returned
-#' outliers are returned as a time-serie with (dim and colnames).
+#' outliers are returned as a time series with (dim and colnames).
 #' If `FALSE`, the returned outliers is the named list that was
 #' submitted as a function argument.
-#' @return a named list or a time-serie, depending of the
+#' @return a named list or a time series, depending of the
 #' argument `"as.ts"`.
 #' @keywords internal
 #' @export
