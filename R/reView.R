@@ -42,8 +42,8 @@ info_switch <- function(mainout_choice)
                        "stand for the points that are external to the",
                        "regression. These are eventually added through the",
                        "benchmark window.<br><br>The X coordinates are the",
-                       "aggregated high-frequency serie and the Y coordinates are",
-                       "the low-frequency serie minus the estimated outliers",
+                       "aggregated high-frequency series and the Y coordinates are",
+                       "the low-frequency series minus the estimated outliers",
                        "effects, if any.")
          },
          "In-sample predictions" = {
@@ -57,8 +57,8 @@ info_switch <- function(mainout_choice)
                        "value.")
          },
          "Comparison benchmark/input" = {
-           shiny::HTML("These plots compare the input high-frequency serie with",
-                       "the resulting time-serie of the benchmark. These are",
+           shiny::HTML("These plots compare the input high-frequency series with",
+                       "the resulting time-series of the benchmark. These are",
                        "intended to check that the information of the input is",
                        "preserved.<br><br>If the indicator isn't correlated to",
                        "the account, its coefficient tends to zero, and the",
@@ -74,15 +74,15 @@ info_switch <- function(mainout_choice)
                        "benchmark and the newer one.")
          },
          "Benchmark plot" = {
-           shiny::HTML("Two-steps benchmarks bend a time-serie with a",
-                       "time-serie of lower frequency. The procedure involved",
+           shiny::HTML("Two-steps benchmarks bend a time series with a",
+                       "time series of lower frequency. The procedure involved",
                        "is a Prais-Winsten regression, then an additive Denton",
-                       "benchmark.<br><br>Therefore, the resulting time-serie",
+                       "benchmark.<br><br>Therefore, the resulting time series",
                        "is the sum of a regression fit, eventually reintegrated,",
                        "and of a smoothed part. The smoothed part minimizes",
                        "the sum of squares of its differences.<br><br>This plot",
-                       "displays both the bending serie, disaggregated with an",
-                       "evenly distribution, and the resulting time-serie of",
+                       "displays both the bending series, disaggregated with an",
+                       "evenly distribution, and the resulting time series of",
                        "the benchmark.")
          },
          "Benchmark summary" = {

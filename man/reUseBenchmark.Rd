@@ -2,34 +2,34 @@
 % Please edit documentation in R/twoStepsBenchmark.R
 \name{reUseBenchmark}
 \alias{reUseBenchmark}
-\title{Using an estimated benchmark model on another time-serie}
+\title{Using an estimated benchmark model on another time series}
 \usage{
 reUseBenchmark(hfserie,benchmark,reeval.smoothed.part=FALSE)
 }
 \arguments{
-\item{hfserie}{the bended time-serie. If it is a matrix time-serie, it has to
+\item{hfserie}{the bended time series. If it is a matrix time series, it has to
 have the same column names than the \code{hfserie} used for the benchmark.}
 
 \item{benchmark}{a twoStepsBenchmark object, from which the parameters and
 coefficients are taken.}
 
 \item{reeval.smoothed.part}{a boolean of length 1. If \code{TRUE}, the smoothed
-part is reevaluated, hence the aggregated benchmarked serie is equal to the
-low-frequency serie.}
+part is reevaluated, hence the aggregated benchmarked series is equal to the
+low-frequency series.}
 }
 \value{
 \code{reUseBenchmark} returns an object of class \link{twoStepsBenchmark}.
 }
 \description{
 This function reapplies the coefficients and parameters of a benchmark on new
-time-serie.
+time series.
 }
 \details{
-\code{reUseBenchmark} is primarily meant to be used on a serie that is derived
+\code{reUseBenchmark} is primarily meant to be used on a series that is derived
 from the previous one, after some modifications that would bias the
 estimation otherwise. Working-day adjustment is a good example. Hence, by
 default, the smoothed part of the first model isn't reevaluated ; the
-aggregated benchmarked serie isn't equal to the low-frequency serie.
+aggregated benchmarked series isn't equal to the low-frequency series.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction) 

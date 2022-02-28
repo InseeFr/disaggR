@@ -508,10 +508,8 @@ test_that("outliers",{
                                  outliers = list(AO2004 = rep(0.1,12)))
   construction_out_corr <-
     construction_out -
-    window(aggregate(coefficients(benchmark)["AO2004"] *
-                       model.list(benchmark)$hfserie[,"AO2004"], nfrequency = 1),
-           start = start(construction_out),
-           end = end(construction_out))
+      aggregate_and_crop_hf_to_lf(outliers_ctb(benchmark),construction)
+  
   expect_true(all((construction_out_corr-construction)[-5] < 10^-6)) # only to check the outlier consistency
   
   expected <- ts(matrix(c(window(construction_out_corr, start = 2002, end = 2019, extend = TRUE),

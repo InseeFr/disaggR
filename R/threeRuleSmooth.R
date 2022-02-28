@@ -6,12 +6,12 @@
 #' It may seem very raw, but it's only used for the weights in `bflSmooth`, in
 #' order to get the high-frequency rate.
 #'
-#' @param hfserie a time-serie, the high frequency serie to extrapolate
-#' @param lffreq a integer of length 1. The low frequency
+#' @param hfserie a time series, the high frequency series to extrapolate
+#' @param lffreq an integer of length 1. The low frequency
 #'
 #' @keywords internal
 #'
-#' @return a time-serie, the extrapolated hfserie
+#' @return a time series, the extrapolated hfserie
 hfserie_extrap <- function(hfserie,lffreq) {
   ratio <- frequency(hfserie)/lffreq
   valplaces <- which(!is.na(hfserie))
@@ -171,16 +171,16 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
   new("threeRuleSmooth",res)
 }
 
-#' @title Bends a time-serie with a lower frequency one by smoothing their rate
+#' @title Bends a time series with a lower frequency one by smoothing their rate
 #' 
-#' @description threeRuleSmooth bends a time-serie with a time-serie of a lower
+#' @description threeRuleSmooth bends a time series with a time series of a lower
 #' frequency. The procedure involved is a proportional Denton benchmark.
 #' 
-#' Therefore, the resulting time-serie is the product of the high-frequency input
+#' Therefore, the resulting time series is the product of the high frequency input
 #' with a smoothed rate. This latter is extrapolated through an arithmetic
 #' sequence.
 #' 
-#' The resulting time-serie is equal to the low-frequency serie after aggregation
+#' The resulting time series is equal to the low-frequency series after aggregation
 #' within the benchmark window.
 #' 
 #' @details In order to smooth the rate, threeRuleSmooth calls \link{bflSmooth}
@@ -190,8 +190,8 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' * the first and last full cycles are replicated respectively backwards and
 #' forwards to fill the domain window.
 #' 
-#' @param hfserie the bended time-serie. It can be a matrix time-serie.
-#' @param lfserie a time-serie whose frequency divides the frequency of
+#' @param hfserie the bended time series. It can be a matrix time series.
+#' @param lfserie a time series whose frequency divides the frequency of
 #' `hfserie`.
 #' @param start.benchmark an optional start for `lfserie` to bend `hfserie`.
 #' Should be a numeric of length 1 or 2, like a window for `lfserie`. If NULL,
@@ -199,14 +199,14 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' @param end.benchmark an optional end for `lfserie` to bend `hfserie`.
 #' Should be a numeric of length 1 or 2, like a window for `lfserie`. If NULL,
 #' the start is defined by lfserie's window.
-#' @param start.domain an optional start of the output high-frequency serie. It
+#' @param start.domain an optional start of the output high-frequency series. It
 #' also defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the
 #' smallest low-frequency window that is around the high-frequency domain
 #' window.
 #' Should be a numeric of length 1 or 2, like a window for `hfserie`. If NULL,
 #' the start is defined by hfserie's window.
-#' @param end.domain an optional end of the output high-frequency serie. It also
+#' @param end.domain an optional end of the output high-frequency series. It also
 #' defines the smoothing window :
 #' The low-frequency residuals will be extrapolated until they contain the
 #' smallest low-frequency window that is around the high-frequency domain
@@ -229,7 +229,7 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' threeRuleSmooth returns an object of class `"threeRuleSmooth"`.
 #' 
 #' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce
-#' graphics of the benchmarked serie and the bending serie.
+#' graphics of the benchmarked series and the bending series.
 #' The functions \link{in_disaggr}, \link{in_revisions}, \link{in_scatter}
 #' produce various comparisons on which plot and autoplot can also be used.
 #' 
@@ -239,15 +239,15 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' An object of class `"threeRuleSmooth"` is a list containing the following
 #' components :
 #' 
-#'   \item{benchmarked.serie}{a time-serie, that is the result of the
+#'   \item{benchmarked.serie}{a time series, that is the result of the
 #'   benchmark.}
-#'   \item{lfrate}{a time-serie, that is the low-frequency rate of the
+#'   \item{lfrate}{a time series, that is the low-frequency rate of the
 #'   threeRuleSmooth.}
 #'   \item{smoothed.rate}{the smoothed rate of the threeRuleSmooth.}
 #'   \item{hfserie.as.weights}{the modified and extrapolated hfserie (see
 #'   details).}
 #'   \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
-#'   the low-frequenccy rate time-serie. It is estimated as the mean value in
+#'   the low-frequenccy rate time series. It is estimated as the mean value in
 #'   the specified window.}
 #'   \item{model.list}{a list containing all the arguments submitted to the
 #'   function.}
@@ -283,8 +283,8 @@ threeRuleSmooth <- function(hfserie,lfserie,
   tsplf <- tsp(lfserie)
   
   if (frequency(hfserie) %% frequency(lfserie) != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
-  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency serie must be one-dimensional", call. = FALSE)
-  if (!is.null(dim(hfserie)) && dim(hfserie)[2L] != 1) stop("The high frequency serie must be one-dimensional", call. = FALSE)
+  if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency series must be one-dimensional", call. = FALSE)
+  if (!is.null(dim(hfserie)) && dim(hfserie)[2L] != 1) stop("The high frequency series must be one-dimensional", call. = FALSE)
   maincl <- match.call()
   
   threeRuleSmooth_impl(hfserie,lfserie,

@@ -8,8 +8,10 @@ bflSmooth_matrices_factory(cache_size = 100L)
 }
 \description{
 This \emph{function factory} returns a clone of bflSmooth_matrices_impl that gives
-the same results than the original function but uses cache, which is useful
-considering people would often use a lot of similar calls.
+the same results than the original function but uses cache to store computed matrices,
+which is useful when making a large number of similar calls, like calls to
+\code{threeRuleSmooth()} with the same hfserie but different lfserie,
+or to \code{twoStepsBenchmark()} with different lfserie of the same length.
 }
 \details{
 bflSmooth_matrices_factory is only run at build time.

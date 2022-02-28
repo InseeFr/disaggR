@@ -5,7 +5,7 @@
 \alias{turnover}
 \title{Turnover indicator in construction}
 \format{
-A time-serie of frequency 12
+A time series of frequency 12
 }
 \source{
 \url{https://www.insee.fr/fr/statistiques/4636032}
@@ -14,7 +14,7 @@ A time-serie of frequency 12
 turnover
 }
 \description{
-An mensual time-serie containing the turnover indicator in construction
+An monthly time series containing the turnover indicator in construction
 from january 2000 to may 2020, as retrieved the 08/12/2020.
 }
 \keyword{internal}

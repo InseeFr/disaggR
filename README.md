@@ -14,8 +14,8 @@ status](https://github.com/InseeFr/disaggR/workflows/R-CMD-check/badge.svg)](htt
 ## Overview
 
 The R package disaggR is an implementation of the French Quarterly
-National Accounts method for temporal disaggregation of time-series.
-`twoStepsBenchmark()` and `threeRuleSmooth()` bend a time-serie with
+National Accounts method for temporal disaggregation of time series.
+`twoStepsBenchmark()` and `threeRuleSmooth()` bend a time series with
 another one of a lower frequency.
 
 ## Installation

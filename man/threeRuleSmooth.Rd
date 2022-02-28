@@ -2,7 +2,7 @@
 % Please edit documentation in R/threeRuleSmooth.R
 \name{threeRuleSmooth}
 \alias{threeRuleSmooth}
-\title{Bends a time-serie with a lower frequency one by smoothing their rate}
+\title{Bends a time series with a lower frequency one by smoothing their rate}
 \usage{
 threeRuleSmooth(
   hfserie,
@@ -18,9 +18,9 @@ threeRuleSmooth(
 )
 }
 \arguments{
-\item{hfserie}{the bended time-serie. It can be a matrix time-serie.}
+\item{hfserie}{the bended time series. It can be a matrix time series.}
 
-\item{lfserie}{a time-serie whose frequency divides the frequency of
+\item{lfserie}{a time series whose frequency divides the frequency of
 \code{hfserie}.}
 
 \item{start.benchmark}{an optional start for \code{lfserie} to bend \code{hfserie}.
@@ -31,7 +31,7 @@ the start is defined by lfserie's window.}
 Should be a numeric of length 1 or 2, like a window for \code{lfserie}. If NULL,
 the start is defined by lfserie's window.}
 
-\item{start.domain}{an optional start of the output high-frequency serie. It
+\item{start.domain}{an optional start of the output high-frequency series. It
 also defines the smoothing window :
 The low-frequency residuals will be extrapolated until they contain the
 smallest low-frequency window that is around the high-frequency domain
@@ -39,7 +39,7 @@ window.
 Should be a numeric of length 1 or 2, like a window for \code{hfserie}. If NULL,
 the start is defined by hfserie's window.}
 
-\item{end.domain}{an optional end of the output high-frequency serie. It also
+\item{end.domain}{an optional end of the output high-frequency series. It also
 defines the smoothing window :
 The low-frequency residuals will be extrapolated until they contain the
 smallest low-frequency window that is around the high-frequency domain
@@ -67,7 +67,7 @@ of the returned call. This feature allows to build wrappers.}
 threeRuleSmooth returns an object of class \code{"threeRuleSmooth"}.
 
 The functions \code{plot} and \code{autoplot} (the generic from \pkg{ggplot2}) produce
-graphics of the benchmarked serie and the bending serie.
+graphics of the benchmarked series and the bending series.
 The functions \link{in_disaggr}, \link{in_revisions}, \link{in_scatter}
 produce various comparisons on which plot and autoplot can also be used.
 
@@ -77,29 +77,29 @@ various useful features of the returned value.
 An object of class \code{"threeRuleSmooth"} is a list containing the following
 components :
 
-\item{benchmarked.serie}{a time-serie, that is the result of the
+\item{benchmarked.serie}{a time series, that is the result of the
 benchmark.}
-\item{lfrate}{a time-serie, that is the low-frequency rate of the
+\item{lfrate}{a time series, that is the low-frequency rate of the
 threeRuleSmooth.}
 \item{smoothed.rate}{the smoothed rate of the threeRuleSmooth.}
 \item{hfserie.as.weights}{the modified and extrapolated hfserie (see
 details).}
 \item{delta.rate}{the low-frequency delta of the rate, used to extrapolate
-the low-frequenccy rate time-serie. It is estimated as the mean value in
+the low-frequenccy rate time series. It is estimated as the mean value in
 the specified window.}
 \item{model.list}{a list containing all the arguments submitted to the
 function.}
 \item{call}{the matched call.}
 }
 \description{
-threeRuleSmooth bends a time-serie with a time-serie of a lower
+threeRuleSmooth bends a time series with a time series of a lower
 frequency. The procedure involved is a proportional Denton benchmark.
 
-Therefore, the resulting time-serie is the product of the high-frequency input
+Therefore, the resulting time series is the product of the high frequency input
 with a smoothed rate. This latter is extrapolated through an arithmetic
 sequence.
 
-The resulting time-serie is equal to the low-frequency serie after aggregation
+The resulting time series is equal to the low-frequency series after aggregation
 within the benchmark window.
 }
 \details{

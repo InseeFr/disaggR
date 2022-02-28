@@ -18,7 +18,7 @@
 #' @param type `"changes"` or `"levels"`. The results are either returned
 #' in changes or in levels.
 #' @return
-#' a named matrix time-serie of two columns, one for the response and the other
+#' a named matrix time series of two columns, one for the response and the other
 #' for the predicted value.
 #' A `"tscomparison"` class is added to the object.
 #' @seealso \link{in_disaggr} \link{in_revisions} \link{in_scatter}
@@ -74,7 +74,7 @@ in_sample.threeRuleSmooth <- function(object,type="changes") {
 #' 
 #' The function `in_disaggr` takes a \link{twoStepsBenchmark} or a 
 #' \link{threeRuleSmooth} object as an input. It produces a comparison between
-#' the benchmarked time-serie and the high-frequency input.
+#' the benchmarked time series and the high-frequency input.
 #' 
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
@@ -83,7 +83,7 @@ in_sample.threeRuleSmooth <- function(object,type="changes") {
 #' @param type `"levels"`,`"levels-rebased"`, `"changes"` or `"contributions"`.
 #' This defines the type of output.
 #' @return
-#' a named matrix time-serie of two columns, one for the response and the other
+#' a named matrix time series of two columns, one for the response and the other
 #' for the input.
 #' A `tscomparison` class is added to the object.
 #' @seealso \link{in_sample} \link{in_revisions} \link{in_scatter}
@@ -256,7 +256,7 @@ safe_difference <- function(x,y) {
 #' @param type `"levels"`,`"levels-rebased"`, `"changes"` or `"contributions"`.
 #' This defines the type of output.
 #' @return
-#' a named matrix time-serie of two columns, one for the response and the other
+#' a named matrix time series of two columns, one for the response and the other
 #' for the predicted value.
 #' A `tscomparison` class is added to the object.
 #' @seealso \link{in_sample} \link{in_disaggr} \link{in_scatter}
@@ -314,16 +314,16 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' This defines the type of output. A differencied model can't have a scatterplot
 #' in levels.
 #' @return
-#' a named matrix time-serie of two or three columns, one for the low-frequency serie
-#' and the others for the high-frequency-serie (eventually differencied if
+#' a named matrix time series of two or three columns, one for the low-frequency serie
+#' and the others for the high-frequency series (eventually differentiated if
 #' `include.differenciation` is `TRUE`).
 #' A `tscomparison` class is added to the object.
 #' For a `twoStepsBenchmark` object, this matrix has three columns,
-#' for the low-frequency serie, the high-frequency on the regression span and
-#' the high-frequency serie on the benchmark span.
+#' for the low-frequency series, the high-frequency on the regression span and
+#' the high-frequency series on the benchmark span.
 #'  
 #' If outlier effects are estimated, the contributions of the outliers are
-#' substracted from the low-frequency serie.
+#' substracted from the low-frequency series.
 #' 
 #' 
 #' @seealso \link{in_sample} \link{in_disaggr} \link{in_revisions}
@@ -336,7 +336,7 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 in_scatter <- function(object,
                        type = if (model.list(object)$include.differenciation) "changes" else "levels") UseMethod("in_scatter")
 
-warning_news_outlier_in_scatter <- warning_news_factory("The in_scatter function now substracts the outlier contributions from the low-frequency serie. See NEWS. This warning is displayed once in each R session.")
+warning_news_outlier_in_scatter <- warning_news_factory("The in_scatter function now substracts the outlier contributions from the low-frequency series. See NEWS. This warning is displayed once in each R session.")
 
 outliers_ctb <- function(object) {
   outliers <- outliers(object, as.ts = TRUE)
@@ -513,7 +513,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' * `in_sample` will produce the low-frequency distance between the predicted
 #' value and the response, on the coefficient calculation window.
 #' * `in_disaggr` will produce the high-frequency distance between the inputs
-#' (eventually, the sum of its contributions) and the benchmarked serie.
+#' (eventually, the sum of its contributions) and the benchmarked series.
 #' * `in_revisions` will produce the high-frequency distance between the two
 #' benchmarked series (contributions distance isn't permitted).
 #' 

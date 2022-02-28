@@ -25,7 +25,7 @@ The meaning depends on the tscomparison function :
 \item \code{in_sample} will produce the low-frequency distance between the predicted
 value and the response, on the coefficient calculation window.
 \item \code{in_disaggr} will produce the high-frequency distance between the inputs
-(eventually, the sum of its contributions) and the benchmarked serie.
+(eventually, the sum of its contributions) and the benchmarked series.
 \item \code{in_revisions} will produce the high-frequency distance between the two
 benchmarked series (contributions distance isn't permitted).
 }

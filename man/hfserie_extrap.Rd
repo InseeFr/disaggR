@@ -7,12 +7,12 @@
 hfserie_extrap(hfserie, lffreq)
 }
 \arguments{
-\item{hfserie}{a time-serie, the high frequency serie to extrapolate}
+\item{hfserie}{a time series, the high frequency series to extrapolate}
 
-\item{lffreq}{a integer of length 1. The low frequency}
+\item{lffreq}{an integer of length 1. The low frequency}
 }
 \value{
-a time-serie, the extrapolated hfserie
+a time series, the extrapolated hfserie
 }
 \description{
 This function replaces the incomplete low frequency cycles, at the start and

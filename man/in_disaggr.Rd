@@ -13,14 +13,14 @@ in_disaggr(object, type = "changes")
 This defines the type of output.}
 }
 \value{
-a named matrix time-serie of two columns, one for the response and the other
+a named matrix time series of two columns, one for the response and the other
 for the input.
 A \code{tscomparison} class is added to the object.
 }
 \description{
 The function \code{in_disaggr} takes a \link{twoStepsBenchmark} or a
 \link{threeRuleSmooth} object as an input. It produces a comparison between
-the benchmarked time-serie and the high-frequency input.
+the benchmarked time series and the high-frequency input.
 }
 \details{
 The functions \code{plot} and \code{autoplot} can be used on this object to produce

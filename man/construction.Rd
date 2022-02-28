@@ -5,7 +5,7 @@
 \alias{construction}
 \title{Total GFCF in construction at current prices}
 \format{
-A time-serie of frequency 1
+A time series of frequency 1
 }
 \source{
 \url{https://www.insee.fr/fr/statistiques/2015361}
@@ -14,7 +14,7 @@ A time-serie of frequency 1
 construction
 }
 \description{
-An annual time-serie containing the french GFCF in construction from 2000
+An annual time series containing the french GFCF in construction from 2000
 to 2019, as retrieved the 08/12/2020.
 }
 \keyword{internal}

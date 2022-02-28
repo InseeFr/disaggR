@@ -7,10 +7,10 @@
 \title{Two-Steps Benchmarks for Time Series Disaggregation}
 \description{
 The \code{twoStepsBenchmark()} and \code{threeRuleSmooth()} functions allow you to
-disaggregate a low-frequency time-serie with higher frequency time-series,
+disaggregate a low-frequency time series with higher frequency time series,
 using the French National Accounts methodology. The aggregated sum of the
-resulting time-serie is strictly equal to the low-frequency serie within the
-benchmarking window. Typically, the low-frequency serie is an annual one,
+resulting time series is strictly equal to the low-frequency series within the
+benchmarking window. Typically, the low-frequency series is an annual one,
 unknown for the last year, and the high frequency one is either quarterly or
 monthly.
 

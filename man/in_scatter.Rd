@@ -18,16 +18,16 @@ This defines the type of output. A differencied model can't have a scatterplot
 in levels.}
 }
 \value{
-a named matrix time-serie of two or three columns, one for the low-frequency serie
-and the others for the high-frequency-serie (eventually differencied if
+a named matrix time series of two or three columns, one for the low-frequency serie
+and the others for the high-frequency series (eventually differentiated if
 \code{include.differenciation} is \code{TRUE}).
 A \code{tscomparison} class is added to the object.
 For a \code{twoStepsBenchmark} object, this matrix has three columns,
-for the low-frequency serie, the high-frequency on the regression span and
-the high-frequency serie on the benchmark span.
+for the low-frequency series, the high-frequency on the regression span and
+the high-frequency series on the benchmark span.
 
 If outlier effects are estimated, the contributions of the outliers are
-substracted from the low-frequency serie.
+substracted from the low-frequency series.
 }
 \description{
 The function \code{in_scatter} returns low-frequency comparisons of the inputs from

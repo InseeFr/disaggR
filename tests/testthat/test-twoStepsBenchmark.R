@@ -511,7 +511,7 @@ test_that("annualBenchmark",{
   mensualts <- ts(diffinv(rnorm(120,1,1)),start=2010,freq=12)
   trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
   expect_error(annualBenchmark(mensualts,trimts),
-               "annual time-serie")
+               "annual time series")
   expect_snapshot(annualBenchmark(turnover,construction,
                                   end.coeff.calc = 2018),
                   cran = TRUE)

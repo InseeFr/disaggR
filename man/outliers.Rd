@@ -10,12 +10,12 @@ outliers(object, as.ts = FALSE)
 \item{object}{a praislm or twoStepsBenchmark object.}
 
 \item{as.ts}{a boolean of length 1. If \code{TRUE}, the returned
-outliers are returned as a time-serie with (dim and colnames).
+outliers are returned as a time series with (dim and colnames).
 If \code{FALSE}, the returned outliers is the named list that was
 submitted as a function argument.}
 }
 \value{
-a named list or a time-serie, depending of the
+a named list or a time series, depending of the
 argument \code{"as.ts"}.
 }
 \description{
