@@ -50,8 +50,10 @@ bflSmooth_matrices_impl <- function(lf_length,ratio,weights,lfserie.is.rate) {
 #' Generating a clone for bflSmooth_matrices_impl
 #' 
 #' This *function factory* returns a clone of bflSmooth_matrices_impl that gives
-#' the same results than the original function but uses cache, which is useful
-#' when making a large number of similar calls, like with the same hfserie but different lfserie.
+#' the same results than the original function but uses cache to store computed matrices, 
+#' which is useful when making a large number of similar calls, like calls to 
+#' `threeRuleSmooth()` with the same hfserie but different lfserie, 
+#' or to `twoStepsBenchmark()` with different lfserie of the same length. 
 #' 
 #' bflSmooth_matrices_factory is only run at build time.
 #' 
