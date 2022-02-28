@@ -539,7 +539,7 @@ test_that("outliers",{
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
-  expect_identical(in_scatter(prais(benchmark)),expected)
+  expect_equal(in_scatter(prais(benchmark)),expected)
 })
 
 test_that("in_revisions with different outliers",{
