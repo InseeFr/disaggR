@@ -1160,6 +1160,8 @@ reView.twoStepsBenchmark <- function(object,
 #' the file is temporary, and opened in a tab of the default browser.
 #' @param launch.browser `TRUE` or `FALSE`. If TRUE, the output is opened in the
 #' browser. Defaults to TRUE if output_file is NULL.
+#' @param hfserie_name a character of length 1. The name of the hfserie.
+#' @param lfserie_name a character of length 1. The name of the lfserie.
 #' @param \dots other arguments passed to rmarkdown::render
 #' 
 #' @seealso reView
@@ -1245,4 +1247,11 @@ rePort.reViewOutput <- function(object, output_file = NULL,
 }
 
 #' @export
-print.reViewOutput <- function(x, ...) rePort(x, output_file=NULL, ...)
+print.reViewOutput <- function(x,
+                               hfserie_name = NULL,
+                               lfserie_name = NULL,
+                               ...) rePort(x,
+                                           output_file=NULL,
+                                           hfserie_name,
+                                           lfserie_name,
+                                           ...)

@@ -8,6 +8,8 @@ rePort(
   object,
   output_file = NULL,
   launch.browser = if (is.null(output_file)) TRUE else FALSE,
+  hfserie_name = NULL,
+  lfserie_name = NULL,
   ...
 )
 }
@@ -21,6 +23,10 @@ the file is temporary, and opened in a tab of the default browser.}
 
 \item{launch.browser}{\code{TRUE} or \code{FALSE}. If TRUE, the output is opened in the
 browser. Defaults to TRUE if output_file is NULL.}
+
+\item{hfserie_name}{a character of length 1. The name of the hfserie.}
+
+\item{lfserie_name}{a character of length 1. The name of the lfserie.}
 
 \item{\dots}{other arguments passed to rmarkdown::render}
 }

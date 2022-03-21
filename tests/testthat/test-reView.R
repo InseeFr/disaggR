@@ -130,23 +130,86 @@ test_that("rePort produces a report",{
   temp_html <- tempfile("test",temp_dir,".html")
   expect_message(rePort(benchmark,output_file = temp_html, launch.browser = TRUE))
   expect_true(file.exists(temp_html))
+  out_html <- readLines(temp_html)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("turnover on construction",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
   unlink(temp_html)
   
   rePort(reViewOutput(benchmark,benchmark,compare = TRUE),output_file = temp_html)
   expect_true(file.exists(temp_html))
+  out_html <- readLines(temp_html)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("turnover on construction",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
   unlink(temp_html)
   
   temp_rds <- tempfile("test",temp_dir,".rds")
   saveRDS(twoStepsBenchmark(turnover,construction),temp_rds)
   expect_message(url <- rePort(temp_rds))
+  out_html <- readLines(url)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("turnover on construction",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
   unlink(url)
   
   con <- gzcon(gzfile(temp_rds))
   expect_message(url <- rePort(con))
   expect_true(file.exists(url))
+  out_html <- readLines(url)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("turnover on construction",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
   unlink(url)
   
   expect_message(url <- print(reViewOutput(benchmark,benchmark,FALSE)))
+  out_html <- readLines(url)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("turnover on construction",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
+  unlink(url)
+})
+
+test_that("names args changes the name on rePort",{
+  skip_on_cran()
+  testthat::skip_if_not_installed("rmarkdown")
+  browser <- options(browser=function(url) message(url))
+  on.exit(options(browser))
+  
+  benchmark <- twoStepsBenchmark(turnover,construction)
+  
+  temp_dir <- tempdir()
+  temp_html <- tempfile("test",temp_dir,".html")
+  expect_message(rePort(benchmark,output_file = temp_html, launch.browser = TRUE,
+                        hfserie_name = "testhf",
+                        lfserie_name = "testlf"))
+  expect_true(file.exists(temp_html))
+  out_html <- readLines(temp_html)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("testhf on testlf",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
+  unlink(temp_html)
+  
+  rePort(reViewOutput(benchmark,benchmark,compare = TRUE),
+         output_file = temp_html,
+         hfserie_name = "testhf",
+         lfserie_name = "testlf")
+  expect_true(file.exists(temp_html))
+  out_html <- readLines(temp_html)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("testhf on testlf",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
+  unlink(temp_html)
+  
+  temp_rds <- tempfile("test",temp_dir,".rds")
+  saveRDS(twoStepsBenchmark(turnover,construction),temp_rds)
+  expect_message(url <- rePort(temp_rds,
+                               hfserie_name = "testhf",
+                               lfserie_name = "testlf"))
+  out_html <- readLines(url)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("testhf on testlf",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
+  unlink(url)
+  
+  con <- gzcon(gzfile(temp_rds))
+  expect_message(url <- rePort(con,
+                               hfserie_name = "testhf",
+                               lfserie_name = "testlf"))
+  expect_true(file.exists(url))
+  out_html <- readLines(url)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("testhf on testlf",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
+  unlink(url)
+  
+  expect_message(url <- print(reViewOutput(benchmark,benchmark,FALSE),
+                              hfserie_name = "testhf",
+                              lfserie_name = "testlf"))
+  out_html <- readLines(url)
+  expect_true(any(vapply(X = out_html,FUN = function(x) grepl("testhf on testlf",x),FUN.VALUE = TRUE,USE.NAMES = FALSE)))
   unlink(url)
 })
 
