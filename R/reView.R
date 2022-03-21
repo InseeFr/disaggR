@@ -1252,6 +1252,6 @@ print.reViewOutput <- function(x,
                                lfserie_name = NULL,
                                ...) rePort(x,
                                            output_file=NULL,
-                                           hfserie_name,
-                                           lfserie_name,
+                                           hfserie_name=hfserie_name,
+                                           lfserie_name=lfserie_name,
                                            ...)
