@@ -1,5 +1,3 @@
-outliers_pattern <- "^(AO|LS)([0-9]+?)(?:T([0-9]+?))?$"
-
 split_outlier_names <- function(outlier_strings) {
   
   str <- regmatches(outlier_strings,
@@ -61,7 +59,7 @@ cbind_outliers <- function(outliers_ts_list,start,end) {
   res
 }
 
-interpret_outliers <- function(outliers,lffreq,hfserie) {
+interpret_outliers <- function(outliers,lffreq,tsphf) {
   
   if (is.null(outliers)) return()
   
@@ -71,9 +69,7 @@ interpret_outliers <- function(outliers,lffreq,hfserie) {
   if (is.null(names(outliers))) stop("The outliers list must have names (see ?twoStepsBenchmark)",
                                      call. = FALSE)
   
-  tsphf <- tsp(hfserie)
-  
-  ratio <- frequency(hfserie)/lffreq
+  ratio <- tsphf[3L]/lffreq
   
   outliers_ts_list <-
     Map(
@@ -454,7 +450,7 @@ twoStepsBenchmark <- function(hfserie,lfserie,
       is.null(names(set.coeff)))
     names(set.coeff) <- "hfserie"
   
-  outliers_mts <- interpret_outliers(outliers,frequency(lfserie),hfserie)
+  outliers_mts <- interpret_outliers(outliers,frequency(lfserie),tsphf)
   
   hfserie <- ts(matrix(c(constant,hfserie,outliers_mts),
                        nrow = NROW(hfserie)),
