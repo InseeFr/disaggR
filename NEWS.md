@@ -1,3 +1,6 @@
+# disaggR 1.0.4
+* Added the arguments `hfserie_name` and `lfserie_name` for rePort, as for reView.
+
 # disaggR 1.0.3
 * Added the signature `c("disaggR","missing")` for Ops group generic. (PR #54)
 * Inner calls to aggregate are now redirected to a faster non-exported function. (PR #55)
