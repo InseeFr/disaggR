@@ -49,6 +49,10 @@ jobs:
           do
             eval sudo $cmd
           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+          
+      - name: Setup Chrome
+        # You may pin to the exact commit or the version.
+        uses: browser-actions/setup-chrome@latest
 
       - name: Install dependencies
         run: |
