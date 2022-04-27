@@ -481,10 +481,7 @@ test_that("reView-withoutset",{
   expect_equal(app$wait_for_value(input = "reView-menu"),"Modify")
   
   app$stop()
-#  p <- app$.__enclos_env__$private$shinyProcess
-#  p$interrupt()
-#  p$wait()
-  # the previous code is to quit the shinyprocess for codecov to update
+
 })
 
 test_that("reView-setcoefconst",{
@@ -579,10 +576,6 @@ test_that("reView-setcoefconst",{
                                        end.domain = c(2030,12))))
   
   app$stop()
-  # p <- app$.__enclos_env__$private$shinyProcess
-  # p$interrupt()
-  # p$wait()
-  # the previous code is to quit the shinyprocess for codecov to update
 })
 
 test_that("reView-outliers",{
@@ -652,10 +645,7 @@ test_that("reView-outliers",{
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
   
   app$stop()
-  # p <- app$.__enclos_env__$private$shinyProcess
-  # p$interrupt()
-  # p$wait()
-  # the previous code is to quit the shinyprocess for codecov to update
+  
 })
 
 test_that("reView-outlierssetcoef",{
@@ -733,10 +723,6 @@ test_that("reView-outlierssetcoef",{
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
   
   app$stop()
-  # p <- app$.__enclos_env__$private$shinyProcess
-  # p$interrupt()
-  # p$wait()
-  # the previous code is to quit the shinyprocess for codecov to update
 })
 
 test_that("get_benchmark_call NULL",{
