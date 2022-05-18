@@ -450,7 +450,6 @@ test_that("outliers",{
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
                                slope=as.numeric(coefficients(benchmark)["hfserie"]))
-  expect_warning(in_scatter(benchmark),"once in each R session")
   expect_identical(in_scatter(benchmark),expected)
   
   

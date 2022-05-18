@@ -73,18 +73,6 @@ neither_outlier_nor_constant.praislm <- function(object) {
   neither_outlier_nor_constant_impl(model.list(object)$X, object)
 }
 
-warning_news_factory <- function(message) {
-  force(message)
-  thrown <- FALSE
-  function() {
-    if (thrown == FALSE) {
-      warning(message, call. = FALSE)
-    }
-    thrown <<- TRUE
-    invisible(message)
-  }
-}
-
 #' Extend tsp with lf
 #'
 #' This window is the smallest that is all around tsphf

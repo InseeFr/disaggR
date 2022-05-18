@@ -336,13 +336,10 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 in_scatter <- function(object,
                        type = if (model.list(object)$include.differenciation) "changes" else "levels") UseMethod("in_scatter")
 
-warning_news_outlier_in_scatter <- warning_news_factory("The in_scatter function now substracts the outlier contributions from the low-frequency series. See NEWS. This warning is displayed once in each R session.")
-
 outliers_ctb <- function(object) {
   outliers <- outliers(object, as.ts = TRUE)
   if (is.null(outliers)) NULL
   else {
-    warning_news_outlier_in_scatter()
     ts_from_tsp(outliers %*%
                      coefficients(object)[colnames(outliers)],
                    tsp(outliers))
