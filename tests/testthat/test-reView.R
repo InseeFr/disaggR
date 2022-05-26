@@ -231,7 +231,6 @@ test_that("reView-withoutset",{
   
   # important : the package should have been rebuilt for these tests
   # (ie with installed and restart in R Studio not loaded with devtools)
-  # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
   testthat::skip_if_not_installed("shiny")
@@ -246,6 +245,7 @@ test_that("reView-withoutset",{
   
   # First tab
   app$set_window_size(800,600)
+  app$wait_for_idle(1000)
   model1 <- app$wait_for_value(output = "reView-reViewtab1-model1_plot")
   model2 <- app$wait_for_value(output = "reView-reViewtab1-model2_plot")
   model3 <- app$wait_for_value(output = "reView-reViewtab1-model3_plot")
@@ -482,7 +482,6 @@ test_that("reView-setcoefconst",{
   
   # important : the package should have been rebuilt for these tests
   # (ie with installed and restart in R Studio not loaded with devtools)
-  # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
   testthat::skip_if_not_installed("shiny")
@@ -496,6 +495,7 @@ test_that("reView-setcoefconst",{
   get_bn <- function() app$get_values()$export$`reView-reViewtab2-new_bn`
   
   app$set_window_size(800,600)
+  app$wait_for_idle(1000)
   app$wait_for_value(output = "reView-reViewtab1-model1_plot")
   app$wait_for_value(output = "reView-reViewtab1-model2_plot")
   app$wait_for_value(output = "reView-reViewtab1-model3_plot")
@@ -576,7 +576,6 @@ test_that("reView-outliers",{
   
   # important : the package should have been rebuilt for these tests
   # (ie with installed and restart in R Studio not loaded with devtools)
-  # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
   testthat::skip_if_not_installed("shiny")
@@ -590,6 +589,7 @@ test_that("reView-outliers",{
   get_bn <- function() app$get_values()$export$`reView-reViewtab2-new_bn`
   
   app$set_window_size(800,600)
+  app$wait_for_idle(1000)
   app$wait_for_value(output = "reView-reViewtab1-model1_plot")
   app$wait_for_value(output = "reView-reViewtab1-model2_plot")
   app$wait_for_value(output = "reView-reViewtab1-model3_plot")
@@ -645,7 +645,6 @@ test_that("reView-outlierssetcoef",{
   
   # important : the package should have been rebuilt for these tests
   # (ie with installed and restart in R Studio not loaded with devtools)
-  # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
   testthat::skip_if_not_installed("shiny")
@@ -659,6 +658,7 @@ test_that("reView-outlierssetcoef",{
   get_bn <- function() app$get_values()$export$`reView-reViewtab2-new_bn`
   
   app$set_window_size(800,600)
+  app$wait_for_idle(1000)
   app$wait_for_value(output = "reView-reViewtab1-model1_plot")
   app$wait_for_value(output = "reView-reViewtab1-model2_plot")
   app$wait_for_value(output = "reView-reViewtab1-model3_plot")
