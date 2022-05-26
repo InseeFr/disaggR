@@ -256,8 +256,8 @@ test_that("reView-withoutset",{
   models <- list(model1,model2,model3,
                  model4,model5,model6)
   
-  expect_true(all(vapply(models,`[[`,0,"height") >= 142))
-  expect_true(all(vapply(models,`[[`,0,"height") <= 163))
+  expect_true(all(vapply(models,`[[`,0,"height") >= 132))
+  expect_true(all(vapply(models,`[[`,0,"height") <= 173))
   
   expect_equal(as.ts(get_bn()),as.ts(twoStepsBenchmark(turnover,construction)))
   
@@ -451,8 +451,8 @@ test_that("reView-withoutset",{
                 plotcha,
                 plotctb)
   
-  expect_true(all(vapply(plots,`[[`,0,"height") >= 142))
-  expect_true(all(vapply(plots,`[[`,0,"height") <= 163))
+  expect_true(all(vapply(plots,`[[`,0,"height") >= 132))
+  expect_true(all(vapply(plots,`[[`,0,"height") <= 173))
   expect_true(all(vapply(plots,`[[`,0,"width") >= 590))
   expect_true(all(vapply(plots,`[[`,0,"width") <= 610))
   
@@ -462,8 +462,8 @@ test_that("reView-withoutset",{
   plotcha <- app$wait_for_value(output = "reView-reViewtab2-monoplotcha")
   plotctb <- app$wait_for_value(output = "reView-reViewtab2-monoplotctb")
   
-  expect_true(all(vapply(plots,`[[`,0,"height") >= 142))
-  expect_true(all(vapply(plots,`[[`,0,"height") <= 163))
+  expect_true(all(vapply(plots,`[[`,0,"height") >= 132))
+  expect_true(all(vapply(plots,`[[`,0,"height") <= 173))
   expect_true(all(vapply(plots,`[[`,0,"width") >= 590))
   expect_true(all(vapply(plots,`[[`,0,"width") <= 610))
   
