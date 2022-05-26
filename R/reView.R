@@ -1,15 +1,6 @@
-cssmainoutwithtitle <- function() {
-  if (isTRUE(getOption("shiny.testmode"))) "{height: 442px;}"
-  else "{height: calc(100vh - 158px);}"
-}
+cssmainoutwithtitle <- "{height: calc(100vh - 158px);}"
 
-cssmainoutwithouttitle <- function() {
-  if (isTRUE(getOption("shiny.testmode"))) "{height: 462px;}"
-  else "{height: calc(100vh - 138px);}"
-}
-
-# viewport seems to bug with shinytests so for the tests I manually calculate
-# them for a 800*600 window
+cssmainoutwithouttitle <- "{height: calc(100vh - 138px);}"
 
 boxstyle <- "padding: 6px 8px;
              margin-top: 6px;
@@ -406,7 +397,7 @@ get_benchmark_call <- function(benchmark,hfserie_name,lfserie_name) {
 reView_ui_tab1 <- function(id) {
   ns <- shiny::NS(id)
   shiny::div(shiny::fluidRow(
-    shiny::tags$style(type = "text/css", paste0(".",ns("presetplot"),cssmainoutwithouttitle())),
+    shiny::tags$style(type = "text/css", paste0(".",ns("presetplot"),cssmainoutwithouttitle)),
     shiny::column(12,
                   shiny::radioButtons(ns("firsttab_choice"),NULL,
                                       choices = c("In-sample changes","Summary table"),
@@ -442,8 +433,8 @@ reView_ui_tab2 <- function(id) {
     shiny::mainPanel(
       width = 10,
       shiny::fluidRow(
-        shiny::tags$style(type = "text/css", paste0(".",ns("mainoutwithtitle"),cssmainoutwithtitle(),"\n",
-                                                    ".",ns("mainoutwithouttitle"),cssmainoutwithouttitle())),
+        shiny::tags$style(type = "text/css", paste0(".",ns("mainoutwithtitle"),cssmainoutwithtitle,"\n",
+                                                    ".",ns("mainoutwithouttitle"),cssmainoutwithouttitle)),
         shiny::column(11,
                       shiny::radioButtons(ns("mainout_choice"),NULL,
                                           choices = c("Scatter plot","In-sample predictions","Comparison benchmark/input",

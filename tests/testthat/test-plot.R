@@ -8,11 +8,10 @@ test_that("function_if_it_isnt_one works", {
                    lapply(1:20,function(n) rep("Hey",n)))
 })
 
-expect_doppelganger <- vdiffr::expect_doppelganger
-
 test_that("plot works with twoStepsBenchmark", {
   skip_if_not_installed("vdiffr")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE,
@@ -168,6 +167,7 @@ test_that("ggplot works", {
   skip_if_not_installed("vdiffr")
   testthat::skip_if_not_installed("ggplot2")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -293,6 +293,7 @@ test_that("ggplot works", {
 test_that("show.legend=FALSE works with plot", {
   skip_if_not_installed("vdiffr")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -327,6 +328,7 @@ test_that("show.legend=FALSE works with ggplot", {
   skip_if_not_installed("vdiffr")
   testthat::skip_if_not_installed("ggplot2")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -361,6 +363,7 @@ test_that("mts ggplot", {
   skip_if_not_installed("vdiffr")
   testthat::skip_if_not_installed("ggplot2")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   set.seed(1)
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
   mts <- ts(series,start=c(2000,1),freq=12) %>%
@@ -389,6 +392,7 @@ test_that("mts ggplot", {
 test_that("xlab and ylab works", {
   skip_if_not_installed("vdiffr")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -409,6 +413,7 @@ test_that("xlab and ylab works", {
 test_that("plot works with threeRuleSmooth", {
   skip_if_not_installed("vdiffr")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   smooth <- threeRuleSmooth(hfserie = turnover,
                             lfserie = construction,
                             end.domain = c(2021,12))
@@ -514,6 +519,7 @@ test_that("ggplot works with threeRuleSmooth", {
   skip_if_not_installed("vdiffr")
   skip_on_cran()
   testthat::skip_if_not_installed("ggplot2")
+  expect_doppelganger <- vdiffr::expect_doppelganger
   smooth <- threeRuleSmooth(hfserie = turnover,
                             lfserie = construction,
                             end.domain = c(2021,12))
@@ -618,6 +624,7 @@ test_that("ggplot works with threeRuleSmooth", {
 test_that("plot outliers in_disaggr",{
   skip_if_not_installed("vdiffr")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   benchmark <- twoStepsBenchmark(turnover,construction,
                                  outliers=list(LS2005=rep(0.1,12L)))
   
@@ -635,6 +642,7 @@ test_that("ggplot outliers in_disaggr",{
   skip_if_not_installed("vdiffr")
   skip_on_cran()
   testthat::skip_if_not_installed("ggplot2")
+  expect_doppelganger <- vdiffr::expect_doppelganger
   benchmark <- twoStepsBenchmark(turnover,construction,
                                  outliers=list(LS2005=rep(0.1,12L)))
   
@@ -652,7 +660,7 @@ test_that("plot method accessibility of graphical parameters",{
   skip_if_not_installed("vdiffr")
   skip_on_cran()
   benchmark <- twoStepsBenchmark(turnover,construction)
-  
+  expect_doppelganger <- vdiffr::expect_doppelganger
   expect_doppelganger("plot-par-benchmark",
                       function() plot(benchmark,
                                       main="title",
@@ -716,6 +724,7 @@ test_that("eval_function_if_it_is_one works", {
 test_that("no labels outside margins", {
   skip_if_not_installed("vdiffr")
   skip_on_cran()
+  expect_doppelganger <- vdiffr::expect_doppelganger
   expect_doppelganger("no-labels-outside-plot-margins",
                       function() plot(in_sample(twoStepsBenchmark(turnover,construction)),mar = c(5,5,5,5)))
 })

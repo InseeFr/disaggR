@@ -1,8 +1,3 @@
-test_that("params for other things than shiny test",{
-  expect_identical(cssmainoutwithtitle(),"{height: calc(100vh - 158px);}")
-  expect_identical(cssmainoutwithouttitle (),"{height: calc(100vh - 138px);}")
-})
-
 test_that("switch window", {
   tsexample <- ts(1:10,start=2010,freq=12)
   tspex <- tsp(tsexample)
@@ -239,12 +234,11 @@ test_that("reView-withoutset",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
-  skip_on_os("mac") # shinytest2 ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
   
   app <- shinytest2::AppDriver$new(test_path("shiny-withoutset"),
-                                   load_timeout = 15000)
+                                   wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
   
@@ -480,9 +474,7 @@ test_that("reView-withoutset",{
   app$wait_for_value(output = "reView-reViewtab2-monoplotlev")
   expect_equal(app$wait_for_value(input = "reView-menu"),"Modify")
   
-  p <- app$.__enclos_env__$private$shiny_process
-  p$interrupt()
-  p$wait()
+  app$stop()
 
 })
 
@@ -493,12 +485,11 @@ test_that("reView-setcoefconst",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
-  skip_on_os("mac") # shinytest2 ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
   
   app <- shinytest2::AppDriver$new(test_path("shiny-setcoefconst"),
-                                   load_timeout = 15000)
+                                   wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
   
@@ -577,9 +568,8 @@ test_that("reView-setcoefconst",{
                                        start.domain = 1990,
                                        end.domain = c(2030,12))))
   
-  p <- app$.__enclos_env__$private$shiny_process
-  p$interrupt()
-  p$wait()
+  app$stop()
+  
 })
 
 test_that("reView-outliers",{
@@ -589,12 +579,11 @@ test_that("reView-outliers",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
-  skip_on_os("mac") # shinytest2 ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outliers"),
-                                   load_timeout = 15000)
+                                   wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
   
@@ -648,9 +637,7 @@ test_that("reView-outliers",{
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
   
-  p <- app$.__enclos_env__$private$shiny_process
-  p$interrupt()
-  p$wait()
+  app$stop()
   
 })
 
@@ -661,12 +648,11 @@ test_that("reView-outlierssetcoef",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
-  skip_on_os("mac") # shinytest2 ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outlierssetcoef"),
-                                   load_timeout = 15000)
+                                   wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
   
@@ -728,9 +714,7 @@ test_that("reView-outlierssetcoef",{
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
  
-  p <- app$.__enclos_env__$private$shiny_process
-  p$interrupt()
-  p$wait()
+  app$stop()
 })
 
 test_that("get_benchmark_call NULL",{
