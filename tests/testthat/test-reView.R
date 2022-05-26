@@ -238,7 +238,7 @@ test_that("reView-withoutset",{
   testthat::skip_if_not_installed("shinytest2")
   
   app <- shinytest2::AppDriver$new(test_path("shiny-withoutset"),
-                                   load_timeout = 15000)
+                                   wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
   
@@ -489,7 +489,7 @@ test_that("reView-setcoefconst",{
   testthat::skip_if_not_installed("shinytest2")
   
   app <- shinytest2::AppDriver$new(test_path("shiny-setcoefconst"),
-                                   load_timeout = 15000)
+                                   wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
   
@@ -583,7 +583,7 @@ test_that("reView-outliers",{
   testthat::skip_if_not_installed("shinytest2")
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outliers"),
-                                   load_timeout = 15000)
+                                   wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
   
@@ -652,7 +652,7 @@ test_that("reView-outlierssetcoef",{
   testthat::skip_if_not_installed("shinytest2")
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outlierssetcoef"),
-                                   load_timeout = 15000)
+                                   wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
   
