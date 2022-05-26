@@ -1,8 +1,3 @@
-test_that("params for other things than shiny test",{
-  expect_identical(cssmainoutwithtitle(),"{height: calc(100vh - 158px);}")
-  expect_identical(cssmainoutwithouttitle (),"{height: calc(100vh - 138px);}")
-})
-
 test_that("switch window", {
   tsexample <- ts(1:10,start=2010,freq=12)
   tspex <- tsp(tsexample)
@@ -239,7 +234,6 @@ test_that("reView-withoutset",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
-  skip_on_os("mac") # shinytest2 ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
   
@@ -493,7 +487,6 @@ test_that("reView-setcoefconst",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
-  skip_on_os("mac") # shinytest2 ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
   
@@ -589,7 +582,6 @@ test_that("reView-outliers",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
-  skip_on_os("mac") # shinytest2 ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
   
@@ -661,7 +653,6 @@ test_that("reView-outlierssetcoef",{
   # One has also have PhantomJS work with the firewall
   
   skip_on_cran() # no shinytest2 on cran
-  skip_on_os("mac") # shinytest2 ci on macos is unstable for some reason
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
   
