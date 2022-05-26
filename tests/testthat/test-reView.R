@@ -235,6 +235,9 @@ test_that("reView-withoutset",{
   skip_on_cran() # no shinytest2 on cran
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
+  testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
+                      tolower(Sys.info()[["sysname"]]) == "windows")
+    # Windows has some problems on CI with shinytest2
   
   app <- shinytest2::AppDriver$new(test_path("shiny-withoutset"),
                                    wait = TRUE)
@@ -245,7 +248,6 @@ test_that("reView-withoutset",{
   
   # First tab
   app$set_window_size(800,600)
-  app$wait_for_idle(1000)
   model1 <- app$wait_for_value(output = "reView-reViewtab1-model1_plot")
   model2 <- app$wait_for_value(output = "reView-reViewtab1-model2_plot")
   model3 <- app$wait_for_value(output = "reView-reViewtab1-model3_plot")
@@ -486,6 +488,9 @@ test_that("reView-setcoefconst",{
   skip_on_cran() # no shinytest2 on cran
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
+  testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
+                      tolower(Sys.info()[["sysname"]]) == "windows")
+  # Windows has some problems on CI with shinytest2
   
   app <- shinytest2::AppDriver$new(test_path("shiny-setcoefconst"),
                                    wait = TRUE)
@@ -495,7 +500,6 @@ test_that("reView-setcoefconst",{
   get_bn <- function() app$get_values()$export$`reView-reViewtab2-new_bn`
   
   app$set_window_size(800,600)
-  app$wait_for_idle(1000)
   app$wait_for_value(output = "reView-reViewtab1-model1_plot")
   app$wait_for_value(output = "reView-reViewtab1-model2_plot")
   app$wait_for_value(output = "reView-reViewtab1-model3_plot")
@@ -580,6 +584,9 @@ test_that("reView-outliers",{
   skip_on_cran() # no shinytest2 on cran
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
+  testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
+                      tolower(Sys.info()[["sysname"]]) == "windows")
+  # Windows has some problems on CI with shinytest2
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outliers"),
                                    wait = TRUE)
@@ -589,7 +596,6 @@ test_that("reView-outliers",{
   get_bn <- function() app$get_values()$export$`reView-reViewtab2-new_bn`
   
   app$set_window_size(800,600)
-  app$wait_for_idle(1000)
   app$wait_for_value(output = "reView-reViewtab1-model1_plot")
   app$wait_for_value(output = "reView-reViewtab1-model2_plot")
   app$wait_for_value(output = "reView-reViewtab1-model3_plot")
@@ -649,6 +655,9 @@ test_that("reView-outlierssetcoef",{
   skip_on_cran() # no shinytest2 on cran
   testthat::skip_if_not_installed("shiny")
   testthat::skip_if_not_installed("shinytest2")
+  testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
+                      tolower(Sys.info()[["sysname"]]) == "windows")
+  # Windows has some problems on CI with shinytest2
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outlierssetcoef"),
                                    wait = TRUE)
@@ -658,7 +667,6 @@ test_that("reView-outlierssetcoef",{
   get_bn <- function() app$get_values()$export$`reView-reViewtab2-new_bn`
   
   app$set_window_size(800,600)
-  app$wait_for_idle(1000)
   app$wait_for_value(output = "reView-reViewtab1-model1_plot")
   app$wait_for_value(output = "reView-reViewtab1-model2_plot")
   app$wait_for_value(output = "reView-reViewtab1-model3_plot")
