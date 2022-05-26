@@ -474,9 +474,7 @@ test_that("reView-withoutset",{
   app$wait_for_value(output = "reView-reViewtab2-monoplotlev")
   expect_equal(app$wait_for_value(input = "reView-menu"),"Modify")
   
-  p <- app$.__enclos_env__$private$shiny_process
-  p$interrupt()
-  p$wait()
+  app$stop()
 
 })
 
@@ -570,9 +568,8 @@ test_that("reView-setcoefconst",{
                                        start.domain = 1990,
                                        end.domain = c(2030,12))))
   
-  p <- app$.__enclos_env__$private$shiny_process
-  p$interrupt()
-  p$wait()
+  app$stop()
+  
 })
 
 test_that("reView-outliers",{
@@ -640,9 +637,7 @@ test_that("reView-outliers",{
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
   
-  p <- app$.__enclos_env__$private$shiny_process
-  p$interrupt()
-  p$wait()
+  app$stop()
   
 })
 
@@ -719,9 +714,7 @@ test_that("reView-outlierssetcoef",{
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
  
-  p <- app$.__enclos_env__$private$shiny_process
-  p$interrupt()
-  p$wait()
+  app$stop()
 })
 
 test_that("get_benchmark_call NULL",{
