@@ -348,7 +348,7 @@ get_constant_indic <- function(nrow, hf, lf, include.differenciation, start.hfse
 #' * an optional integer, preceded by the letter T, stands for the low-frequency
 #' cycle of the outlier start.
 #' * The numeric vector values stands for the disaggregated value of the outlier
-#' and must be a multiple of hf / lf
+#' and its length must be a multiple of hf / lf
 #' 
 #' The outliers coefficients are evaluated though the regression process, like
 #' any coefficient. Therefore, if any outlier is outside of the coefficient
