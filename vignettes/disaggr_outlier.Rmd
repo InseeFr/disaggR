@@ -1,0 +1,204 @@
+---
+title: "Outliers in two-step benchmarks"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Outliers in two-step benchmarks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.show="hold",
+  fig.width = 7,
+  fig.height = 3,
+  out.width = "98%",
+  dpi = 150
+)
+```
+
+```{r,echo=FALSE}
+library(disaggR)
+```
+
+The Covid-19 pandemic and the economic lockdowns put in place in various countries to tackle with it had led to unusually large drop in economic activity in 2020 and 2021. Trying to estimate this drop in activity in quarterly national accounts using the two-step benchmark method leads to several challenges :
+
+* at first, when no annual data is available for the pandemic years, the method tends to underestimate the drop in activity : the two-step method tend to produce quarterly accounts that are smoother than the indicators, due to the constant and the smothed parts. This is usually not problematic as this smoothing tend to be unbiased : it brings  every evolution rates closer to zero (or the trend of the series for differenciated accounts). It thus reduce the noise of the series while not creating significant bias. But during lockdowns, as most economic indicatros are oriented downward, this smoothing creates a significant upward bias, amounting to several points of quarterly GDP at the height of the crisis (Q2 2020)
+
+* then, when annual data become available and is included in the two-step benchmark, there is larger than usual annual residuals in 2020 and 2021 in the benchmaking equation. When the residual is smoothed, this leads to a monthly or quarterly residuals that decreases as soon as mid-2019, well before the beginning of the crisis.  
+
+At Insee, outliers were used to adress both issues in the compilation of QNA. While the logic is sligthly different in the presence or absence of annual data for the period of crisis, it is consistent with both situation, which reduced revisions when we integrated annual data.
+
+This vignette present the use of outliers in both situation, starting (illogically) with the simpler case of presence of annual data and with the illustrative example of household consumption in food and accommodation services (section I of the nomenclature of activities), often labeled as catering or hospitality services, a sector particularly affected by lockdowns.
+
+
+# The case with annual accounts
+
+## What happens without outliers
+
+We use monthly, seasonnaly and working days adjusted (SA-WDA) turnover index (base 100 in 2015) as an indicator for monthly household actual final consumption in current M euros, benchmarked on the corresponding annual account, known up to 2021.
+
+```{r, eval=FALSE}
+par(mfrow=c(1,2))
+plot(turnover_catering)
+plot(consumption_catering)
+```
+
+Let first use the most basic model, in levels and without constant : 
+
+```{r, eval=FALSE}
+benchmark <- twoStepsBenchmark(turnover_catering,consumption_catering)
+```
+
+We can compare the indicator and the estimated QNA series :
+
+```{r}
+plot(in_disaggr(benchmark, type="levels-rebased"), start=c(2010,1))
+```
+```{r}
+plot(in_disaggr(benchmark), start=c(2018,1))
+```
+
+The timing of Covid restrictions is clearly apparent on both the indicator (HF serie) and the benchmarked account (benchmark), with a first lockdown between March and May 2020, a second lockdown in November 2020, followed by a curfew that had an as strong impact on the consumptions of hotel and restaurant services, up to June 2021. In January 2022, the drop of activity is due to the Omicron variant of the Covid-19 virus, with no lockdown but a very large number of people affected and in quarantine at home.
+
+The benchmark is quite good, and the account follows closely the indicator, with scaled-down evolutions. But we can clearly see in the account a decrease in consumption from mid-2019, that is not present in the indicator. 
+
+This is an artefact caused by the smoothing of the residual. There is a sharp 6 b€ drop in the annual residual between 2019 and 2020, and the smoothing procedure tries to compute a monthly series with the most gradual drop, thus starting to decrease in May 2019, which is clearly absurd in that case.
+
+
+
+```{r}
+par(mfrow=c(1,2))
+plot(residuals(benchmark))
+plot(smoothed.part(benchmark))
+```
+
+There is thus a significant contribution of the smoothed part to the QNA evolution :
+```{r}
+plot(in_disaggr(benchmark, type ="contributions"), start=2018)
+```
+
+## Introduction of outliers
+
+The idea behind the outlier is to capture this larger than usual residual and to affect it to the correct months and quarters. While we don't know why there is a larger than usual gap between the indicator and the account, we are pretty sure that it is related to the Covid lockdowns. It is thus a better assumption to try to disaggregate this residual according to a measure of the stringency of the lockdowns rather than smoothing it agnostically over the year 2019 to 2022. 
+
+While there is a lot of ways to build this outlier indicator, a convenient way is derive it from the usual indicator. In this example, we see that the turnover index is close to 130 before and after the lockdowns. Thus the distance to 130 is a good indicator of the intensity of the crisis :
+
+```{r}
+outlier <- window(turnover_catering-130, c(2020,1), c(2021,12))
+outlier[c(1,2, 20:24)] <- 0
+plot(outlier)
+```
+
+The absolute value of the indicator is lower than 2 in January and February 2020 and after August 2021, so we set it to 0 for those months, restricting the outliers to the lockdowns period.
+
+The idea is to add this outlier to the benchmark relation, as an additive outliers : 
+
+$$
+C =  I * a + out * b + u
+$$
+
+Where:
+
+* $C$, an univariate time series, is the high-frequency account.
+* $I$, a matrix time series, combines the columns of the indicators and the constant. 
+* $a$, a numeric vector, stands for the coefficients to be applied.
+* $out$ is the matrix time series of the ouliers. Here we have one additive outliers, completed with 0 outside the 2020-2021 period.
+* $u$, an univariate time series, is the smoothed part of the benchmark.
+
+The **coefficients are estimated at low-frequency** with the annual accounts, the annualized turnover index and the aggregated outlier :
+
+$$
+C_{aggregated}' =  I_{aggregated}' * a + out_{aggregated} * b + u'
+$$
+
+These **coefficients are applied at high-frequency**, to obtain the fitted values of the benchmark:
+
+$$
+\text{fitted.values} = I * a + out * b
+$$
+**u is smoothed as usual**:
+
+$$
+u = smooth(extrapolation(C_{aggregated} - \text{fitted.values}_{aggregated}))
+$$
+This can be done using outliers in the `twoStepsBenchmark` function :
+
+```{r, eval=FALSE}
+benchmark_out <- twoStepsBenchmark(turnover_catering,consumption_catering_out, 
+                                    outliers = list(AO2020 = outlier))
+```
+```{r}
+coefficients(summary(benchmark_out))
+```
+
+In this example, the indicator and the outlier are colinear in the lockdown period, so this is equivalent to estimated a specific `a` coefficient for the lockdown period, with an account that follow more closely the indicator during that period.
+
+The resulting account reflects better the economic outlook, without contributions of the smoothed part in the end of 2019 :
+
+```{r, eval=FALSE}
+plot(in_disaggr(benchmark_out, type ="contributions"), start=2018)
+plot(in_disaggr(benchmark_out, type="levels-rebased"), start=c(2010,1))
+```
+
+The variation of the residual and the smoothed part are much lower :
+
+```{r, eval=FALSE}
+par(mfrow=c(1,2))
+plot(residuals(benchmark_out))
+plot(smoothed.part(benchmark_out))
+```
+
+# The case without annual account
+
+Let's go back in August 2020 : the turnover index is known up to June 2020 and the annual account up to 2019.
+
+```{r, eval=FALSE}
+turnover_catering_2020 <- window(turnover_catering, end = c(2020,6))
+consumption_catering_2020 <- window(consumption_catering, end = 2019)
+```
+
+```{r, eval=FALSE}
+benchmark_2020 <- twoStepsBenchmark(turnover_catering_2020,consumption_catering_2020)
+coefficients(summary(benchmark_2020))
+```
+
+As 2020 does not enter into the estimation of the annual residual, there is no smoothing related issue here. But the message of the indicator is clearly attenuated in the monthly account : while the indicator in April 2020 is at 17 % of its February level, the account in April is at 38 % of its April level, more than twice that level.  
+
+
+```{r, eval=FALSE}
+plot(in_disaggr(benchmark_out, type ="contributions"), start=2018)
+plot(in_disaggr(benchmark_2020), start=c(2010,1))
+
+```
+
+To correct this, we will use the same specification for the outlier. But as the annual account for 2020 is not yet known, the coefficients for the outlier is not known, and we will have to manually specify it. 
+
+One of the way to do so is to compute the value of the coefficient that will enable the account to follow exactly the indicator. 
+
+We have a drop of around 110 points in the turnover index between February and April, and we would like to have a 83 % drop in the account, from a value of 8 000 M€. So we can compute $b$ as :
+
+$$
+b = 8000 * 0.83/110-a  \approx 14
+$$
+
+```{r, eval=FALSE}
+benchmark_out_2020 <- twoStepsBenchmark(turnover_catering_2020,consumption_catering_out_2020, 
+                                    outliers = list(AO2020 = outlier)
+                                    set.coeff = list(AO2020 = 14)
+                                        )
+```
+```{r}
+coefficients(summary(benchmark_out))
+```
+
+This is a broad assumption, but the resulting estimates for April 2020 (1574 M€) is closer than the estimates without outlier (3085 M€) from the final estimates using annual accounts for 2020 and 2021 and outliers (2161 M€). And the 14 value for $b$ is not so far from the final estimated 8 value. 
+
+One could have anticipated the annual account reasoning that total final consumption will drop less than turnover in April, as it include government consumption in hotels (for some social assistance policies that continued during lockdown) and exclude collective firms and factories restaurants, totally closed during lockdown, thus going for a slighlty lower $b$ coefficient, very close to the final estimate. 
+
+```{r, eval=FALSE}
+plot(in_disaggr(benchmark_out_2020, type ="contributions"), start=2018)
+plot(in_disaggr(benchmark_out_2020, type="levels-rebased"), start=c(2010,1))
+```
