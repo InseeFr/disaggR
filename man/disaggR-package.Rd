@@ -21,6 +21,7 @@ https://www.insee.fr/en/information/2579410).
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://inseefr.github.io/disaggR/}
   \item Report bugs at \url{https://github.com/InseeFr/disaggR/issues}
 }
 
