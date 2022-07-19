@@ -37,6 +37,9 @@
     <loc>https://inseefr.github.io/disaggR/reference/construction.html</loc>
   </url>
   <url>
+    <loc>https://inseefr.github.io/disaggR/reference/consumption_catering.html</loc>
+  </url>
+  <url>
     <loc>https://inseefr.github.io/disaggR/reference/default_col_pal.html</loc>
   </url>
   <url>
@@ -119,6 +122,9 @@
   </url>
   <url>
     <loc>https://inseefr.github.io/disaggR/reference/turnover.html</loc>
+  </url>
+  <url>
+    <loc>https://inseefr.github.io/disaggR/reference/turnover_catering.html</loc>
   </url>
   <url>
     <loc>https://inseefr.github.io/disaggR/reference/twoStepsBenchmark.html</loc>
