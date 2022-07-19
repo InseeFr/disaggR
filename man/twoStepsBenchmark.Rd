@@ -94,7 +94,7 @@ like \code{list(AO2008T2=c(0,0,3,2),LS2002=c(0.1,0.1,0.1,0.1))} where :
 \item an optional integer, preceded by the letter T, stands for the low-frequency
 cycle of the outlier start.
 \item The numeric vector values stands for the disaggregated value of the outlier
-and must be a multiple of hf / lf
+and its length must be a multiple of hf / lf
 }
 
 The outliers coefficients are evaluated though the regression process, like
