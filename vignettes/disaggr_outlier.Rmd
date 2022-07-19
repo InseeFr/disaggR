@@ -25,22 +25,22 @@ library(disaggR)
 
 The Covid-19 pandemic and the economic lockdowns put in place in various countries to tackle with it had led to unusually large drop in economic activity in 2020 and 2021. Trying to estimate this drop in activity in quarterly national accounts using the two-step benchmark method leads to several challenges :
 
-* at first, when no annual data is available for the pandemic years, the method tends to underestimate the drop in activity : the two-step method tend to produce quarterly accounts that are smoother than the indicators, due to the constant and the smothed parts. This is usually not problematic as this smoothing tend to be unbiased : it brings  every evolution rates closer to zero (or to the trend of the series for differenciated accounts). It thus reduce the noise of the series while not creating significant bias. But during lockdowns, as most economic indicatros are oriented downward, this smoothing creates a significant upward bias, amounting to several points of quarterly GDP at the height of the crisis (Q2 2020)
+* at first, when no annual data is available for the pandemic years, the method tends to underestimate the drop in activity : the two-step method tends to produce quarterly accounts that are smoother than the indicators, due to the constant and the smothed parts. This is usually not problematic as this smoothing tends to be unbiased : it brings  every evolution rates closer to zero (or to the trend of the series for differenciated accounts). It thus reduce the noise of the series while not creating significant bias. But during lockdowns, as most economic indicators are oriented downward, this smoothing creates a significant upward bias, amounting to several points of quarterly GDP at the height of the crisis (Q2 2020)
 
 * then, when annual data become available and is included in the two-step benchmark, there is larger than usual annual residuals in 2020 and 2021 in the benchmaking equation. When the residual is smoothed, this leads to a monthly or quarterly residuals that decreases as soon as mid-2019, well before the beginning of the crisis.  
 
 At Insee, outliers were used to adress both issues in the compilation of QNA. While the logic is sligthly different in the presence or absence of annual data for the period of crisis, it is consistent with both situation, which reduced revisions when we integrated annual data.
 
-This vignette present the use of outliers in both situation, starting (illogically) with the simpler case of presence of annual data and with the illustrative example of household consumption in food and accommodation services (section I of the nomenclature of activities), often labeled as catering or hospitality services, a sector particularly affected by lockdowns.
+This vignette presents the use of outliers in both situation, starting (illogically) with the simpler case of presence of annual data and with the illustrative example of household consumption in food and accommodation services (section I of the nomenclature of activities), often labeled as catering or hospitality services, a sector particularly affected by lockdowns.
 
 
 ## The case with annual accounts
 
 ### What happens without outliers
 
-We use monthly, seasonnaly and working days adjusted (SA-WDA) turnover index (base 100 in 2015) as an indicator for monthly household actual final consumption in current M euros, benchmarked on the corresponding annual account, known up to 2021[^method].
+We use monthly, seasonally and working days adjusted (SA-WDA) turnover index (base 100 in 2015) as an indicator for monthly household actual final consumption in current M euros, benchmarked on the corresponding annual account, known up to 2021[^method].
 
-[^method]: Note that this is not excatly how things are down in the actual french QNA : the estimation is done at a lower level, separating hotels from restaurants.  
+[^method]: Note that this is not exactly how things are down in the actual french QNA : the estimation is done at a lower level, separating hotels from restaurants.  
 
 ```{r}
 par(mfrow=c(1,2))
@@ -48,7 +48,7 @@ plot(turnover_catering)
 plot(consumption_catering)
 ```
 
-Lets first use the most basic model, in levels and without constant : 
+Let's first use the most basic model, in levels and without constant : 
 
 ```{r}
 benchmark <- twoStepsBenchmark(turnover_catering,consumption_catering)
@@ -212,7 +212,7 @@ plot(in_disaggr(benchmark_out_2020, type="levels-rebased"), start=c(2010,1))
 
 * Outliers need to be specified on *complete low-frequency period*, so one or more complete year(s) for a annual to monthly or quarterly disaggregation and one or more complete quarter(s) for a quarterly to monthly disaggregation.
 
-* Outliers can be additive outliers (AO) or level shifts (LS). Additive outliers are completed with zeroes before and after the scpecified values, while level shifts are completed with 0 before the specified values and with the last specified values after.
+* Outliers can be additive outliers (AO) or level shifts (LS). Additive outliers are completed with zeroes before and after the specified values, while level shifts are completed with 0 before the specified values and with the last specified values after.
 
 * Outliers are specified as a named list of numeric vectors, whose pattern is like list(AO2008T2=c(0,0,3,2),LS2002=c(0.1,0.1,0.1,0.1)) where :
 

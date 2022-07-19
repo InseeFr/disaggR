@@ -1,5 +1,6 @@
 # disaggR 1.0.4
-* Added the arguments `hfserie_name` and `lfserie_name` for rePort, as for reView.
+* Added the arguments `hfserie_name` and `lfserie_name` for rePort, as for reView. (PR #70)
+* Added a vignette describing the use of outliers. 
 
 # disaggR 1.0.3
 * Added the signature `c("disaggR","missing")` for Ops group generic. (PR #54)
