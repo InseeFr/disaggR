@@ -442,7 +442,7 @@ reView_ui_tab2 <- function(id) {
                                           selected = "Benchmark plot",inline=TRUE)
         ),
         shiny::column(1,
-                      shiny::actionButton(ns("infobtn"),label = NULL, icon = shiny::icon("info-circle"),
+                      shiny::actionButton(ns("infobtn"),label = NULL, icon = shiny::icon("circle-info"),
                                           class = "btn-success")),
         align="center"
       ),
