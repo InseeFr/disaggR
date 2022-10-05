@@ -1,6 +1,6 @@
 # disaggR 1.0.4
 * Added the arguments `hfserie_name` and `lfserie_name` for rePort, as for reView. (PR #70)
-* Added a vignette describing the use of outliers.
+* Added a vignette describing the use of outliers. (PR #74)
 * `reView` no longer throws the message "This Font Awesome icon ('info-circle') does not exist".
 
 # disaggR 1.0.3
