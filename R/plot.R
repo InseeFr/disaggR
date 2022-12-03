@@ -570,7 +570,7 @@ ggplotts.data.frame <- function(object,show.legend, theme,type,
                                        na.rm = TRUE),
          bar = g + ggplot2::geom_bar(ggplot2::aes(fill=Variables,group=!!group),stat="identity") +
            ggplot2::stat_summary(fun = sum, geom="line", colour = "black",
-                                 size = 0.5, alpha=1,na.rm = TRUE),
+                                 linewidth = 0.5, alpha=1,na.rm = TRUE),
          segment = g + ggplot2::geom_segment(ggplot2::aes(xend=Date,colour=Variables,group=!!group),
                                              yend=0)
   ) +
@@ -638,7 +638,7 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
   if (!is.null(attr(object,"abline"))) {
     g <- g + ggplot2::geom_abline(intercept = attr(object,"abline")["constant"],
                                   slope = attr(object,"abline")["slope"],
-                                  lty = "solid", colour = "red", size = 1)
+                                  lty = "solid", colour = "red", linewidth = 1)
   }
   
   g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L])
