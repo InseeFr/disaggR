@@ -1,3 +1,6 @@
+# disaggR 1.0.4.1
+* Internal change from ggplot2 size argument, which is deprecated for lines, to linewidth (PR #78)
+
 # disaggR 1.0.4
 * Added the arguments `hfserie_name` and `lfserie_name` for rePort, as for reView. (PR #70)
 * Added a vignette describing the use of outliers. (PR #74)
