@@ -81,97 +81,163 @@
 
     
     
-<p>The French quarterly accounts are constructed using an indirect method, based on two major data series: the annual national accounts, and the short-term outlook data compiled from various sources. Hence, a temporal disaggregation methodology is needed.</p>
-<p><strong>disaggR</strong> isn’t the only package on the CRAN providing such methods. <a href="https://cran.r-project.org/package=tempdisagg" class="external-link">tempdisagg</a> relies on a formula interface, supports most time series classes and provides compatibility with irregular disaggregation setting (e.g. months to days).</p>
+<p>The French quarterly accounts are constructed using an indirect
+method, based on two major data series: the annual national accounts,
+and the short-term outlook data compiled from various sources. Hence, a
+temporal disaggregation methodology is needed.</p>
+<p><strong>disaggR</strong> isn’t the only package on the CRAN providing
+such methods. <a href="https://cran.r-project.org/package=tempdisagg" class="external-link">tempdisagg</a>
+relies on a formula interface, supports most time series classes and
+provides compatibility with irregular disaggregation setting
+(e.g. months to days).</p>
 <p>disaggR has different goals:</p>
 <ul>
-<li>implementing the french national accounts methodology on time-series of the class <code>"ts"</code>
+<li>implementing the french national accounts methodology on time-series
+of the class <code>"ts"</code>
 </li>
-<li>providing a simple syntax that relies on standard evaluation and functions</li>
-<li>being fast enough to deal with the production of multiple series without linking to Rcpp (for readability purposes)</li>
+<li>providing a simple syntax that relies on standard evaluation and
+functions</li>
+<li>being fast enough to deal with the production of multiple series
+without linking to Rcpp (for readability purposes)</li>
 </ul>
-<p>For further details about the french national accounts methodology, see <a href="https://www.insee.fr/en/information/2579410" class="external-link">Methodology of quarterly national accounts</a>.</p>
-<p><em>Within that vignette, for each matrix time series, like in R, rows stand for the time and columns for the different variables. As for the operations,</em> <span class="math inline">\(*\)</span> <em>stands for the standard product,</em> <span class="math inline">\(\odot\)</span> <em>for the element-wise multiplication, and</em> <span class="math inline">\(\oslash\)</span> <em>for the element-wise division.</em></p>
+<p>For further details about the french national accounts methodology,
+see <a href="https://www.insee.fr/en/information/2579410" class="external-link">Methodology of
+quarterly national accounts</a>.</p>
+<p><em>Within that vignette, for each matrix time series, like in R,
+rows stand for the time and columns for the different variables. As for
+the operations,</em> <span class="math inline">\(*\)</span> <em>stands
+for the standard product,</em> <span class="math inline">\(\odot\)</span> <em>for the element-wise
+multiplication, and</em> <span class="math inline">\(\oslash\)</span>
+<em>for the element-wise division.</em></p>
 <div class="section level2">
 <h2 id="two-steps-benchmarks">Two-Steps Benchmarks<a class="anchor" aria-label="anchor" href="#two-steps-benchmarks"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/twoStepsBenchmark.html">twoStepsBenchmark</a></span><span class="op">(</span><span class="va">turnover</span>,<span class="va">construction</span><span class="op">)</span></span></code></pre></div>
-<p>The two-steps benchmarks, provided by <code><a href="../reference/twoStepsBenchmark.html">twoStepsBenchmark()</a></code>, rely on this high-frequency formula:</p>
+<p>The two-steps benchmarks, provided by
+<code><a href="../reference/twoStepsBenchmark.html">twoStepsBenchmark()</a></code>, rely on this high-frequency
+formula:</p>
 <p><span class="math display">\[
 C =  I * a + u
 \]</span></p>
 <p>Where:</p>
 <ul>
 <li>
-<span class="math inline">\(C\)</span>, an univariate time series, is the high-frequency account.</li>
+<span class="math inline">\(C\)</span>, an univariate time series,
+is the high-frequency account.</li>
 <li>
-<span class="math inline">\(I\)</span>, a matrix time series, combines the columns of the indicators, the outliers and the constant. If <code>include.differenciation</code> is <code>TRUE</code>, the constant is actually a trend.</li>
+<span class="math inline">\(I\)</span>, a matrix time series,
+combines the columns of the indicators, the outliers and the constant.
+If <code>include.differenciation</code> is <code>TRUE</code>, the
+constant is actually a trend.</li>
 <li>
-<span class="math inline">\(a\)</span>, a numeric vector, stands for the coefficients to be applied.</li>
+<span class="math inline">\(a\)</span>, a numeric vector, stands for
+the coefficients to be applied.</li>
 <li>
-<span class="math inline">\(u\)</span>, an univariate time series, is the smoothed part of the benchmark.</li>
+<span class="math inline">\(u\)</span>, an univariate time series,
+is the smoothed part of the benchmark.</li>
 </ul>
-<p>The <strong>coefficients are estimated at low-frequency</strong>, within the coeff.calc window, eventually after a differentiation if <code>include.differenciation</code> is <code>TRUE</code>:</p>
+<p>The <strong>coefficients are estimated at low-frequency</strong>,
+within the coeff.calc window, eventually after a differentiation if
+<code>include.differenciation</code> is <code>TRUE</code>:</p>
 <p><span class="math display">\[
 C_{aggregated}' =  I_{aggregated}' * a + u'
 \]</span></p>
-<p>If <code>include.rho</code> is <code>TRUE</code>, <span class="math inline">\(u'\)</span> is an AR1 process with an autocorrelation parameter, and <span class="math inline">\(a\)</span> is estimated through a Prais-Winsten process. Otherwise, an ordinary least squares process is used.</p>
-<p>These <strong>coefficients are applied at high-frequency</strong>, to obtain the fitted values of the benchmark:</p>
+<p>If <code>include.rho</code> is <code>TRUE</code>, <span class="math inline">\(u'\)</span> is an AR1 process with an
+autocorrelation parameter, and <span class="math inline">\(a\)</span> is
+estimated through a Prais-Winsten process. Otherwise, an ordinary least
+squares process is used.</p>
+<p>These <strong>coefficients are applied at high-frequency</strong>, to
+obtain the fitted values of the benchmark:</p>
 <p><span class="math display">\[
 \text{fitted.values} = I * a
 \]</span></p>
-<p>Note that, especially when <code>include.differenciation</code> is <code>TRUE</code>, the level of the fitted values is arbitrary: a constant is <em>chosen</em> to zero during the implicit reintegration. The choice of this constant, however, doesn’t impact the benchmarked series.</p>
+<p>Note that, especially when <code>include.differenciation</code> is
+<code>TRUE</code>, the level of the fitted values is arbitrary: a
+constant is <em>chosen</em> to zero during the implicit reintegration.
+The choice of this constant, however, doesn’t impact the benchmarked
+series.</p>
 <p><strong>u is smoothed</strong>:</p>
 <p><span class="math display">\[
-u = smooth(extrapolation(C_{aggregated} - \text{fitted.values}_{aggregated}))
+u = smooth(extrapolation(C_{aggregated} -
+\text{fitted.values}_{aggregated}))
 \]</span></p>
-<p>As the low-frequency values of <span class="math inline">\(C\)</span> have been set from the beginning, and the fitted values have just been computed, the aggregated values of <span class="math inline">\(u\)</span> are known. If these values aren’t defined all across the domain window, these are extrapolated as follow:</p>
+<p>As the low-frequency values of <span class="math inline">\(C\)</span>
+have been set from the beginning, and the fitted values have just been
+computed, the aggregated values of <span class="math inline">\(u\)</span> are known. If these values aren’t
+defined all across the domain window, these are extrapolated as
+follow:</p>
 <ul>
 <li>
-<span class="math inline">\(u(n+1)-u(n) = rho*(u(n)-u(n-1))\)</span> if <code>include.differenciation</code> is <code>TRUE</code>
+<span class="math inline">\(u(n+1)-u(n) = rho*(u(n)-u(n-1))\)</span>
+if <code>include.differenciation</code> is <code>TRUE</code>
 </li>
 <li>
-<span class="math inline">\(u(n+1) = rho * u(n)\)</span> if <code>include.differenciation</code> is <code>FALSE</code>
+<span class="math inline">\(u(n+1) = rho * u(n)\)</span> if
+<code>include.differenciation</code> is <code>FALSE</code>
 </li>
 </ul>
-<p>The Boot, Feibes and Lisman process, through the <code><a href="../reference/bflSmooth.html">bflSmooth()</a></code> function, is then used to get the high-frequency values of u across the domain window.</p>
+<p>The Boot, Feibes and Lisman process, through the
+<code><a href="../reference/bflSmooth.html">bflSmooth()</a></code> function, is then used to get the
+high-frequency values of u across the domain window.</p>
 </div>
 <div class="section level2">
 <h2 id="proportional-denton-benchmarks">Proportional Denton Benchmarks<a class="anchor" aria-label="anchor" href="#proportional-denton-benchmarks"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/threeRuleSmooth.html">threeRuleSmooth</a></span><span class="op">(</span><span class="va">turnover</span>,<span class="va">construction</span><span class="op">)</span></span></code></pre></div>
-<p>The Proportional Denton Benchmarks, provided by <code><a href="../reference/threeRuleSmooth.html">threeRuleSmooth()</a></code>, rely on this high-frequency formula:</p>
+<p>The Proportional Denton Benchmarks, provided by
+<code><a href="../reference/threeRuleSmooth.html">threeRuleSmooth()</a></code>, rely on this high-frequency formula:</p>
 <p><span class="math display">\[
 C =  I \odot a
 \]</span></p>
 <p>Where:</p>
 <ul>
 <li>
-<span class="math inline">\(C\)</span>, an univariate time series, is the high-frequency account</li>
+<span class="math inline">\(C\)</span>, an univariate time series,
+is the high-frequency account</li>
 <li>
-<span class="math inline">\(I\)</span>, an <em>univariate</em> time series, the indicator</li>
+<span class="math inline">\(I\)</span>, an <em>univariate</em> time
+series, the indicator</li>
 <li>
-<span class="math inline">\(a\)</span>, an <em>univariate time series</em>, the coefficient to be applied, which is a rate to be smoothed.</li>
+<span class="math inline">\(a\)</span>, an <em>univariate time
+series</em>, the coefficient to be applied, which is a rate to be
+smoothed.</li>
 </ul>
-<p>Proportional Denton benchmarks share some similarities with univariate two-steps benchmarks without constants. There are some differences:</p>
+<p>Proportional Denton benchmarks share some similarities with
+univariate two-steps benchmarks without constants. There are some
+differences:</p>
 <ul>
-<li>The coefficient <strong><span class="math inline">\(a\)</span> is not a constant</strong>.</li>
+<li>The coefficient <strong><span class="math inline">\(a\)</span> is
+not a constant</strong>.</li>
 <li>There is <strong>no smoothed part</strong>, as <span class="math inline">\(a\)</span> is already smoothed for <span class="math inline">\(I \odot a\)</span> to be equal to <span class="math inline">\(C\)</span> after aggregation.</li>
 </ul>
 <p>In order to smooth the rate, a few steps are required.</p>
-<p>An <strong>alternate version of I is computed</strong>, that is only used for the smoothing:</p>
+<p>An <strong>alternate version of I is computed</strong>, that is only
+used for the smoothing:</p>
 <p><span class="math display">\[
 I' = replication(crop(I))
 \]</span></p>
-<p>Only the full cycles of I are kept, then the first and last full cycles are replicated respectively backwards and forwards to fill the domain window.</p>
-<p>The low-frequency rate is already known where <span class="math inline">\(C \oslash I\)</span> is defined. This rate is then extrapolated to fill the domain window:</p>
+<p>Only the full cycles of I are kept, then the first and last full
+cycles are replicated respectively backwards and forwards to fill the
+domain window.</p>
+<p>The low-frequency rate is already known where <span class="math inline">\(C \oslash I\)</span> is defined. This rate is then
+extrapolated to fill the domain window:</p>
 <p><span class="math display">\[
-a_{aggregated}' = extrapolation(C_{aggregated} \oslash I_{aggregated})
+a_{aggregated}' = extrapolation(C_{aggregated} \oslash
+I_{aggregated})
 \]</span></p>
-<p>Such an extrapolation is a bit more problematic than the <em>natural</em> extrapolations provided by <code><a href="../reference/twoStepsBenchmark.html">twoStepsBenchmark()</a></code>. Indeed, the proportional Denton benchmarks don’t involve any hypothesis on <span class="math inline">\(a\)</span>, other than continuity. As continuity isn’t enough, and that proportional Denton benchmarks are mainly used for rates that have a trend, those rates are extrapolated using an arithmetic sequence. By default, the common difference of this sequence is given by the mean of the rate differences within the delta rate window.</p>
-<p>The high-frequency rate can then be computed with the help of a weighted Boot, Feibes and Lisman process:</p>
+<p>Such an extrapolation is a bit more problematic than the
+<em>natural</em> extrapolations provided by
+<code><a href="../reference/twoStepsBenchmark.html">twoStepsBenchmark()</a></code>. Indeed, the proportional Denton
+benchmarks don’t involve any hypothesis on <span class="math inline">\(a\)</span>, other than continuity. As continuity
+isn’t enough, and that proportional Denton benchmarks are mainly used
+for rates that have a trend, those rates are extrapolated using an
+arithmetic sequence. By default, the common difference of this sequence
+is given by the mean of the rate differences within the delta rate
+window.</p>
+<p>The high-frequency rate can then be computed with the help of a
+weighted Boot, Feibes and Lisman process:</p>
 <p><span class="math display">\[
 a = smooth(a_{aggregated}',weights=I')
 \]</span></p>
@@ -179,32 +245,52 @@ a = smooth(a_{aggregated}',weights=I')
 <div class="section level2">
 <h2 id="plots">Plots<a class="anchor" aria-label="anchor" href="#plots"></a>
 </h2>
-<p>disaggR provides some tools for plotting its results. Functions <code><a href="../reference/in_sample.html">in_sample()</a></code>, <code><a href="../reference/in_disaggr.html">in_disaggr()</a></code>, <code><a href="../reference/in_scatter.html">in_scatter()</a></code>, <code><a href="../reference/in_revisions.html">in_revisions()</a></code> generate objects of class <code>"tscomparison"</code>. Each object of class <code>"tscomparison"</code>, <code>"twoStepsBenchmark"</code> or <code>"threeRuleSmooth"</code> can be plotted with either the base <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> or the ggplot2 <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> method. These methods all share similar arguments:</p>
+<p>disaggR provides some tools for plotting its results. Functions
+<code><a href="../reference/in_sample.html">in_sample()</a></code>, <code><a href="../reference/in_disaggr.html">in_disaggr()</a></code>,
+<code><a href="../reference/in_scatter.html">in_scatter()</a></code>, <code><a href="../reference/in_revisions.html">in_revisions()</a></code> generate objects
+of class <code>"tscomparison"</code>. Each object of class
+<code>"tscomparison"</code>, <code>"twoStepsBenchmark"</code> or
+<code>"threeRuleSmooth"</code> can be plotted with either the base
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> or the ggplot2 <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> method. These
+methods all share similar arguments:</p>
 <ul>
 <li>
-<strong>x</strong> (or <strong>object</strong> for the autoplot method) a tscomparison, a twoStepsBenchmark or a threeRuleSmooth</li>
+<strong>x</strong> (or <strong>object</strong> for the autoplot
+method) a tscomparison, a twoStepsBenchmark or a threeRuleSmooth</li>
 <li>
 <strong>xlab</strong>, the title for the x axis</li>
 <li>
 <strong>ylab</strong>, the title for the y axis</li>
 <li>
-<strong>start</strong>, a numeric of length 1 or 2. The start of the plot</li>
+<strong>start</strong>, a numeric of length 1 or 2. The start of the
+plot</li>
 <li>
-<strong>end</strong>, a numeric of length 1 or 2. The end of the plot</li>
+<strong>end</strong>, a numeric of length 1 or 2. The end of the
+plot</li>
 <li>
-<strong>col</strong>, the color scale applied on the plot. Could be a vector of colors, or a function from n to a color vector of size n.</li>
+<strong>col</strong>, the color scale applied on the plot. Could be
+a vector of colors, or a function from n to a color vector of size
+n.</li>
 <li>
-<strong>lty</strong>, the linetype scales applied on the plot. Could be a vector of linetypes, or a function from n to a linetypes vector of size n.</li>
+<strong>lty</strong>, the linetype scales applied on the plot. Could
+be a vector of linetypes, or a function from n to a linetypes vector of
+size n.</li>
 <li>
-<strong>show.legend</strong>, <code>TRUE</code> or <code>FALSE</code>. Should an automatic legend be added to the plot.</li>
+<strong>show.legend</strong>, <code>TRUE</code> or
+<code>FALSE</code>. Should an automatic legend be added to the
+plot.</li>
 <li>
-<strong>main</strong>, a character of length 1, the title of the plot</li>
+<strong>main</strong>, a character of length 1, the title of the
+plot</li>
 <li>
-<strong>mar</strong>, a numeric of length 4, the margins of the plot specified in the form c(bottom, left, top, right).</li>
+<strong>mar</strong>, a numeric of length 4, the margins of the plot
+specified in the form c(bottom, left, top, right).</li>
 <li>
-<strong>theme</strong>, a ggplot theme object to replace the default one (only for autoplot methods)</li>
+<strong>theme</strong>, a ggplot theme object to replace the default
+one (only for autoplot methods)</li>
 <li>
-<strong>…</strong>, other arguments passed either to ggplot or plot</li>
+<strong>…</strong>, other arguments passed either to ggplot or
+plot</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/twoStepsBenchmark.html">twoStepsBenchmark</a></span><span class="op">(</span>hfserie <span class="op">=</span> <span class="va">turnover</span>,</span>
@@ -225,7 +311,9 @@ a = smooth(a_{aggregated}',weights=I')
 <div class="section level2">
 <h2 id="other-methods">Other methods<a class="anchor" aria-label="anchor" href="#other-methods"></a>
 </h2>
-<p>Various methods can be applied on objects of class <code>"twoStepsBenchmark"</code> and/or <code>"threeRuleSmooth"</code>.</p>
+<p>Various methods can be applied on objects of class
+<code>"twoStepsBenchmark"</code> and/or
+<code>"threeRuleSmooth"</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">benchmark</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/twoStepsBenchmark.html">twoStepsBenchmark</a></span><span class="op">(</span><span class="va">turnover</span>,<span class="va">construction</span><span class="op">)</span></span>
 <span><span class="va">smooth</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/threeRuleSmooth.html">threeRuleSmooth</a></span><span class="op">(</span><span class="va">turnover</span>,<span class="va">construction</span><span class="op">)</span></span>
@@ -245,7 +333,9 @@ a = smooth(a_{aggregated}',weights=I')
 <span><span class="fu"><a href="../reference/outliers.html">outliers</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/smoothed.rate.html">smoothed.rate</a></span><span class="op">(</span><span class="va">smooth</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span></span></code></pre></div>
-<p>Additionally, most of the methods for time series, from the package stats, automatically coerce these objects into time-series using <code><a href="https://rdrr.io/r/stats/ts.html" class="external-link">as.ts()</a></code>.</p>
+<p>Additionally, most of the methods for time series, from the package
+stats, automatically coerce these objects into time-series using
+<code><a href="https://rdrr.io/r/stats/ts.html" class="external-link">as.ts()</a></code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
