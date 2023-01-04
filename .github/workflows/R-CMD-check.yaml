@@ -50,7 +50,7 @@ jobs:
       
       - name: Session Info complète
         run: |
-          sessioninfo::session_info(rownames(installed.packages()), include_base=TRUE)
+          sessioninfo::session_info(info = "all", pkgs = "installed", include_base = TRUE)
         shell: Rscript {0}
         working-directory: ${{ inputs.working-directory }}
 
