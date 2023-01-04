@@ -47,6 +47,12 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+      
+      - name: Session Info complète
+        run: |
+          sessioninfo::session_info(rownames(installed.packages()), include_base=TRUE)
+        shell: Rscript {0}
+        working-directory: ${{ inputs.working-directory }}
 
       - uses: r-lib/actions/check-r-package@v2
         with:
