@@ -955,16 +955,16 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                         
                         output$Export <- shiny::downloadHandler(
                           filename = paste0("benchmark-",hfserie_name(),"-",lfserie_name(),".rds"),
-                          content = function(file) saveRDS(reViewOutput(old_bn(),new_bn(),compare()),file)
+                          content = function(file) saveRDS(reViewOutput(new_bn(),old_bn(),compare()),file)
                         )
                         
                         session$onSessionEnded(function() {
-                          if (Sys.getenv('SHINY_PORT') == "") shiny::isolate(shiny::stopApp(reViewOutput(old_bn(),new_bn(),compare())))
+                          if (Sys.getenv('SHINY_PORT') == "") shiny::isolate(shiny::stopApp(reViewOutput(new_bn(),old_bn(),compare())))
                         })
                         
                         shiny::observeEvent(input$Quit,{
                           session$sendCustomMessage(session$ns("closewindow"), "anymessage")
-                          if (Sys.getenv('SHINY_PORT') == "") shiny::stopApp(reViewOutput(old_bn(),new_bn(),compare()))
+                          if (Sys.getenv('SHINY_PORT') == "") shiny::stopApp(reViewOutput(new_bn(),old_bn(),compare()))
                         })
                         
                         shiny::observeEvent(input$Copy,{
@@ -1125,12 +1125,15 @@ reView.reViewOutput <- function(object,
          compare = compare)
 }
 
+warning_reviewoutput <- warning_news_factory("The order of the reViewOutput object produced by reView has been reversed. See NEWS. This warning is displayed once in each R session.")
+
 #' @export
 reView.twoStepsBenchmark <- function(object,
                                      hfserie_name = NULL,
                                      lfserie_name = NULL,
                                      compare = TRUE) {
   if (NCOL(neither_outlier_nor_constant(object)) > 1) stop("This reviewing application is only for univariate benchmarks.", call. = FALSE)
+  warning_reviewoutput()
   runapp_reView(object,
                 hfserie_name %||% deparse(object$call$hfserie),
                 lfserie_name %||% deparse(object$call$lfserie),
