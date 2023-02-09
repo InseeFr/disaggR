@@ -771,7 +771,8 @@ test_that("valid_identifier",{
 })
 
 test_that("reView_name", {
-  expect_s3_class(reViewName("a"), "reViewName")
-  expect_s3_class(reViewName(as.symbol("a")), "reViewName")
+  expect_type(reViewName("a"), "symbol")
+  expect_type(reViewName(as.symbol("a")), "symbol")
   expect_error(reViewName("*"), "names provided to reView")
+  expect_type(reViewName(quote(1+1)), "language")
 })

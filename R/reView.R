@@ -209,18 +209,11 @@ valid_identifier <- function(x) {
 # Class union for the series name, can be a language object (usually coming from
 # an expression sent to reView) or a valid identifier character
 reViewName <- function(x) {
-  if (inherits(x, "reViewName")) return(x)
-  if (! is.language(x) && ! valid_identifier(x)) {
-    stop("The names provided to reView should be either a language object or a valid identifier character",
-         call. = FALSE)
-  }
-  structure(list(x), class = "reViewName")
+  if (is.language(x)) x
+  else if (valid_identifier(x)) as.symbol(x)
+  else stop("The names provided to reView should be either a language object or a valid identifier character",
+            call. = FALSE)
 }
-
-as_character <- function(x) UseMethod("as_character")
-as_language <- function(x) UseMethod("as_language")
-as_language.reViewName <- function(x) if (is.language(x[[1L]])) x[[1L]] else as.symbol(x[[1L]])
-as_character.reViewName <- function(x) if (is.character(x[[1L]])) x else deparse(x[[1L]])
 
 # The function make_new_bn is made for setting new_bn in shiny
 # while cleaning up the call to evaluated args
@@ -253,8 +246,8 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                     outliers = outliers,
                     cl = 
                       call("twoStepsBenchmark",
-                           hfserie = as_language(hfserie_name),
-                           lfserie = as_language(lfserie_name),
+                           hfserie = hfserie_name,
+                           lfserie = lfserie_name,
                            include.differenciation = include.differenciation,
                            include.rho = include.rho,
                            set.coeff = set.coeff,
@@ -975,7 +968,7 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                         output$newcall <- shiny::renderText(new_call_text())
                         
                         output$Export <- shiny::downloadHandler(
-                          filename = paste0("benchmark-",as_character(hfserie_name()),"-",as_character(lfserie_name()),".rds"),
+                          filename = paste0("benchmark-",deparse(hfserie_name()),"-",deparse(lfserie_name()),".rds"),
                           content = function(file) saveRDS(reViewOutput(old_bn(),new_bn(),compare()),file)
                         )
                         
