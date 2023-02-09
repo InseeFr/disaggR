@@ -11,7 +11,7 @@ server <-  disaggR:::reView_server(
                     start.coeff.calc = 2005,end.coeff.calc = 2015,
                     start.benchmark = 2004,end.benchmark = 2018,
                     start.domain = 1990,end.domain = c(2030,12)),
-  "turnover","construction",
+  disaggR:::reViewName("turnover"),disaggR:::reViewName("construction"),
   TRUE)
 
 shinyApp(ui = ui, server = server)

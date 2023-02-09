@@ -4,7 +4,7 @@ params:
   old_bn: NA
   hfserie_name: NA
   lfserie_name: NA
-title: "Benchmark report `r params$hfserie_name` on `r params$lfserie_name`"
+title: "Benchmark report `r disaggR:::as_character.reViewName(params$hfserie_name)` on `r disaggR:::as_character.reViewName(params$lfserie_name)`"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 ---
 

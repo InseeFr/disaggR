@@ -92,8 +92,8 @@ test_that("reView output class",{
   produced <- reViewOutput(benchmark,benchmark,compare=TRUE)
   expected <-   structure(list(benchmark = benchmark,
                                benchmark_old = benchmark,
-                               hfserie_name = "turnover",
-                               lfserie_name = "construction",
+                               hfserie_name = as.symbol("turnover"),
+                               lfserie_name = as.symbol("construction"),
                                compare = TRUE),
                           class="reViewOutput")
   expect_identical(produced,expected)
@@ -237,7 +237,7 @@ test_that("reView-withoutset",{
   testthat::skip_if_not_installed("shinytest2")
   testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
                       tolower(Sys.info()[["sysname"]]) == "windows")
-    # Windows has some problems on CI with shinytest2
+  # Windows has some problems on CI with shinytest2
   
   app <- shinytest2::AppDriver$new(test_path("shiny-withoutset"),
                                    wait = TRUE)
@@ -477,7 +477,7 @@ test_that("reView-withoutset",{
   expect_equal(app$wait_for_value(input = "reView-menu"),"Modify")
   
   app$stop()
-
+  
 })
 
 test_that("reView-setcoefconst",{
@@ -721,7 +721,7 @@ test_that("reView-outlierssetcoef",{
                      "start.benchmark = 2000,",
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
- 
+  
   app$stop()
 })
 
@@ -751,4 +751,27 @@ test_that("clean set coeff", {
     clean_set_coeff(0,twoStepsBenchmark(turnover,construction)),
     0)
   
+})
+
+test_that("valid_identifier",{
+  expect_false(valid_identifier(as.symbol("a")))
+  expect_true(valid_identifier("."))
+  expect_false(valid_identifier(".1"))
+  expect_true(valid_identifier(".a"))
+  expect_true(valid_identifier("._"))
+  expect_true(valid_identifier("é"))
+  expect_true(valid_identifier("ééééàèô"))
+  expect_true(valid_identifier("azdad__.dqdq.398D00e"))
+  expect_false(valid_identifier("azdad__.d*qdq.398D00e"))
+  expect_false(valid_identifier("azdad__.dqdq.398°D00e"))
+  expect_true(valid_identifier(".."))
+  expect_false(valid_identifier("..1"))
+  expect_false(valid_identifier("..."))
+  expect_true(valid_identifier("...."))
+})
+
+test_that("reView_name", {
+  expect_s3_class(reViewName("a"), "reViewName")
+  expect_s3_class(reViewName(as.symbol("a")), "reViewName")
+  expect_error(reViewName("*"), "names provided to reView")
 })
