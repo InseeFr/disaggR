@@ -776,3 +776,8 @@ test_that("reView_name", {
   expect_error(reViewName("*"), "names provided to reView")
   expect_type(reViewName(quote(1+1)), "language")
 })
+
+test_that("warning reviewoutput once each session", {
+  expect_warning(warning_reviewoutput(),"order of the reViewOutput")
+  expect_no_warning(warning_reviewoutput())
+})
