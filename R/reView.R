@@ -135,8 +135,8 @@ reViewOutput <- function(benchmark,benchmark_old,
                          compare) {
   structure(list(benchmark = benchmark,
                  benchmark_old = benchmark_old,
-                 hfserie_name = deparse(benchmark$call$hfserie),
-                 lfserie_name = deparse(benchmark$call$lfserie),
+                 hfserie_name = benchmark$call$hfserie,
+                 lfserie_name = benchmark$call$lfserie,
                  compare = compare),
             class="reViewOutput")
 }
@@ -200,6 +200,21 @@ presets_list_fun <- function(hfserie,lfserie,...) {
   })
 }
 
+valid_identifier <- function(x) {
+  is.character(x) &&
+    grepl("^((([[:alpha:]]|\\.[[:alpha:]_\\.])[[:alnum:]_\\.]*)|\\.)$", x) &&
+    ! grepl("^(..[0-9]+|...)$", x)
+}
+
+# Class union for the series name, can be a language object (usually coming from
+# an expression sent to reView) or a valid identifier character
+reViewName <- function(x) {
+  if (is.language(x)) x
+  else if (valid_identifier(x)) as.symbol(x)
+  else stop("The names provided to reView should be either a language object or a valid identifier character",
+            call. = FALSE)
+}
+
 # The function make_new_bn is made for setting new_bn in shiny
 # while cleaning up the call to evaluated args
 
@@ -216,34 +231,35 @@ make_new_bn <- function(hfserie_name,lfserie_name,
                         end.domain,
                         outliers) {
   
-  assign(hfserie_name,hfserie)
-  assign(lfserie_name,lfserie)
+  twoStepsBenchmark(hfserie = hfserie,
+                    lfserie = lfserie,
+                    include.differenciation = include.differenciation,
+                    include.rho = include.rho,
+                    set.coeff = set.coeff,
+                    set.const = set.const,
+                    start.coeff.calc = start.coeff.calc,
+                    end.coeff.calc = end.coeff.calc,
+                    start.benchmark = start.benchmark,
+                    end.benchmark = end.benchmark,
+                    start.domain = start.domain,
+                    end.domain = end.domain,
+                    outliers = outliers,
+                    cl = 
+                      call("twoStepsBenchmark",
+                           hfserie = hfserie_name,
+                           lfserie = lfserie_name,
+                           include.differenciation = include.differenciation,
+                           include.rho = include.rho,
+                           set.coeff = set.coeff,
+                           set.const = set.const,
+                           start.coeff.calc = start.coeff.calc,
+                           end.coeff.calc = end.coeff.calc,
+                           start.benchmark = start.benchmark,
+                           end.benchmark = end.benchmark,
+                           start.domain = start.domain,
+                           end.domain = end.domain,
+                           outliers = outliers))
   
-  bn <- eval(substitute(twoStepsBenchmark(hfserie = hfserie_arg,lfserie = lfserie_arg,
-                                          include.differenciation = include.differenciation_arg,
-                                          include.rho = include.rho_arg,
-                                          set.coeff = set.coeff_arg,
-                                          set.const = set.const_arg,
-                                          start.coeff.calc = start.coeff.calc_arg,
-                                          end.coeff.calc = end.coeff.calc_arg,
-                                          start.benchmark = start.benchmark_arg,
-                                          end.benchmark = end.benchmark_arg,
-                                          start.domain = start.domain_arg,
-                                          end.domain = end.domain_arg,
-                                          outliers = outliers_arg),
-                        list(hfserie_arg = parse(text=hfserie_name)[[1L]],
-                             lfserie_arg = parse(text=lfserie_name)[[1L]],
-                             include.differenciation_arg = include.differenciation,
-                             include.rho_arg = include.rho,
-                             set.coeff_arg = set.coeff,
-                             set.const_arg = set.const,
-                             start.coeff.calc_arg = start.coeff.calc,
-                             end.coeff.calc_arg = end.coeff.calc,
-                             start.benchmark_arg = start.benchmark,
-                             end.benchmark_arg = end.benchmark,
-                             start.domain_arg = start.domain,
-                             end.domain_arg = end.domain,
-                             outliers_arg = outliers)))
 }
 
 zero_if_na <- function(x) if (is.na(x)) 0 else x
@@ -710,7 +726,7 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2,
                             plot(in_sample(presets_list()[[n]]),
                                  main = paste0("Model ",n," (",presets$label[n],")"),
                                  col.main = if (isTRUE(selected_preset_tab2() == n)) "red"
-                                 else "black",
+                                   else "black",
                                  font.main = if (isTRUE(get_preset(old_bn()) == n) && compare()) 4
                                  else 2)
                           })
@@ -951,10 +967,8 @@ reView_server_tab3 <- function(id,old_bn,new_bn,hfserie_name,lfserie_name,compar
                         output$oldcall <- shiny::renderText(old_call_text())
                         output$newcall <- shiny::renderText(new_call_text())
                         
-                        file_name <- shiny::reactive(paste("benchmark",hfserie_name(),lfserie_name(),sep="-"))
-                        
                         output$Export <- shiny::downloadHandler(
-                          filename = paste0("benchmark-",hfserie_name(),"-",lfserie_name(),".rds"),
+                          filename = paste0("benchmark-",deparse(hfserie_name()),"-",deparse(lfserie_name()),".rds"),
                           content = function(file) saveRDS(reViewOutput(new_bn(),old_bn(),compare()),file)
                         )
                         
@@ -1135,8 +1149,8 @@ reView.twoStepsBenchmark <- function(object,
   if (NCOL(neither_outlier_nor_constant(object)) > 1) stop("This reviewing application is only for univariate benchmarks.", call. = FALSE)
   warning_reviewoutput()
   runapp_reView(object,
-                hfserie_name %||% deparse(object$call$hfserie),
-                lfserie_name %||% deparse(object$call$lfserie),
+                reViewName(hfserie_name %||% object$call$hfserie),
+                reViewName(lfserie_name %||% object$call$lfserie),
                 compare=compare)
 }
 
@@ -1222,8 +1236,8 @@ rePort.reViewOutput <- function(object, output_file = NULL,
   rmarkdown::render(temp_rmd,output_file=temp_html,
                     params = list(new_bn=object$benchmark,
                                   old_bn=object$benchmark_old,
-                                  hfserie_name=hfserie_name %||% object$hfserie_name,
-                                  lfserie_name=lfserie_name %||% object$lfserie_name),
+                                  hfserie_name=reViewName(hfserie_name %||% object$hfserie_name),
+                                  lfserie_name=reViewName(lfserie_name %||% object$lfserie_name)),
                     envir = new.env(parent = globalenv()),
                     output_format = rmarkdown::html_document(css=system.file("rmd/report.css", package = "disaggR"),
                                                              theme=NULL),
