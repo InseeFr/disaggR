@@ -1003,7 +1003,7 @@ reView_server_module <- function(id,old_bn,new_bn_external_setter,hfserie_name,l
                                  disable_update_navbar) {
   shiny::moduleServer(id,function(input, output, session) {
     
-    output$titlenavbar <- shiny::renderText(paste("reView:", hfserie_name(),"on", lfserie_name()))
+    output$titlenavbar <- shiny::renderText(paste("reView:", deparse(hfserie_name()),"on", deparse(lfserie_name())))
     
     # tab 1 : Presets
     
