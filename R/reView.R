@@ -1083,8 +1083,10 @@ runapp_reView <- function(old_bn,hfserie_name,lfserie_name,compare) {
 #' @param object a twoStepsBenchmark with an univariate hfserie, a reViewOutput,
 #' or a character of length 1 with the path of their RDS file. If a reViewOutput
 #' is chosen, the former new benchmark is taken as the old one.
-#' @param hfserie_name a character of length 1. The name of the hfserie.
-#' @param lfserie_name a character of length 1. The name of the lfserie.
+#' @param hfserie_name a language object or a character of length 1. The name of
+#' the hfserie, eventually its expression.
+#' @param lfserie_name a language object or a character of length 1. The name of
+#' the lfserie, eventually its expression.
 #' @param compare a boolean of length 1, that tells if the outputs of
 #' the old benchmark should be displayed.
 #'
@@ -1166,8 +1168,10 @@ reView.twoStepsBenchmark <- function(object,
 #' the file is temporary, and opened in a tab of the default browser.
 #' @param launch.browser `TRUE` or `FALSE`. If TRUE, the output is opened in the
 #' browser. Defaults to TRUE if output_file is NULL.
-#' @param hfserie_name a character of length 1. The name of the hfserie.
-#' @param lfserie_name a character of length 1. The name of the lfserie.
+#' @param hfserie_name a language object or a character of length 1. The name of
+#' the hfserie, eventually its expression.
+#' @param lfserie_name a language object or a character of length 1. The name of
+#' the lfserie, eventually its expression.
 #' @param \dots other arguments passed to rmarkdown::render
 #' 
 #' @seealso reView

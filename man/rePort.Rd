@@ -24,9 +24,11 @@ the file is temporary, and opened in a tab of the default browser.}
 \item{launch.browser}{\code{TRUE} or \code{FALSE}. If TRUE, the output is opened in the
 browser. Defaults to TRUE if output_file is NULL.}
 
-\item{hfserie_name}{a character of length 1. The name of the hfserie.}
+\item{hfserie_name}{a language object or a character of length 1. The name of
+the hfserie, eventually its expression.}
 
-\item{lfserie_name}{a character of length 1. The name of the lfserie.}
+\item{lfserie_name}{a language object or a character of length 1. The name of
+the lfserie, eventually its expression.}
 
 \item{\dots}{other arguments passed to rmarkdown::render}
 }
