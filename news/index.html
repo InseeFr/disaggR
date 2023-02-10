@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">disaggR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.4.99</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,6 +51,11 @@
       <small>Source: <a href="https://github.com/InseeFr/disaggR/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.5" id="disaggr-105">disaggR 1.0.5<a class="anchor" aria-label="anchor" href="#disaggr-105"></a></h2>
+<ul><li>Breaking change : The order of the output of the <code>reViewOutput</code> object has been reversed. reView and rePort can now take a language object as name arguments and return language objects inside their name attributes (PR <a href="https://github.com/InseeFr/disaggR/issues/86" class="external-link">#86</a>)</li>
+<li>The <code>print</code> method digit argument is now passed to everything below. The default value is <code>getOption("digits")</code> for the benchmarks and <code>max(3L, getOption("digits"))</code> for the praislm objects.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.4.1" id="disaggr-1041">disaggR 1.0.4.1<a class="anchor" aria-label="anchor" href="#disaggr-1041"></a></h2><p class="text-muted">CRAN release: 2022-12-13</p>
 <ul><li>Internal change from ggplot2 size argument, which is deprecated for lines, to linewidth (PR <a href="https://github.com/InseeFr/disaggR/issues/78" class="external-link">#78</a>)</li>
