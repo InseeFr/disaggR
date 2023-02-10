@@ -797,10 +797,13 @@ test_that("valid_identifier",{
 })
 
 test_that("reView_name", {
-  expect_type(reViewName("a"), "symbol")
-  expect_type(reViewName(as.symbol("a")), "symbol")
-  expect_error(reViewName("*"), "names provided to reView")
-  expect_type(reViewName(quote(1+1)), "language")
+  expect_equal(reViewName("a"), as.symbol("a"))
+  expect_equal(reViewName(as.symbol("a")), as.symbol("a"))
+  expect_equal(reViewName("*"), as.symbol("X."))
+  expect_equal(reViewName(quote(1+1)), quote(1+1))
+  expect_equal(reViewName("."), as.symbol("."))
+  expect_equal(reViewName("azdad__.dqdq.398D00e"), as.symbol("azdad__.dqdq.398D00e"))
+  expect_equal(twoStepsBenchmark(turnover, construction)$call, twoStepsBenchmark(turnover, construction)$call)
 })
 
 test_that("warning reviewoutput once each session", {
