@@ -92,8 +92,8 @@ test_that("reView output class",{
   produced <- reViewOutput(benchmark,benchmark,compare=TRUE)
   expected <-   structure(list(benchmark = benchmark,
                                benchmark_old = benchmark,
-                               hfserie_name = "turnover",
-                               lfserie_name = "construction",
+                               hfserie_name = as.symbol("turnover"),
+                               lfserie_name = as.symbol("construction"),
                                compare = TRUE),
                           class="reViewOutput")
   expect_identical(produced,expected)
@@ -237,7 +237,7 @@ test_that("reView-withoutset",{
   testthat::skip_if_not_installed("shinytest2")
   testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
                       tolower(Sys.info()[["sysname"]]) == "windows")
-    # Windows has some problems on CI with shinytest2
+  # Windows has some problems on CI with shinytest2
   
   app <- shinytest2::AppDriver$new(test_path("shiny-withoutset"),
                                    wait = TRUE)
@@ -477,7 +477,7 @@ test_that("reView-withoutset",{
   expect_equal(app$wait_for_value(input = "reView-menu"),"Modify")
   
   app$stop()
-
+  
 })
 
 test_that("reView-setcoefconst",{
@@ -572,7 +572,21 @@ test_that("reView-setcoefconst",{
                                        start.domain = 1990,
                                        end.domain = c(2030,12))))
   
-  app$stop()
+  app$set_inputs(`reView-reViewtab3-Quit` = "click")
+  app$wait_for_idle()
+  sortie_reView <- app$stop()
+  expect_equal(as.ts(sortie_reView$benchmark),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       include.differenciation = TRUE,
+                                       start.coeff.calc = 2005,
+                                       end.coeff.calc = 2015,
+                                       start.benchmark = 2004,
+                                       end.benchmark = 2018,
+                                       start.domain = 1990,
+                                       end.domain = c(2030,12))))
+
+  expect_identical(sortie_reView$hfserie_name, quote(2*x+1))
+  expect_identical(sortie_reView$lfserie_name, as.symbol("construction"))
   
 })
 
@@ -643,8 +657,20 @@ test_that("reView-outliers",{
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
   
-  app$stop()
-  
+  app$set_inputs(`reView-reViewtab3-Quit` = "click")
+  app$wait_for_idle()
+  sortie_reView <- app$stop()
+  expect_equal(as.ts(sortie_reView$benchmark),
+               as.ts(twoStepsBenchmark(
+                 hfserie = turnover, lfserie = construction, 
+                 include.differenciation = FALSE, include.rho = FALSE, set.coeff = 100L, 
+                 set.const = NULL, start.coeff.calc = 2000L, end.coeff.calc = 2019L, 
+                 start.benchmark = 2000L, end.benchmark = 2019L, start.domain = NULL, 
+                 end.domain = NULL,
+                 outliers = list(AO2005 = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)))
+  ))
+  expect_identical(sortie_reView$hfserie_name, as.symbol("turnover"))
+  expect_identical(sortie_reView$lfserie_name, as.symbol("construction"))
 })
 
 test_that("reView-outlierssetcoef",{
@@ -721,7 +747,7 @@ test_that("reView-outlierssetcoef",{
                      "start.benchmark = 2000,",
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
- 
+  
   app$stop()
 })
 
@@ -751,4 +777,20 @@ test_that("clean set coeff", {
     clean_set_coeff(0,twoStepsBenchmark(turnover,construction)),
     0)
   
+})
+
+test_that("reView_name", {
+  expect_equal(reViewName("a"), as.symbol("a"))
+  expect_equal(reViewName(as.symbol("a")), as.symbol("a"))
+  expect_equal(suppressWarnings(reViewName("*")), as.symbol("X."))
+  expect_warning(reViewName("*"), "is invalid and has been changed")
+  expect_equal(reViewName(quote(1+1)), quote(1+1))
+  expect_equal(reViewName("."), as.symbol("."))
+  expect_equal(reViewName("azdad__.dqdq.398D00e"), as.symbol("azdad__.dqdq.398D00e"))
+  expect_equal(twoStepsBenchmark(turnover, construction)$call, twoStepsBenchmark(turnover, construction)$call)
+})
+
+test_that("warning reviewoutput once each session", {
+  expect_warning(warning_reviewoutput(),"order of the reViewOutput")
+  expect_no_warning(warning_reviewoutput())
 })
