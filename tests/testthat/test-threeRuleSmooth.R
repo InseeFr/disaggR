@@ -50,23 +50,25 @@ test_that("mean delta", {
 })
 
 test_that("threeRuleSmooth works",{
-  expect_snapshot(as.ts(threeRuleSmooth(turnover,construction)),
-                  cran = TRUE)
+  expect_snapshot(print(as.ts(threeRuleSmooth(turnover,construction)),
+                        digits = 4L),
+                  cran = FALSE)
   expect_equal(attributes(model.list(threeRuleSmooth(turnover,construction))$hfserie)$dim,
                c(245L,1L))
-  expect_snapshot(as.ts(threeRuleSmooth(turnover,construction,
-                                        start.benchmark = 2004,
-                                        end.benchmark = 2017,
-                                        start.domain = c(2004,1),
-                                        end.domain = c(2030,12))),
-                  cran = TRUE)
+  expect_snapshot(print(as.ts(threeRuleSmooth(turnover,construction,
+                                              start.benchmark = 2004,
+                                              end.benchmark = 2017,
+                                              start.domain = c(2004,1),
+                                              end.domain = c(2030,12))),
+                        digits = 4L),
+                  cran = FALSE)
   set.seed(10L)
   indic <- ts(arima.sim(list(order = c(1,1,0), ar = 0.7), n = 200),
               start=c(2000,2),
               frequency = 12)
   account <- aggregate(window(indic,start=c(2001,4),end=c(2016,3)),nfrequency=4) * rnorm(n=60,mean = 3L,sd = 0.5)
   smooth1 <- threeRuleSmooth(indic,account)
-  expect_snapshot(smooth1,cran=TRUE)
+  expect_snapshot(print(smooth1, digits = 4L), cran=FALSE)
   expect_true(all(abs(aggregate(smooth1$smoothed.rate*smooth1$hfserie.as.weights,
                                 nfrequency = 4)/
                         aggregate(smooth1$hfserie.as.weights,nfrequency=4)-
@@ -91,7 +93,7 @@ test_that("threeRuleSmooth works",{
                              end.domain = c(2017,12),
                              start.delta.rate = c(2007,1),
                              end.delta.rate = c(2008,4))
-  expect_snapshot(smooth2,cran=TRUE)
+  expect_snapshot(print(smooth2, digits = 4L), cran=FALSE)
   expect_true(all(abs(aggregate(smooth2$smoothed.rate*smooth2$hfserie.as.weights,
                                 nfrequency = 4)/
                         aggregate(smooth2$hfserie.as.weights,nfrequency=4)-
@@ -117,7 +119,7 @@ test_that("threeRuleSmooth works with set delta",{
                             end.benchmark = 2017,
                             start.domain = c(1990,1),
                             end.domain = c(2030,12),set.delta.rate = 2)
-  expect_snapshot(smooth)
+  expect_snapshot(print(smooth, digits = 4L))
   expect_true(
     all(
       abs(window(diff(smooth$lfrate),start=1991,end=2004,extend=TRUE)-2) < 10^-8

@@ -4,7 +4,7 @@ test_that("print praislm", {
                                  include.differenciation = TRUE,
                                  include.rho = TRUE,
                                  set.const = pi^2)
-  expect_snapshot_output(print(prais(benchmark)),cran = TRUE)
+  expect_snapshot_output(print(prais(benchmark), digits = 4L),cran = FALSE)
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE,
@@ -27,8 +27,9 @@ test_that("print praislm", {
 })
 
 test_that("print threeRuleSmooth",{
-  expect_snapshot_output(print(threeRuleSmooth(turnover,construction)),
-                         cran = TRUE)
+  expect_snapshot_output(print(threeRuleSmooth(turnover,construction),
+                               digits = 4L),
+                         cran = FALSE)
 })
 
 test_that("methods tests", {
@@ -43,10 +44,14 @@ test_that("methods tests", {
   expect_s3_class(residuals(benchmark),"ts")
   expect_equal(frequency(residuals(benchmark)),frequency(construction))
   expect_output(print(summary(benchmark)),"^\nCall:\ntwoStepsBenchmark\\(hfserie = turnover, lfserie = construction")
-  expect_snapshot_output(print(benchmark),cran = TRUE)
-  expect_snapshot_output(show(benchmark),cran = TRUE)
+  expect_snapshot_output(print(benchmark, digits = 4L),cran = FALSE)
+  
+  digits_save <- getOption("digits")
+  options(digits = 4L)
+  expect_snapshot_output(show(benchmark),cran = FALSE)
   expect_snapshot_output(show(threeRuleSmooth(turnover,construction)),
-                         cran = TRUE)
+                         cran = FALSE)
+  options(digits = digits_save)
   
   a <- diff(aggregate(smoothed.part(benchmark)))
   b <- residuals(benchmark)

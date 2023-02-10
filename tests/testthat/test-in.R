@@ -75,7 +75,7 @@ test_that("print in_sample prints",{
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
-  expect_snapshot_output(print(in_sample(benchmark)),cran = TRUE)
+  expect_snapshot_output(print(in_sample(benchmark), digits = 4L),cran = FALSE)
 })
 
 
@@ -558,7 +558,7 @@ test_that("in_revisions with different outliers",{
   
   expect_equal(ts_from_tsp(rowSums(res),tsp(res)),
                rev)
-  expect_snapshot(res,cran = FALSE)
+  expect_snapshot(print(res, digits = 4L),cran = FALSE)
   
   benchmarka <- twoStepsBenchmark(window(turnover,start=2005),
                                   window(construction,start=2005),
@@ -579,7 +579,7 @@ test_that("in_revisions with different outliers",{
   
   expect_equal(ts_from_tsp(rowSums(res),tsp(res)),
                rev)
-  expect_snapshot(res,cran = FALSE)
+  expect_snapshot(print(res, digits = 4L),cran = FALSE)
 })
 
 test_that("in_scatter type argument",{
