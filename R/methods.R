@@ -159,7 +159,7 @@ print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
     pm <- cbind(pm, format(Signif))
   }
   pm <- cbind(pm,"||",format(mes))
-  print.default(pm, quote = FALSE, right = TRUE,...)
+  print.default(pm, quote = FALSE, right = TRUE, digits = digits, ...)
 }
 
 #' Extracting the regression of a twoStepsBenchmark
@@ -275,9 +275,9 @@ se.twoStepsBenchmark <- function(object) se(prais(object))
 rho.twoStepsBenchmark <- function(object) rho(prais(object))
 
 #' @export
-print.twoStepsBenchmark <- function(x,...) {
-  print(prais(x),...)
-  print(as.ts(x))
+print.twoStepsBenchmark <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+  print(prais(x), digits = digits, ...)
+  print(as.ts(x), digits = digits)
   invisible(x)
 }
 
@@ -318,7 +318,7 @@ print.threeRuleSmooth <- function(x, digits = max(3L, getOption("digits") - 3L),
   cat("delta rate:\n")
   cat(format(x$delta.rate, digits = digits))
   cat("\n\n")
-  print(as.ts(x))
+  print(as.ts(x), digits = digits)
   invisible(x)
 }
 
