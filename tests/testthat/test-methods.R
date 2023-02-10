@@ -193,6 +193,12 @@ test_that("diverse ts methods",{
 test_that("monthplot ts method",{
   skip_on_cran()
   skip_if_not_installed("vdiffr")
+  skip_if(
+    any(
+      grepl("openblas",
+            as.character(sessionInfo()[c("BLAS","LAPACK")]))
+    )
+  )
   expect_doppelganger <- vdiffr::expect_doppelganger
   benchmark <- twoStepsBenchmark(turnover,construction)
   smooth <- threeRuleSmooth(turnover,construction)
@@ -213,25 +219,25 @@ test_that("outliers",{
                                  outliers = list(AO2005T1=rep(0.1,12)))
   expect_identical(outliers(benchmark),list(AO2005T1=rep(0.1,12)))
   expect_equal(outliers(benchmark,as.ts = TRUE),
-                   structure(
-                     ts(c(rep(0,60L),
-                          rep(0.1,12L),
-                          rep(0,173L)),
-                        frequency = 12L,
-                        start = 2000),
-                     dim = c(245L,1L),
-                     dimnames = list(NULL,
-                                     c("AO2005T1"))))
+               structure(
+                 ts(c(rep(0,60L),
+                      rep(0.1,12L),
+                      rep(0,173L)),
+                    frequency = 12L,
+                    start = 2000),
+                 dim = c(245L,1L),
+                 dimnames = list(NULL,
+                                 c("AO2005T1"))))
   
   expect_identical(outliers(prais(benchmark)),list(AO2005T1=rep(0.1,12)))
   expect_equal(outliers(prais(benchmark),as.ts = TRUE),
-                   structure(
-                     ts(c(rep(0,5L),
-                          1.2,
-                          rep(0,14L)),
-                        frequency = 1L,
-                        start = 2000),
-                     dim = c(20L,1L),
-                     dimnames = list(NULL,
-                                     c("AO2005T1"))))
+               structure(
+                 ts(c(rep(0,5L),
+                      1.2,
+                      rep(0,14L)),
+                    frequency = 1L,
+                    start = 2000),
+                 dim = c(20L,1L),
+                 dimnames = list(NULL,
+                                 c("AO2005T1"))))
 })
