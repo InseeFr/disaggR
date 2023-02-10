@@ -204,7 +204,11 @@ presets_list_fun <- function(hfserie,lfserie,...) {
 # an expression sent to reView) or a valid identifier character
 reViewName <- function(x) {
   if (is.language(x)) x
-  else if (is.character(x)) as.symbol(make.names(x, unique = FALSE))
+  else if (is.character(x)) {
+    x_valid <- make.names(x, unique = FALSE)
+    if (x_valid != x) warning("The name ", x , " is invalid and has been changed to ", x_valid)
+    as.symbol(x_valid)
+  }
   else stop("The names provided to reView should be either a language object or a valid identifier character",
             call. = FALSE)
 }

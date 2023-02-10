@@ -779,27 +779,11 @@ test_that("clean set coeff", {
   
 })
 
-test_that("valid_identifier",{
-  expect_false(valid_identifier(as.symbol("a")))
-  expect_true(valid_identifier("."))
-  expect_false(valid_identifier(".1"))
-  expect_true(valid_identifier(".a"))
-  expect_true(valid_identifier("._"))
-  expect_true(valid_identifier("é"))
-  expect_true(valid_identifier("ééééàèô"))
-  expect_true(valid_identifier("azdad__.dqdq.398D00e"))
-  expect_false(valid_identifier("azdad__.d*qdq.398D00e"))
-  expect_false(valid_identifier("azdad__.dqdq.398°D00e"))
-  expect_true(valid_identifier(".."))
-  expect_false(valid_identifier("..1"))
-  expect_false(valid_identifier("..."))
-  expect_true(valid_identifier("...."))
-})
-
 test_that("reView_name", {
   expect_equal(reViewName("a"), as.symbol("a"))
   expect_equal(reViewName(as.symbol("a")), as.symbol("a"))
-  expect_equal(reViewName("*"), as.symbol("X."))
+  expect_equal(suppressWarnings(reViewName("*")), as.symbol("X."))
+  expect_warning(reViewName("*"), "is invalid and has been changed")
   expect_equal(reViewName(quote(1+1)), quote(1+1))
   expect_equal(reViewName("."), as.symbol("."))
   expect_equal(reViewName("azdad__.dqdq.398D00e"), as.symbol("azdad__.dqdq.398D00e"))
