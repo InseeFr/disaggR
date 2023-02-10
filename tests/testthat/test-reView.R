@@ -576,7 +576,7 @@ test_that("reView-setcoefconst",{
   app$.__enclos_env__$private$shiny_process$get_exit_status()
   for (i in 1:10) {
     Sys.sleep(0.3)
-    if (app$.__enclos_env__$private$shiny_process$get_exit_status() == 0) break
+    if (! (app$.__enclos_env__$private$shiny_process$get_exit_status() %||% 1)) break
   }
   sortie_reView <- app$stop()
   expect_equal(as.ts(sortie_reView$benchmark),
@@ -666,7 +666,7 @@ test_that("reView-outliers",{
   app$.__enclos_env__$private$shiny_process$get_exit_status()
   for (i in 1:10) {
     Sys.sleep(0.3)
-    if (app$.__enclos_env__$private$shiny_process$get_exit_status() == 0) break
+    if (! (app$.__enclos_env__$private$shiny_process$get_exit_status() %||% 1)) break
   }
   sortie_reView <- app$stop()
   expect_equal(as.ts(sortie_reView$benchmark),
