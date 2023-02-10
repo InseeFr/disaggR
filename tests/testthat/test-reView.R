@@ -572,7 +572,21 @@ test_that("reView-setcoefconst",{
                                        start.domain = 1990,
                                        end.domain = c(2030,12))))
   
-  app$stop()
+  app$set_inputs(`reView-reViewtab3-Quit` = "click")
+  app$wait_for_idle()
+  sortie_reView <- app$stop()
+  expect_equal(as.ts(sortie_reView$benchmark),
+               as.ts(twoStepsBenchmark(turnover,construction,
+                                       include.differenciation = TRUE,
+                                       start.coeff.calc = 2005,
+                                       end.coeff.calc = 2015,
+                                       start.benchmark = 2004,
+                                       end.benchmark = 2018,
+                                       start.domain = 1990,
+                                       end.domain = c(2030,12))))
+
+  expect_identical(sortie_reView$hfserie_name, quote(2*x+1))
+  expect_identical(sortie_reView$lfserie_name, as.symbol("construction"))
   
 })
 
@@ -643,8 +657,20 @@ test_that("reView-outliers",{
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
   
-  app$stop()
-  
+  app$set_inputs(`reView-reViewtab3-Quit` = "click")
+  app$wait_for_idle()
+  sortie_reView <- app$stop()
+  expect_equal(as.ts(sortie_reView$benchmark),
+               as.ts(twoStepsBenchmark(
+                 hfserie = turnover, lfserie = construction, 
+                 include.differenciation = FALSE, include.rho = FALSE, set.coeff = 100L, 
+                 set.const = NULL, start.coeff.calc = 2000L, end.coeff.calc = 2019L, 
+                 start.benchmark = 2000L, end.benchmark = 2019L, start.domain = NULL, 
+                 end.domain = NULL,
+                 outliers = list(AO2005 = c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)))
+  ))
+  expect_identical(sortie_reView$hfserie_name, as.symbol("turnover"))
+  expect_identical(sortie_reView$lfserie_name, as.symbol("construction"))
 })
 
 test_that("reView-outlierssetcoef",{
