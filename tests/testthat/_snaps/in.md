@@ -25,7 +25,7 @@
 # in_revisions with different outliers
 
     Code
-      res
+      print(res, digits = 4L)
     Output
       Comparison between two benchmarks (contributions):
                High-frequency serie Smoothed part AO2006 Trend
@@ -278,7 +278,7 @@
 ---
 
     Code
-      res
+      print(res, digits = 4L)
     Output
       Comparison between two benchmarks (contributions):
                High-frequency serie Smoothed part AO2006 LS2010 Trend

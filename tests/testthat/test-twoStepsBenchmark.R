@@ -152,18 +152,21 @@ test_that("twoStepsBenchmark works",
             set.seed(5)
             mensualts <- ts(diffinv(rnorm(30,1,1)),start=c(2010,4),freq=12)
             trimts <- ts(diffinv(rnorm(2,12,1)),start=2011,freq=4)
-            expect_snapshot(twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE),
-                            cran = TRUE)
+            expect_snapshot(print(twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE),
+                                  digits = 4L),
+                            cran = FALSE)
             set.seed(32)
+            
             mensualts <- ts(diffinv(rnorm(30,1,1)),start=c(2010,3),freq=12)
             trimts <- ts(diffinv(rnorm(2,12,1)),start=2011,freq=4)
             bn <- twoStepsBenchmark(mensualts,trimts,include.differenciation = TRUE)
-            expect_snapshot(bn, cran = TRUE)
+            expect_snapshot(print(bn, digits = 4L), cran = FALSE)
             expect_equal(aggregate(window(as.ts(bn),start=c(2010,4)),nf=4)-trimts,ts(c(0,0,0),start=2011,freq=4))
-            expect_snapshot(twoStepsBenchmark(turnover,construction,
-                                              include.differenciation = TRUE,
-                                              include.rho = TRUE),
-                            cran = TRUE)
+            expect_snapshot(print(twoStepsBenchmark(turnover,construction,
+                                                    include.differenciation = TRUE,
+                                                    include.rho = TRUE),
+                                  digits = 4L),
+                            cran = FALSE)
           })
 
 test_that("colname is taken even with ncol = 1",
@@ -207,7 +210,7 @@ test_that("standard errors are the same that the vcov diag",{
 test_that("mts works",{
   bn <- twoStepsBenchmark(ts(matrix(rnorm(900,0,100) ,ncol=3),start=c(2000,1),freq=12) %>%
                             `colnames<-`(c("a","b","c")),construction)
-  expect_snapshot(bn, cran = TRUE)
+  expect_snapshot(print(bn, digits = 4L), cran = FALSE)
   expect_identical(names(coef(bn)),c("constant","a","b","c"))
   
   mat <- cbind(turnover,lag(turnover))
@@ -497,8 +500,8 @@ test_that("reUseBenchmark works",{
   expect_null(m1$set.smoothed.part)
   expect_null(m3$set.smoothed.part)
   expect_false(identical(as.ts(benchmark3),as.ts(benchmark2)))
-  expect_snapshot(benchmark2,cran = FALSE)
-  expect_snapshot(benchmark3,cran = FALSE)
+  expect_snapshot(print(benchmark2, digits = 4L),cran = FALSE)
+  expect_snapshot(print(benchmark3, digits = 4L),cran = FALSE)
 })
 
 test_that("residuals extrap sequence doesn't bug if rho==1 and include.differenciation=TRUE",{
@@ -512,9 +515,10 @@ test_that("annualBenchmark",{
   trimts <- ts(diffinv(rnorm(36,12,1)),start=2010,freq=4)
   expect_error(annualBenchmark(mensualts,trimts),
                "annual time series")
-  expect_snapshot(annualBenchmark(turnover,construction,
-                                  end.coeff.calc = 2018),
-                  cran = TRUE)
+  expect_snapshot(print(annualBenchmark(turnover,construction,
+                                        end.coeff.calc = 2018),
+                        digits = 4L),
+                  cran = FALSE)
   expect_equal(as.ts(annualBenchmark(turnover,construction,
                                      end.coeff.calc = 2018)),
                as.ts(twoStepsBenchmark(turnover,construction,

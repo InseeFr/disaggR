@@ -114,7 +114,7 @@ summary.praislm <- function (object, ...) {
 }
 
 #' @export
-print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3L),
+print.summary.praislm <- function (x, digits = max(3, getOption("digits") - 3L),
                                    signif.stars = getOption("show.signif.stars"),
                                    call = TRUE,...) {
   if (call) {

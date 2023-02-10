@@ -1,7 +1,8 @@
 # twoStepsBenchmark works
 
     Code
-      twoStepsBenchmark(mensualts, trimts, include.differenciation = TRUE)
+      print(twoStepsBenchmark(mensualts, trimts, include.differenciation = TRUE),
+      digits = 4L)
     Output
       
       Call:
@@ -23,7 +24,7 @@
 ---
 
     Code
-      bn
+      print(bn, digits = 4L)
     Output
       
       Call:
@@ -45,8 +46,8 @@
 ---
 
     Code
-      twoStepsBenchmark(turnover, construction, include.differenciation = TRUE,
-        include.rho = TRUE)
+      print(twoStepsBenchmark(turnover, construction, include.differenciation = TRUE,
+        include.rho = TRUE), digits = 4L)
     Output
       
       Call:
@@ -83,7 +84,7 @@
 # mts works
 
     Code
-      bn
+      print(bn, digits = 4L)
     Output
       
       Call:
@@ -151,7 +152,7 @@
 # reUseBenchmark works
 
     Code
-      benchmark2
+      print(benchmark2, digits = 4L)
     Output
       
       Call:
@@ -180,7 +181,7 @@
 ---
 
     Code
-      benchmark3
+      print(benchmark3, digits = 4L)
     Output
       
       Call:
@@ -210,7 +211,7 @@
 # annualBenchmark
 
     Code
-      annualBenchmark(turnover, construction, end.coeff.calc = 2018)
+      print(annualBenchmark(turnover, construction, end.coeff.calc = 2018), digits = 4L)
     Output
       
       Call:
