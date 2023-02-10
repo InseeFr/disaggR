@@ -572,8 +572,12 @@ test_that("reView-setcoefconst",{
                                        start.domain = 1990,
                                        end.domain = c(2030,12))))
   
-  app$set_inputs(`reView-reViewtab3-Quit` = "click")
-  app$wait_for_idle()
+  app$click("reView-reViewtab3-Quit")
+  app$.__enclos_env__$private$shiny_process$get_exit_status()
+  for (i in 1:10) {
+    Sys.sleep(0.3)
+    if (app$.__enclos_env__$private$shiny_process$get_exit_status() == 0) break
+  }
   sortie_reView <- app$stop()
   expect_equal(as.ts(sortie_reView$benchmark),
                as.ts(twoStepsBenchmark(turnover,construction,
@@ -603,6 +607,7 @@ test_that("reView-outliers",{
   # Windows has some problems on CI with shinytest2
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outliers"),
+                                   options = list(shiny.reactlog = TRUE),
                                    wait = TRUE)
   
   expect_identical(app$get_js("window.document.title;"),"reView")
@@ -657,8 +662,12 @@ test_that("reView-outliers",{
                      "end.benchmark = 2019,",
                      "outliers = list(AO2005=c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1))\n)",sep = "\n\t"))
   
-  app$set_inputs(`reView-reViewtab3-Quit` = "click")
-  app$wait_for_idle()
+  app$click("reView-reViewtab3-Quit")
+  app$.__enclos_env__$private$shiny_process$get_exit_status()
+  for (i in 1:10) {
+    Sys.sleep(0.3)
+    if (app$.__enclos_env__$private$shiny_process$get_exit_status() == 0) break
+  }
   sortie_reView <- app$stop()
   expect_equal(as.ts(sortie_reView$benchmark),
                as.ts(twoStepsBenchmark(
