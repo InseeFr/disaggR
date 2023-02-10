@@ -114,7 +114,7 @@ summary.praislm <- function (object, ...) {
 }
 
 #' @export
-print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3),
+print.summary.praislm <- function (x, digits=max(3, getOption("digits") - 3L),
                                    signif.stars = getOption("show.signif.stars"),
                                    call = TRUE,...) {
   if (call) {
@@ -275,7 +275,7 @@ se.twoStepsBenchmark <- function(object) se(prais(object))
 rho.twoStepsBenchmark <- function(object) rho(prais(object))
 
 #' @export
-print.twoStepsBenchmark <- function(x, digits = max(3L, getOption("digits") - 3L), ...) {
+print.twoStepsBenchmark <- function(x, digits = max(3L, getOption("digits")), ...) {
   print(prais(x), digits = digits, ...)
   print(as.ts(x), digits = digits)
   invisible(x)
@@ -311,7 +311,7 @@ smoothed.rate <- function(object) UseMethod("smoothed.rate")
 smoothed.rate.threeRuleSmooth <- function(object) object$smoothed.rate
 
 #' @export
-print.threeRuleSmooth <- function(x, digits = max(3L, getOption("digits") - 3L),
+print.threeRuleSmooth <- function(x, digits = max(3L, getOption("digits")),
                                   ...) {
   cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
       "\n\n", sep = "")
