@@ -1,3 +1,7 @@
+# disaggR 1.0.5
+* Breaking change : The order of the output of the `reViewOutput` object has been reversed. reView and rePort can now take a language object as name arguments and return language objects inside their name attributes (PR #86)
+* The `print` method digit argument is now passed to everything below. The default value is `getOption("digits")` for the benchmarks and `max(3L, getOption("digits"))` for the praislm objects.
+
 # disaggR 1.0.4.1
 * Internal change from ggplot2 size argument, which is deprecated for lines, to linewidth (PR #78)
 

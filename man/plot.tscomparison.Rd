@@ -51,7 +51,7 @@
   ...
 )
 
-\method{autoplot}{twoStepsBenchmark}(
+autoplot.twoStepsBenchmark(
   object,
   xlab = NULL,
   ylab = NULL,
@@ -66,7 +66,7 @@
   ...
 )
 
-\method{autoplot}{threeRuleSmooth}(
+autoplot.threeRuleSmooth(
   object,
   xlab = NULL,
   ylab = NULL,
@@ -81,7 +81,7 @@
   ...
 )
 
-\method{autoplot}{tscomparison}(
+autoplot.tscomparison(
   object,
   xlab = NULL,
   ylab = NULL,
