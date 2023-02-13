@@ -390,8 +390,8 @@ get_benchmark_call <- function(benchmark,hfserie_name,lfserie_name) {
   outliers <- outliers(benchmark)
   
   paste0("twoStepsBenchmark(",
-         "\n\thfserie = ",hfserie_name,
-         ",\n\tlfserie = ",lfserie_name,
+         "\n\thfserie = ", deparse(hfserie_name),
+         ",\n\tlfserie = ", deparse(lfserie_name),
          ",\n\tinclude.differenciation = ",model$include.differenciation,
          ",\n\tinclude.rho = ", model$include.rho,
          if (!length(model$set.coeff) == 0) paste0(",\n\tset.coeff = ", display_vector(model$set.coeff)),
