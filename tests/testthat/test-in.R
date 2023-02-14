@@ -87,7 +87,10 @@ test_that("in_disaggr works", {
   
   simul <- in_disaggr(benchmark,type = "levels")
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
-  class(obtained) <- c("tscomparison","mts","ts","matrix")
+  class(obtained) <- {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(obtained,"type") <- "levels"
   attr(obtained,"func") <- "in_disaggr"
   colnames(obtained) <- c("Benchmark","High-frequency serie")
@@ -121,7 +124,10 @@ test_that("in_disaggr works", {
   
   simul <- in_disaggr(benchmark,type = "levels")
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
-  class(obtained) <- c("tscomparison","mts","ts","matrix")
+  class(obtained) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(obtained,"type") <- "levels"
   attr(obtained,"func") <- "in_disaggr"
   colnames(obtained) <- c("Benchmark","High-frequency serie")
@@ -153,7 +159,10 @@ test_that("in_disaggr works", {
   
   simul <- in_disaggr(benchmark,type = "levels")
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
-  class(obtained) <- c("tscomparison","mts","ts","matrix")
+  class(obtained) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(obtained,"type") <- "levels"
   attr(obtained,"func") <- "in_disaggr"
   colnames(obtained) <- c("Benchmark","High-frequency serie")
@@ -215,7 +224,10 @@ test_that("in scatter works",{
                                                       "High-frequency serie (benchmark)"))),
                  start=2000,frequency=1)
   
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
@@ -230,7 +242,10 @@ test_that("in scatter works",{
                                                       "High-frequency serie (regression)"))),
                  start=2005,frequency=1)
   
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(reg)["constant"]),
@@ -247,7 +262,10 @@ test_that("in scatter works",{
                                                       "High-frequency serie (benchmark)"))),
                  start=2000,frequency=1)
   
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
   expect_identical(in_scatter(benchmark),expected)
@@ -269,7 +287,10 @@ test_that("in scatter works",{
                                                            "High-frequency serie (benchmark)"))),
                       start=2000,frequency=1))
   
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
@@ -284,7 +305,10 @@ test_that("in scatter works",{
                                                            "High-frequency serie (regression)"))),
                       start=2005,frequency=1))
   
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(reg)["constant"]),
@@ -380,7 +404,10 @@ test_that("outliers",{
   
   simul <- in_disaggr(benchmark,type = "levels")
   obtained <- cbind(na.omit(as.ts(benchmark)),turnover)
-  class(obtained) <- c("tscomparison","mts","ts","matrix")
+  class(obtained) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(obtained,"type") <- "levels"
   attr(obtained,"func") <- "in_disaggr"
   colnames(obtained) <- c("Benchmark","High-frequency serie")
@@ -414,7 +441,10 @@ test_that("outliers",{
   
   simul <- in_disaggr(benchmark,type = "levels-rebased")
   obtained <- cbind(na.omit(as.ts(benchmark)/as.ts(benchmark)[1L]),turnover/turnover[1L])*100
-  class(obtained) <- c("tscomparison","mts","ts","matrix")
+  class(obtained) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(obtained,"type") <- "levels-rebased"
   attr(obtained,"func") <- "in_disaggr"
   colnames(obtained) <- c("Benchmark","High-frequency serie")
@@ -445,7 +475,10 @@ test_that("outliers",{
                                                       "High-frequency serie (benchmark)"))),
                  start=2000,frequency=1)
   
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
@@ -460,7 +493,10 @@ test_that("outliers",{
                                                       "High-frequency serie (regression)"))),
                  start=2005,frequency=1)
   
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(reg)["constant"]),
@@ -489,7 +525,10 @@ test_that("outliers",{
                                                            "High-frequency serie (benchmark)"))),
                       start=2000,frequency=1))
   
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
@@ -507,7 +546,7 @@ test_that("outliers",{
                                  outliers = list(AO2004 = rep(0.1,12)))
   construction_out_corr <-
     construction_out -
-      aggregate_and_crop_hf_to_lf(outliers_ctb(benchmark),construction)
+    aggregate_and_crop_hf_to_lf(outliers_ctb(benchmark),construction)
   
   expect_true(all((construction_out_corr-construction)[-5] < 10^-6)) # only to check the outlier consistency
   
@@ -520,7 +559,10 @@ test_that("outliers",{
                                                       "High-frequency serie (regression)",
                                                       "High-frequency serie (benchmark)"))),
                  start=2002,frequency=1)
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
@@ -533,7 +575,10 @@ test_that("outliers",{
                         ncol=2,dimnames = list(NULL,c("Low-frequency serie",
                                                       "High-frequency serie (regression)"))),
                  start=2002,frequency=1)
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "levels"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=as.numeric(coefficients(benchmark)["constant"]),
@@ -597,7 +642,10 @@ test_that("in_scatter type argument",{
                                                            "High-frequency serie (regression)",
                                                            "High-frequency serie (benchmark)"))),
                       start=2000,frequency=1))
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   attr(expected,"abline") <- c(constant=0,
@@ -622,7 +670,10 @@ test_that("threeRuleSmooth type",{
                                             "High-frequency serie (benchmark)"))),
        start=2000,frequency=1)
   )
-  class(expected) <- c("tscomparison","mts","ts","matrix")
+  class(expected) <-  {
+    if (R.version$major >= 4 && R.version$minor >= 3) c("tscomparison","mts","ts","matrix", "array")
+    else c("tscomparison","mts","ts","matrix")
+  }
   attr(expected,"type") <- "changes"
   attr(expected,"func") <- "in_scatter"
   expect_identical(in_scatter(benchmark,type = "changes"),expected)
