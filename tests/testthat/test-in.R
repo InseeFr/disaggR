@@ -333,9 +333,9 @@ test_that("error in",{
   expect_error(in_scatter(benchmark,
                           type="contributions"),
                "The type argument of in_scatter")
-  expect_error(in_scatter(benchmark,
+  expect_error(in_scatter(threeRuleSmooth(turnover,construction),
                           type="contributions"),
-               "The type argument of threeRuleSmooth")
+               "The type argument of in_scatter")
   expect_error(in_revisions(benchmark,"nothing important"),
                "old_object must be a twoStepsBenchmark")
   set.seed(1L)
