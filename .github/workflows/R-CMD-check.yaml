@@ -44,11 +44,11 @@ jobs:
           use-public-rspm: true
       
       - name: Blas not openblas
-          if: runner.os == 'Linux'
-          run: |
-            apt-get install libblas-dev liblapack-dev
-            update-alternatives --set libblas.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/blas/libblas.so.3
-            update-alternatives --set liblapack.so.3-x86_64-linux-gnu /usr/lib/lapack/liblapack.so.3
+        if: runner.os == 'Linux'
+        run: |
+          apt-get install libblas-dev liblapack-dev
+          update-alternatives --set libblas.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/blas/libblas.so.3
+          update-alternatives --set liblapack.so.3-x86_64-linux-gnu /usr/lib/lapack/liblapack.so.3
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
