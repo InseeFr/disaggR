@@ -21,6 +21,13 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
+          
+      - name: Blas not openblas
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install libblas-dev liblapack-dev
+          sudo update-alternatives --set libblas.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/blas/libblas.so.3
+          sudo update-alternatives --set liblapack.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3 
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
