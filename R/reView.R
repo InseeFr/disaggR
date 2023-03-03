@@ -1139,15 +1139,12 @@ reView.reViewOutput <- function(object,
          compare = compare)
 }
 
-warning_reviewoutput <- warning_news_factory("The order of the reViewOutput object produced by reView has been reversed. See NEWS. This warning is displayed once in each R session.")
-
 #' @export
 reView.twoStepsBenchmark <- function(object,
                                      hfserie_name = NULL,
                                      lfserie_name = NULL,
                                      compare = TRUE) {
   if (NCOL(neither_outlier_nor_constant(object)) > 1) stop("This reviewing application is only for univariate benchmarks.", call. = FALSE)
-  warning_reviewoutput()
   runapp_reView(object,
                 reViewName(hfserie_name %||% object$call$hfserie),
                 reViewName(lfserie_name %||% object$call$lfserie),

@@ -471,6 +471,12 @@ test_that("reView-withoutset",{
   
   # Reset change menu
   app$set_inputs(`reView-menu` = "Export")
+  app$set_inputs(`reView-reViewtab3-Copy` = "click",
+                 allow_no_input_binding_ = TRUE)
+  app$set_inputs(`reView-reViewtab2-infobtn` = "click")
+  app$wait_for_js("($('#shiny-modal').data('bs.modal') || {}).isShown")
+  app$get_js("$('.modal').modal('hide');")
+
   app$set_inputs(`reView-reViewtab3-Reset` = "click",
                  allow_no_input_binding_ = TRUE)
   app$wait_for_value(output = "reView-reViewtab2-monoplotlev")
@@ -798,9 +804,4 @@ test_that("reView_name", {
   expect_equal(reViewName("."), as.symbol("."))
   expect_equal(reViewName("azdad__.dqdq.398D00e"), as.symbol("azdad__.dqdq.398D00e"))
   expect_equal(twoStepsBenchmark(turnover, construction)$call, twoStepsBenchmark(turnover, construction)$call)
-})
-
-test_that("warning reviewoutput once each session", {
-  expect_warning(warning_reviewoutput(),"order of the reViewOutput")
-  expect_no_warning(warning_reviewoutput())
 })

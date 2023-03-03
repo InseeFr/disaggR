@@ -446,7 +446,7 @@ in_scatter.twoStepsBenchmark <- function(object,
 #' @export
 in_scatter.threeRuleSmooth <- function(object, type = "levels") {
   
-  if (! type %in% c("levels", "changes")) stop("The type argument of in_scatter should be either \"levels\" or \"changes\".",call. = FALSE)
+  if (! type %in% c("levels", "changes")) stop("The type argument of threeRuleSmooth should be either \"levels\" or \"changes\".",call. = FALSE)
   
   m <- model.list(object)
   

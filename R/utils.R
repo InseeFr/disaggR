@@ -118,16 +118,4 @@ switch_window <- function(start,end,init_tsp) {
   )
 }
 
-warning_news_factory <- function(message) {
-  force(message)
-  thrown <- FALSE
-  function() {
-    if (thrown == FALSE) {
-      warning(message, call. = FALSE)
-    }
-    thrown <<- TRUE
-    invisible(message)
-  }
-}
-
 `%||%` <- function(x,y) if (is.null(x)) y else x
