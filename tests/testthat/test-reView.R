@@ -793,6 +793,7 @@ test_that("reView_name", {
   expect_equal(reViewName(as.symbol("a")), as.symbol("a"))
   expect_equal(suppressWarnings(reViewName("*")), as.symbol("X."))
   expect_warning(reViewName("*"), "is invalid and has been changed")
+  expect_warning(reViewName(ts(1:10)), "either a language")
   expect_equal(reViewName(quote(1+1)), quote(1+1))
   expect_equal(reViewName("."), as.symbol("."))
   expect_equal(reViewName("azdad__.dqdq.398D00e"), as.symbol("azdad__.dqdq.398D00e"))
