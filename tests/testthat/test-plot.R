@@ -1,3 +1,17 @@
+skips <- function() {
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
+  skip_if(
+    any(
+      grepl("openblas",
+            as.character(sessionInfo()[c("BLAS","LAPACK")]))
+    )
+  )
+  skip_if(getRversion() < "4.4.0")
+}
+
+expect_doppelganger <- vdiffr::expect_doppelganger
+
 test_that("function_if_it_isnt_one works", {
   expect_identical(function_if_it_isnt_one(seq_len),seq_len)
   expect_identical(lapply(1:20,function_if_it_isnt_one(3L)),
@@ -9,15 +23,7 @@ test_that("function_if_it_isnt_one works", {
 })
 
 test_that("plot works with twoStepsBenchmark", {
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE,
@@ -31,7 +37,7 @@ test_that("plot works with twoStepsBenchmark", {
                                   end.domain = c(2021,12))
   
   expect_doppelganger("plot-benchmark-nowin",
-                      function() plot(benchmark))
+                      function() plot(benchmark),)
   
   expect_doppelganger("plot-insample-levels-nowin",
                       function() plot(in_sample(benchmark,type="levels")))
@@ -170,16 +176,7 @@ test_that("plot works with twoStepsBenchmark", {
 })
 
 test_that("ggplot works", {
-  skip_if_not_installed("vdiffr")
-  testthat::skip_if_not_installed("ggplot2")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -303,15 +300,7 @@ test_that("ggplot works", {
 })
 
 test_that("show.legend=FALSE works with plot", {
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -343,16 +332,7 @@ test_that("show.legend=FALSE works with plot", {
 })
 
 test_that("show.legend=FALSE works with ggplot", {
-  skip_if_not_installed("vdiffr")
-  testthat::skip_if_not_installed("ggplot2")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -384,16 +364,7 @@ test_that("show.legend=FALSE works with ggplot", {
 })
 
 test_that("mts ggplot", {
-  skip_if_not_installed("vdiffr")
-  testthat::skip_if_not_installed("ggplot2")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   set.seed(1)
   series <- 10+replicate(3,arima.sim(list(order = c(1,1,0), ar = 0.8), n = 300))
   mts <- ts(series,start=c(2000,1),freq=12) %>%
@@ -420,15 +391,7 @@ test_that("mts ggplot", {
 })
 
 test_that("xlab and ylab works", {
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   benchmark <- twoStepsBenchmark(hfserie = turnover,
                                  lfserie = construction,
                                  include.differenciation = TRUE)
@@ -447,15 +410,7 @@ test_that("xlab and ylab works", {
 })
 
 test_that("plot works with threeRuleSmooth", {
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   smooth <- threeRuleSmooth(hfserie = turnover,
                             lfserie = construction,
                             end.domain = c(2021,12))
@@ -558,16 +513,7 @@ test_that("plot works with threeRuleSmooth", {
 })
 
 test_that("ggplot works with threeRuleSmooth", {
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  testthat::skip_if_not_installed("ggplot2")
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   smooth <- threeRuleSmooth(hfserie = turnover,
                             lfserie = construction,
                             end.domain = c(2021,12))
@@ -670,15 +616,7 @@ test_that("ggplot works with threeRuleSmooth", {
 })
 
 test_that("plot outliers in_disaggr",{
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   benchmark <- twoStepsBenchmark(turnover,construction,
                                  outliers=list(LS2005=rep(0.1,12L)))
   
@@ -693,16 +631,7 @@ test_that("plot outliers in_disaggr",{
 })
 
 test_that("ggplot outliers in_disaggr",{
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
-  testthat::skip_if_not_installed("ggplot2")
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   benchmark <- twoStepsBenchmark(turnover,construction,
                                  outliers=list(LS2005=rep(0.1,12L)))
   
@@ -717,16 +646,8 @@ test_that("ggplot outliers in_disaggr",{
 })
 
 test_that("plot method accessibility of graphical parameters",{
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    any(
-      grepl("openblas",
-            as.character(sessionInfo()[c("BLAS","LAPACK")]))
-    )
-  )
+  skips()
   benchmark <- twoStepsBenchmark(turnover,construction)
-  expect_doppelganger <- vdiffr::expect_doppelganger
   expect_doppelganger("plot-par-benchmark",
                       function() plot(benchmark,
                                       main="title",
@@ -788,13 +709,7 @@ test_that("eval_function_if_it_is_one works", {
 })
 
 test_that("no labels outside margins", {
-  skip_if_not_installed("vdiffr")
-  skip_on_cran()
-  skip_if(
-    grepl("openblas",
-          as.character(sessionInfo()[c("BLAS","LAPACK")]))
-  )
-  expect_doppelganger <- vdiffr::expect_doppelganger
+  skips()
   expect_doppelganger("no-labels-outside-plot-margins",
                       function() plot(in_sample(twoStepsBenchmark(turnover,construction)),mar = c(5,5,5,5)))
 })

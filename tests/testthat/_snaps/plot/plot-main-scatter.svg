@@ -27,10 +27,6 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMTguNzJ8NzE5Ljk5fDE0LjQwfDU2MS42MA==)'>
-<line x1='69.63' y1='561.60' x2='69.63' y2='14.40' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='265.69' y1='561.60' x2='265.69' y2='14.40' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='461.74' y1='561.60' x2='461.74' y2='14.40' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='657.80' y1='561.60' x2='657.80' y2='14.40' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='18.72' y1='547.89' x2='719.99' y2='547.89' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='18.72' y1='468.17' x2='719.99' y2='468.17' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='18.72' y1='388.45' x2='719.99' y2='388.45' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
@@ -38,6 +34,10 @@
 <line x1='18.72' y1='229.01' x2='719.99' y2='229.01' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='18.72' y1='149.29' x2='719.99' y2='149.29' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='18.72' y1='69.57' x2='719.99' y2='69.57' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='69.63' y1='561.60' x2='69.63' y2='14.40' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='265.69' y1='561.60' x2='265.69' y2='14.40' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='461.74' y1='561.60' x2='461.74' y2='14.40' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='657.80' y1='561.60' x2='657.80' y2='14.40' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='18.72' y1='506.73' x2='719.99' y2='10.00' style='stroke-width: 1.50; stroke: #FF0000;' />
 <line x1='530.43' y1='221.03' x2='405.55' y2='254.52' style='stroke-width: 0.75; stroke: #2B6687;' />
 <line x1='405.55' y1='254.52' x2='429.86' y2='171.61' style='stroke-width: 0.75; stroke: #42728F;' />

@@ -26,6 +26,12 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMTguNzJ8NzE5Ljk5fDAuMDF8NTYxLjYw)'>
+<line x1='18.72' y1='546.58' x2='719.99' y2='546.58' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='18.72' y1='441.12' x2='719.99' y2='441.12' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='18.72' y1='335.65' x2='719.99' y2='335.65' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='18.72' y1='230.18' x2='719.99' y2='230.18' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='18.72' y1='124.72' x2='719.99' y2='124.72' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
+<line x1='18.72' y1='19.25' x2='719.99' y2='19.25' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='30.05' y1='561.60' x2='30.05' y2='0.014' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='124.57' y1='561.60' x2='124.57' y2='0.014' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='219.08' y1='561.60' x2='219.08' y2='0.014' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
@@ -34,12 +40,6 @@
 <line x1='502.63' y1='561.60' x2='502.63' y2='0.014' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='597.14' y1='561.60' x2='597.14' y2='0.014' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='691.66' y1='561.60' x2='691.66' y2='0.014' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='18.72' y1='546.58' x2='719.99' y2='546.58' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='18.72' y1='441.12' x2='719.99' y2='441.12' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='18.72' y1='335.65' x2='719.99' y2='335.65' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='18.72' y1='230.18' x2='719.99' y2='230.18' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='18.72' y1='124.72' x2='719.99' y2='124.72' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
-<line x1='18.72' y1='19.25' x2='719.99' y2='19.25' style='stroke-width: 0.75; stroke: #BEBEBE; stroke-dasharray: 1.00,3.00;' />
 <line x1='18.72' y1='489.98' x2='719.99' y2='-55.27' style='stroke-width: 1.50; stroke: #FF0000;' />
 <line x1='706.50' y1='12.92' x2='32.21' y2='550.80' style='stroke-width: 0.75; stroke: #2B6687;' />
 <line x1='32.21' y1='550.80' x2='265.25' y2='266.04' style='stroke-width: 0.75; stroke: #99A8B4;' />
