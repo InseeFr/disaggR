@@ -120,7 +120,6 @@ residuals_extrap_sequence <- function(u0,u1,rho,n,include.differenciation) {
 #'
 #' @param lfresiduals the residuals to extrapolate
 #' @param rho the autocorrelation parameter of the regression
-#' @param n an integer, how many extrapolations to do.
 #' @param include.differenciation a boolean, the same as submitted
 #' to twoStepsBenchmark
 #'

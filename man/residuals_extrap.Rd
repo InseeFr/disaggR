@@ -13,8 +13,6 @@ residuals_extrap(lfresiduals, rho, include.differenciation)
 
 \item{include.differenciation}{a boolean, the same as submitted
 to twoStepsBenchmark}
-
-\item{n}{an integer, how many extrapolations to do.}
 }
 \value{
 a numeric, the extrapolated sequence of residuals, to replace the NA of
