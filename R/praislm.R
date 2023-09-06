@@ -45,6 +45,7 @@ praislm_impl <- function(X,y,include.rho) {
         X_star <- omega_inv_sqrt(X,rho)
         
         PQR <- qr(X_star)
+        if (PQR$rank != ncol(X_star))  stop("After decorrelation, the rank becomes imperfect", call. = FALSE)
         coefficients <- qr.coef(PQR,y_star)
         if (i == 50L) {
           warning("Maximum iterations without convergence", call. = FALSE)
