@@ -576,7 +576,6 @@ in_convergence.praislm <- function(object,type="indicators-only") {
             type=type,
             func="in_convergence",
             class=c("tscomparison",class(series)),
-            dimnames=dimnames(series),
             in_sample = drop(tail(series,1L)))
 }
 
@@ -610,11 +609,11 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
       init = x,
       x = c("type","func","abline","in_sample")
     ),
-    any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
+    any(frequency(x) == c(1, 4, 12)) && length(start(x)) == 2L, ...),
     quote = FALSE, right = TRUE,digits = digits,
     ...)
   
-  if (attr(x,"func")[1L] == "in_convergence") {
+  if (identical(attr(x,"func"),"in_convergence")) {
     cat("\nIn-sample coefficients (", attr(x,"type"),"):\n", sep = "")
     print(attr(x,"in_sample"))
   }
