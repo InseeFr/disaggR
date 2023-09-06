@@ -341,8 +341,8 @@ outliers_ctb <- function(object) {
   if (is.null(outliers)) NULL
   else {
     ts_from_tsp(outliers %*%
-                     coefficients(object)[colnames(outliers)],
-                   tsp(outliers))
+                  coefficients(object)[colnames(outliers)],
+                tsp(outliers))
   }
 }
 
@@ -480,22 +480,149 @@ in_scatter.threeRuleSmooth <- function(object, type = "levels") {
                                  "High-frequency serie (benchmark)")))
 }
 
+#' Producing the in sample predictions of a prais-lm regression
+#' 
+#' The function `in_sample` returns in-sample predictions from a \link{praislm}
+#' or a \link{twoStepsBenchmark} object.
+#' 
+#' The functions `plot` and `autoplot` can be used on this object to produce
+#' graphics.
+#' 
+#' The predicted values are different from the fitted values :
+#' 
+#' * they are eventually reintegrated.
+#' * they contain the autocorrelated part of the residuals.
+#' 
+#' Besides, changes are relative to the latest benchmark value, not the latest
+#' predicted value.
+#' 
+#' @param object an object of class `"praislm"` or `"twoStepsBenchmark"`.
+#' @param type `"changes"` or `"levels"`. The results are either returned
+#' in changes or in levels.
+#' @return
+#' a named matrix time series of two columns, one for the response and the other
+#' for the predicted value.
+#' A `"tscomparison"` class is added to the object.
+#' @seealso \link{in_disaggr} \link{in_revisions} \link{in_scatter}
+#' \link{plot.tscomparison}
+#' @examples
+#' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
+#' plot(in_sample(benchmark))
+#' @export
+in_convergence <- function(object,type="normalized") UseMethod("in_convergence")
+
+#' @importFrom stats lag
+#' @export
+in_convergence.praislm <- function(object,type="normalized") {
+  m <- model.list(object)
+  tspy <- tsp(m$y)
+  nc <- length(coefficients(object))
+  
+  oos <-
+    t(
+      vapply(0L:(length(m$y) - 1L),
+             function(n) {
+               tryCatch({
+                 p <- praislm(
+                   window(m$X, tspy[1L], tspy[1L] + n * 1/tspy[3L],
+                          extend = TRUE),
+                   window(m$y, tspy[1L], tspy[1L] + n * 1/tspy[3L],
+                          extend = TRUE),
+                   m$include.rho,
+                   m$include.differenciation,
+                   m$set.coefficients,
+                   NULL)
+                 coefficients(p)
+               },
+               error = function(e) {
+                 if (grepl("two observations|rank", e$message)) {
+                   setNames(rep(NA_real_, nc), colnames(m$X))
+                 } else stop(e)
+               })},
+             FUN.VALUE = rep(0,nc))
+    )
+  
+  series <-
+    ts(
+      switch(type,
+             normalized={
+               apply(oos,
+                     2L,
+                     function(x) {
+                       (x-mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE)
+                     })
+             },
+             "non-normalized-indicators-only"={
+               oos[,
+                   !(colnames(oos) %in%
+                       c("constant", names(outliers(object)))),
+                   drop = FALSE]
+             },
+             "non-normalized-2d"={
+               res <-
+                 oos[,
+                     !(colnames(oos) %in%
+                         c(names(outliers(object)))),
+                     drop = FALSE]
+               if (NCOL(res) != 2L) {
+                 stop("The type argument \"non-normalized-2d\" is only possible on models using exactly two time-series, besides outliers and including the constant",
+                      call. = FALSE)
+               }
+               res
+             },
+             "non-normalized"=oos,
+             stop("The type argument of in_convergence should be either \"normalized\", \"non-normalized-indicators-only\", \"non-normalized-2d\",\"non-normalized\"", call. = FALSE)
+      ),
+      start = tspy[1L] + 1/tspy[3L],
+      frequency = tspy[3L])
+  
+  structure(window(series, end = tspy[2L], extend = TRUE),
+            type=type,
+            func="in_convergence",
+            class=c("tscomparison",class(series)),
+            dimnames=dimnames(series),
+            in_sample = drop(tail(series,1L)))
+}
+
+#' @export
+in_convergence.twoStepsBenchmark <- function(object,type="normalized") {
+  in_convergence(prais(object),type=type)
+}
+
+#' @export
+in_convergence.threeRuleSmooth <- function(object,type="normalized") {
+  stop("The in_convergence method needs a regression hence isn't applicable on a threeRuleSmooth object",call. = FALSE)
+}
+
 #' @export
 print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...) {
+  
   label <- switch(attr(x,"func")[1L],
                   in_disaggr="Comparison between the benchmark and the input",
                   in_sample="In-sample predictions",
                   in_revisions="Comparison between two benchmarks",
-                  in_scatter="Comparison between the inputs")
+                  in_scatter="Comparison between the inputs",
+                  in_convergence="Out-of-sample coefficients")
   cat(label, " (", attr(x,"type"),"):\n", sep = "")
   
-  attr(x,"type")         <- NULL
-  attr(x,"func")         <- NULL
-  attr(x,"abline") <- NULL
+  print(.preformat.ts(
+    Reduce(
+      f = function(x,attribute) {
+        attr(x, attribute) <- NULL
+        x
+      },
+      init = x,
+      x = c("type","func","abline","in_sample")
+    ),
+    any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
+    quote = FALSE, right = TRUE,digits = digits,
+    ...)
   
-  print(.preformat.ts(x, any(frequency(x) == c(4, 12)) && length(start(x)) == 2L, ...),
-        quote = FALSE, right = TRUE,digits = digits,
-        ...)
+  if (attr(x,"func")[1L] == "in_convergence") {
+    cat("\nIn-sample coefficients (", attr(x,"type"),"):\n", sep = "")
+    print(attr(x,"in_sample"))
+  }
+  
   invisible(x)
 }
 
@@ -528,23 +655,35 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' @export
 distance <- function(x, p = 2) UseMethod("distance")
 
+minkowski <- function(x,p) {
+  if (is.null(dim(x))) {
+    if (p == Inf) max(abs(x),na.rm = TRUE)
+    else mean(abs(x)^p,na.rm = TRUE)^(1/p)
+  } else apply(x, 2L, function(xp) minkowski(xp,p))
+}
+
 #' @export
 distance.tscomparison <- function(x, p = 2) {
   if (p < 1) stop("p should be greater than 1", call. = FALSE)
   
-  res <- switch(attr(x,"func"),
-                in_sample = x[,"Benchmark"] - x[,"Predicted value"],
-                in_scatter = stop("The distance method doesn't support in_scatter results", call. = FALSE),
-                in_disaggr = {
-                  if (identical(attr(x,"type"),"contributions")) x[,"Smoothed part"] + x[,"Trend"]
-                  else x[,"Benchmark"] - ts_from_tsp(rowSums(x[,colnames(x) != "Benchmark",drop = FALSE]),
-                                                     tsp(x))
-                },
-                in_revisions = {
-                  if (identical(attr(x,"type"),"contributions")) stop("The distance method doesn't support revisions of contributions", call. = FALSE)
-                  else x[,"Benchmark"]
-                })
+  minkowski(
+    switch(attr(x,"func"),
+           in_sample = x[,"Benchmark"] - x[,"Predicted value"],
+           in_scatter = stop("The distance method doesn't support in_scatter results", call. = FALSE),
+           in_disaggr = {
+             if (identical(attr(x,"type"),"contributions")) x[,"Smoothed part"] + x[,"Trend"]
+             else x[,"Benchmark"] - ts_from_tsp(rowSums(x[,colnames(x) != "Benchmark",drop = FALSE]),
+                                                tsp(x))
+           },
+           in_revisions = {
+             if (identical(attr(x,"type"),"contributions")) stop("The distance method doesn't support revisions of contributions", call. = FALSE)
+             else x[,"Benchmark"]
+           },
+           in_convergence= {
+             t(t(x) - attr(x,"in_sample"))
+           }
+    ),
+    p
+  )
   
-  if (p == Inf) max(abs(res),na.rm = TRUE)
-  else mean(abs(res)^p,na.rm = TRUE)^(1/p)
 }
