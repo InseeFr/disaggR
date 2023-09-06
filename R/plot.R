@@ -661,6 +661,12 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
     g <- g + ggplot2::geom_abline(intercept = attr(object,"abline")["constant"],
                                   slope = attr(object,"abline")["slope"],
                                   lty = "solid", colour = "red", linewidth = 1)
+  } else if (!is.null(attr(object,"in_sample"))) {
+    g <- g + ggplot2::geom_point(aes(x=attr(object,"in_sample")[2L],
+                                     y=attr(object,"in_sample")[1L]),
+                                 colour="red",
+                                 shape=4,
+                                 size=5)
   }
   
   g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L])
@@ -795,42 +801,49 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
   
   type_label <- type_label(object)
   
-  if (type_label == "Contributions") {
-    if (all(object[,"Trend"] == 0,na.rm = TRUE)) object <- object[,colnames(object) != "Trend", drop = FALSE]
-    
-    ggplotts(object, show.legend = show.legend,
-             type = "bar", series_names = colnames(object), theme = theme,
-             start = start, end = end,
-             xlab = xlab, ylab = ylab, ...) +
-      ggplot2::labs(fill=type_label) +
-      ggplot2::discrete_scale("fill","hue",col,na.translate = FALSE) +
-      ggplot2::ggtitle(main)
-  }
-  else switch(attr(object,"func"),
-              in_revisions = {
+  switch(attr(object,"type"),
+         contributions={
+           if (all(object[,"Trend"] == 0,na.rm = TRUE)) object <- object[,colnames(object) != "Trend", drop = FALSE]
+           
+           ggplotts(object, show.legend = show.legend,
+                    type = "bar", series_names = colnames(object), theme = theme,
+                    start = start, end = end,
+                    xlab = xlab, ylab = ylab, ...) +
+             ggplot2::labs(fill=type_label) +
+             ggplot2::discrete_scale("fill","hue",col,na.translate = FALSE) +
+             ggplot2::ggtitle(main)
+         },
+         "non-normalized-2d"=ggscatter(object = object, show.legend = show.legend,
+                                       theme = theme, start = start, end = end,
+                                       xlab = xlab, ylab = ylab,
+                                       col = col, lty = lty,...) +
+           ggplot2::ggtitle(main),
+         switch(attr(object,"func"),
+                in_revisions = {
+                  ggplotts(object = object, show.legend = show.legend,
+                           type="segment", series_names = colnames(object),theme = theme,
+                           start = start, end = end,
+                           xlab = xlab, ylab = ylab, ...) +
+                    ggplot2::labs(colour=type_label) +
+                    ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
+                    ggplot2::ggtitle(main)
+                },
+                in_scatter = {
+                  ggscatter(object = object, show.legend = show.legend,
+                            theme = theme, start = start, end = end,
+                            xlab = xlab, ylab = ylab,
+                            col = col, lty = lty,...) +
+                    ggplot2::ggtitle(main)
+                },
                 ggplotts(object = object, show.legend = show.legend,
-                         type="segment", series_names = colnames(object),theme = theme,
+                         type="line",series_names = colnames(object), theme = theme,
                          start = start, end = end,
                          xlab = xlab, ylab = ylab, ...) +
+                  ggplot2::labs(linetype=type_label) +
                   ggplot2::labs(colour=type_label) +
                   ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
+                  ggplot2::discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
                   ggplot2::ggtitle(main)
-              },
-              in_scatter = {
-                ggscatter(object = object, show.legend = show.legend,
-                          theme = theme, start = start, end = end,
-                          xlab = xlab, ylab = ylab,
-                          col = col, lty = lty,...) +
-                  ggplot2::ggtitle(main)
-              },
-              ggplotts(object = object, show.legend = show.legend,
-                       type="line",series_names = colnames(object), theme = theme,
-                       start = start, end = end,
-                       xlab = xlab, ylab = ylab, ...) +
-                ggplot2::labs(linetype=type_label) +
-                ggplot2::labs(colour=type_label) +
-                ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
-                ggplot2::discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
-                ggplot2::ggtitle(main)
+         )
   )
 }
