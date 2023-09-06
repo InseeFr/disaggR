@@ -3,8 +3,16 @@ type_label <- function(object) {
          levels="Levels",
          `levels-rebased`="Rebased levels",
          changes="Changes",
-         contributions="Contributions"
+         contributions="Contributions",
+         normalized="Normalized",
+         `non-normalized-indicators-only`="Non-normalized (indicators only)",
+         `non-normalized-2d`="Non normalized (2d)",
+         `non-normalized`="Non normalized"
   )
+}
+
+is_scatter <- function(x) {
+  identical(attr(x,"func"),"in_scatter") || identical(attr(x,"type"),"non-normalized-2d")
 }
 
 #' Default color palette
@@ -18,7 +26,7 @@ type_label <- function(object) {
 #' @importFrom RColorBrewer brewer.pal
 default_col_pal <- function(object) {
   if (identical(attr(object,"type"),"contributions")) function(n) suppressWarnings(brewer.pal(n,"Set2"))[seq_len(n)]
-  else if (identical(attr(object,"func"),"in_scatter")) colorRampPalette(colors = c("#2B6788","#CBCBCB","#90503F"),space = "Lab")
+  else if (is_scatter(object)) colorRampPalette(colors = c("#2B6788","#CBCBCB","#90503F"),space = "Lab")
   else function(n) suppressWarnings(brewer.pal(n,"Set1"))[seq_len(n)]
 }
 
@@ -32,7 +40,7 @@ default_col_pal <- function(object) {
 #' @keywords internal
 #' @export
 default_lty_pal <- function(object) {
-  if (identical(attr(object,"func"),"in_scatter")) seq_len
+  if (is_scatter(object)) seq_len
   else {
     types <- c("solid", "22", "42", "44", 
                "13", "1343", "73", "2262", "12223242", 
@@ -222,6 +230,7 @@ window_default <- function(x,start,end) {
   
   attr(res,"abline") <- attr(x,"abline")
   attr(res,"func") <- attr(x,"func")
+  attr(res,"in_sample") <- attr(x,"in_sample")
   
   res
 }
@@ -284,10 +293,10 @@ plotts <- function(x,show.legend,col,lty,
                                    col=col,lty="solid",horiz=TRUE,bty="n",cex=0.8)
          },
          scatter = {
-           plot_init(xmin = min(x[,-1L], na.rm = TRUE),
-                     xmax = max(x[,-1L], na.rm = TRUE),
-                     ymin = min(x[,1L],na.rm = TRUE),
-                     ymax = max(x[,1L],na.rm = TRUE),
+           plot_init(xmin = min(c(x[,-1L], attr(x,"in_sample")[2L]), na.rm = TRUE),
+                     xmax = max(c(x[,-1L], attr(x,"in_sample")[2L]), na.rm = TRUE),
+                     ymin = min(c(x[,1L], attr(x,"in_sample")[1L]),na.rm = TRUE),
+                     ymax = max(c(x[,1L], attr(x,"in_sample")[1L]),na.rm = TRUE),
                      xlab = xlab, ylab = ylab,
                      extend.x = TRUE, extend.y = TRUE,
                      abline.x=FALSE, main = main, xlim = xlim,
@@ -298,6 +307,13 @@ plotts <- function(x,show.legend,col,lty,
                     b = attr(x,"abline")["slope"],
                     col = "red",
                     lwd = 2)
+           } else if (!is.null(attr(x,"in_sample"))) {
+             points.default(attr(x,"in_sample")[2L],
+                            attr(x,"in_sample")[1L],
+                            col = "red",
+                            pch=4,
+                            cex=2
+             )
            }
            
            scatterplot_ts(x[,c(1L,2L)], col=col, lty = lty[1L])
@@ -333,7 +349,7 @@ plotts <- function(x,show.legend,col,lty,
          }
   )
   
-  draw_axes(if (identical(attr(x,"func"),"in_scatter")) NULL else timex_win,
+  draw_axes(if (type == "scatter") NULL else timex_win,
             cex.axis)
   
   invisible()
@@ -469,42 +485,48 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
   on.exit(par(mar=mar_save))
   par(mar=mar)
   
-  type_label <- type_label(x)
-  
-  if (type_label == "Contributions") {
-    if (all(x[,"Trend"] == 0,na.rm = TRUE)) {
-      force(col);force(lty)
-      x <- x[,colnames(x) != "Trend", drop = FALSE]
-    }
-    plotts(x = x, show.legend = show.legend,
-           col = col, lty = lty,
-           series_names = colnames(x),type = "bar",
-           start = start, end = end,
-           xlab = xlab, ylab = ylab, main = main,
-           ...)
-  }
-  else {
-    switch(attr(x,"func"),
-           in_revisions = plotts(x = x, show.legend = show.legend,
-                                 col = col, lty = lty,
-                                 series_names = colnames(x),type = "segment",
-                                 start = start, end = end,
-                                 xlab = xlab, ylab = ylab, main = main,
-                                 ...),
-           in_scatter = plotts(x = x, show.legend = show.legend,
-                               col = col, lty = lty,
-                               series_names = colnames(x),type = "scatter",
-                               start = start, end = end,
-                               xlab = xlab, ylab = ylab, main = main,
-                               ...),
+  switch(attr(x,"type"),
+         contributions={
+           if (all(x[,"Trend"] == 0,na.rm = TRUE)) {
+             force(col);force(lty)
+             x <- x[,colnames(x) != "Trend", drop = FALSE]
+           }
            plotts(x = x, show.legend = show.legend,
                   col = col, lty = lty,
-                  series_names = colnames(x), type = "line",
-                  start = start, end = end, 
+                  series_names = colnames(x),type = "bar",
+                  start = start, end = end,
                   xlab = xlab, ylab = ylab, main = main,
                   ...)
-    )
-  }
+         },
+         `non-normalized-2d`={
+           plotts(x = x, show.legend = show.legend,
+                  col = col, lty = lty,
+                  series_names = colnames(x),type = "scatter",
+                  start = start, end = end,
+                  xlab = xlab, ylab = ylab, main = main,
+                  ...)
+         },
+         switch(attr(x,"func"),
+                in_revisions = plotts(x = x, show.legend = show.legend,
+                                      col = col, lty = lty,
+                                      series_names = colnames(x),type = "segment",
+                                      start = start, end = end,
+                                      xlab = xlab, ylab = ylab, main = main,
+                                      ...),
+                in_scatter = plotts(x = x, show.legend = show.legend,
+                                    col = col, lty = lty,
+                                    series_names = colnames(x),type = "scatter",
+                                    start = start, end = end,
+                                    xlab = xlab, ylab = ylab, main = main,
+                                    ...),
+                plotts(x = x, show.legend = show.legend,
+                       col = col, lty = lty,
+                       series_names = colnames(x), type = "line",
+                       start = start, end = end, 
+                       xlab = xlab, ylab = ylab, main = main,
+                       ...)
+         )
+  )
   
   invisible()
 }
