@@ -1,6 +1,7 @@
 # disaggR 1.0.5.1
 * Internal change to check package version with character instead of numeric.
 * Internal minor change to in_disaggr (incohesive parameters)
+* A more informative error message if one tries to differentiate a time-series with only one observation
 
 # disaggR 1.0.5
 * Breaking change : The order of the output of the `reViewOutput` object has been reversed. reView and rePort can now take a language object as name arguments and return language objects inside their name attributes (PR #86)
