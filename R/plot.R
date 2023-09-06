@@ -668,8 +668,8 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
                                   slope = attr(object,"abline")["slope"],
                                   lty = "solid", colour = "red", linewidth = 1)
   } else if (!is.null(attr(object,"in_sample"))) {
-    g <- g + ggplot2::geom_point(aes(x=attr(object,"in_sample")[2L],
-                                     y=attr(object,"in_sample")[1L]),
+    g <- g + ggplot2::geom_point(ggplot2::aes(x=attr(object,"in_sample")[2L],
+                                              y=attr(object,"in_sample")[1L]),
                                  colour="red",
                                  shape=4,
                                  size=5)
@@ -820,9 +820,9 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
              ggplot2::ggtitle(main)
          },
          "indicator-constant-2d"=ggscatter(object = object, show.legend = show.legend,
-                                       theme = theme, start = start, end = end,
-                                       xlab = xlab, ylab = ylab,
-                                       col = col, lty = lty,...) +
+                                           theme = theme, start = start, end = end,
+                                           xlab = xlab, ylab = ylab,
+                                           col = col, lty = lty,...) +
            ggplot2::ggtitle(main),
          switch(attr(object,"func"),
                 in_revisions = {
@@ -854,8 +854,8 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                   
                   if (identical(attr(object,"func"),"in_convergence")) {
                     g <- g + ggplot2::geom_hline(data = data.frame(type_label=names(attr(object,"in_sample")),
-                                                                   values=unname(attr(object,"in_sample"))),
-                                                 aes(yintercept = values,colour = type_label),
+                                                                   Values=unname(attr(object,"in_sample"))),
+                                                 ggplot2::aes(yintercept = Values,colour = type_label),
                                                  lty = "solid", linewidth = 0.9)
                   }
                   

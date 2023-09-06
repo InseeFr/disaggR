@@ -578,7 +578,7 @@ in_convergence.praislm <- function(object,type="indicators-only") {
             type=type,
             func="in_convergence",
             class=c("tscomparison",class(series)),
-            in_sample = drop(tail(series,1L)))
+            in_sample = series[nrow(series),,drop = TRUE])
 }
 
 #' @export
