@@ -565,7 +565,9 @@ in_convergence.praislm <- function(object,type="indicators-only") {
                res
              },
              "all"=oos,
-             stop("The type argument of in_convergence should be either \"indicators-only\", \"indicator-constant-2d\",\"all\"", call. = FALSE)
+             if (length(type) == 1L && type %in% colnames(oos)) {
+               oos[,type,drop=FALSE]
+             } else stop("The type argument of in_convergence should be either \"indicators-only\", \"constant\", \"indicator-constant-2d\",\"all\", or the name of a time-serie", call. = FALSE)
       ),
       start = tspy[1L] + 1/tspy[3L],
       frequency = tspy[3L])
