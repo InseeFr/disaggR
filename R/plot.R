@@ -273,6 +273,11 @@ plotts <- function(x,show.legend,col,lty,
            
            if (show.legend) legend("bottomleft",legend=series_names,
                                    col=col,lty=lty,horiz=TRUE,bty="n",cex=0.8)
+           
+           if (identical(attr(x,"func"),"in_convergence")) {
+             abline(h=attr(x,"in_sample"),col=col,lty="solid",lwd=2)
+           }
+           
          },
          bar = {
            barplot_mts(x, col=col, xlab = xlab, ylab = ylab, main = main, ...)
@@ -519,12 +524,14 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
                                     start = start, end = end,
                                     xlab = xlab, ylab = ylab, main = main,
                                     ...),
-                plotts(x = x, show.legend = show.legend,
-                       col = col, lty = lty,
-                       series_names = colnames(x), type = "line",
-                       start = start, end = end, 
-                       xlab = xlab, ylab = ylab, main = main,
-                       ...)
+                {
+                  plotts(x = x, show.legend = show.legend,
+                         col = col, lty = lty,
+                         series_names = colnames(x), type = "line",
+                         start = start, end = end, 
+                         xlab = xlab, ylab = ylab, main = main,
+                         ...)
+                }
          )
   )
   
@@ -835,15 +842,26 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                             col = col, lty = lty,...) +
                     ggplot2::ggtitle(main)
                 },
-                ggplotts(object = object, show.legend = show.legend,
-                         type="line",series_names = colnames(object), theme = theme,
-                         start = start, end = end,
-                         xlab = xlab, ylab = ylab, ...) +
-                  ggplot2::labs(linetype=type_label) +
-                  ggplot2::labs(colour=type_label) +
-                  ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
-                  ggplot2::discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
-                  ggplot2::ggtitle(main)
+                {
+                  g <- ggplotts(object = object, show.legend = show.legend,
+                                type="line",series_names = colnames(object), theme = theme,
+                                start = start, end = end,
+                                xlab = xlab, ylab = ylab, ...) +
+                    ggplot2::labs(linetype=type_label) +
+                    ggplot2::labs(colour=type_label) +
+                    ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
+                    ggplot2::discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
+                    ggplot2::ggtitle(main)
+                  
+                  if (identical(attr(object,"func"),"in_convergence")) {
+                    g <- g + ggplot2::geom_hline(data = data.frame(type_label=names(attr(object,"in_sample")),
+                                                                   values=unname(attr(object,"in_sample"))),
+                                                 aes(yintercept = values,colour = type_label),
+                                                 lty = "solid", linewidth = 0.9)
+                  }
+                  
+                  g
+                }
          )
   )
 }
