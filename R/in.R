@@ -509,14 +509,21 @@ in_scatter.threeRuleSmooth <- function(object, type = "levels") {
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_sample(benchmark))
 #' @export
-in_convergence <- function(object,type="normalized") UseMethod("in_convergence")
+in_convergence <- function(object,type=NULL) UseMethod("in_convergence")
 
 #' @importFrom stats lag
 #' @export
-in_convergence.praislm <- function(object,type="normalized") {
+in_convergence.praislm <- function(object,type=NULL) {
+
+  
   m <- model.list(object)
   tspy <- tsp(m$y)
   nc <- length(coefficients(object))
+  
+  type <- type %||%
+    (if (NCOL(neither_outlier_nor_constant(object)) == 1L &&
+         ! "constant" %in% names(m$set.coefficients)) "indicator-constant-2d") %||%
+    "indicators-only"
   
   oos <-
     t(
@@ -545,33 +552,25 @@ in_convergence.praislm <- function(object,type="normalized") {
   series <-
     ts(
       switch(type,
-             normalized={
-               apply(oos,
-                     2L,
-                     function(x) {
-                       (x-mean(x, na.rm = TRUE))/sd(x, na.rm = TRUE)
-                     })
+             "indicators-only"={
+               neither_outlier_nor_constant_impl(oos, object)
              },
-             "non-normalized-indicators-only"={
-               oos[,
-                   !(colnames(oos) %in%
-                       c("constant", names(outliers(object)))),
-                   drop = FALSE]
-             },
-             "non-normalized-2d"={
+             "indicator-constant-2d"={
                res <-
                  oos[,
                      !(colnames(oos) %in%
                          c(names(outliers(object)))),
                      drop = FALSE]
+               
                if (NCOL(res) != 2L) {
-                 stop("The type argument \"non-normalized-2d\" is only possible on models using exactly two time-series, besides outliers and including the constant",
+                 stop("The type argument \"indicator-constant-2d\" is only possible on univariate models (besides outliers and constant)",
                       call. = FALSE)
                }
+               
                res
              },
-             "non-normalized"=oos,
-             stop("The type argument of in_convergence should be either \"normalized\", \"non-normalized-indicators-only\", \"non-normalized-2d\",\"non-normalized\"", call. = FALSE)
+             "all"=oos,
+             stop("The type argument of in_convergence should be either \"indicators-only\", \"indicator-constant-2d\",\"all\"", call. = FALSE)
       ),
       start = tspy[1L] + 1/tspy[3L],
       frequency = tspy[3L])
@@ -585,7 +584,7 @@ in_convergence.praislm <- function(object,type="normalized") {
 }
 
 #' @export
-in_convergence.twoStepsBenchmark <- function(object,type="normalized") {
+in_convergence.twoStepsBenchmark <- function(object,type=NULL) {
   in_convergence(prais(object),type=type)
 }
 

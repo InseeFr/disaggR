@@ -4,15 +4,14 @@ type_label <- function(object) {
          `levels-rebased`="Rebased levels",
          changes="Changes",
          contributions="Contributions",
-         normalized="Normalized",
-         `non-normalized-indicators-only`="Non-normalized (indicators only)",
-         `non-normalized-2d`="Non normalized (2d)",
-         `non-normalized`="Non normalized"
+         `indicators-only`="Indicators only",
+         `indicator-constant-2d`="Indicator and constant (2d)",
+         `all`="Non normalized"
   )
 }
 
 is_scatter <- function(x) {
-  identical(attr(x,"func"),"in_scatter") || identical(attr(x,"type"),"non-normalized-2d")
+  identical(attr(x,"func"),"in_scatter") || identical(attr(x,"type"),"indicator-constant-2d")
 }
 
 #' Default color palette
@@ -503,7 +502,7 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
                   xlab = xlab, ylab = ylab, main = main,
                   ...)
          },
-         `non-normalized-2d`={
+         `indicator-constant-2d`={
            plotts(x = x, show.legend = show.legend,
                   col = col, lty = lty,
                   series_names = colnames(x),type = "scatter",
@@ -820,7 +819,7 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
              ggplot2::discrete_scale("fill","hue",col,na.translate = FALSE) +
              ggplot2::ggtitle(main)
          },
-         "non-normalized-2d"=ggscatter(object = object, show.legend = show.legend,
+         "indicator-constant-2d"=ggscatter(object = object, show.legend = show.legend,
                                        theme = theme, start = start, end = end,
                                        xlab = xlab, ylab = ylab,
                                        col = col, lty = lty,...) +
