@@ -10,6 +10,9 @@ test_that("error praislm", {
                      TRUE,numeric(),NULL),"ts object")
   expect_error(praislm(ts(1:120,frequency=12,start=2010),1:10,
                        TRUE,numeric(),NULL),"ts object")
+  expect_error(praislm(ts(matrix(1,1,1),frequency=1,start=2010),
+                       ts(1,frequency=1,start=2010),
+                       FALSE, TRUE, numeric(), NULL),"less than two observations")
 })
 
 test_that("max iter",{

@@ -93,6 +93,7 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   y <- as.numeric(y)
   
   if (include.differenciation) {
+    if (length(y) == 1L) stop("Differenciation with stricly less than two observations", call. = FALSE)
     X <- diff(X)
     y <- diff(y)
     tspx[1L] <- tspx[1L] + 1/tspx[3L]
