@@ -18,7 +18,7 @@ autocor <- function(x) {
   as.numeric(crossprod(tailxc,headxc)/
                sqrt(crossprod(tailxc)) /
                sqrt(crossprod(headxc)))
-    # Not exactly pearson but is a bit better to estimate the rho of an AR1
+  # Not exactly pearson but is a bit better to estimate the rho of an AR1
 }
 
 praislm_impl <- function(X,y,include.rho) {
@@ -44,9 +44,13 @@ praislm_impl <- function(X,y,include.rho) {
         y_star <- omega_inv_sqrt(y,rho)
         X_star <- omega_inv_sqrt(X,rho)
         
-        PQR <- qr(X_star)
-        if (PQR$rank != ncol(X_star))  stop("After decorrelation, the rank becomes imperfect", call. = FALSE)
-        coefficients <- qr.coef(PQR,y_star)
+        tryCatch({
+          PQR <- qr(X_star)
+          coefficients <- qr.coef(PQR,y_star)
+        },
+        error = function(e) stop("After decorrelation, the rank becomes imperfect", call. = FALSE)
+        )
+        
         if (i == 50L) {
           warning("Maximum iterations without convergence", call. = FALSE)
           break
@@ -88,7 +92,7 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   if ( !is.ts(X) || !is.ts(y) ) stop("Not a ts object", call. = FALSE)
   if (is.null(dim(X))) stop("Not a matrix object", call. = FALSE)
   if (!tsp_equal(tsp(X),tsp(y))) stop("X and y should have the same windows and frequencies", call. = FALSE)
-
+  
   tspx <- tsp(X)
   X <- matrix(as.numeric(X),nrow = nrow(X),ncol = ncol(X),dimnames = dimnames(X))
   y <- as.numeric(y)
@@ -99,7 +103,7 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
     y <- diff(y)
     tspx[1L] <- tspx[1L] + 1/tspx[3L]
   }
-
+  
   if (length(set_coefficients) == 0L) names(set_coefficients) <- character()
   else if (is.null(names(set_coefficients))) stop("The coefficients setter must be empty or have names", call. = FALSE)
   
@@ -116,7 +120,7 @@ praislm <- function(X,y,include.rho,include.differenciation,set_coefficients,cl)
   match_notset <- which(is.na(coefficients))
   
   offset <- X[,match_set,drop=FALSE] %*% set_coefficients
-
+  
   calculated <- praislm_impl(X[,match_notset,drop=FALSE],y-offset,include.rho)
   
   coefficients[match_notset] <- calculated$coefficients
