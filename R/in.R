@@ -548,7 +548,7 @@ in_convergence.praislm <- function(object,type="indicators-only") {
   
   series <-
     ts(
-      switch(type,
+      switch(type[1L],
              "indicators-only"={
                neither_outlier_nor_constant_impl(oos, object)
              },
@@ -567,9 +567,9 @@ in_convergence.praislm <- function(object,type="indicators-only") {
                res
              },
              "all"=oos,
-             if (type %in% colnames(oos)) {
+             if (all(type %in% colnames(oos)) && length(type) >= 1L) {
                oos[,type,drop=FALSE]
-             } else stop("The type argument of in_convergence should be either \"indicators-only\", \"constant\", \"indicator-constant-2d\",\"all\", or the name of a time-serie", call. = FALSE)
+             } else stop("The type argument of in_convergence should be either \"indicators-only\", \"constant\", \"indicator-constant-2d\",\"all\", or any selection of coefficient names", call. = FALSE)
       ),
       start = tspy[1L] + 1/tspy[3L],
       frequency = tspy[3L])
@@ -600,7 +600,8 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
                   in_revisions="Comparison between two benchmarks",
                   in_scatter="Comparison between the inputs",
                   in_convergence="Out-of-sample coefficients")
-  cat(label, " (", attr(x,"type"),"):\n", sep = "")
+  type <- paste(attr(x,"type"), collapse = "/")
+  cat(label, " (", type,"):\n", sep = "")
   
   print(.preformat.ts(
     Reduce(
@@ -616,7 +617,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
     ...)
   
   if (identical(attr(x,"func"),"in_convergence")) {
-    cat("\nIn-sample coefficients (", attr(x,"type"),"):\n", sep = "")
+    cat("\nIn-sample coefficients (", type,"):\n", sep = "")
     print(attr(x,"in_sample"))
   }
   

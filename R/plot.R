@@ -1,12 +1,13 @@
 type_label <- function(object) {
-  switch(attr(object,"type"),
+  switch(attr(object,"type")[1L],
          levels="Levels",
          `levels-rebased`="Rebased levels",
          changes="Changes",
          contributions="Contributions",
          `indicators-only`="Indicators only",
          `indicator-constant-2d`="Indicator and constant (2d)",
-         `all`="Non normalized"
+         `all`="All",
+         paste(attr(object,"type"), collapse = "/")
   )
 }
 
@@ -489,7 +490,7 @@ plot.tscomparison <- function(x, xlab = NULL, ylab = NULL, start = NULL, end = N
   on.exit(par(mar=mar_save))
   par(mar=mar)
   
-  switch(attr(x,"type"),
+  switch(attr(x,"type")[1L],
          contributions={
            if (all(x[,"Trend"] == 0,na.rm = TRUE)) {
              force(col);force(lty)
@@ -807,7 +808,7 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
   
   type_label <- type_label(object)
   
-  switch(attr(object,"type"),
+  switch(attr(object,"type")[1L],
          contributions={
            if (all(object[,"Trend"] == 0,na.rm = TRUE)) object <- object[,colnames(object) != "Trend", drop = FALSE]
            
