@@ -41,6 +41,7 @@ default_col_pal <- function(object) {
 #' @export
 default_lty_pal <- function(object) {
   if (is_scatter(object)) seq_len
+  else if (identical(attr(object,"func"), "in_convergence")) function(n) rep("solid", n)
   else {
     types <- c("solid", "22", "42", "44", 
                "13", "1343", "73", "2262", "12223242", 
@@ -275,7 +276,7 @@ plotts <- function(x,show.legend,col,lty,
                                    col=col,lty=lty,horiz=TRUE,bty="n",cex=0.8)
            
            if (identical(attr(x,"func"),"in_convergence")) {
-             abline(h=attr(x,"in_sample"),col=col,lty="solid",lwd=2)
+             abline(h=attr(x,"in_sample"),col=col,lty="22",lwd=2)
            }
            
          },
@@ -857,7 +858,7 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                     g <- g + ggplot2::geom_hline(data = data.frame(type_label=names(attr(object,"in_sample")),
                                                                    Values=unname(attr(object,"in_sample"))),
                                                  ggplot2::aes(yintercept = Values,colour = type_label),
-                                                 lty = "solid", linewidth = 0.9)
+                                                 lty = "22", linewidth = 0.9)
                   }
                   
                   g
