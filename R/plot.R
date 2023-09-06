@@ -107,7 +107,7 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
   
   tspx <- tsp(x)
   
-  finite_x_vals <- x[is.finite(x)]
+  finite_x_vals <- c(x[is.finite(x)], attr(x, "in_sample"))
   
   plot_init(xmin = tspx[1L],xmax = tspx[2L]+deltat(x),
             # That x window is set to be able to translate x values
