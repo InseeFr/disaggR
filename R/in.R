@@ -509,21 +509,16 @@ in_scatter.threeRuleSmooth <- function(object, type = "levels") {
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_sample(benchmark))
 #' @export
-in_convergence <- function(object,type=NULL) UseMethod("in_convergence")
+in_convergence <- function(object,type="indicators-only") UseMethod("in_convergence")
 
 #' @importFrom stats lag
 #' @export
-in_convergence.praislm <- function(object,type=NULL) {
+in_convergence.praislm <- function(object,type="indicators-only") {
 
   
   m <- model.list(object)
   tspy <- tsp(m$y)
   nc <- length(coefficients(object))
-  
-  type <- type %||%
-    (if (NCOL(neither_outlier_nor_constant(object)) == 1L &&
-         ! "constant" %in% names(m$set.coefficients)) "indicator-constant-2d") %||%
-    "indicators-only"
   
   oos <-
     t(
@@ -584,12 +579,12 @@ in_convergence.praislm <- function(object,type=NULL) {
 }
 
 #' @export
-in_convergence.twoStepsBenchmark <- function(object,type=NULL) {
+in_convergence.twoStepsBenchmark <- function(object,type="indicators-only") {
   in_convergence(prais(object),type=type)
 }
 
 #' @export
-in_convergence.threeRuleSmooth <- function(object,type="normalized") {
+in_convergence.threeRuleSmooth <- function(object,type="indicators-only") {
   stop("The in_convergence method needs a regression hence isn't applicable on a threeRuleSmooth object",call. = FALSE)
 }
 

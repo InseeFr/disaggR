@@ -4,7 +4,7 @@
 \alias{in_convergence}
 \title{Producing the in sample predictions of a prais-lm regression}
 \usage{
-in_convergence(object, type = NULL)
+in_convergence(object, type = "indicators-only")
 }
 \arguments{
 \item{object}{an object of class \code{"praislm"} or \code{"twoStepsBenchmark"}.}
