@@ -22,7 +22,7 @@
 #' for the predicted value.
 #' A `"tscomparison"` class is added to the object.
 #' @seealso \link{in_disaggr} \link{in_revisions} \link{in_scatter}
-#' \link{plot.tscomparison}
+#' \link{in_convergence} \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_sample(benchmark))
@@ -87,7 +87,7 @@ in_sample.threeRuleSmooth <- function(object,type="changes") {
 #' for the input.
 #' A `tscomparison` class is added to the object.
 #' @seealso \link{in_sample} \link{in_revisions} \link{in_scatter}
-#' \link{plot.tscomparison}
+#' \link{in_convergence} \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_disaggr(benchmark))
@@ -260,7 +260,7 @@ safe_difference <- function(x,y) {
 #' for the predicted value.
 #' A `tscomparison` class is added to the object.
 #' @seealso \link{in_sample} \link{in_disaggr} \link{in_scatter}
-#' \link{plot.tscomparison}
+#' \link{in_convergence} \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' benchmark2 <- twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)
@@ -327,7 +327,7 @@ in_revisions.threeRuleSmooth <- in_revisions.twoStepsBenchmark
 #' 
 #' 
 #' @seealso \link{in_sample} \link{in_disaggr} \link{in_revisions}
-#' \link{plot.tscomparison}
+#' \link{in_convergence} \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' plot(in_scatter(benchmark))
@@ -480,34 +480,36 @@ in_scatter.threeRuleSmooth <- function(object, type = "levels") {
                                  "High-frequency serie (benchmark)")))
 }
 
-#' Producing the in sample predictions of a prais-lm regression
+#' Producing the out-of-sample coefficients of a prais-lm regression
 #' 
-#' The function `in_sample` returns in-sample predictions from a \link{praislm}
-#' or a \link{twoStepsBenchmark} object.
+#' The function `in_convergence` returns the out-of-sample coefficients from a
+#' \link{praislm} or a \link{twoStepsBenchmark} object. These coefficients are
+#' estimated, for each low-frequency observation, using all the *previous*
+#' observations. Hence, these values can be used to check the convergence of
+#' the coefficients.
 #' 
 #' The functions `plot` and `autoplot` can be used on this object to produce
 #' graphics.
 #' 
-#' The predicted values are different from the fitted values :
-#' 
-#' * they are eventually reintegrated.
-#' * they contain the autocorrelated part of the residuals.
-#' 
-#' Besides, changes are relative to the latest benchmark value, not the latest
-#' predicted value.
-#' 
 #' @param object an object of class `"praislm"` or `"twoStepsBenchmark"`.
-#' @param type `"changes"` or `"levels"`. The results are either returned
-#' in changes or in levels.
+#' @param type `"indicators-only"`, `"constant"`, `"indicator-constant-2d"`,
+#' `"all"` or any selection of coefficient names. "indicators-only", the
+#' default, unselects the outliers and the constant. "all" selects every
+#' coefficients including outliers and the constant. "indicator-constant-2d"
+#' is only valid for univariate regressions, selects the indicator and the
+#' constant and maps the plot method plot to an alternate 2d plot.
 #' @return
-#' a named matrix time series of two columns, one for the response and the other
-#' for the predicted value.
+#' a named matrix time series of multiple columns, one for each selected
+#' coefficient
 #' A `"tscomparison"` class is added to the object.
 #' @seealso \link{in_disaggr} \link{in_revisions} \link{in_scatter}
-#' \link{plot.tscomparison}
+#' \link{in_sample} \link{plot.tscomparison}
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-#' plot(in_sample(benchmark))
+#' plot(in_convergence(benchmark))
+#' plot(in_convergence(benchmark, type = "constant"))
+#' plot(in_convergence(benchmark, type = "indicator-constant-2d"))
+#' plot(in_convergence(benchmark, type = "all"))
 #' @export
 in_convergence <- function(object,type="indicators-only") UseMethod("in_convergence")
 
@@ -565,7 +567,7 @@ in_convergence.praislm <- function(object,type="indicators-only") {
                res
              },
              "all"=oos,
-             if (length(type) == 1L && type %in% colnames(oos)) {
+             if (type %in% colnames(oos)) {
                oos[,type,drop=FALSE]
              } else stop("The type argument of in_convergence should be either \"indicators-only\", \"constant\", \"indicator-constant-2d\",\"all\", or the name of a time-serie", call. = FALSE)
       ),
@@ -635,13 +637,16 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' (eventually, the sum of its contributions) and the benchmarked series.
 #' * `in_revisions` will produce the high-frequency distance between the two
 #' benchmarked series (contributions distance isn't permitted).
+#' * `in_convergence` will produce the low-frequency distance between the
+#' out-of-sample coefficients and their in-sample counterpart.
 #' 
 #' @param x an object of class `tscomparison`
 #' @param p an integer greater than 1L, or Inf.
 #' 
 #' @return
-#' a numeric of length 1, the distance.
-#' @seealso in_sample in_disaggr in_revisions
+#' a numeric, the distance. Its length is 1, excepted for in_convergence.
+#' As for in_convergence, there is a value for each checked coefficient.
+#' @seealso in_sample in_disaggr in_revisions in_convergence
 #' @examples
 #' benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
 #' distance(in_sample(benchmark,type="changes"))

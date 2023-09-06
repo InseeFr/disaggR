@@ -12,7 +12,8 @@ distance(x, p = 2)
 \item{p}{an integer greater than 1L, or Inf.}
 }
 \value{
-a numeric of length 1, the distance.
+a numeric, the distance. Its length is 1, excepted for in_convergence.
+As for in_convergence, there is a value for each checked coefficient.
 }
 \description{
 This function \code{distance} computes the Minkowski distance of exponent p,
@@ -28,6 +29,8 @@ value and the response, on the coefficient calculation window.
 (eventually, the sum of its contributions) and the benchmarked series.
 \item \code{in_revisions} will produce the high-frequency distance between the two
 benchmarked series (contributions distance isn't permitted).
+\item \code{in_convergence} will produce the low-frequency distance between the
+out-of-sample coefficients and their in-sample counterpart.
 }
 }
 \examples{
@@ -37,5 +40,5 @@ distance(in_disaggr(benchmark,type="contributions"),p=1L)
 distance(in_disaggr(benchmark,type="changes"),p=Inf)
 }
 \seealso{
-in_sample in_disaggr in_revisions
+in_sample in_disaggr in_revisions in_convergence
 }

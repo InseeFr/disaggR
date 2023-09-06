@@ -2,43 +2,44 @@
 % Please edit documentation in R/in.R
 \name{in_convergence}
 \alias{in_convergence}
-\title{Producing the in sample predictions of a prais-lm regression}
+\title{Producing the out-of-sample coefficients of a prais-lm regression}
 \usage{
 in_convergence(object, type = "indicators-only")
 }
 \arguments{
 \item{object}{an object of class \code{"praislm"} or \code{"twoStepsBenchmark"}.}
 
-\item{type}{\code{"changes"} or \code{"levels"}. The results are either returned
-in changes or in levels.}
+\item{type}{\code{"indicators-only"}, \code{"constant"}, \code{"indicator-constant-2d"},
+\code{"all"} or any selection of coefficient names. "indicators-only", the
+default, unselects the outliers and the constant. "all" selects every
+coefficients including outliers and the constant. "indicator-constant-2d"
+is only valid for univariate regressions, selects the indicator and the
+constant and maps the plot method plot to an alternate 2d plot.}
 }
 \value{
-a named matrix time series of two columns, one for the response and the other
-for the predicted value.
+a named matrix time series of multiple columns, one for each selected
+coefficient
 A \code{"tscomparison"} class is added to the object.
 }
 \description{
-The function \code{in_sample} returns in-sample predictions from a \link{praislm}
-or a \link{twoStepsBenchmark} object.
+The function \code{in_convergence} returns the out-of-sample coefficients from a
+\link{praislm} or a \link{twoStepsBenchmark} object. These coefficients are
+estimated, for each low-frequency observation, using all the \emph{previous}
+observations. Hence, these values can be used to check the convergence of
+the coefficients.
 }
 \details{
 The functions \code{plot} and \code{autoplot} can be used on this object to produce
 graphics.
-
-The predicted values are different from the fitted values :
-\itemize{
-\item they are eventually reintegrated.
-\item they contain the autocorrelated part of the residuals.
-}
-
-Besides, changes are relative to the latest benchmark value, not the latest
-predicted value.
 }
 \examples{
 benchmark <- twoStepsBenchmark(turnover,construction,include.rho = TRUE)
-plot(in_sample(benchmark))
+plot(in_convergence(benchmark))
+plot(in_convergence(benchmark, type = "constant"))
+plot(in_convergence(benchmark, type = "indicator-constant-2d"))
+plot(in_convergence(benchmark, type = "all"))
 }
 \seealso{
 \link{in_disaggr} \link{in_revisions} \link{in_scatter}
-\link{plot.tscomparison}
+\link{in_sample} \link{plot.tscomparison}
 }

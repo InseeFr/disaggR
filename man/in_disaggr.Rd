@@ -32,5 +32,5 @@ plot(in_disaggr(benchmark))
 }
 \seealso{
 \link{in_sample} \link{in_revisions} \link{in_scatter}
-\link{plot.tscomparison}
+\link{in_convergence} \link{plot.tscomparison}
 }
