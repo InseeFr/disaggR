@@ -30,7 +30,9 @@ value and the response, on the coefficient calculation window.
 \item \code{in_revisions} will produce the high-frequency distance between the two
 benchmarked series (contributions distance isn't permitted).
 \item \code{in_convergence} will produce the low-frequency distance between the
-out-of-sample coefficients and their in-sample counterpart.
+out-of-sample coefficients and their in-sample counterpart (leaving aside
+the last out-of-sample coefficients which are equal to the in-sample
+ones by definition).
 }
 }
 \examples{

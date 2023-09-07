@@ -516,7 +516,6 @@ in_convergence <- function(object,type="indicators-only") UseMethod("in_converge
 #' @importFrom stats lag
 #' @export
 in_convergence.praislm <- function(object,type="indicators-only") {
-
   
   m <- model.list(object)
   tspy <- tsp(m$y)
@@ -574,7 +573,7 @@ in_convergence.praislm <- function(object,type="indicators-only") {
       start = tspy[1L] + 1/tspy[3L],
       frequency = tspy[3L])
   
-  structure(window(series, end = tspy[2L], extend = TRUE),
+  structure(series,
             type=type,
             func="in_convergence",
             class=c("tscomparison",class(series)),
@@ -639,7 +638,9 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
 #' * `in_revisions` will produce the high-frequency distance between the two
 #' benchmarked series (contributions distance isn't permitted).
 #' * `in_convergence` will produce the low-frequency distance between the
-#' out-of-sample coefficients and their in-sample counterpart.
+#' out-of-sample coefficients and their in-sample counterpart (leaving aside
+#' the last out-of-sample coefficients which are equal to the in-sample
+#' ones by definition).
 #' 
 #' @param x an object of class `tscomparison`
 #' @param p an integer greater than 1L, or Inf.
@@ -681,7 +682,7 @@ distance.tscomparison <- function(x, p = 2) {
              else x[,"Benchmark"]
            },
            in_convergence= {
-             t(t(x) - attr(x,"in_sample"))
+             t(t(x[,-nrow(x),drop = FALSE]) - attr(x,"in_sample"))
            }
     ),
     p
