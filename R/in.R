@@ -609,7 +609,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
         x
       },
       init = x,
-      x = c("type","func","abline","in_sample")
+      x = c("type","func","abline")
     ),
     any(frequency(x) == c(1, 4, 12)) && length(start(x)) == 2L, ...),
     quote = FALSE, right = TRUE,digits = digits,
@@ -617,7 +617,7 @@ print.tscomparison <- function(x, digits = max(3L, getOption("digits") - 3L),...
   
   if (identical(attr(x,"func"),"in_convergence")) {
     cat("\nIn-sample coefficients (", type,"):\n", sep = "")
-    print(attr(x,"in_sample"))
+    print(x[nrow(x),,drop = TRUE])
   }
   
   invisible(x)
@@ -682,7 +682,7 @@ distance.tscomparison <- function(x, p = 2) {
              else x[,"Benchmark"]
            },
            in_convergence= {
-             t(t(x[,-nrow(x),drop = FALSE]) - attr(x,"in_sample"))
+             t(t(x[-nrow(x),,drop = FALSE]) - x[nrow(x),,drop = TRUE])
            }
     ),
     p

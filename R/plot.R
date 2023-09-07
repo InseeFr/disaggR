@@ -109,7 +109,7 @@ plot_init_x <- function(x, xlab, ylab, main, ...) {
   
   tspx <- tsp(x)
   
-  finite_x_vals <- c(x[is.finite(x)], attr(x, "in_sample"))
+  finite_x_vals <- x[is.finite(x)]
   
   plot_init(xmin = tspx[1L],xmax = tspx[2L]+deltat(x),
             # That x window is set to be able to translate x values
@@ -231,7 +231,6 @@ window_default <- function(x,start,end) {
   
   attr(res,"abline") <- attr(x,"abline")
   attr(res,"func") <- attr(x,"func")
-  attr(res,"in_sample") <- attr(x,"in_sample")
   
   res
 }
@@ -276,7 +275,7 @@ plotts <- function(x,show.legend,col,lty,
                                    col=col,lty=lty,horiz=TRUE,bty="n",cex=0.8)
            
            if (identical(attr(x,"func"),"in_convergence")) {
-             abline(h=attr(x,"in_sample"),col=col,lty="22",lwd=2)
+             abline(h=x[nrow(x),,drop = TRUE],col=col,lty="22",lwd=2)
            }
            
          },
@@ -299,10 +298,10 @@ plotts <- function(x,show.legend,col,lty,
                                    col=col,lty="solid",horiz=TRUE,bty="n",cex=0.8)
          },
          scatter = {
-           plot_init(xmin = min(c(x[,-1L], attr(x,"in_sample")[2L]), na.rm = TRUE),
-                     xmax = max(c(x[,-1L], attr(x,"in_sample")[2L]), na.rm = TRUE),
-                     ymin = min(c(x[,1L], attr(x,"in_sample")[1L]),na.rm = TRUE),
-                     ymax = max(c(x[,1L], attr(x,"in_sample")[1L]),na.rm = TRUE),
+           plot_init(xmin = min(x[,-1L], na.rm = TRUE),
+                     xmax = max(x[,-1L], na.rm = TRUE),
+                     ymin = min(x[,1L],na.rm = TRUE),
+                     ymax = max(x[,1L],na.rm = TRUE),
                      xlab = xlab, ylab = ylab,
                      extend.x = TRUE, extend.y = TRUE,
                      abline.x=FALSE, main = main, xlim = xlim,
@@ -313,9 +312,9 @@ plotts <- function(x,show.legend,col,lty,
                     b = attr(x,"abline")["slope"],
                     col = "red",
                     lwd = 2)
-           } else if (!is.null(attr(x,"in_sample"))) {
-             points.default(attr(x,"in_sample")[2L],
-                            attr(x,"in_sample")[1L],
+           } else if (identical(attr(x,"func"),"in_convergence")) {
+             points.default(x[nrow(x),2L,drop = TRUE],
+                            x[nrow(x),1L,drop = TRUE],
                             col = "red",
                             pch=4,
                             cex=2
@@ -669,9 +668,9 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
     g <- g + ggplot2::geom_abline(intercept = attr(object,"abline")["constant"],
                                   slope = attr(object,"abline")["slope"],
                                   lty = "solid", colour = "red", linewidth = 1)
-  } else if (!is.null(attr(object,"in_sample"))) {
-    g <- g + ggplot2::geom_point(ggplot2::aes(x=attr(object,"in_sample")[2L],
-                                              y=attr(object,"in_sample")[1L]),
+  } else if (identical(attr(object,"func"),"in_convergence")) {
+    g <- g + ggplot2::geom_point(ggplot2::aes(x=object[nrow(object),2L,drop = TRUE],
+                                              y=object[nrow(object),1L,drop = TRUE]),
                                  colour="red",
                                  shape=4,
                                  size=5)
@@ -855,8 +854,8 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                     ggplot2::ggtitle(main)
                   
                   if (identical(attr(object,"func"),"in_convergence")) {
-                    g <- g + ggplot2::geom_hline(data = data.frame(type_label=names(attr(object,"in_sample")),
-                                                                   Values=unname(attr(object,"in_sample"))),
+                    g <- g + ggplot2::geom_hline(data = data.frame(type_label=colnames(object),
+                                                                   Values=unname(object[nrow(object),,drop = TRUE])),
                                                  ggplot2::aes(yintercept = Values,colour = type_label),
                                                  lty = "22", linewidth = 0.9)
                   }
