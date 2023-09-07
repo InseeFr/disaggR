@@ -862,7 +862,7 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
              shiny::column(12,
                            title,
                            shiny::div(plotOutBrushAndRender(shiny::reactive(in_convergence(benchmark(),
-                                                                                           type="indicators-only")),
+                                                                                           type="indicators")),
                                                             plotswin,
                                                             output,
                                                             paste0(old_or_new,"plotlev"),

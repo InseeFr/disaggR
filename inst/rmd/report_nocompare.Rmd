@@ -174,7 +174,7 @@ plot(in_disaggr(params$new_bn,type="contributions"),
 ::: {.column width="100%"}
 
 ```{r echo=FALSE,fig.width = 14}
-plot(in_convergence(params$new_bn,type="indicators-only"),
+plot(in_convergence(params$new_bn,type="indicators"),
      ylab = "Indicator")
 plot(in_convergence(params$new_bn,type="constant"),
      ylab = "Constant")

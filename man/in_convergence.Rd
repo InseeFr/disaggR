@@ -4,13 +4,13 @@
 \alias{in_convergence}
 \title{Producing the out-of-sample coefficients of a prais-lm regression}
 \usage{
-in_convergence(object, type = "indicators-only")
+in_convergence(object, type = "indicators")
 }
 \arguments{
 \item{object}{an object of class \code{"praislm"} or \code{"twoStepsBenchmark"}.}
 
-\item{type}{\code{"indicators-only"}, \code{"constant"}, \code{"indicator-constant-2d"},
-\code{"all"} or any selection of coefficient names. "indicators-only", the
+\item{type}{\code{"indicators"}, \code{"constant"}, \code{"indicator-constant-2d"},
+\code{"all"} or any selection of coefficient names. "indicators", the
 default, unselects the outliers and the constant. "all" selects every
 coefficients including outliers and the constant. "indicator-constant-2d"
 is only valid for univariate regressions, selects the indicator and the

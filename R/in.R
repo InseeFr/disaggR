@@ -492,8 +492,8 @@ in_scatter.threeRuleSmooth <- function(object, type = "levels") {
 #' graphics.
 #' 
 #' @param object an object of class `"praislm"` or `"twoStepsBenchmark"`.
-#' @param type `"indicators-only"`, `"constant"`, `"indicator-constant-2d"`,
-#' `"all"` or any selection of coefficient names. "indicators-only", the
+#' @param type `"indicators"`, `"constant"`, `"indicator-constant-2d"`,
+#' `"all"` or any selection of coefficient names. "indicators", the
 #' default, unselects the outliers and the constant. "all" selects every
 #' coefficients including outliers and the constant. "indicator-constant-2d"
 #' is only valid for univariate regressions, selects the indicator and the
@@ -511,11 +511,11 @@ in_scatter.threeRuleSmooth <- function(object, type = "levels") {
 #' plot(in_convergence(benchmark, type = "indicator-constant-2d"))
 #' plot(in_convergence(benchmark, type = "all"))
 #' @export
-in_convergence <- function(object,type="indicators-only") UseMethod("in_convergence")
+in_convergence <- function(object,type="indicators") UseMethod("in_convergence")
 
 #' @importFrom stats lag
 #' @export
-in_convergence.praislm <- function(object,type="indicators-only") {
+in_convergence.praislm <- function(object,type="indicators") {
   
   m <- model.list(object)
   tspy <- tsp(m$y)
@@ -548,7 +548,7 @@ in_convergence.praislm <- function(object,type="indicators-only") {
   series <-
     ts(
       switch(type[1L],
-             "indicators-only"={
+             "indicators"={
                neither_outlier_nor_constant_impl(oos, object)
              },
              "indicator-constant-2d"={
@@ -568,7 +568,7 @@ in_convergence.praislm <- function(object,type="indicators-only") {
              "all"=oos,
              if (all(type %in% colnames(oos)) && length(type) >= 1L) {
                oos[,type,drop=FALSE]
-             } else stop("The type argument of in_convergence should be either \"indicators-only\", \"constant\", \"indicator-constant-2d\",\"all\", or any selection of coefficient names", call. = FALSE)
+             } else stop("The type argument of in_convergence should be either \"indicators\", \"constant\", \"indicator-constant-2d\",\"all\", or any selection of coefficient names", call. = FALSE)
       ),
       start = tspy[1L] + 1/tspy[3L],
       frequency = tspy[3L])
@@ -581,12 +581,12 @@ in_convergence.praislm <- function(object,type="indicators-only") {
 }
 
 #' @export
-in_convergence.twoStepsBenchmark <- function(object,type="indicators-only") {
+in_convergence.twoStepsBenchmark <- function(object,type="indicators") {
   in_convergence(prais(object),type=type)
 }
 
 #' @export
-in_convergence.threeRuleSmooth <- function(object,type="indicators-only") {
+in_convergence.threeRuleSmooth <- function(object,type="indicators") {
   stop("The in_convergence method needs a regression hence isn't applicable on a threeRuleSmooth object",call. = FALSE)
 }
 

@@ -4,7 +4,7 @@ type_label <- function(object) {
          `levels-rebased`="Rebased levels",
          changes="Changes",
          contributions="Contributions",
-         `indicators-only`="Indicators only",
+         `indicators`="Indicators only",
          `indicator-constant-2d`="Indicator and constant (2d)",
          `all`="All",
          paste(attr(object,"type"), collapse = "/")
