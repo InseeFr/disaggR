@@ -166,3 +166,23 @@ plot(in_disaggr(params$new_bn,type="contributions"),
 :::
 
 ::::
+
+# Out-of-sample coefficients
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+```{r echo=FALSE,fig.width = 14}
+plot(in_convergence(params$new_bn,type="indicators-only"),
+     ylab = "Indicator")
+plot(in_convergence(params$new_bn,type="constant"),
+     ylab = "Constant")
+plot(in_convergence(params$new_bn,type="indicator-constant-2d"),
+     xlab = "Indicator",
+     ylab = "Constant")
+```
+
+:::
+
+::::
