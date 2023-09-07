@@ -60,6 +60,12 @@ info_switch <- function(mainout_choice)
                        "smoothed part can be seen as arbitrary.",
                        "Hence it is omitted in these plots.")
          },
+         "Out-of-sample coefficients" = {
+           shiny::HTML("These coefficients are estimated, for each low-frequency",
+                       "observation, using all the previous observations. Hence,",
+                       "these values can be used to check the convergence of the",
+                       "coefficients.")
+         },
          "Revisions" = {
            shiny::HTML("These plots display the differences between the former",
                        "benchmark and the newer one.")
@@ -452,7 +458,8 @@ reView_ui_tab2 <- function(id) {
         shiny::column(11,
                       shiny::radioButtons(ns("mainout_choice"),NULL,
                                           choices = c("Scatter plot","In-sample predictions","Comparison benchmark/input",
-                                                      "Revisions","Benchmark plot","Benchmark summary"),
+                                                      "Out-of-sample coefficients", "Revisions","Benchmark plot",
+                                                      "Benchmark summary"),
                                           selected = "Benchmark plot",inline=TRUE)
         ),
         shiny::column(1,
@@ -724,7 +731,7 @@ reView_server_tab1 <- function(id,old_bn,new_bn_ext_setter,selected_preset_tab2,
                             plot(in_sample(presets_list()[[n]]),
                                  main = paste0("Model ",n," (",presets$label[n],")"),
                                  col.main = if (isTRUE(selected_preset_tab2() == n)) "red"
-                                   else "black",
+                                 else "black",
                                  font.main = if (isTRUE(get_preset(old_bn()) == n) && compare()) 4
                                  else 2)
                           })
@@ -850,6 +857,38 @@ reView_server_tab2_switch_impl <- function(benchmark,mainout_choice,plotswin,out
              )
            )
          },
+         "Out-of-sample coefficients" = {
+           shiny::fluidRow(
+             shiny::column(12,
+                           title,
+                           shiny::div(plotOutBrushAndRender(shiny::reactive(in_convergence(benchmark(),
+                                                                                           type="indicators-only")),
+                                                            plotswin,
+                                                            output,
+                                                            paste0(old_or_new,"plotlev"),
+                                                            ns,
+                                                            height="33%",
+                                                            ylab = "Indicator"),
+                                      plotOutBrushAndRender(shiny::reactive(in_convergence(benchmark(),
+                                                                                           type="constant")),
+                                                            plotswin,
+                                                            output,
+                                                            paste0(old_or_new,"plotcha"),
+                                                            ns,
+                                                            height="33%",
+                                                            ylab = "Constant"),
+                                      plotOutBrushAndRender(shiny::reactive(in_convergence(benchmark(),
+                                                                                           type="indicator-constant-2d")),
+                                                            plotswin,
+                                                            output,
+                                                            paste0(old_or_new,"plotctb"),
+                                                            ns,
+                                                            height="33%",
+                                                            xlab = "Indicator",
+                                                            ylab = "Constant"),class=outputclass)
+             )
+           )
+         },
          "Revisions" = {
            shiny::fluidRow(
              shiny::column(12,
@@ -937,6 +976,7 @@ reView_server_tab2 <- function(id,hfserie_name,lfserie_name,
                         shiny::observeEvent(compare(),{
                           shiny::updateRadioButtons(session,"mainout_choice", NULL,
                                                     choices = c("Scatter plot","In-sample predictions","Comparison benchmark/input",
+                                                                "Out-of-sample coefficients",
                                                                 if (compare()) "Revisions","Benchmark plot","Benchmark summary"),
                                                     selected = "Scatter plot",
                                                     inline = TRUE)
