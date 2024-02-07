@@ -7,10 +7,12 @@ skips <- function() {
             as.character(sessionInfo()[c("BLAS","LAPACK")]))
     )
   )
-  skip_if(getRversion() < "4.4.0")
 }
 
-expect_doppelganger <- vdiffr::expect_doppelganger
+expect_doppelganger <- function(title, fig) vdiffr::expect_doppelganger(
+  paste0(title, "-", if (getRversion() < "4.4.0") "lt43" else "gt44"),
+  fig
+)
 
 test_that("function_if_it_isnt_one works", {
   expect_identical(function_if_it_isnt_one(seq_len),seq_len)
@@ -37,7 +39,7 @@ test_that("plot works with twoStepsBenchmark", {
                                   end.domain = c(2021,12))
   
   expect_doppelganger("plot-benchmark-nowin",
-                      function() plot(benchmark),)
+                      function() plot(benchmark))
   
   expect_doppelganger("plot-insample-levels-nowin",
                       function() plot(in_sample(benchmark,type="levels")))
