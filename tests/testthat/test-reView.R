@@ -301,7 +301,7 @@ test_that("reView-withoutset",{
   
   # info button shows scatter plots modal
   
-  app$set_inputs(`reView-reViewtab2-infobtn` = "click")
+  app$click("reView-reViewtab2-infobtn")
   app$wait_for_js("($('#shiny-modal').data('bs.modal') || {}).isShown")
   expect_true(grepl("These scatter plots",
                     app$get_html(".modal"),
@@ -313,23 +313,20 @@ test_that("reView-withoutset",{
   
   # Differenciation
   
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-dif` = TRUE)
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        include.differenciation = TRUE)))
   # Rho
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-rho` = TRUE)
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        include.rho = TRUE)))
   
   # Setcoeff
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-setcoeff_button` = TRUE)
   app$set_inputs(`reView-reViewtab2-setcoeff` = 100)
   expect_equal(as.ts(get_bn()),
@@ -337,8 +334,7 @@ test_that("reView-withoutset",{
                                        set.coeff = 100)))
   
   # Setconst
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-setconst_button` = TRUE)
   app$set_inputs(`reView-reViewtab2-setconst` = 100)
   expect_equal(as.ts(get_bn()),
@@ -346,8 +342,7 @@ test_that("reView-withoutset",{
                                        set.const = 100)))
   
   # empty numerics -> 0 and and active only if pressed
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-setconst` = NULL)
   app$set_inputs(`reView-reViewtab2-setcoeff` = NULL)
   expect_equal(as.ts(get_bn()),
@@ -361,8 +356,7 @@ test_that("reView-withoutset",{
                                        set.const = 0)))
   
   # coeffcalc
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-coeffcalc` = c(2004, 2012))
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
@@ -370,8 +364,7 @@ test_that("reView-withoutset",{
                                        end.coeff.calc = 2012)))
   
   # Benchmark
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-benchmark` = c(2004, 2015))
   
   expect_equal(as.ts(get_bn()),
@@ -383,7 +376,7 @@ test_that("reView-withoutset",{
   app$set_inputs(`reView-reViewtab2-plotswin` = as.numeric(c(2003, 2014)))
   expect_equal(app$get_value(input = "reView-reViewtab2-plotswin"),
                c(2003,2014))
-  app$set_inputs(`reView-reViewtab2-click` = 1L,allow_no_input_binding_ = TRUE)
+  app$set_inputs(`reView-reViewtab2-click` = 1L, allow_no_input_binding_ = TRUE)
   expect_equal(app$get_value(input = "reView-reViewtab2-plotswin"),
                c(2000,2020))
   
@@ -403,7 +396,7 @@ test_that("reView-withoutset",{
   
   # info button shows benchmark plots modal
   
-  app$set_inputs(`reView-reViewtab2-infobtn` = "click")
+  app$click("reView-reViewtab2-infobtn")
   app$wait_for_js("($('#shiny-modal').data('bs.modal') || {}).isShown")
   expect_true(grepl("procedure involved",
                     app$get_html(".modal"),
@@ -431,8 +424,7 @@ test_that("reView-withoutset",{
   expect_true(all(vapply(plots,`[[`,0,"width") >= 269))
   
   # Summary
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-mainout_choice` = "Benchmark summary")
   oldsum <- app$wait_for_value(output = "reView-reViewtab2-oldverbat")
   newsum <- app$wait_for_value(output = "reView-reViewtab2-newverbat")
@@ -471,14 +463,12 @@ test_that("reView-withoutset",{
   
   # Reset change menu
   app$set_inputs(`reView-menu` = "Export")
-  app$set_inputs(`reView-reViewtab3-Copy` = "click",
-                 allow_no_input_binding_ = TRUE)
-  app$set_inputs(`reView-reViewtab2-infobtn` = "click")
+  app$click("reView-reViewtab3-Copy")
+  app$click("reView-reViewtab2-infobtn")
   app$wait_for_js("($('#shiny-modal').data('bs.modal') || {}).isShown")
   app$get_js("$('.modal').modal('hide');")
 
-  app$set_inputs(`reView-reViewtab3-Reset` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab3-Reset")
   app$wait_for_value(output = "reView-reViewtab2-monoplotlev")
   expect_equal(app$wait_for_value(input = "reView-menu"),"Modify")
   
@@ -565,8 +555,7 @@ test_that("reView-setcoefconst",{
   app$wait_for_value(input = "reView-reViewtab1-model5_actionlink")
   app$wait_for_value(input = "reView-reViewtab1-model6_actionlink")
   expect_true(grepl("distance",app$get_html(".tab-content"),fixed=TRUE))
-  app$set_inputs(`reView-reViewtab1-model1_actionlink` = "click",
-                 allow_no_input_binding_ = TRUE)
+  app$click("reView-reViewtab1-model1_actionlink")
   expect_equal(app$wait_for_value(input = "reView-menu"),"Modify")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
