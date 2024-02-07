@@ -315,12 +315,14 @@ test_that("reView-withoutset",{
   
   app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-dif` = TRUE)
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        include.differenciation = TRUE)))
   # Rho
   app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-rho` = TRUE)
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        include.rho = TRUE)))
@@ -329,6 +331,7 @@ test_that("reView-withoutset",{
   app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-setcoeff_button` = TRUE)
   app$set_inputs(`reView-reViewtab2-setcoeff` = 100)
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        set.coeff = 100)))
@@ -337,6 +340,7 @@ test_that("reView-withoutset",{
   app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-setconst_button` = TRUE)
   app$set_inputs(`reView-reViewtab2-setconst` = 100)
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        set.const = 100)))
@@ -345,11 +349,13 @@ test_that("reView-withoutset",{
   app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-setconst` = NULL)
   app$set_inputs(`reView-reViewtab2-setcoeff` = NULL)
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction)))
+  
   app$set_inputs(`reView-reViewtab2-setconst_button` = TRUE)
   app$set_inputs(`reView-reViewtab2-setcoeff_button` = TRUE)
-  
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        set.coeff = 0,
@@ -358,6 +364,7 @@ test_that("reView-withoutset",{
   # coeffcalc
   app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-coeffcalc` = c(2004, 2012))
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        start.coeff.calc = 2004,
@@ -366,7 +373,7 @@ test_that("reView-withoutset",{
   # Benchmark
   app$click("reView-reViewtab3-Reset")
   app$set_inputs(`reView-reViewtab2-benchmark` = c(2004, 2015))
-  
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),
                as.ts(twoStepsBenchmark(turnover,construction,
                                        start.benchmark = 2004,
@@ -374,10 +381,10 @@ test_that("reView-withoutset",{
   
   # Plots
   app$set_inputs(`reView-reViewtab2-plotswin` = as.numeric(c(2003, 2014)))
-  expect_equal(app$get_value(input = "reView-reViewtab2-plotswin"),
+  expect_equal(app$wait_for_value(input = "reView-reViewtab2-plotswin"),
                c(2003,2014))
   app$set_inputs(`reView-reViewtab2-click` = 1L, allow_no_input_binding_ = TRUE)
-  expect_equal(app$get_value(input = "reView-reViewtab2-plotswin"),
+  expect_equal(app$wait_for_value(input = "reView-reViewtab2-plotswin"),
                c(2000,2020))
   
   # Change output to benchmark plots
@@ -733,6 +740,7 @@ test_that("reView-outlierssetcoef",{
   app$set_inputs(`reView-menu` = "Modify")
   app$set_inputs(`reView-reViewtab2-setcoeff_button` = TRUE)
   app$set_inputs(`reView-reViewtab2-setcoeff` = 100)
+  app$wait_for_value(output = "reView-reViewtab2-newplot")
   expect_equal(as.ts(get_bn()),as.ts(twoStepsBenchmark(turnover,construction,
                                                        outliers = list(AO2005 = rep(0.1,12L)),
                                                        set.coeff = c(AO2005 = 1,
