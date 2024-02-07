@@ -26,6 +26,7 @@ test_that("display_vector", {
 })
 
 test_that("get_preset", {
+  expect_identical(get_preset(NULL), NA)
   expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE)),1)
   expect_equal(get_preset(twoStepsBenchmark(turnover,construction,include.differenciation = TRUE,
                                             set.const = 0)),2)
@@ -226,6 +227,14 @@ test_that("rePort produces a report when time boundaries are set",{
   expect_true(file.exists(temp_html))
   unlink(temp_html)
 })
+
+test_that("reView and rePort return an error on multivariate benchmarks",
+          {
+            expect_error(rePort(twoStepsBenchmark(cbind(turnover,turnover_catering), construction)),
+                         "univariate benchmarks")
+            expect_error(reView(twoStepsBenchmark(cbind(turnover,turnover_catering), construction)),
+                         "univariate benchmarks")
+          })
 
 test_that("reView-withoutset",{
   
