@@ -104,7 +104,9 @@
 <text x='681.69' y='531.12' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='22.25px' lengthAdjust='spacingAndGlyphs'>2020</text>
 <rect x='235.61' y='542.28' width='268.39' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='241.09' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='75.23px' lengthAdjust='spacingAndGlyphs'>Rebased levels</text>
+<rect x='321.80' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='323.53' y1='556.40' x2='337.35' y2='556.40' style='stroke-width: 1.07; stroke: #E41A1C; stroke-linecap: butt;' />
+<rect x='394.56' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='396.29' y1='556.40' x2='410.11' y2='556.40' style='stroke-width: 1.07; stroke: #377EB8; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
 <text x='344.56' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='44.52px' lengthAdjust='spacingAndGlyphs'>Benchmark</text>
 <text x='417.32' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='81.21px' lengthAdjust='spacingAndGlyphs'>High-frequency serie</text>

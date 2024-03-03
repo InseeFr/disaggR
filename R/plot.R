@@ -660,7 +660,8 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
     
     # These are the parts before and after the coefficients calc window
   }
-  g <- g + ggplot2::continuous_scale("colour","gradient",function(x) col(length(x)),
+  g <- g + ggplot2::continuous_scale("colour",
+                                     palette = function(x) col(length(x)),
                                      limits = lims,
                                      breaks = break_arrows(as.numeric(time(object)[-1])),
                                      minor_breaks = numeric(),
@@ -704,8 +705,8 @@ autoplot_with_lf <- function(object, xlab, ylab,
            lims = gglims(hfbench),
            verysmall = getOption("ts.eps")/frequency(model$hfserie),
            ...) +
-    ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
-    ggplot2::discrete_scale("linetype","hue",lty,na.translate = FALSE) +
+    ggplot2::discrete_scale("colour", palette = col,na.translate = FALSE) +
+    ggplot2::discrete_scale("linetype", palette = lty,na.translate = FALSE) +
     ggplot2::ggtitle(main)
 }
 
@@ -781,7 +782,7 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
              start = start, end = end,
              xlab = xlab, ylab = ylab, ...) +
       ggplot2::labs(fill=type_label) +
-      ggplot2::discrete_scale("fill","hue",col,na.translate = FALSE) +
+      ggplot2::discrete_scale("fill", palette = col,na.translate = FALSE) +
       ggplot2::ggtitle(main)
   }
   else switch(attr(object,"func"),
@@ -791,7 +792,7 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                          start = start, end = end,
                          xlab = xlab, ylab = ylab, ...) +
                   ggplot2::labs(colour=type_label) +
-                  ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
+                  ggplot2::discrete_scale("colour", palette = col,na.translate = FALSE) +
                   ggplot2::ggtitle(main)
               },
               in_scatter = {
@@ -807,8 +808,8 @@ autoplot.tscomparison <- function(object, xlab = NULL, ylab = NULL,
                        xlab = xlab, ylab = ylab, ...) +
                 ggplot2::labs(linetype=type_label) +
                 ggplot2::labs(colour=type_label) +
-                ggplot2::discrete_scale("colour","hue",col,na.translate = FALSE) +
-                ggplot2::discrete_scale("linetype", "linetype_d", lty,na.translate = FALSE) +
+                ggplot2::discrete_scale("colour", palette = col,na.translate = FALSE) +
+                ggplot2::discrete_scale("linetype", palette = lty,na.translate = FALSE) +
                 ggplot2::ggtitle(main)
   )
 }

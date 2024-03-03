@@ -600,7 +600,9 @@
 <text x='681.95' y='531.12' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='22.25px' lengthAdjust='spacingAndGlyphs'>2020</text>
 <rect x='236.90' y='542.28' width='271.19' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='242.38' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='64.82px' lengthAdjust='spacingAndGlyphs'>Contributions</text>
+<rect x='312.68' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='313.38' y='548.47' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #66C2A5;' />
+<rect x='422.12' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='422.83' y='548.47' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FC8D62;' />
 <text x='335.44' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='81.21px' lengthAdjust='spacingAndGlyphs'>High-frequency serie</text>
 <text x='444.88' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='57.73px' lengthAdjust='spacingAndGlyphs'>Smoothed part</text>

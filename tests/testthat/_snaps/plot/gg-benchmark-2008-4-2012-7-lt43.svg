@@ -66,7 +66,9 @@
 <text x='621.05' y='531.12' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='22.25px' lengthAdjust='spacingAndGlyphs'>2012</text>
 <rect x='248.82' y='542.28' width='237.07' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='254.30' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='45.86px' lengthAdjust='spacingAndGlyphs'>Variables</text>
+<rect x='305.65' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='307.37' y1='556.40' x2='321.20' y2='556.40' style='stroke-width: 1.07; stroke: #E41A1C; stroke-linecap: butt;' />
+<rect x='378.41' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='380.13' y1='556.40' x2='393.96' y2='556.40' style='stroke-width: 1.07; stroke: #377EB8; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
 <text x='328.41' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='44.52px' lengthAdjust='spacingAndGlyphs'>Benchmark</text>
 <text x='401.16' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='79.25px' lengthAdjust='spacingAndGlyphs'>Low-frequency serie</text>

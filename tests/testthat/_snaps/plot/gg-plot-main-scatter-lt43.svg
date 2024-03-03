@@ -91,14 +91,19 @@
 <text x='637.69' y='531.12' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='16.69px' lengthAdjust='spacingAndGlyphs'>100</text>
 <rect x='231.58' y='542.28' width='274.49' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='237.06' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='24.45px' lengthAdjust='spacingAndGlyphs'>Time</text>
+<rect x='266.99' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='268.71' y1='556.40' x2='282.54' y2='556.40' style='stroke-width: 1.07; stroke: #2B6687; stroke-linecap: butt;' />
 <polygon points='275.58,558.26 282.54,556.40 275.58,554.54 ' style='stroke-width: 1.07; stroke: #2B6687; stroke-linecap: butt; fill: #2B6687;' />
+<rect x='314.80' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='316.53' y1='556.40' x2='330.35' y2='556.40' style='stroke-width: 1.07; stroke: #8097A9; stroke-linecap: butt;' />
 <polygon points='323.40,558.26 330.35,556.40 323.40,554.54 ' style='stroke-width: 1.07; stroke: #8097A9; stroke-linecap: butt; fill: #8097A9;' />
+<rect x='362.62' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='364.35' y1='556.40' x2='378.17' y2='556.40' style='stroke-width: 1.07; stroke: #CBCBCB; stroke-linecap: butt;' />
 <polygon points='371.22,558.26 378.17,556.40 371.22,554.54 ' style='stroke-width: 1.07; stroke: #CBCBCB; stroke-linecap: butt; fill: #CBCBCB;' />
+<rect x='410.44' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='412.16' y1='556.40' x2='425.99' y2='556.40' style='stroke-width: 1.07; stroke: #B18C81; stroke-linecap: butt;' />
 <polygon points='419.03,558.26 425.99,556.40 419.03,554.54 ' style='stroke-width: 1.07; stroke: #B18C81; stroke-linecap: butt; fill: #B18C81;' />
+<rect x='458.25' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='459.98' y1='556.40' x2='473.81' y2='556.40' style='stroke-width: 1.07; stroke: #90503F; stroke-linecap: butt;' />
 <polygon points='466.85,558.26 473.81,556.40 466.85,554.54 ' style='stroke-width: 1.07; stroke: #90503F; stroke-linecap: butt; fill: #90503F;' />
 <text x='289.74' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>2002</text>

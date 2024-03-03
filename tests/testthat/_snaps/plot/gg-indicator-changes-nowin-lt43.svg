@@ -107,7 +107,9 @@
 <text x='681.60' y='531.12' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='22.25px' lengthAdjust='spacingAndGlyphs'>2020</text>
 <rect x='250.22' y='542.28' width='237.21' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='255.70' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='44.04px' lengthAdjust='spacingAndGlyphs'>Changes</text>
+<rect x='305.22' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='306.95' y1='556.40' x2='320.78' y2='556.40' style='stroke-width: 1.07; stroke: #E41A1C; stroke-linecap: butt;' />
+<rect x='377.98' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='379.71' y1='556.40' x2='393.54' y2='556.40' style='stroke-width: 1.07; stroke: #377EB8; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
 <text x='327.98' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='44.52px' lengthAdjust='spacingAndGlyphs'>Benchmark</text>
 <text x='400.74' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='81.21px' lengthAdjust='spacingAndGlyphs'>High-frequency serie</text>
