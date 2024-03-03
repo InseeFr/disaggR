@@ -162,7 +162,9 @@
 <text x='624.15' y='531.12' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='22.25px' lengthAdjust='spacingAndGlyphs'>2012</text>
 <rect x='243.26' y='542.28' width='271.19' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='248.74' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='64.82px' lengthAdjust='spacingAndGlyphs'>Contributions</text>
+<rect x='319.04' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='319.74' y='548.47' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #66C2A5;' />
+<rect x='428.48' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <rect x='429.19' y='548.47' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #FC8D62;' />
 <text x='341.80' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='81.21px' lengthAdjust='spacingAndGlyphs'>High-frequency serie</text>
 <text x='451.24' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='57.73px' lengthAdjust='spacingAndGlyphs'>Smoothed part</text>

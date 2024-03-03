@@ -68,12 +68,16 @@
 <text x='596.14' y='531.12' text-anchor='middle' style='font-size: 10.00px; fill: #4D4D4D; font-family: sans;' textLength='22.25px' lengthAdjust='spacingAndGlyphs'>1240</text>
 <rect x='256.47' y='542.28' width='226.67' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='261.95' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='24.45px' lengthAdjust='spacingAndGlyphs'>Time</text>
+<rect x='291.88' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='293.60' y1='556.40' x2='307.43' y2='556.40' style='stroke-width: 1.07; stroke: #2B6687; stroke-linecap: butt;' />
 <polygon points='300.47,558.26 307.43,556.40 300.47,554.54 ' style='stroke-width: 1.07; stroke: #2B6687; stroke-linecap: butt; fill: #2B6687;' />
+<rect x='339.69' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='341.42' y1='556.40' x2='355.25' y2='556.40' style='stroke-width: 1.07; stroke: #99A8B4; stroke-linecap: butt;' />
 <polygon points='348.29,558.26 355.25,556.40 348.29,554.54 ' style='stroke-width: 1.07; stroke: #99A8B4; stroke-linecap: butt; fill: #99A8B4;' />
+<rect x='387.51' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='389.24' y1='556.40' x2='403.06' y2='556.40' style='stroke-width: 1.07; stroke: #BAA099; stroke-linecap: butt;' />
 <polygon points='396.11,558.26 403.06,556.40 396.11,554.54 ' style='stroke-width: 1.07; stroke: #BAA099; stroke-linecap: butt; fill: #BAA099;' />
+<rect x='435.33' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='437.06' y1='556.40' x2='450.88' y2='556.40' style='stroke-width: 1.07; stroke: #90503F; stroke-linecap: butt;' />
 <polygon points='443.92,558.26 450.88,556.40 443.92,554.54 ' style='stroke-width: 1.07; stroke: #90503F; stroke-linecap: butt; fill: #90503F;' />
 <text x='314.64' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>2009</text>

@@ -18,7 +18,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<rect x='0.00' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+<rect x='0.000000000000064' y='0.00' width='720.00' height='576.00' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
 </g>
 <defs>
   <clipPath id='cpMjcuNTR8NzE0LjUyfDUuNDh8NTA3LjAz'>
@@ -127,7 +127,9 @@
 <text x='371.03' y='529.04' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='15.29px' lengthAdjust='spacingAndGlyphs'>foo</text>
 <rect x='252.49' y='542.28' width='237.07' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='257.97' y='560.19' style='font-size: 11.00px; font-family: sans;' textLength='45.86px' lengthAdjust='spacingAndGlyphs'>Variables</text>
+<rect x='309.32' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='311.04' y1='556.40' x2='324.87' y2='556.40' style='stroke-width: 1.07; stroke: #E41A1C; stroke-linecap: butt;' />
+<rect x='382.08' y='547.76' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <line x1='383.80' y1='556.40' x2='397.63' y2='556.40' style='stroke-width: 1.07; stroke: #377EB8; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
 <text x='332.07' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='44.52px' lengthAdjust='spacingAndGlyphs'>Benchmark</text>
 <text x='404.83' y='559.43' style='font-size: 8.80px; font-family: sans;' textLength='79.25px' lengthAdjust='spacingAndGlyphs'>Low-frequency serie</text>

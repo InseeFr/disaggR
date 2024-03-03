@@ -1,6 +1,12 @@
+# disaggR 1.0.5.3
+* Compatibility with ggplot 3.5.0 : Removed the "scale\_name" argument within scales that is now deprecated, new test snapshots (PR #102).
+
+# disaggR 1.0.5.2
+* Nothing changed besides the maintener.
+
 # disaggR 1.0.5.1
 * Internal change to check package version with character instead of numeric.
-* Internal minor change to in_disaggr (incohesive parameters)
+* Internal minor change to in\_disaggr (incohesive parameters)
 * A more informative error message if one tries to differentiate a time-series with only one observation
 * A more informative error message if the rank becomes imperfect after decorrelation
 
