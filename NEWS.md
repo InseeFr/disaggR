@@ -1,5 +1,5 @@
 # disaggR 1.0.5.3
-* Compatibility with ggplot 3.5.0 : Removed the "scale\_name" argument within scales that is now deprecated, new test snapshots.
+* Compatibility with ggplot 3.5.0 : Removed the "scale\_name" argument within scales that is now deprecated, new test snapshots (PR #102).
 
 # disaggR 1.0.5.2
 * Nothing changed besides the maintener.
