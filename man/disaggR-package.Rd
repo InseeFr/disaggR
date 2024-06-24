@@ -27,15 +27,16 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Thomas Laurent \email{thomas.laurent@insee.fr}
+\strong{Maintainer}: Pauline Meinzel \email{pauline.meinzel@insee.fr}
 
 Authors:
 \itemize{
-  \item Arnaud Feldmann \email{arnaud.feldmann@gmail.com} (\href{https://orcid.org/0000-0003-0109-7505}{ORCID}) (Author, creator and maintener of the package until the version 1.0.2)
+  \item Arnaud Feldmann \email{arnaud.feldmann@gmail.com} (\href{https://orcid.org/0000-0003-0109-7505}{ORCID}) (Author and maintener of the package until the version 1.0.1)
 }
 
 Other contributors:
 \itemize{
+  \item Thomas Laurent (Maintener of the package from 1.0.2 to 1.0.5.2) [contributor]
   \item Franck Arnaud (barplot base graphics method for the mts class) [contributor]
   \item Institut national de la statistique et des études économiques \email{comptes-trimestriels@insee.fr} (https://www.insee.fr/) [copyright holder]
 }

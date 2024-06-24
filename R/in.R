@@ -148,6 +148,7 @@ in_disaggr_notctb <- function(object,type) {
 
 in_disaggr_ctb <- function(object) UseMethod("in_disaggr_ctb")
 
+#' @export
 in_disaggr_ctb.threeRuleSmooth <- function(object) {
   benchmark <- na.omit(as.ts(object))
   
@@ -164,6 +165,7 @@ in_disaggr_ctb.threeRuleSmooth <- function(object) {
             ))
 }
 
+#' @export
 in_disaggr_ctb.twoStepsBenchmark <- function(object) {
   
   hfserie <- model.list(object)$hfserie

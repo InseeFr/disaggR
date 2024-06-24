@@ -61,14 +61,17 @@ neither_outlier_nor_constant_impl <- function(hfserie, object) {
 
 neither_outlier_nor_constant <- function(object) UseMethod("neither_outlier_nor_constant")
 
+#' @export
 neither_outlier_nor_constant.twoStepsBenchmark <- function(object) {
   neither_outlier_nor_constant_impl(model.list(object)$hfserie, object)
 }
 
+#' @export
 neither_outlier_nor_constant.threeRuleSmooth <- function(object) {
   model.list(object)$hfserie
 }
 
+#' @export
 neither_outlier_nor_constant.praislm <- function(object) {
   neither_outlier_nor_constant_impl(model.list(object)$X, object)
 }

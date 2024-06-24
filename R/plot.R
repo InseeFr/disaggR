@@ -555,6 +555,7 @@ dftsforggplot <- function(object,series_names) {
 
 ggplotts <- function(object,...) UseMethod("ggplotts")
 
+#' @export
 ggplotts.data.frame <- function(object,show.legend, theme,type,
                                 xlab,ylab, group,lims,verysmall,
                                 ...) {
@@ -583,6 +584,7 @@ ggplotts.data.frame <- function(object,show.legend, theme,type,
     theme
 }
 
+#' @export
 ggplotts.ts <- function(object,show.legend, series_names,theme,type,
                         start, end, xlab,ylab, ...) {
   
