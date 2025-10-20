@@ -564,16 +564,16 @@ ggplotts.data.frame <- function(object,show.legend, theme,type,
   
   group <- ggplot2::enquo(group)
   
-  g <- ggplot2::ggplot(object,ggplot2::aes(x=Date,y=Values),show.legend = show.legend,...) +
+  g <- ggplot2::ggplot(object,ggplot2::aes(x=Date,y=Values),...) +
     ggplot2::xlab(xlab) + ggplot2::ylab(ylab)
   switch(type,
          line = g + ggplot2::geom_line(ggplot2::aes(colour=Variables,linetype=Variables,group=!!group),
-                                       na.rm = TRUE),
-         bar = g + ggplot2::geom_bar(ggplot2::aes(fill=Variables,group=!!group),stat="identity") +
+                                       na.rm = TRUE, show.legend = show.legend),
+         bar = g + ggplot2::geom_bar(ggplot2::aes(fill=Variables,group=!!group),stat="identity", show.legend = show.legend) +
            ggplot2::stat_summary(fun = sum, geom="line", colour = "black",
-                                 linewidth = 0.5, alpha=1,na.rm = TRUE),
+                                 linewidth = 0.5, alpha=1, na.rm = TRUE),
          segment = g + ggplot2::geom_segment(ggplot2::aes(xend=Date,colour=Variables,group=!!group),
-                                             yend=0)
+                                             yend=0, show.legend = show.legend)
   ) +
     ggplot2::scale_x_continuous(
       limits = lims,
@@ -604,7 +604,7 @@ ggplotts.ts <- function(object,show.legend, series_names,theme,type,
            ...)
 }
 
-geom_path_scatter <- function(object,i,lty) {
+geom_path_scatter <- function(object,i,lty,show.legend) {
   
   n <- nrow(object)
   
@@ -623,7 +623,8 @@ geom_path_scatter <- function(object,i,lty) {
                                              ends = "last",
                                              type = "closed",
                                              length = ggplot2::unit(0.1,"inches")),
-                        na.rm = TRUE)
+                        na.rm = TRUE,
+                        show.legend = show.legend)
 }
 
 ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
@@ -635,7 +636,7 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
   
   lty <- lty(ncol(object)-1L)
   
-  g <- ggplot2::ggplot(show.legend = show.legend, ...) + ggplot2::xlab(xlab) + ggplot2::ylab(ylab)
+  g <- ggplot2::ggplot(...) + ggplot2::xlab(xlab) + ggplot2::ylab(ylab)
   
   if (!is.null(attr(object,"abline"))) {
     g <- g + ggplot2::geom_abline(intercept = attr(object,"abline")["constant"],
@@ -643,7 +644,7 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
                                   lty = "solid", colour = "red", linewidth = 1)
   }
   
-  g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L])
+  g <- g + geom_path_scatter(object[,c(1L,2L)],1L,lty[1L], show.legend = show.legend)
   
   if (ncol(object) == 3L) {
     is_value_reg <- which(!is.na(object[,2L]))
@@ -651,13 +652,13 @@ ggscatter <- function(object,show.legend, theme, start, end, xlab,ylab,
     if (is_value_reg[1L] != 1L) {
       object_temp <- object[,c(1L,3L)]
       object_temp[(is_value_reg[1L] + 1L):nrow(object),2L] <- NA
-      g <- g + geom_path_scatter(object_temp,2L,lty[2L])
+      g <- g + geom_path_scatter(object_temp,2L,lty[2L], show.legend = show.legend)
     }
     
     if (is_value_reg[length(is_value_reg)] != nrow(object)) {
       object_temp <- object[,c(1L,3L)]
       object_temp[1L:(is_value_reg[length(is_value_reg)]-1L),2L] <- NA
-      g <- g + geom_path_scatter(object_temp,3L,lty[2L]) 
+      g <- g + geom_path_scatter(object_temp,3L,lty[2L], show.legend = show.legend) 
     }
     
     # These are the parts before and after the coefficients calc window
