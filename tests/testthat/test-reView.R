@@ -247,6 +247,7 @@ test_that("reView-withoutset",{
   testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
                       tolower(Sys.info()[["sysname"]]) == "windows")
   # Windows has some problems on CI with shinytest2
+  skip_if(getRversion() < numeric_version("4.5.0"))
   
   app <- shinytest2::AppDriver$new(test_path("shiny-withoutset"),
                                    wait = TRUE)
@@ -503,6 +504,7 @@ test_that("reView-setcoefconst",{
   testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
                       tolower(Sys.info()[["sysname"]]) == "windows")
   # Windows has some problems on CI with shinytest2
+  skip_if(getRversion() < numeric_version("4.5.0"))
   
   app <- shinytest2::AppDriver$new(test_path("shiny-setcoefconst"),
                                    wait = TRUE)
@@ -616,6 +618,7 @@ test_that("reView-outliers",{
   testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
                       tolower(Sys.info()[["sysname"]]) == "windows")
   # Windows has some problems on CI with shinytest2
+  skip_if(getRversion() < numeric_version("4.5.0"))
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outliers"),
                                    options = list(shiny.reactlog = TRUE),
@@ -704,6 +707,7 @@ test_that("reView-outlierssetcoef",{
   testthat::skip_if(isTRUE(as.logical(Sys.getenv("CI"))) &&
                       tolower(Sys.info()[["sysname"]]) == "windows")
   # Windows has some problems on CI with shinytest2
+  skip_if(getRversion() < numeric_version("4.5.0"))
   
   app <- shinytest2::AppDriver$new(test_path("shiny-outlierssetcoef"),
                                    wait = TRUE)
