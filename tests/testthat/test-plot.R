@@ -7,6 +7,12 @@ skips <- function() {
             as.character(sessionInfo()[c("BLAS","LAPACK")]))
     )
   )
+  skip_if(
+    any(
+      grepl("atlas",
+            as.character(sessionInfo()[c("BLAS","LAPACK")]))
+    )
+  )
   skip_if(packageVersion("ggplot2") < numeric_version("3.5.0"))
   skip_if(getRversion() < numeric_version("4.5.0"))
   skip_on_os("mac")
