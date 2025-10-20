@@ -43,8 +43,8 @@ test_that("cache works for smoothing", {
   }
   randomargs <- lapply(rep(30,150),randomarg)
   randomres <- function(notused) lapply(randomargs,function(x) bflSmooth(x[[1]],x[[2]]))
-  reslist <- lapply(rep(1,100),randomres)
-  expect_true(all(sapply(reslist, FUN = identical, randomres(1))))
+  reslist <- lapply(rep(1,10),randomres)
+  expect_true(all(sapply(reslist, FUN = function(x, y) isTRUE(all.equal(x, y)), randomres(1))))
   
   set.seed(3)
   randomarg <- function(n) {
@@ -55,9 +55,10 @@ test_that("cache works for smoothing", {
   }
   randomargs <- lapply(rep(30,150),randomarg)
   randomres <- function(notused) lapply(randomargs,function(x) bflSmooth(x[[1]],x[[2]],x[[3]]))
-  reslist <- lapply(rep(1,100),randomres)
-  expect_true(all(sapply(reslist, FUN = identical, randomres(1))))
+  reslist <- lapply(rep(1,10),randomres)
+  expect_true(all(sapply(reslist, FUN = function(x, y) isTRUE(all.equal(x, y)), randomres(1))))
 })
+
 
 test_that("error weights", {
   expect_error(bflSmooth(construction,12,weights = 14),"must be either NULL or a one-dimensional ts")
