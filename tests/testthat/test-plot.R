@@ -9,6 +9,8 @@ skips <- function() {
   )
   skip_if(packageVersion("ggplot2") < numeric_version("3.5.0"))
   skip_if(getRversion() < numeric_version("4.5.0"))
+  skip_on_os("mac")
+  # Des problèmes dans vdiffr sur mac
 }
 
 # taken from the non exported of vdiffr
