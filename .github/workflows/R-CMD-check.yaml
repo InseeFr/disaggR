@@ -27,6 +27,7 @@ jobs:
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest, r: '3.6'}
           - {os: ubuntu-latest,   r: 'oldrel'}
+          - {os: ubuntu-latest,   r: 'release', blas: 'atlas'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -48,7 +49,15 @@ jobs:
         run: |
           sudo apt-get install libblas-dev liblapack-dev
           sudo update-alternatives --set libblas.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/blas/libblas.so.3
-          sudo update-alternatives --set liblapack.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3 
+          sudo update-alternatives --set liblapack.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3
+
+      - name: Machine ATLAS (BLAS/LAPACK)
+        if: runner.os == 'Linux' && matrix.config.blas == 'atlas'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libatlas-base-dev
+          sudo update-alternatives --set libblas.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/atlas/libblas.so.3
+          sudo update-alternatives --set liblapack.so.3-x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/atlas/liblapack.so.3
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
