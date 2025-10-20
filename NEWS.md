@@ -1,5 +1,6 @@
 # disaggR 1.0.5.3
 * Compatibility with ggplot 3.5.0 : Removed the "scale\_name" argument within scales that is now deprecated, new test snapshots (PR #102).
+* In order to be back on the CRAN, the tests for the cach are now done with "all.equal" instead of identical. Hence it doesn't fail on some implementation of BLAS (PR #105).
 
 # disaggR 1.0.5.2
 * Nothing changed besides the maintener.
