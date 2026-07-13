@@ -1,5 +1,5 @@
 # disaggR 1.0.6.0
-* Breaking change : * `threeRuleSmooth()` now extends the weights window to the smallest
+* Breaking change : `threeRuleSmooth()` now extends the weights window to the smallest
 low-frequency window around the domain window, as documented, instead of always
 extending it to whole years. Only non-annual low-frequency series were
 affected (PR #106).
