@@ -2,7 +2,7 @@
 
 ## disaggR 1.0.6.0
 
-- Breaking change : \*
+- Breaking change :
   [`threeRuleSmooth()`](https://inseefr.github.io/disaggR/reference/threeRuleSmooth.md)
   now extends the weights window to the smallest low-frequency window
   around the domain window, as documented, instead of always extending
