@@ -1,0 +1,254 @@
+# Introduction to disaggR
+
+The French quarterly accounts are constructed using an indirect method,
+based on two major data series: the annual national accounts, and the
+short-term outlook data compiled from various sources. Hence, a temporal
+disaggregation methodology is needed.
+
+**disaggR** isn’t the only package on the CRAN providing such methods.
+[tempdisagg](https://cran.r-project.org/package=tempdisagg) relies on a
+formula interface, supports most time series classes and provides
+compatibility with irregular disaggregation setting (e.g. months to
+days).
+
+disaggR has different goals:
+
+- implementing the french national accounts methodology on time-series
+  of the class `"ts"`
+- providing a simple syntax that relies on standard evaluation and
+  functions
+- being fast enough to deal with the production of multiple series
+  without linking to Rcpp (for readability purposes)
+
+For further details about the french national accounts methodology, see
+[Methodology of quarterly national
+accounts](https://www.insee.fr/en/information/2579410).
+
+*Within that vignette, for each matrix time series, like in R, rows
+stand for the time and columns for the different variables. As for the
+operations,* $`*`$*stands for the standard product,* $`\odot`$*for the
+element-wise multiplication, and* $`\oslash`$*for the element-wise
+division.*
+
+## Two-Steps Benchmarks
+
+``` r
+
+twoStepsBenchmark(turnover,construction)
+```
+
+The two-steps benchmarks, provided by
+[`twoStepsBenchmark()`](https://inseefr.github.io/disaggR/reference/twoStepsBenchmark.md),
+rely on this high-frequency formula:
+
+``` math
+C =  I * a + u
+```
+
+Where:
+
+- $`C`$, an univariate time series, is the high-frequency account.
+- $`I`$, a matrix time series, combines the columns of the indicators,
+  the outliers and the constant. If `include.differenciation` is `TRUE`,
+  the constant is actually a trend.
+- $`a`$, a numeric vector, stands for the coefficients to be applied.
+- $`u`$, an univariate time series, is the smoothed part of the
+  benchmark.
+
+The **coefficients are estimated at low-frequency**, within the
+coeff.calc window, eventually after a differentiation if
+`include.differenciation` is `TRUE`:
+
+``` math
+C_{aggregated}' =  I_{aggregated}' * a + u'
+```
+
+If `include.rho` is `TRUE`, $`u'`$ is an AR1 process with an
+autocorrelation parameter, and $`a`$ is estimated through a
+Prais-Winsten process. Otherwise, an ordinary least squares process is
+used.
+
+These **coefficients are applied at high-frequency**, to obtain the
+fitted values of the benchmark:
+
+``` math
+\text{fitted.values} = I * a
+```
+
+Note that, especially when `include.differenciation` is `TRUE`, the
+level of the fitted values is arbitrary: a constant is *chosen* to zero
+during the implicit reintegration. The choice of this constant, however,
+doesn’t impact the benchmarked series.
+
+**u is smoothed**:
+
+``` math
+u = smooth(extrapolation(C_{aggregated} - \text{fitted.values}_{aggregated}))
+```
+
+As the low-frequency values of $`C`$ have been set from the beginning,
+and the fitted values have just been computed, the aggregated values of
+$`u`$ are known. If these values aren’t defined all across the domain
+window, these are extrapolated as follow:
+
+- $`u(n+1)-u(n) = rho*(u(n)-u(n-1))`$ if `include.differenciation` is
+  `TRUE`
+- $`u(n+1) = rho * u(n)`$ if `include.differenciation` is `FALSE`
+
+The Boot, Feibes and Lisman process, through the
+[`bflSmooth()`](https://inseefr.github.io/disaggR/reference/bflSmooth.md)
+function, is then used to get the high-frequency values of u across the
+domain window.
+
+## Proportional Denton Benchmarks
+
+``` r
+
+threeRuleSmooth(turnover,construction)
+```
+
+The Proportional Denton Benchmarks, provided by
+[`threeRuleSmooth()`](https://inseefr.github.io/disaggR/reference/threeRuleSmooth.md),
+rely on this high-frequency formula:
+
+``` math
+C =  I \odot a
+```
+
+Where:
+
+- $`C`$, an univariate time series, is the high-frequency account
+- $`I`$, an *univariate* time series, the indicator
+- $`a`$, an *univariate time series*, the coefficient to be applied,
+  which is a rate to be smoothed.
+
+Proportional Denton benchmarks share some similarities with univariate
+two-steps benchmarks without constants. There are some differences:
+
+- The coefficient **$`a`$ is not a constant**.
+- There is **no smoothed part**, as $`a`$ is already smoothed for
+  $`I \odot a`$ to be equal to $`C`$ after aggregation.
+
+In order to smooth the rate, a few steps are required.
+
+An **alternate version of I is computed**, that is only used for the
+smoothing:
+
+``` math
+I' = replication(crop(I))
+```
+
+Only the full cycles of I are kept, then the first and last full cycles
+are replicated respectively backwards and forwards to fill the domain
+window.
+
+The low-frequency rate is already known where $`C \oslash I`$ is
+defined. This rate is then extrapolated to fill the domain window:
+
+``` math
+a_{aggregated}' = extrapolation(C_{aggregated} \oslash I_{aggregated})
+```
+
+Such an extrapolation is a bit more problematic than the *natural*
+extrapolations provided by
+[`twoStepsBenchmark()`](https://inseefr.github.io/disaggR/reference/twoStepsBenchmark.md).
+Indeed, the proportional Denton benchmarks don’t involve any hypothesis
+on $`a`$, other than continuity. As continuity isn’t enough, and that
+proportional Denton benchmarks are mainly used for rates that have a
+trend, those rates are extrapolated using an arithmetic sequence. By
+default, the common difference of this sequence is given by the mean of
+the rate differences within the delta rate window.
+
+The high-frequency rate can then be computed with the help of a weighted
+Boot, Feibes and Lisman process:
+
+``` math
+a = smooth(a_{aggregated}',weights=I')
+```
+
+## Plots
+
+disaggR provides some tools for plotting its results. Functions
+[`in_sample()`](https://inseefr.github.io/disaggR/reference/in_sample.md),
+[`in_disaggr()`](https://inseefr.github.io/disaggR/reference/in_disaggr.md),
+[`in_scatter()`](https://inseefr.github.io/disaggR/reference/in_scatter.md),
+[`in_revisions()`](https://inseefr.github.io/disaggR/reference/in_revisions.md)
+generate objects of class `"tscomparison"`. Each object of class
+`"tscomparison"`, `"twoStepsBenchmark"` or `"threeRuleSmooth"` can be
+plotted with either the base
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) or the ggplot2
+[`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+method. These methods all share similar arguments:
+
+- **x** (or **object** for the autoplot method) a tscomparison, a
+  twoStepsBenchmark or a threeRuleSmooth
+- **xlab**, the title for the x axis
+- **ylab**, the title for the y axis
+- **start**, a numeric of length 1 or 2. The start of the plot
+- **end**, a numeric of length 1 or 2. The end of the plot
+- **col**, the color scale applied on the plot. Could be a vector of
+  colors, or a function from n to a color vector of size n.
+- **lty**, the linetype scales applied on the plot. Could be a vector of
+  linetypes, or a function from n to a linetypes vector of size n.
+- **show.legend**, `TRUE` or `FALSE`. Should an automatic legend be
+  added to the plot.
+- **main**, a character of length 1, the title of the plot
+- **mar**, a numeric of length 4, the margins of the plot specified in
+  the form c(bottom, left, top, right).
+- **theme**, a ggplot theme object to replace the default one (only for
+  autoplot methods)
+- **…**, other arguments passed either to ggplot or plot
+
+``` r
+
+benchmark <- twoStepsBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = TRUE)
+plot(in_sample(benchmark,type="levels"),
+     start=c(2010,1),end=c(2017,1))
+```
+
+![](disaggr_files/figure-html/unnamed-chunk-5-1.png)
+
+``` r
+
+library(ggplot2)
+smooth <- threeRuleSmooth(hfserie = turnover,
+                          lfserie = construction)
+autoplot(in_disaggr(smooth),
+         start=c(2009,1),end=c(2013,12),
+         show.legend = FALSE)
+```
+
+![](disaggr_files/figure-html/unnamed-chunk-6-1.png)
+
+## Other methods
+
+Various methods can be applied on objects of class `"twoStepsBenchmark"`
+and/or `"threeRuleSmooth"`.
+
+``` r
+
+benchmark <- twoStepsBenchmark(turnover,construction)
+smooth <- threeRuleSmooth(turnover,construction)
+
+reView(benchmark)
+rePort(benchmark)
+
+as.ts(benchmark);as.ts(smooth)
+as.list(benchmark);as.list(smooth)
+coef(benchmark)
+residuals(benchmark)
+vcov(benchmark)
+fitted(benchmark)
+model.list(benchmark);model.list(smooth)
+se(benchmark)
+rho(benchmark)
+outliers(benchmark)
+smoothed.rate(smooth)
+summary(benchmark)
+```
+
+Additionally, most of the methods for time series, from the package
+stats, automatically coerce these objects into time-series using
+[`as.ts()`](https://rdrr.io/r/stats/ts.html).

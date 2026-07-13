@@ -1,0 +1,4 @@
+# License
+
+    YEAR: 2020
+    COPYRIGHT HOLDER: INSEE (http://www.insee.fr)

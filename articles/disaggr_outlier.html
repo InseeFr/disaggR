@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Outliers in two-step benchmarks • disaggR</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Outliers in two-step benchmarks">
 </head>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">disaggR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.5.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.6.999</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,7 +115,7 @@ hotels from restaurants.&lt;/p&gt;"><sup>1</sup></a>.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">turnover_catering</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">consumption_catering</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-3-1.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="98%"></p>
 <p>Let’s first use the most basic model, in levels and without constant
 :</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -125,10 +125,10 @@ first value of both the indicator and the benchamrked account at 100.
 Here the first value is in January 1999.&lt;/p&gt;"><sup>2</sup></a> :</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark</span>, type<span class="op">=</span><span class="st">"levels-rebased"</span><span class="op">)</span>, start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-5-1.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-5-1.png" class="r-plt" alt="" width="98%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span>, start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2018</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-6-1.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="98%"></p>
 <p>The timing of Covid restrictions is clearly apparent on both the
 indicator (HF serie) and the benchmarked account (benchmark), with a
 first lockdown between March and May 2020, a second lockdown in November
@@ -150,12 +150,12 @@ absurd in that case.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/smoothed.part.html">smoothed.part</a></span><span class="op">(</span><span class="va">benchmark</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-7-1.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="98%"></p>
 <p>There is thus a significant contribution of the smoothed part to the
 QNA evolution in 2019-2020 :</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark</span>, type <span class="op">=</span><span class="st">"contributions"</span><span class="op">)</span>, start<span class="op">=</span><span class="fl">2018</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-8-1.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="98%"></p>
 </div>
 <div class="section level3">
 <h3 id="introduction-of-outliers">Introduction of outliers<a class="anchor" aria-label="anchor" href="#introduction-of-outliers"></a>
@@ -176,7 +176,7 @@ intensity of the crisis :</p>
 <code class="sourceCode R"><span><span class="va">outlier</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/window.html" class="external-link">window</a></span><span class="op">(</span><span class="va">turnover_catering</span><span class="op">-</span><span class="fl">130</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2020</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2021</span>,<span class="fl">12</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">outlier</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>, <span class="fl">20</span><span class="op">:</span><span class="fl">24</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">outlier</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-9-1.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="98%"></p>
 <p>The absolute value of the indicator is lower than 2 in January and
 February 2020 and after August 2021, so we set it to 0 for those months,
 restricting the outliers to the lockdowns period.</p>
@@ -212,7 +212,7 @@ an univariate time series, is the smoothed part of the benchmark.</li>
 <p>The <strong>coefficients are estimated at low-frequency</strong> with
 the annual accounts, the annualized turnover index and the aggregated
 outlier :</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow></msub><mi>′</mi><mo>=</mo><msub><mi>I</mi><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow></msub><mi>′</mi><mo>*</mo><mi>a</mi><mo>+</mo><mi>o</mi><mi>u</mi><msub><mi>t</mi><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow></msub><mo>*</mo><mi>b</mi><mo>+</mo><mi>u</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>C</mi><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow><mo>′</mo></msubsup><mo>=</mo><msubsup><mi>I</mi><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow><mo>′</mo></msubsup><mo>*</mo><mi>a</mi><mo>+</mo><mi>o</mi><mi>u</mi><msub><mi>t</mi><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow></msub><mo>*</mo><mi>b</mi><mo>+</mo><msup><mi>u</mi><mo>′</mo></msup></mrow><annotation encoding="application/x-tex">
 C_{aggregated}' =  I_{aggregated}' * a + out_{aggregated} * b + u'
 </annotation></semantics></math></p>
 <p>These <strong>coefficients are applied at high-frequency</strong>, to
@@ -221,7 +221,7 @@ obtain the fitted values of the benchmark:</p>
 \text{fitted.values} = I * a + out * b
 </annotation></semantics></math><strong>u is smoothed as
 usual</strong>:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mi>s</mi><mi>m</mi><mi>o</mi><mi>o</mi><mi>t</mi><mi>h</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>e</mi><mi>x</mi><mi>t</mi><mi>r</mi><mi>a</mi><mi>p</mi><mi>o</mi><mi>l</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>C</mi><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow></msub><mo>−</mo><msub><mtext mathvariant="normal">fitted.values</mtext><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi><mo>=</mo><mi>s</mi><mi>m</mi><mi>o</mi><mi>o</mi><mi>t</mi><mi>h</mi><mo stretchy="false" form="prefix">(</mo><mi>e</mi><mi>x</mi><mi>t</mi><mi>r</mi><mi>a</mi><mi>p</mi><mi>o</mi><mi>l</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>C</mi><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow></msub><mo>−</mo><msub><mtext mathvariant="normal">fitted.values</mtext><mrow><mi>a</mi><mi>g</mi><mi>g</mi><mi>r</mi><mi>e</mi><mi>g</mi><mi>a</mi><mi>t</mi><mi>e</mi><mi>d</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">
 u = smooth(extrapolation(C_{aggregated} - \text{fitted.values}_{aggregated}))
 </annotation></semantics></math> This can be done using outliers in the
 <code>twoStepsBenchmark</code> function :</p>
@@ -243,14 +243,14 @@ contributions of the smoothed part in the end of 2019 :</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark_out</span>, type <span class="op">=</span><span class="st">"contributions"</span><span class="op">)</span>, start<span class="op">=</span><span class="fl">2018</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark_out</span>, type<span class="op">=</span><span class="st">"levels-rebased"</span><span class="op">)</span>, start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-12-1.png" width="98%"><img src="disaggr_outlier_files/figure-html/unnamed-chunk-12-2.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="98%"><img src="disaggr_outlier_files/figure-html/unnamed-chunk-12-2.png" class="r-plt" alt="" width="98%"></p>
 <p>The variation of the residual and the smoothed part are much lower
 :</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html" class="external-link">residuals</a></span><span class="op">(</span><span class="va">benchmark_out</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/smoothed.part.html">smoothed.part</a></span><span class="op">(</span><span class="va">benchmark_out</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-13-1.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-13-1.png" class="r-plt" alt="" width="98%"></p>
 </div>
 </div>
 <div class="section level2">
@@ -275,7 +275,7 @@ April is at 38 % of its April level, more than twice that level.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark_2020</span>, type <span class="op">=</span><span class="st">"contributions"</span><span class="op">)</span>, start<span class="op">=</span><span class="fl">2018</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark_2020</span><span class="op">)</span>, start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-16-1.png" width="98%"><img src="disaggr_outlier_files/figure-html/unnamed-chunk-16-2.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="98%"><img src="disaggr_outlier_files/figure-html/unnamed-chunk-16-2.png" class="r-plt" alt="" width="98%"></p>
 <p>To correct this, we will use the same specification for the outlier.
 But as the annual account for 2020 is not yet known, the coefficients
 for the outlier is not known, and we will have to manually specify
@@ -318,7 +318,7 @@ coefficient, very close to the final estimate.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark_out_2020</span>, type <span class="op">=</span><span class="st">"contributions"</span><span class="op">)</span>, start<span class="op">=</span><span class="fl">2018</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/in_disaggr.html">in_disaggr</a></span><span class="op">(</span><span class="va">benchmark_out_2020</span>, type<span class="op">=</span><span class="st">"levels-rebased"</span><span class="op">)</span>, start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2010</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-19-1.png" width="98%"><img src="disaggr_outlier_files/figure-html/unnamed-chunk-19-2.png" width="98%"></p>
+<p><img src="disaggr_outlier_files/figure-html/unnamed-chunk-19-1.png" class="r-plt" alt="" width="98%"><img src="disaggr_outlier_files/figure-html/unnamed-chunk-19-2.png" class="r-plt" alt="" width="98%"></p>
 </div>
 <div class="section level2">
 <h2 id="specification-of-the-ouliers">Specification of the ouliers<a class="anchor" aria-label="anchor" href="#specification-of-the-ouliers"></a>
@@ -369,7 +369,7 @@ the outlier and its length must be a multiple of hf / lf.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

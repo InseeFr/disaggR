@@ -1,0 +1,125 @@
+## Overview
+
+The R package disaggR is an implementation of the French Quarterly
+National Accounts method for temporal disaggregation of time series.
+[`twoStepsBenchmark()`](https://inseefr.github.io/disaggR/reference/twoStepsBenchmark.md)
+and
+[`threeRuleSmooth()`](https://inseefr.github.io/disaggR/reference/threeRuleSmooth.md)
+bend a time series with another one of a lower frequency.
+
+## Installation
+
+You can install the **stable** version from
+[CRAN](https://cran.r-project.org/package=disaggR).
+
+``` r
+
+install.packages("disaggR")
+```
+
+You can install the **development** version from
+[Github](https://github.com/InseeFr/disaggR).
+
+``` r
+
+# install.packages("devtools")
+install_github("InseeFr/disaggR")
+```
+
+## Usage
+
+``` r
+
+library(disaggR)
+
+benchmark <- twoStepsBenchmark(hfserie = turnover,
+                               lfserie = construction,
+                               include.differenciation = TRUE)
+as.ts(benchmark)
+coef(benchmark)
+summary(benchmark)
+plot(benchmark)
+plot(in_sample(benchmark))
+```
+
+![](reference/figures/README-unnamed-chunk-4-1.png)![](reference/figures/README-unnamed-chunk-4-2.png)
+
+``` r
+
+plot(in_disaggr(benchmark,type="changes"),
+     start=c(2015,1),end=c(2020,12))
+plot(in_disaggr(benchmark,type="contributions"),
+     start=c(2015,1),end=c(2020,12))
+```
+
+![](reference/figures/README-unnamed-chunk-5-1.png)![](reference/figures/README-unnamed-chunk-5-2.png)
+
+``` r
+
+plot(in_scatter(benchmark))
+
+new_benchmark <- twoStepsBenchmark(hfserie = turnover,
+                                   lfserie = construction,
+                                   include.differenciation = FALSE)
+plot(in_revisions(new_benchmark,
+                  benchmark),start = c(2010,1))
+```
+
+![](reference/figures/README-unnamed-chunk-6-1.png)![](reference/figures/README-unnamed-chunk-6-2.png)
+
+## Shiny app
+
+You can also use the shiny application **reView**, to easily chose the
+best parameters for your benchmark.
+
+``` r
+
+reView(benchmark)
+```
+
+![shinyscreen](reference/figures/shiny-screen.jpg)
+
+# Package index
+
+## All functions
+
+- [`bflSmooth()`](https://inseefr.github.io/disaggR/reference/bflSmooth.md)
+  : Smooth a time series
+- [`distance()`](https://inseefr.github.io/disaggR/reference/distance.md)
+  : Distance computation for disaggregations
+- [`in_disaggr()`](https://inseefr.github.io/disaggR/reference/in_disaggr.md)
+  : Comparing a disaggregation with the high-frequency input
+- [`in_revisions()`](https://inseefr.github.io/disaggR/reference/in_revisions.md)
+  : Comparing two disaggregations together
+- [`in_sample()`](https://inseefr.github.io/disaggR/reference/in_sample.md)
+  : Producing the in sample predictions of a prais-lm regression
+- [`in_scatter()`](https://inseefr.github.io/disaggR/reference/in_scatter.md)
+  : Comparing the inputs of a praislm regression
+- [`plot(`*`<twoStepsBenchmark>`*`)`](https://inseefr.github.io/disaggR/reference/plot.tscomparison.md)
+  [`plot(`*`<threeRuleSmooth>`*`)`](https://inseefr.github.io/disaggR/reference/plot.tscomparison.md)
+  [`plot(`*`<tscomparison>`*`)`](https://inseefr.github.io/disaggR/reference/plot.tscomparison.md)
+  [`autoplot(`*`<twoStepsBenchmark>`*`)`](https://inseefr.github.io/disaggR/reference/plot.tscomparison.md)
+  [`autoplot(`*`<threeRuleSmooth>`*`)`](https://inseefr.github.io/disaggR/reference/plot.tscomparison.md)
+  [`autoplot(`*`<tscomparison>`*`)`](https://inseefr.github.io/disaggR/reference/plot.tscomparison.md)
+  : Plotting disaggR objects
+- [`rePort()`](https://inseefr.github.io/disaggR/reference/rePort.md) :
+  Producing a report
+- [`reUseBenchmark()`](https://inseefr.github.io/disaggR/reference/reUseBenchmark.md)
+  : Using an estimated benchmark model on another time series
+- [`reView()`](https://inseefr.github.io/disaggR/reference/reView.md) :
+  A shiny app to reView and modify twoStepsBenchmarks
+- [`threeRuleSmooth()`](https://inseefr.github.io/disaggR/reference/threeRuleSmooth.md)
+  : Bends a time series with a lower frequency one by smoothing their
+  rate
+- [`twoStepsBenchmark()`](https://inseefr.github.io/disaggR/reference/twoStepsBenchmark.md)
+  [`annualBenchmark()`](https://inseefr.github.io/disaggR/reference/twoStepsBenchmark.md)
+  : Regress and bends a time series with a lower frequency one
+
+# Articles
+
+### All vignettes
+
+- [Outliers in two-step
+  benchmarks](https://inseefr.github.io/disaggR/articles/disaggr_outlier.md):
+- [Introduction to
+  disaggR](https://inseefr.github.io/disaggR/articles/disaggr.md):
