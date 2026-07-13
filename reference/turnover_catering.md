@@ -7,7 +7,7 @@ retrieved the 04/07/2022.
 ## Usage
 
 ``` r
-turnover_catering
+data(turnover_catering)
 ```
 
 ## Format

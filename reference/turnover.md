@@ -6,7 +6,7 @@ from january 2000 to may 2020, as retrieved the 08/12/2020.
 ## Usage
 
 ``` r
-turnover
+data(turnover)
 ```
 
 ## Format

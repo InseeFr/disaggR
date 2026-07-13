@@ -70,5 +70,12 @@ components :
 
 ``` r
 benchmark <- twoStepsBenchmark(turnover,construction); prais(benchmark)
-#> Error in UseMethod("prais"): no applicable method for 'prais' applied to an object of class "c('twoStepsBenchmark', 'disaggR', 'list', 'vector')"
+#> 
+#> Call:
+#> twoStepsBenchmark(hfserie = turnover, lfserie = construction)
+#> 
+#> Coefficients:
+#> constant   hfserie  
+#>   44.282     0.141  
+#> 
 ```

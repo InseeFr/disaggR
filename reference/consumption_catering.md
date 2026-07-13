@@ -6,7 +6,7 @@ food services services from 1999 to 2021, as retrieved the 04/07/2022.
 ## Usage
 
 ``` r
-consumption_catering
+data(consumption_catering)
 ```
 
 ## Format

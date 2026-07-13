@@ -41,6 +41,6 @@ Other contributors:
 - Franck Arnaud (barplot base graphics method for the mts class)
   \[contributor\]
 
-- Institut national de la statistique et des études économiques
+- Institut national de la statistique et des Ã©tudes Ã©conomiques
   <comptes-trimestriels@insee.fr> (https://www.insee.fr/) \[copyright
   holder\]

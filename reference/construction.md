@@ -6,7 +6,7 @@ An annual time series containing the french GFCF in construction from
 ## Usage
 
 ``` r
-construction
+data(construction)
 ```
 
 ## Format
