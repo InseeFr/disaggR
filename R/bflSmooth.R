@@ -38,7 +38,7 @@ bflSmooth_matrices_impl <- function(lf_length, ratio, weights, lfserie.is.rate) 
   MT <- t(apply(stairs_diagonal(lf_length, ratio, weights), 1, function(x) rev(cumsum(rev(x)))))
   m1 <- MT[, 1L]
   tildem <- MT[, -1L, drop = FALSE]
-  inversemm <- solve((tcrossprod(tildem)))
+  inversemm <- solve(tcrossprod(tildem))
   cprod1 <- crossprod(m1, inversemm)
   cprod2 <- crossprod(tildem, inversemm)
 
