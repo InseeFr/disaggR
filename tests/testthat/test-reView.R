@@ -589,6 +589,7 @@ test_that("reView-withoutset", {
   app$get_js("$('.modal').modal('hide');")
 
   app$click("reView-reViewtab3-Reset")
+  app$wait_for_idle()
   app$wait_for_value(output = "reView-reViewtab2-monoplotlev")
   expect_equal(app$wait_for_value(input = "reView-menu"), "Modify")
 
