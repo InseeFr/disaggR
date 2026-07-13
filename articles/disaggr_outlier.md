@@ -48,7 +48,7 @@ annual account, known up to 2021[^1].
 
 ``` r
 
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(turnover_catering)
 plot(consumption_catering)
 ```
@@ -59,21 +59,21 @@ Let’s first use the most basic model, in levels and without constant :
 
 ``` r
 
-benchmark <- twoStepsBenchmark(turnover_catering,consumption_catering)
+benchmark <- twoStepsBenchmark(turnover_catering, consumption_catering)
 ```
 
 We can compare the indicator and the estimated QNA series[^2] :
 
 ``` r
 
-plot(in_disaggr(benchmark, type="levels-rebased"), start=c(2010,1))
+plot(in_disaggr(benchmark, type = "levels-rebased"), start = c(2010, 1))
 ```
 
 ![](disaggr_outlier_files/figure-html/unnamed-chunk-5-1.png)
 
 ``` r
 
-plot(in_disaggr(benchmark), start=c(2018,1))
+plot(in_disaggr(benchmark), start = c(2018, 1))
 ```
 
 ![](disaggr_outlier_files/figure-html/unnamed-chunk-6-1.png)
@@ -100,7 +100,7 @@ absurd in that case.
 
 ``` r
 
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(residuals(benchmark))
 plot(smoothed.part(benchmark))
 ```
@@ -112,7 +112,7 @@ evolution in 2019-2020 :
 
 ``` r
 
-plot(in_disaggr(benchmark, type ="contributions"), start=2018)
+plot(in_disaggr(benchmark, type = "contributions"), start = 2018)
 ```
 
 ![](disaggr_outlier_files/figure-html/unnamed-chunk-8-1.png)
@@ -135,8 +135,8 @@ intensity of the crisis :
 
 ``` r
 
-outlier <- window(turnover_catering-130, c(2020,1), c(2021,12))
-outlier[c(1,2, 20:24)] <- 0
+outlier <- window(turnover_catering - 130, c(2020, 1), c(2021, 12))
+outlier[c(1, 2, 20:24)] <- 0
 plot(outlier)
 ```
 
@@ -188,8 +188,9 @@ This can be done using outliers in the `twoStepsBenchmark` function :
 
 ``` r
 
-benchmark_out <- twoStepsBenchmark(turnover_catering,consumption_catering, 
-                                    outliers = list(AO2020 = outlier))
+benchmark_out <- twoStepsBenchmark(turnover_catering, consumption_catering,
+  outliers = list(AO2020 = outlier)
+)
 ```
 
 ``` r
@@ -211,8 +212,8 @@ contributions of the smoothed part in the end of 2019 :
 
 ``` r
 
-plot(in_disaggr(benchmark_out, type ="contributions"), start=2018)
-plot(in_disaggr(benchmark_out, type="levels-rebased"), start=c(2010,1))
+plot(in_disaggr(benchmark_out, type = "contributions"), start = 2018)
+plot(in_disaggr(benchmark_out, type = "levels-rebased"), start = c(2010, 1))
 ```
 
 ![](disaggr_outlier_files/figure-html/unnamed-chunk-12-1.png)![](disaggr_outlier_files/figure-html/unnamed-chunk-12-2.png)
@@ -221,7 +222,7 @@ The variation of the residual and the smoothed part are much lower :
 
 ``` r
 
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(residuals(benchmark_out))
 plot(smoothed.part(benchmark_out))
 ```
@@ -235,13 +236,13 @@ Let’s go back in August 2020 : the turnover index is known up to June
 
 ``` r
 
-turnover_catering_2020 <- window(turnover_catering, end = c(2020,6))
+turnover_catering_2020 <- window(turnover_catering, end = c(2020, 6))
 consumption_catering_2020 <- window(consumption_catering, end = 2019)
 ```
 
 ``` r
 
-benchmark_2020 <- twoStepsBenchmark(turnover_catering_2020,consumption_catering_2020)
+benchmark_2020 <- twoStepsBenchmark(turnover_catering_2020, consumption_catering_2020)
 coefficients(summary(benchmark_2020))
 #>             Estimate      StdErr  t.value      p.value
 #> constant 24237.70495 1582.064943 15.32030 3.793344e-12
@@ -256,8 +257,8 @@ of its April level, more than twice that level.
 
 ``` r
 
-plot(in_disaggr(benchmark_2020, type ="contributions"), start=2018)
-plot(in_disaggr(benchmark_2020), start=c(2010,1))
+plot(in_disaggr(benchmark_2020, type = "contributions"), start = 2018)
+plot(in_disaggr(benchmark_2020), start = c(2010, 1))
 ```
 
 ![](disaggr_outlier_files/figure-html/unnamed-chunk-16-1.png)![](disaggr_outlier_files/figure-html/unnamed-chunk-16-2.png)
@@ -279,10 +280,10 @@ b = 8000 * 0.83/110-a  \approx 14
 
 ``` r
 
-benchmark_out_2020 <- twoStepsBenchmark(turnover_catering_2020,consumption_catering_2020, 
-                                    outliers = list(AO2020 = outlier),
-                                    set.coeff = c(AO2020 = 14)
-                                        )
+benchmark_out_2020 <- twoStepsBenchmark(turnover_catering_2020, consumption_catering_2020,
+  outliers = list(AO2020 = outlier),
+  set.coeff = c(AO2020 = 14)
+)
 ```
 
 ``` r
@@ -309,8 +310,8 @@ slighlty lower $`b`$ coefficient, very close to the final estimate.
 
 ``` r
 
-plot(in_disaggr(benchmark_out_2020, type ="contributions"), start=2018)
-plot(in_disaggr(benchmark_out_2020, type="levels-rebased"), start=c(2010,1))
+plot(in_disaggr(benchmark_out_2020, type = "contributions"), start = 2018)
+plot(in_disaggr(benchmark_out_2020, type = "levels-rebased"), start = c(2010, 1))
 ```
 
 ![](disaggr_outlier_files/figure-html/unnamed-chunk-19-1.png)![](disaggr_outlier_files/figure-html/unnamed-chunk-19-2.png)
@@ -343,14 +344,14 @@ plot(in_disaggr(benchmark_out_2020, type="levels-rebased"), start=c(2010,1))
 
 ``` r
 
-AO2020 = c(1,2,1,0) # A one-year AO in 2020, with half the weight in Q2 
-                    # and the rest split between Q1 and Q3 
+AO2020 <- c(1, 2, 1, 0) # A one-year AO in 2020, with half the weight in Q2
+# and the rest split between Q1 and Q3
 
-AO2008T2=c(0,0,3) # A one-quarter AO in the second quarter of 2008, 
-                  # which is concentrated in June
+AO2008T2 <- c(0, 0, 3) # A one-quarter AO in the second quarter of 2008,
+# which is concentrated in June
 
-LS2010 = c(0,1,2,3) # A level shift that start in Q2 2010 and increase 
-                    # gradually in Q3 and Q4, and remains at its level afterwards
+LS2010 <- c(0, 1, 2, 3) # A level shift that start in Q2 2010 and increase
+# gradually in Q3 and Q4, and remains at its level afterwards
 ```
 
 [^1]: Note that this is not exactly how things are down in the actual

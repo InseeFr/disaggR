@@ -34,7 +34,7 @@ division.*
 
 ``` r
 
-twoStepsBenchmark(turnover,construction)
+twoStepsBenchmark(turnover, construction)
 ```
 
 The two-steps benchmarks, provided by
@@ -104,7 +104,7 @@ domain window.
 
 ``` r
 
-threeRuleSmooth(turnover,construction)
+threeRuleSmooth(turnover, construction)
 ```
 
 The Proportional Denton Benchmarks, provided by
@@ -201,11 +201,14 @@ method. These methods all share similar arguments:
 
 ``` r
 
-benchmark <- twoStepsBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE)
-plot(in_sample(benchmark,type="levels"),
-     start=c(2010,1),end=c(2017,1))
+benchmark <- twoStepsBenchmark(
+  hfserie = turnover,
+  lfserie = construction,
+  include.differenciation = TRUE
+)
+plot(in_sample(benchmark, type = "levels"),
+  start = c(2010, 1), end = c(2017, 1)
+)
 ```
 
 ![](disaggr_files/figure-html/unnamed-chunk-5-1.png)
@@ -213,11 +216,14 @@ plot(in_sample(benchmark,type="levels"),
 ``` r
 
 library(ggplot2)
-smooth <- threeRuleSmooth(hfserie = turnover,
-                          lfserie = construction)
+smooth <- threeRuleSmooth(
+  hfserie = turnover,
+  lfserie = construction
+)
 autoplot(in_disaggr(smooth),
-         start=c(2009,1),end=c(2013,12),
-         show.legend = FALSE)
+  start = c(2009, 1), end = c(2013, 12),
+  show.legend = FALSE
+)
 ```
 
 ![](disaggr_files/figure-html/unnamed-chunk-6-1.png)
@@ -229,19 +235,22 @@ and/or `"threeRuleSmooth"`.
 
 ``` r
 
-benchmark <- twoStepsBenchmark(turnover,construction)
-smooth <- threeRuleSmooth(turnover,construction)
+benchmark <- twoStepsBenchmark(turnover, construction)
+smooth <- threeRuleSmooth(turnover, construction)
 
 reView(benchmark)
 rePort(benchmark)
 
-as.ts(benchmark);as.ts(smooth)
-as.list(benchmark);as.list(smooth)
+as.ts(benchmark)
+as.ts(smooth)
+as.list(benchmark)
+as.list(smooth)
 coef(benchmark)
 residuals(benchmark)
 vcov(benchmark)
 fitted(benchmark)
-model.list(benchmark);model.list(smooth)
+model.list(benchmark)
+model.list(smooth)
 se(benchmark)
 rho(benchmark)
 outliers(benchmark)
