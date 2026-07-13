@@ -195,7 +195,7 @@ print.summary.praislm <- function (x, digits = max(3, getOption("digits") - 3L),
 #' @export
 prais <- function(x) UseMethod("prais")
 #' @export
-prais <- function(x) x$regression
+prais.twoStepsBenchmark <- function(x) x$regression
 
 #' @importFrom stats as.ts
 #' @export
