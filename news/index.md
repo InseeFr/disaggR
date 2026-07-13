@@ -1,5 +1,14 @@
 # Changelog
 
+## disaggR 1.0.6.0
+
+- Breaking change : \*
+  [`threeRuleSmooth()`](https://inseefr.github.io/disaggR/reference/threeRuleSmooth.md)
+  now extends the weights window to the smallest low-frequency window
+  around the domain window, as documented, instead of always extending
+  it to whole years. Only non-annual low-frequency series were affected
+  (PR [\#106](https://github.com/InseeFr/disaggR/issues/106)).
+
 ## disaggR 1.0.5.4
 
 CRAN release: 2025-11-03
