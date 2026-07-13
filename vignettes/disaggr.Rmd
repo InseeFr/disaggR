@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.show="hold",
+  fig.show = "hold",
   fig.width = 7,
   fig.height = 3,
   out.width = "98%",
@@ -40,7 +40,7 @@ For further details about the french national accounts methodology, see [Methodo
 # Two-Steps Benchmarks
 
 ```{r, eval=FALSE}
-twoStepsBenchmark(turnover,construction)
+twoStepsBenchmark(turnover, construction)
 ```
 
 The two-steps benchmarks, provided by `twoStepsBenchmark()`, rely on this high-frequency formula:
@@ -89,7 +89,7 @@ The Boot, Feibes and Lisman process, through the `bflSmooth()` function, is then
 # Proportional Denton Benchmarks
 
 ```{r, eval=FALSE}
-threeRuleSmooth(turnover,construction)
+threeRuleSmooth(turnover, construction)
 ```
 
 The Proportional Denton Benchmarks, provided by `threeRuleSmooth()`, rely on this high-frequency formula:
@@ -151,19 +151,25 @@ disaggR provides some tools for plotting its results. Functions `in_sample()`, `
 * **...**, other arguments passed either to ggplot or plot
 
 ```{r}
-benchmark <- twoStepsBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE)
-plot(in_sample(benchmark,type="levels"),
-     start=c(2010,1),end=c(2017,1))
+benchmark <- twoStepsBenchmark(
+  hfserie = turnover,
+  lfserie = construction,
+  include.differenciation = TRUE
+)
+plot(in_sample(benchmark, type = "levels"),
+  start = c(2010, 1), end = c(2017, 1)
+)
 ```
 ```{r}
 library(ggplot2)
-smooth <- threeRuleSmooth(hfserie = turnover,
-                          lfserie = construction)
+smooth <- threeRuleSmooth(
+  hfserie = turnover,
+  lfserie = construction
+)
 autoplot(in_disaggr(smooth),
-         start=c(2009,1),end=c(2013,12),
-         show.legend = FALSE)
+  start = c(2009, 1), end = c(2013, 12),
+  show.legend = FALSE
+)
 ```
 
 # Other methods
@@ -171,19 +177,22 @@ autoplot(in_disaggr(smooth),
 Various methods can be applied on objects of class `"twoStepsBenchmark"` and/or `"threeRuleSmooth"`.
 
 ```{r, eval=FALSE}
-benchmark <- twoStepsBenchmark(turnover,construction)
-smooth <- threeRuleSmooth(turnover,construction)
+benchmark <- twoStepsBenchmark(turnover, construction)
+smooth <- threeRuleSmooth(turnover, construction)
 
 reView(benchmark)
 rePort(benchmark)
 
-as.ts(benchmark);as.ts(smooth)
-as.list(benchmark);as.list(smooth)
+as.ts(benchmark)
+as.ts(smooth)
+as.list(benchmark)
+as.list(smooth)
 coef(benchmark)
 residuals(benchmark)
 vcov(benchmark)
 fitted(benchmark)
-model.list(benchmark);model.list(smooth)
+model.list(benchmark)
+model.list(smooth)
 se(benchmark)
 rho(benchmark)
 outliers(benchmark)

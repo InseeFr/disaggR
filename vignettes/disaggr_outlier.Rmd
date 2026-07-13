@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.show="hold",
+  fig.show = "hold",
   fig.width = 7,
   fig.height = 3,
   out.width = "98%",
@@ -43,7 +43,7 @@ We use monthly, seasonally and working days adjusted (SA-WDA) turnover index (ba
 [^method]: Note that this is not exactly how things are down in the actual french QNA : the estimation is done at a lower level, separating hotels from restaurants.  
 
 ```{r}
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(turnover_catering)
 plot(consumption_catering)
 ```
@@ -51,16 +51,16 @@ plot(consumption_catering)
 Let's first use the most basic model, in levels and without constant : 
 
 ```{r}
-benchmark <- twoStepsBenchmark(turnover_catering,consumption_catering)
+benchmark <- twoStepsBenchmark(turnover_catering, consumption_catering)
 ```
 
 We can compare the indicator and the estimated QNA series[^rebase] :
 
 ```{r}
-plot(in_disaggr(benchmark, type="levels-rebased"), start=c(2010,1))
+plot(in_disaggr(benchmark, type = "levels-rebased"), start = c(2010, 1))
 ```
 ```{r}
-plot(in_disaggr(benchmark), start=c(2018,1))
+plot(in_disaggr(benchmark), start = c(2018, 1))
 ```
 
 [^rebase]: The levels-rebased series are computed by setting the first value of both the indicator and the benchamrked account at 100. Here the first value is in January 1999.
@@ -74,14 +74,14 @@ This is an artefact caused by the smoothing of the residual. There is a sharp 6 
 
 
 ```{r}
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(residuals(benchmark))
 plot(smoothed.part(benchmark))
 ```
 
 There is thus a significant contribution of the smoothed part to the QNA evolution in 2019-2020 :
 ```{r}
-plot(in_disaggr(benchmark, type ="contributions"), start=2018)
+plot(in_disaggr(benchmark, type = "contributions"), start = 2018)
 ```
 
 ### Introduction of outliers
@@ -91,8 +91,8 @@ The idea behind the outlier is to capture this larger than usual residual and to
 While there is a lot of ways to build this outlier indicator, a convenient way is to derive it from the usual indicator. In this example, we see that the turnover index is close to 130 before and after the lockdowns. Thus the distance to 130 is a good indicator of the intensity of the crisis :
 
 ```{r}
-outlier <- window(turnover_catering-130, c(2020,1), c(2021,12))
-outlier[c(1,2, 20:24)] <- 0
+outlier <- window(turnover_catering - 130, c(2020, 1), c(2021, 12))
+outlier[c(1, 2, 20:24)] <- 0
 plot(outlier)
 ```
 
@@ -132,8 +132,9 @@ $$
 This can be done using outliers in the `twoStepsBenchmark` function :
 
 ```{r}
-benchmark_out <- twoStepsBenchmark(turnover_catering,consumption_catering, 
-                                    outliers = list(AO2020 = outlier))
+benchmark_out <- twoStepsBenchmark(turnover_catering, consumption_catering,
+  outliers = list(AO2020 = outlier)
+)
 ```
 ```{r}
 coefficients(summary(benchmark_out))
@@ -144,14 +145,14 @@ In this example, the indicator and the outlier are colinear in the lockdown peri
 The resulting account reflects better the economic outlook, without contributions of the smoothed part in the end of 2019 :
 
 ```{r}
-plot(in_disaggr(benchmark_out, type ="contributions"), start=2018)
-plot(in_disaggr(benchmark_out, type="levels-rebased"), start=c(2010,1))
+plot(in_disaggr(benchmark_out, type = "contributions"), start = 2018)
+plot(in_disaggr(benchmark_out, type = "levels-rebased"), start = c(2010, 1))
 ```
 
 The variation of the residual and the smoothed part are much lower :
 
 ```{r}
-par(mfrow=c(1,2))
+par(mfrow = c(1, 2))
 plot(residuals(benchmark_out))
 plot(smoothed.part(benchmark_out))
 ```
@@ -161,12 +162,12 @@ plot(smoothed.part(benchmark_out))
 Let's go back in August 2020 : the turnover index is known up to June 2020 and the annual account up to 2019.
 
 ```{r}
-turnover_catering_2020 <- window(turnover_catering, end = c(2020,6))
+turnover_catering_2020 <- window(turnover_catering, end = c(2020, 6))
 consumption_catering_2020 <- window(consumption_catering, end = 2019)
 ```
 
 ```{r}
-benchmark_2020 <- twoStepsBenchmark(turnover_catering_2020,consumption_catering_2020)
+benchmark_2020 <- twoStepsBenchmark(turnover_catering_2020, consumption_catering_2020)
 coefficients(summary(benchmark_2020))
 ```
 
@@ -174,9 +175,8 @@ As 2020 does not enter into the estimation of the annual residual, there is no s
 
 
 ```{r}
-plot(in_disaggr(benchmark_2020, type ="contributions"), start=2018)
-plot(in_disaggr(benchmark_2020), start=c(2010,1))
-
+plot(in_disaggr(benchmark_2020, type = "contributions"), start = 2018)
+plot(in_disaggr(benchmark_2020), start = c(2010, 1))
 ```
 
 To correct this, we will use the same specification for the outlier. But as the annual account for 2020 is not yet known, the coefficients for the outlier is not known, and we will have to manually specify it. 
@@ -190,10 +190,10 @@ b = 8000 * 0.83/110-a  \approx 14
 $$
 
 ```{r}
-benchmark_out_2020 <- twoStepsBenchmark(turnover_catering_2020,consumption_catering_2020, 
-                                    outliers = list(AO2020 = outlier),
-                                    set.coeff = c(AO2020 = 14)
-                                        )
+benchmark_out_2020 <- twoStepsBenchmark(turnover_catering_2020, consumption_catering_2020,
+  outliers = list(AO2020 = outlier),
+  set.coeff = c(AO2020 = 14)
+)
 ```
 ```{r}
 coefficients(summary(benchmark_out_2020))
@@ -204,8 +204,8 @@ This is a broad assumption, but the resulting estimates for April 2020 (1574 Mâ‚
 One could have anticipated that, in the annual account, total final consumption will drop less than turnover in April, as it includes government consumption in hotels (for some social assistance policies that continued during lockdown) and excludes collective firms and factories restaurants, totally closed during lockdown, thus going for a slighlty lower $b$ coefficient, very close to the final estimate. 
 
 ```{r}
-plot(in_disaggr(benchmark_out_2020, type ="contributions"), start=2018)
-plot(in_disaggr(benchmark_out_2020, type="levels-rebased"), start=c(2010,1))
+plot(in_disaggr(benchmark_out_2020, type = "contributions"), start = 2018)
+plot(in_disaggr(benchmark_out_2020, type = "levels-rebased"), start = c(2010, 1))
 ```
 
 ## Specification of the ouliers
@@ -225,13 +225,13 @@ plot(in_disaggr(benchmark_out_2020, type="levels-rebased"), start=c(2010,1))
     + The numeric vector values stands for the disaggregated value of the outlier and its length must be a multiple of hf / lf.
     
 ```{r, eval=FALSE}
-AO2020 = c(1,2,1,0) # A one-year AO in 2020, with half the weight in Q2 
-                    # and the rest split between Q1 and Q3 
+AO2020 <- c(1, 2, 1, 0) # A one-year AO in 2020, with half the weight in Q2
+# and the rest split between Q1 and Q3
 
-AO2008T2=c(0,0,3) # A one-quarter AO in the second quarter of 2008, 
-                  # which is concentrated in June
+AO2008T2 <- c(0, 0, 3) # A one-quarter AO in the second quarter of 2008,
+# which is concentrated in June
 
-LS2010 = c(0,1,2,3) # A level shift that start in Q2 2010 and increase 
-                    # gradually in Q3 and Q4, and remains at its level afterwards
+LS2010 <- c(0, 1, 2, 3) # A level shift that start in Q2 2010 and increase
+# gradually in Q3 and Q4, and remains at its level afterwards
 ```   
 

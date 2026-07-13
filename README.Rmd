@@ -46,9 +46,11 @@ install_github("InseeFr/disaggR")
 ```{r, echo = TRUE, results = 'hide', fig.show="hold", out.width="50%"}
 library(disaggR)
 
-benchmark <- twoStepsBenchmark(hfserie = turnover,
-                               lfserie = construction,
-                               include.differenciation = TRUE)
+benchmark <- twoStepsBenchmark(
+  hfserie = turnover,
+  lfserie = construction,
+  include.differenciation = TRUE
+)
 as.ts(benchmark)
 coef(benchmark)
 summary(benchmark)
@@ -57,20 +59,26 @@ plot(in_sample(benchmark))
 ```
 
 ```{r, echo = TRUE, results = 'hide', fig.show="hold", out.width="50%"}
-plot(in_disaggr(benchmark,type="changes"),
-     start=c(2015,1),end=c(2020,12))
-plot(in_disaggr(benchmark,type="contributions"),
-     start=c(2015,1),end=c(2020,12))
+plot(in_disaggr(benchmark, type = "changes"),
+  start = c(2015, 1), end = c(2020, 12)
+)
+plot(in_disaggr(benchmark, type = "contributions"),
+  start = c(2015, 1), end = c(2020, 12)
+)
 ```
 
 ```{r, echo = TRUE, results = 'hide', fig.show="hold", out.width="50%"}
 plot(in_scatter(benchmark))
 
-new_benchmark <- twoStepsBenchmark(hfserie = turnover,
-                                   lfserie = construction,
-                                   include.differenciation = FALSE)
-plot(in_revisions(new_benchmark,
-                  benchmark),start = c(2010,1))
+new_benchmark <- twoStepsBenchmark(
+  hfserie = turnover,
+  lfserie = construction,
+  include.differenciation = FALSE
+)
+plot(in_revisions(
+  new_benchmark,
+  benchmark
+), start = c(2010, 1))
 ```
 
 ## Shiny app

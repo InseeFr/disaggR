@@ -1,5 +1,5 @@
 #' Extrapolation function for the hfserie in a threeRuleSmooth
-#' 
+#'
 #' This function replaces the incomplete low frequency cycles, at the start and
 #' the end of the hfserie, with respectively the first and the last complete
 #' cycles.
@@ -12,184 +12,214 @@
 #' @keywords internal
 #'
 #' @return a time series, the extrapolated hfserie
-hfserie_extrap <- function(hfserie,lffreq) {
-  ratio <- frequency(hfserie)/lffreq
+hfserie_extrap <- function(hfserie, lffreq) {
+  ratio <- frequency(hfserie) / lffreq
   valplaces <- which(!is.na(hfserie))
   if (length(valplaces) != 0) {
     firstval <- valplaces[1L]
     lastval <- valplaces[length(valplaces)]
     if (lastval != length(hfserie)) {
       incomplete_cycle_start <- lastval %/% ratio * ratio + 1L
-      hfserie[incomplete_cycle_start:length(hfserie)] <- hfserie[(incomplete_cycle_start-ratio):(incomplete_cycle_start-1L)]
+      hfserie[incomplete_cycle_start:length(hfserie)] <- hfserie[(incomplete_cycle_start - ratio):(incomplete_cycle_start - 1L)]
     }
     if (firstval != 1L) {
       incomplete_cycle_end <- (firstval - 2L) %/% ratio * ratio + ratio
-      hfserie[1L:incomplete_cycle_end] <- hfserie[(incomplete_cycle_end+1L):(incomplete_cycle_end+ratio)]
+      hfserie[1L:incomplete_cycle_end] <- hfserie[(incomplete_cycle_end + 1L):(incomplete_cycle_end + ratio)]
     }
   }
   hfserie
 }
 
-calc_hfserie_as_weights <- function(hfserie,start.domain,end.domain,lffreq) {
-  
-  hfserie <- window(hfserie,start=start.domain,end=end.domain,extend=TRUE)
-  
-  tsp_extended <- extend_tsp(tsp(hfserie),lffreq)
-  
-  hfserie_extrap(window(hfserie,
-                        start = tsp_extended[1L],
-                        end = tsp_extended[2L],extend = TRUE),
-                 lffreq)
+calc_hfserie_as_weights <- function(hfserie, start.domain, end.domain, lffreq) {
+  hfserie <- window(hfserie, start = start.domain, end = end.domain, extend = TRUE)
+
+  tsp_extended <- extend_tsp(tsp(hfserie), lffreq)
+
+  hfserie_extrap(
+    window(hfserie,
+      start = tsp_extended[1L],
+      end = tsp_extended[2L], extend = TRUE
+    ),
+    lffreq
+  )
 }
 
-mean_delta <- function(serie,start,end) {
-  mean(diff(as.numeric(window(serie,start=start,end=end,extend=TRUE))),
-       na.rm = TRUE)
+mean_delta <- function(serie, start, end) {
+  mean(diff(as.numeric(window(serie, start = start, end = end, extend = TRUE))),
+    na.rm = TRUE
+  )
 }
 
-rate_extrap <- function(lfrate,delta_rate) {
+rate_extrap <- function(lfrate, delta_rate) {
   valplaces <- which(!is.na(lfrate))
   if (length(valplaces) != 0) {
     firstval <- valplaces[1L]
     lastval <- valplaces[length(valplaces)]
     if (lastval != length(lfrate)) {
-      lfrate[(lastval+1L):length(lfrate)] <- lfrate[lastval] + 1:(length(lfrate)-lastval) * delta_rate
+      lfrate[(lastval + 1L):length(lfrate)] <- lfrate[lastval] + 1:(length(lfrate) - lastval) * delta_rate
     }
     if (firstval != 1L) {
-      lfrate[(firstval-1L):1L] <- lfrate[firstval] - 1:(firstval-1L) * delta_rate
+      lfrate[(firstval - 1L):1L] <- lfrate[firstval] - 1:(firstval - 1L) * delta_rate
     }
   }
   lfrate
 }
 
-control_zeros_lfrate_win <- function(lfrate_win,hfserie) {
+control_zeros_lfrate_win <- function(lfrate_win, hfserie) {
   if (any(is.nan(lfrate_win) | is.infinite(lfrate_win))) {
-    hfserie_aggreg <- aggregate_and_crop_hf_to_lf(hfserie,lfrate_win)
-    if (any(hfserie_aggreg == 0,na.rm = TRUE)) {
-      if (all(hfserie_aggreg == 0,na.rm = TRUE)) stop("Every hfserie aggregation value is equal to zero within the benchmark window", call. = FALSE)
+    hfserie_aggreg <- aggregate_and_crop_hf_to_lf(hfserie, lfrate_win)
+    if (any(hfserie_aggreg == 0, na.rm = TRUE)) {
+      if (all(hfserie_aggreg == 0, na.rm = TRUE)) stop("Every hfserie aggregation value is equal to zero within the benchmark window", call. = FALSE)
       stop("There is a zero to the hfserie aggregation within the benchmark window", call. = FALSE)
     }
   }
   return()
 }
 
-calc_lfrate_win <- function(hfserie,lfserie,
-                            start.benchmark,end.benchmark,
-                            start.delta.rate,end.delta.rate,
+calc_lfrate_win <- function(hfserie, lfserie,
+                            start.benchmark, end.benchmark,
+                            start.delta.rate, end.delta.rate,
                             set.delta.rate,
-                            start.domain.extended,end.domain.extended) {
-  
-  lfrate <- fast_op_on_x(lfserie,
-                         aggregate_and_crop_hf_to_lf(hfserie,lfserie),
-                         `/`)
-  
+                            start.domain.extended, end.domain.extended) {
+  lfrate <- fast_op_on_x(
+    lfserie,
+    aggregate_and_crop_hf_to_lf(hfserie, lfserie),
+    `/`
+  )
+
   delta_rate <- {
-    if (is.null(set.delta.rate)) mean_delta(lfrate,start.delta.rate,end.delta.rate)
-    else set.delta.rate
+    if (is.null(set.delta.rate)) {
+      mean_delta(lfrate, start.delta.rate, end.delta.rate)
+    } else {
+      set.delta.rate
+    }
   }
-  
+
   lfrate_win <- window(lfrate,
-                       start  = start.benchmark,
-                       end    = end.benchmark,
-                       extend = TRUE)
-  
-  control_zeros_lfrate_win(lfrate_win,hfserie)
-  
+    start  = start.benchmark,
+    end    = end.benchmark,
+    extend = TRUE
+  )
+
+  control_zeros_lfrate_win(lfrate_win, hfserie)
+
   if ((tsp(lfrate_win)[2L] < start.domain.extended) ||
-      ((tsp(lfrate_win)[1L]) > end.domain.extended)) {
+    ((tsp(lfrate_win)[1L]) > end.domain.extended)) {
     stop("The benchmark window should have an intersection with the domain window",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  
+
   lfrate_win <- window(
     lfrate_win,
     start  = start.domain.extended,
     end    = end.domain.extended,
-    extend = TRUE)
-  
+    extend = TRUE
+  )
+
   if (all(is.na(lfrate_win))) {
     stop("The low-frequency rate does not have any value inside the benchmark window and the domain window",
-         call. = FALSE)
+      call. = FALSE
+    )
   }
-  
+
   list(
     lfrate = rate_extrap(
       lfrate_win,
-      delta_rate),
-    delta_rate = delta_rate)
+      delta_rate
+    ),
+    delta_rate = delta_rate
+  )
 }
 
 #' @include s4register.R
-threeRuleSmooth_impl <- function(hfserie,lfserie,
-                                 start.benchmark,end.benchmark,
-                                 start.domain,end.domain,
-                                 start.delta.rate,end.delta.rate,
+threeRuleSmooth_impl <- function(hfserie, lfserie,
+                                 start.benchmark, end.benchmark,
+                                 start.domain, end.domain,
+                                 start.delta.rate, end.delta.rate,
                                  set.delta.rate,
-                                 maincl,cl=NULL) {
-  
+                                 maincl, cl = NULL) {
   if (is.null(cl)) cl <- maincl
-  
-  hfserie_as_weights <- calc_hfserie_as_weights(hfserie,
-                                                start.domain,end.domain,
-                                                frequency(lfserie))
-  
-  lfrate_win <- calc_lfrate_win(hfserie,lfserie,
-                                start.benchmark,end.benchmark,
-                                start.delta.rate,end.delta.rate,
-                                set.delta.rate,
-                                tsp(hfserie_as_weights)[1L],tsp(hfserie_as_weights)[2L])
-  
-  hfrate <- bflSmooth(lfserie = lfrate_win$lfrate,
-                      nfrequency = frequency(hfserie),
-                      weights = hfserie_as_weights,
-                      lfserie.is.rate = TRUE)
-  
-  rests <- fast_op_on_x(hfserie,
-                        hfrate,
-                        `*`)
-  
-  res <- list(benchmarked.serie = window(rests,start=start.domain,end=end.domain,extend = TRUE),
-              lfrate = lfrate_win$lfrate,
-              smoothed.rate = hfrate,
-              hfserie.as.weights = hfserie_as_weights,
-              delta.rate = lfrate_win$delta_rate,
-              model.list = list(hfserie = structure(hfserie,
-                                                    dim = c(length(hfserie),1L),
-                                                    dimnames = list(NULL,
-                                                                    if (is.null(colnames(hfserie))) "hfserie"
-                                                                    else colnames(hfserie))),
-                                lfserie = lfserie,
-                                start.benchmark = start.benchmark,
-                                end.benchmark = end.benchmark,
-                                start.domain = start.domain,
-                                end.domain = end.domain,
-                                start.delta.rate = start.delta.rate,
-                                end.delta.rate = end.delta.rate,
-                                set.delta.rate = set.delta.rate),
-              call = cl)
-  
-  new("threeRuleSmooth",res)
+
+  hfserie_as_weights <- calc_hfserie_as_weights(
+    hfserie,
+    start.domain, end.domain,
+    frequency(lfserie)
+  )
+
+  lfrate_win <- calc_lfrate_win(
+    hfserie, lfserie,
+    start.benchmark, end.benchmark,
+    start.delta.rate, end.delta.rate,
+    set.delta.rate,
+    tsp(hfserie_as_weights)[1L], tsp(hfserie_as_weights)[2L]
+  )
+
+  hfrate <- bflSmooth(
+    lfserie = lfrate_win$lfrate,
+    nfrequency = frequency(hfserie),
+    weights = hfserie_as_weights,
+    lfserie.is.rate = TRUE
+  )
+
+  rests <- fast_op_on_x(
+    hfserie,
+    hfrate,
+    `*`
+  )
+
+  res <- list(
+    benchmarked.serie = window(rests, start = start.domain, end = end.domain, extend = TRUE),
+    lfrate = lfrate_win$lfrate,
+    smoothed.rate = hfrate,
+    hfserie.as.weights = hfserie_as_weights,
+    delta.rate = lfrate_win$delta_rate,
+    model.list = list(
+      hfserie = structure(hfserie,
+        dim = c(length(hfserie), 1L),
+        dimnames = list(
+          NULL,
+          if (is.null(colnames(hfserie))) {
+            "hfserie"
+          } else {
+            colnames(hfserie)
+          }
+        )
+      ),
+      lfserie = lfserie,
+      start.benchmark = start.benchmark,
+      end.benchmark = end.benchmark,
+      start.domain = start.domain,
+      end.domain = end.domain,
+      start.delta.rate = start.delta.rate,
+      end.delta.rate = end.delta.rate,
+      set.delta.rate = set.delta.rate
+    ),
+    call = cl
+  )
+
+  new("threeRuleSmooth", res)
 }
 
 #' @title Bends a time series with a lower frequency one by smoothing their rate
-#' 
+#'
 #' @description threeRuleSmooth bends a time series with a time series of a lower
 #' frequency. The procedure involved is a proportional Denton benchmark.
-#' 
+#'
 #' Therefore, the resulting time series is the product of the high frequency input
 #' with a smoothed rate. This latter is extrapolated through an arithmetic
 #' sequence.
-#' 
+#'
 #' The resulting time series is equal to the low-frequency series after aggregation
 #' within the benchmark window.
-#' 
+#'
 #' @details In order to smooth the rate, threeRuleSmooth calls \link{bflSmooth}
 #' and uses a modified and extrapolated version of hfserie as weights :
-#' 
+#'
 #' * only the full cycles are kept
 #' * the first and last full cycles are replicated respectively backwards and
 #' forwards to fill the domain window.
-#' 
+#'
 #' @param hfserie the bended time series. It can be a matrix time series.
 #' @param lfserie a time series whose frequency divides the frequency of
 #' `hfserie`.
@@ -227,18 +257,18 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #' of the returned call. This feature allows to build wrappers.
 #' @return
 #' threeRuleSmooth returns an object of class `"threeRuleSmooth"`.
-#' 
+#'
 #' The functions `plot` and `autoplot` (the generic from \pkg{ggplot2}) produce
 #' graphics of the benchmarked series and the bending series.
 #' The functions \link{in_disaggr}, \link{in_revisions}, \link{in_scatter}
 #' produce various comparisons on which plot and autoplot can also be used.
-#' 
+#'
 #' The generic accessor functions `as.ts`, `model.list`, `smoothed.rate` extract
 #' various useful features of the returned value.
-#' 
+#'
 #' An object of class `"threeRuleSmooth"` is a list containing the following
 #' components :
-#' 
+#'
 #'   \item{benchmarked.serie}{a time series, that is the result of the
 #'   benchmark.}
 #'   \item{lfrate}{a time series, that is the low-frequency rate of the
@@ -253,44 +283,47 @@ threeRuleSmooth_impl <- function(hfserie,lfserie,
 #'   function.}
 #'   \item{call}{the matched call.}
 #' @examples
-#' 
+#'
 #' ## How to use threeRuleSmooth
-#' 
-#' smooth <- threeRuleSmooth(hfserie = turnover,
-#'                           lfserie = construction)
+#'
+#' smooth <- threeRuleSmooth(
+#'   hfserie = turnover,
+#'   lfserie = construction
+#' )
 #' as.ts(smooth)
 #' coef(smooth)
 #' summary(smooth)
 #' library(ggplot2)
 #' autoplot(in_disaggr(smooth))
-#' 
+#'
 #' @export
-threeRuleSmooth <- function(hfserie,lfserie,
-                            start.benchmark=NULL,
-                            end.benchmark=NULL,
-                            start.domain=NULL,
-                            end.domain=NULL,
-                            start.delta.rate=NULL,
-                            end.delta.rate=NULL,
-                            set.delta.rate=NULL,
+threeRuleSmooth <- function(hfserie, lfserie,
+                            start.benchmark = NULL,
+                            end.benchmark = NULL,
+                            start.domain = NULL,
+                            end.domain = NULL,
+                            start.delta.rate = NULL,
+                            end.delta.rate = NULL,
+                            set.delta.rate = NULL,
                             ...) {
-  
-  if ( !is.ts(lfserie) || !is.ts(hfserie) ) stop("Not a ts object", call. = FALSE)
-  
+  if (!is.ts(lfserie) || !is.ts(hfserie)) stop("Not a ts object", call. = FALSE)
+
   hfserie <- clean_tsp(hfserie)
   lfserie <- clean_tsp(lfserie)
-  
+
   tsplf <- tsp(lfserie)
-  
+
   if (frequency(hfserie) %% frequency(lfserie) != 0L) stop("The low frequency should divide the higher one", call. = FALSE)
   if (!is.null(dim(lfserie)) && dim(lfserie)[2L] != 1) stop("The low frequency series must be one-dimensional", call. = FALSE)
   if (!is.null(dim(hfserie)) && dim(hfserie)[2L] != 1) stop("The high frequency series must be one-dimensional", call. = FALSE)
   maincl <- match.call()
-  
-  threeRuleSmooth_impl(hfserie,lfserie,
-                       start.benchmark,end.benchmark,
-                       start.domain,end.domain,
-                       start.delta.rate,end.delta.rate,
-                       set.delta.rate,
-                       maincl,...)
+
+  threeRuleSmooth_impl(
+    hfserie, lfserie,
+    start.benchmark, end.benchmark,
+    start.domain, end.domain,
+    start.delta.rate, end.delta.rate,
+    set.delta.rate,
+    maincl, ...
+  )
 }
