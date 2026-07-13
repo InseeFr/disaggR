@@ -288,7 +288,7 @@ in_revisions.twoStepsBenchmark <- function(object,object_old,type="changes") {
   
   if (type != "contributions") {
     if (mean(abs(series[,colnames(series) != "Benchmark",drop=FALSE]),na.rm = TRUE) > 1e-7) {
-      warning("The high-frequency inputs contain revisions!", .call = FALSE)
+      warning("The high-frequency inputs contain revisions!", call. = FALSE)
     }
     series <- series[,"Benchmark",drop = FALSE]
   }
