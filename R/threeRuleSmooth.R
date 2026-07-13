@@ -34,7 +34,7 @@ calc_hfserie_as_weights <- function(hfserie,start.domain,end.domain,lffreq) {
   
   hfserie <- window(hfserie,start=start.domain,end=end.domain,extend=TRUE)
   
-  tsp_extended <- extend_tsp(tsp(hfserie),frequency(lfserie))
+  tsp_extended <- extend_tsp(tsp(hfserie),lffreq)
   
   hfserie_extrap(window(hfserie,
                         start = tsp_extended[1L],

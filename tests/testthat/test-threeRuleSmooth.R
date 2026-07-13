@@ -227,3 +227,22 @@ test_that("ts eps",{
   expect_identical(as.ts(twoStepsBenchmark(turnover,construction_tspmodif)),
                    as.ts(twoStepsBenchmark(disaggR::turnover,disaggR::construction)))
 })
+
+test_that("threeRuleSmooth extrapolation are low frequency wise, not annual", {
+  set.seed(1)
+  lfserie <- ts(cumsum(rnorm(21, 10, 1)), start = c(2010, 2), frequency = 4)
+  hfserie <- ts(cumsum(rnorm(62,  3, 0.5)), start = c(2010, 5), frequency = 12)
+  
+  smooth <- threeRuleSmooth(hfserie, lfserie)
+  
+  expect_equal(tsp(smooth$hfserie.as.weights),
+               c(2010.25, 2015 + 5/12, 12),
+               tolerance = getOption("ts.eps"))
+  agg <- aggregate.ts(window(as.ts(smooth),
+                             start = c(2010, 7), end = c(2015, 6),
+                             extend = TRUE),
+                      nfrequency = 4)
+  expect_equal(as.numeric(agg),
+               as.numeric(window(lfserie, start = tsp(agg)[1], end = tsp(agg)[2])),
+               tolerance = 1e-8)
+})
