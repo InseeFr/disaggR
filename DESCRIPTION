@@ -42,7 +42,6 @@ Imports:
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
 Suggests: 
     knitr,
     ggplot2 (>= 3.0.0),
@@ -71,3 +70,4 @@ Collate:
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://inseefr.github.io/disaggR/
+Config/roxygen2/version: 8.0.0

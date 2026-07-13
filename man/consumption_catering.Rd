@@ -11,7 +11,7 @@ A time series of frequency 1
 \url{https://www.insee.fr/en/statistiques/serie/010548586}
 }
 \usage{
-consumption_catering
+data(consumption_catering)
 }
 \description{
 An annual time series containing the consumption in accommodation and food services services from 1999

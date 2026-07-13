@@ -38,7 +38,7 @@ Other contributors:
 \itemize{
   \item Thomas Laurent (Maintener of the package from 1.0.2 to 1.0.5.2) [contributor]
   \item Franck Arnaud (barplot base graphics method for the mts class) [contributor]
-  \item Institut national de la statistique et des études économiques \email{comptes-trimestriels@insee.fr} (https://www.insee.fr/) [copyright holder]
+  \item Institut national de la statistique et des Ã©tudes Ã©conomiques \email{comptes-trimestriels@insee.fr} (https://www.insee.fr/) [copyright holder]
 }
 
 }

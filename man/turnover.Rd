@@ -11,7 +11,7 @@ A time series of frequency 12
 \url{https://www.insee.fr/fr/statistiques/4636032}
 }
 \usage{
-turnover
+data(turnover)
 }
 \description{
 An monthly time series containing the turnover indicator in construction

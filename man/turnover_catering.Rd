@@ -11,7 +11,7 @@ A time series of frequency 12
 \url{https://www.insee.fr/en/statistiques/serie/010543406}
 }
 \usage{
-turnover_catering
+data(turnover_catering)
 }
 \description{
 An monthly time series containing the turnover indicator in accommodation and food services

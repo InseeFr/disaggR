@@ -87,7 +87,7 @@ summary.praislm <- function (object, ...) {
   serr <- se(object)
   tval <- coef(object)/serr
   TAB <- cbind(Estimate = coef(object), StdErr = serr, t.value = tval, 
-               p.value = 2 * suppressWarnings(pt(-abs(tval), df = object$df)))
+               p.value = 2 * suppressWarnings(pt(-abs(tval), df = object$df.residual)))
   rownames(TAB) <- names(object$coefficients)
   colnames(TAB) <- c("Estimate", "StdErr", "t.value", "p.value")
   mss <- sum(object$fitted.values.decorrelated^2)

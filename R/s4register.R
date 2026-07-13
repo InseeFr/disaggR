@@ -9,14 +9,7 @@
 #' the functions \link{twoStepsBenchmark} and \link{threeRuleSmooth}.
 #'
 #' @aliases
-#' Ops,disaggR,missing-method
-#' Ops,disaggR,vector-method Ops,vector,disaggR-method
-#' Ops,disaggR,ts-method Ops,ts,disaggR-method
-#' Ops,disaggR,disaggR-method
-#' Math2,disaggR-method
-#' show,disaggR-method
-#' threeRuleSmooth-class
-#' twoStepsBenchmark-class
+#' Ops,disaggR,missing-method Ops,disaggR,vector-method Ops,vector,disaggR-method Ops,disaggR,ts-method Ops,ts,disaggR-method Ops,disaggR,disaggR-method Math2,disaggR-method show,disaggR-method threeRuleSmooth-class twoStepsBenchmark-class
 #' @keywords internal
 #' @export
 setClass("disaggR", contains = "VIRTUAL")

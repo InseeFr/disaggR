@@ -11,7 +11,7 @@ A time series of frequency 1
 \url{https://www.insee.fr/fr/statistiques/2015361}
 }
 \usage{
-construction
+data(construction)
 }
 \description{
 An annual time series containing the french GFCF in construction from 2000
