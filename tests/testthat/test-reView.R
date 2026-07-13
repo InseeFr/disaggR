@@ -760,6 +760,7 @@ test_that("reView-outlierssetcoef",{
                                                                      hfserie = 100))))
   
   app$set_inputs(`reView-menu` = "Export")
+  app$wait_for_idle()
   expect_equal(app$wait_for_value(output = "reView-reViewtab3-newcall"),
                paste("twoStepsBenchmark(",
                      "hfserie = turnover,",
